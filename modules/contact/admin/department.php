@@ -517,9 +517,6 @@ if ($nv_Request->isset_request('id', 'get')) {
 }
 
 $departments = get_department_list();
-if (empty($departments)) {
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&fc=content');
-}
 
 $xtpl = new XTemplate('department.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
 $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
@@ -530,58 +527,61 @@ $count = sizeof($departments);
 if (defined('NV_IS_SPADMIN')) {
     $xtpl->parse('main.is_spadmin');
 }
-foreach ($departments as $row) {
-    $row['phone'] = preg_replace("/(\[|&#91;)[^\]]*(&#93;|\])$/", '', $row['phone']);
-    $row['is_default_checked'] = !empty($row['is_default']) ? ' checked="checked"' : '';
-    $xtpl->assign('ROW', $row);
 
-    if (defined('NV_IS_SPADMIN')) {
-        for ($i = 1; $i <= $count; ++$i) {
-            $xtpl->assign('WEIGHT', [
-                'value' => $i,
-                'selected' => $i == $row['weight'] ? ' selected="selected"' : ''
-            ]);
-            $xtpl->parse('main.row.is_spadmin1.option');
+if (empty($departments)) {
+    foreach ($departments as $row) {
+        $row['phone'] = preg_replace("/(\[|&#91;)[^\]]*(&#93;|\])$/", '', $row['phone']);
+        $row['is_default_checked'] = !empty($row['is_default']) ? ' checked="checked"' : '';
+        $xtpl->assign('ROW', $row);
+    
+        if (defined('NV_IS_SPADMIN')) {
+            for ($i = 1; $i <= $count; ++$i) {
+                $xtpl->assign('WEIGHT', [
+                    'value' => $i,
+                    'selected' => $i == $row['weight'] ? ' selected="selected"' : ''
+                ]);
+                $xtpl->parse('main.row.is_spadmin1.option');
+            }
+            $xtpl->parse('main.row.is_spadmin1');
+        } else {
+            $xtpl->parse('main.row.is_modadmin1');
         }
-        $xtpl->parse('main.row.is_spadmin1');
-    } else {
-        $xtpl->parse('main.row.is_modadmin1');
-    }
-
-    if (!empty($row['is_default'])) {
-        $xtpl->parse('main.row.is_default');
-    }
-
-    $array = [$nv_Lang->getGlobal('disable'), $nv_Lang->getGlobal('active'), $nv_Lang->getModule('department_no_home')];
-    if (defined('NV_IS_SPADMIN')) {
-        foreach ($array as $key => $val) {
-            $xtpl->assign('STATUS', [
-                'key' => $key,
-                'selected' => $key == $row['act'] ? ' selected="selected"' : '',
-                'title' => $val
-            ]);
-
-            $xtpl->parse('main.row.is_spadmin2.status');
-        }
-        $xtpl->parse('main.row.is_spadmin2');
-    } else {
-        $xtpl->assign('STATUS', $array[$row['act']]);
-        $xtpl->parse('main.row.is_modadmin2');
-    }
-
-    if (defined('NV_IS_SPADMIN')) {
-        $xtpl->parse('main.row.is_spadmin3');
-    } else {
+    
         if (!empty($row['is_default'])) {
-            $xtpl->parse('main.row.is_modadmin3');
+            $xtpl->parse('main.row.is_default');
         }
+    
+        $array = [$nv_Lang->getGlobal('disable'), $nv_Lang->getGlobal('active'), $nv_Lang->getModule('department_no_home')];
+        if (defined('NV_IS_SPADMIN')) {
+            foreach ($array as $key => $val) {
+                $xtpl->assign('STATUS', [
+                    'key' => $key,
+                    'selected' => $key == $row['act'] ? ' selected="selected"' : '',
+                    'title' => $val
+                ]);
+    
+                $xtpl->parse('main.row.is_spadmin2.status');
+            }
+            $xtpl->parse('main.row.is_spadmin2');
+        } else {
+            $xtpl->assign('STATUS', $array[$row['act']]);
+            $xtpl->parse('main.row.is_modadmin2');
+        }
+    
+        if (defined('NV_IS_SPADMIN')) {
+            $xtpl->parse('main.row.is_spadmin3');
+        } else {
+            if (!empty($row['is_default'])) {
+                $xtpl->parse('main.row.is_modadmin3');
+            }
+        }
+    
+        if (defined('NV_IS_SPADMIN')) {
+            $xtpl->parse('main.row.is_spadmin4');
+        }
+    
+        $xtpl->parse('main.row');
     }
-
-    if (defined('NV_IS_SPADMIN')) {
-        $xtpl->parse('main.row.is_spadmin4');
-    }
-
-    $xtpl->parse('main.row');
 }
 
 if (defined('NV_IS_SPADMIN')) {
