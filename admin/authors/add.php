@@ -110,7 +110,7 @@ if ($nv_Request->get_int('save', 'post', 0)) {
         nv_htmlOutput($nv_Lang->getModule('lev_expired_error'));
     }
     $lev_expired_sql = !empty($lev_expired) ? mktime(23, 59, 59, $matches[2], $matches[1], $matches[3]) : 0;
-    if ($lev_expired_sql <= NV_CURRENTTIME) {
+    if ($lev_expired_sql and $lev_expired_sql <= NV_CURRENTTIME) {
         nv_htmlOutput($nv_Lang->getModule('lev_expired_error'));
     }
 
