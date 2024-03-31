@@ -64,6 +64,7 @@ if ($popup) {
     $xtpl->assign('AREA', $area);
     $xtpl->assign('ALT', $alt);
     $xtpl->assign('FUNNUM', $nv_Request->get_int('CKEditorFuncNum', 'get', 0));
+    $xtpl->assign('EDITOR_ID', $nv_Request->get_title('editor_id', 'get', ''));
     $xtpl->assign('NV_CHUNK_SIZE', $global_config['upload_chunk_size']);
     $xtpl->assign('SELFILE', $selectfile);
     $xtpl->assign('COMPRESS_IMAGE_ACTIVE', (class_exists('Tinify\Tinify') and !empty($global_config['tinify_active']) and !empty($global_config['tinify_api'])) ? 'true' : 'false');
@@ -105,6 +106,11 @@ if ($popup) {
 
     if (!$global_config['nv_auto_resize']) {
         $xtpl->parse('main.no_auto_resize');
+    }
+
+    if (!empty($admin_info['editor']) and file_exists(NV_ROOTDIR . '/' . NV_EDITORSDIR . '/' . $admin_info['editor'] . '/nv.callback.js')) {
+        $xtpl->assign('EDITOR', $admin_info['editor']);
+        $xtpl->parse('main.custom_callback');
     }
 
     $xtpl->parse('main');
