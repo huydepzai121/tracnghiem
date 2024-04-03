@@ -42,11 +42,17 @@ function nv_aleditor($textareaname, $width = '100%', $height = '450px', $val = '
 
     $create = [];
     $create[] = 'language: "' . NV_LANG_INTERFACE . '"';
+
+    $custom_toolbar = false;
     if (!empty($customtoolbar)) {
-        $create[] = "toolbar : '" . $customtoolbar . "'";
+        $customtoolbar = json_decode($customtoolbar, true);
+        if (is_array($customtoolbar)) {
+            $custom_toolbar = true;
+            $create[] = "toolbar : " . json_encode($customtoolbar);
+        }
     }
 
-    // Thiết lập nvbox và simpleUpload
+    // Thiết lập nvbox, nvmedia và simpleUpload
     if (defined('NV_IS_ADMIN')) {
         if (empty($path) and empty($currentpath)) {
             $path = NV_UPLOADS_DIR;
@@ -70,10 +76,106 @@ function nv_aleditor($textareaname, $width = '100%', $height = '450px', $val = '
                 noCache: false
             }
         }';
+        if (!$custom_toolbar) {
+            $create[] = "toolbar: {
+                items: [
+                    'undo',
+                    'redo',
+                    'selectAll',
+                    '|',
+                    'link',
+                    'imageInsert',
+                    'nvmediaInsert',
+                    'nvbox',
+                    'insertTable',
+                    'code',
+                    'codeBlock',
+                    'horizontalLine',
+                    'specialCharacters',
+                    'pageBreak',
+                    '|',
+                    'findAndReplace',
+                    'showBlocks',
+                    '|',
+                    'bulletedList',
+                    'numberedList',
+                    'outdent',
+                    'indent',
+                    'blockQuote',
+                    'heading',
+                    'fontSize',
+                    'fontFamily',
+                    'fontColor',
+                    'fontBackgroundColor',
+                    'highlight',
+                    'alignment',
+                    '|',
+                    'bold',
+                    'italic',
+                    'underline',
+                    'strikethrough',
+                    'subscript',
+                    'superscript',
+                    '|',
+                    'sourceEditing',
+                    'restrictedEditingException',
+                    'removeFormat'
+                ],
+                shouldNotGroupWhenFull: true
+            }";
+        }
     } else {
-        // Không có quyền upload thì bỏ duyệt file và nút upload ảnh
+        // Không có quyền upload thì bỏ duyệt file và nút upload ảnh, media
         $create[] = 'removePlugins: ["NVBox"]';
         $create[] = 'image: {insert: {integrations: ["url"]}}';
+        $create[] = 'nvmedia: {insert: {integrations: ["url"]}}';
+        if (!$custom_toolbar) {
+            $create[] = "toolbar: {
+                items: [
+                    'undo',
+                    'redo',
+                    'selectAll',
+                    '|',
+                    'link',
+                    'imageInsert',
+                    'nvmediaInsert',
+                    'insertTable',
+                    'code',
+                    'codeBlock',
+                    'horizontalLine',
+                    'specialCharacters',
+                    'pageBreak',
+                    '|',
+                    'findAndReplace',
+                    'showBlocks',
+                    '|',
+                    'bulletedList',
+                    'numberedList',
+                    'outdent',
+                    'indent',
+                    'blockQuote',
+                    'heading',
+                    'fontSize',
+                    'fontFamily',
+                    'fontColor',
+                    'fontBackgroundColor',
+                    'highlight',
+                    'alignment',
+                    '|',
+                    'bold',
+                    'italic',
+                    'underline',
+                    'strikethrough',
+                    'subscript',
+                    'superscript',
+                    '|',
+                    'sourceEditing',
+                    'restrictedEditingException',
+                    'removeFormat'
+                ],
+                shouldNotGroupWhenFull: true
+            }";
+        }
     }
 
     $return .= '<script>
