@@ -103,6 +103,7 @@ $lang_module['remote_api_access'] = 'Bật Remote API';
 $lang_module['remote_api_access_help'] = 'Nếu tắt toàn bộ quyền truy cập API từ bên ngoài sẽ bị chặn. Các API bên trong vẫn sử dụng bình thường';
 $lang_module['api_remote_off'] = 'Remote API <strong>đang tắt</strong> nên các cuộc gọi API sẽ không thể thực hiện. Để hỗ trợ cuộc gọi API, <strong><a href="%s">hãy bật Remote API tại đây</a></strong>';
 $lang_module['api_remote_off2'] = 'Remote API <strong>đang tắt</strong> nên các cuộc gọi API sẽ không thể thực hiện.';
+$lang_module['api_check_time'] = 'Thời gian sai lệch tối đa giữa Client và API Server';
 $lang_module['cat_api_list'] = 'Các API trong danh mục';
 $lang_module['flood_blocker'] = 'Hạn chế cuộc gọi';
 $lang_module['flood_blocker_note'] = 'Nếu để trống các trường ở dòng này, số lượng cuộc gọi sẽ không bị giới hạn';
