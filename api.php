@@ -37,8 +37,8 @@ $api_credential = [];
 $api_credential['apikey'] = $nv_Request->get_title('apikey', 'post', '');
 $api_credential['timestamp'] = $nv_Request->get_int('timestamp', 'post', '');
 $api_credential['hashsecret'] = $nv_Request->get_string('hashsecret', 'post', '');
-if ($api_credential['timestamp'] + 5 < NV_CURRENTTIME or $api_credential['timestamp'] - 5 > NV_CURRENTTIME) {
-    // Sai lệch thời gian hơn 5 giây
+if ($api_credential['timestamp'] + $global_config['api_check_time'] < NV_CURRENTTIME or $api_credential['timestamp'] - $global_config['api_check_time'] > NV_CURRENTTIME) {
+    // Sai lệch thời gian hơn số giây cho phép
     $apiresults->setCode(ApiResult::CODE_MISSING_TIME)
         ->setMessage('Incorrect API time: ' . date('H:i:s d/m/Y', $api_credential['timestamp']) . ', Server time: ' . date('H:i:s d/m/Y', NV_CURRENTTIME))
         ->returnResult();

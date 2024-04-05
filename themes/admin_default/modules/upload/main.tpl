@@ -86,6 +86,7 @@
 <input type="hidden" name="currentFileUrl" value=""/>
 <input type="hidden" name="selFile" value=""/>
 <input type="hidden" name="CKEditorFuncNum" value="{FUNNUM}"/>
+<input type="hidden" name="editor_id" value="{EDITOR_ID}"/>
 <input type="hidden" name="area" value="{AREA}"/>
 <input type="hidden" name="alt" value="{ALT}"/>
 <input type="hidden" name="upload_logo" value="{UPLOAD_LOGO}"/>
@@ -427,6 +428,9 @@ var nv_alt_require = {UPLOAD_ALT_REQUIRE};
 var nv_auto_alt = {UPLOAD_AUTO_ALT};
 //]]>
 </script>
+<!-- BEGIN: custom_callback -->
+<script type="text/javascript" src="{NV_BASE_SITEURL}{NV_EDITORSDIR}/{EDITOR}/nv.callback.js"></script>
+<!-- END: custom_callback -->
 <script type="text/javascript" src="{ASSETS_STATIC_URL}/js/upload{AUTO_MINIFIED}.js"></script>
 <script type="text/javascript">
 $(function() {

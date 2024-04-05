@@ -187,8 +187,7 @@ if (isset($check_allow_upload_dir['over_capacity'])) {
 }
 
 $editor = $nv_Request->get_title('editor', 'post,get', '');
-
-if (!preg_match("/^([a-zA-Z0-9\-\_]+)$/", $editor)) {
+if (!preg_match('/^([a-zA-Z0-9\-\_]+)$/', $editor)) {
     $editor = '';
 }
 
@@ -202,13 +201,8 @@ if (!empty($error)) {
         ];
 
         nv_jsonOutput($array_data);
-    } elseif ($editor == 'ckeditor') {
-        nv_jsonOutput([
-            'uploaded' => 0,
-            'error' => [
-                'message' => $error
-            ]
-        ]);
+    } elseif (!empty($editor)) {
+        require NV_ROOTDIR . '/' . NV_EDITORSDIR . '/' . $editor . '/nv.upload.error.php';
     } else {
         echo 'ERROR_' . $error;
     }
@@ -242,21 +236,8 @@ if (!empty($error)) {
 
     nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('upload_file'), $path . '/' . $upload_info['basename'], $admin_info['userid']);
 
-    if ($editor == 'ckeditor') {
-        if ($responseType == 'json') {
-            $array_data = [];
-            $array_data['uploaded'] = 1;
-            $array_data['fileName'] = $upload_info['basename'];
-            $array_data['url'] = NV_BASE_SITEURL . $path . '/' . $upload_info['basename'];
-
-            nv_jsonOutput($array_data);
-        } else {
-            nv_jsonOutput([
-                'uploaded' => 1,
-                'fileName' => $upload_info['basename'],
-                'url' => NV_BASE_SITEURL . $path . '/' . $upload_info['basename']
-            ]);
-        }
+    if (!empty($editor)) {
+        require NV_ROOTDIR . '/' . NV_EDITORSDIR . '/' . $editor . '/nv.upload.success.php';
     } else {
         echo $upload_info['basename'];
     }

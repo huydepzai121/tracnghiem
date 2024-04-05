@@ -103,6 +103,7 @@ $lang_module['remote_api_access'] = 'Enable Remote API';
 $lang_module['remote_api_access_help'] = 'Disabling all API access from outside will be blocked. Internal APIs are still used normally';
 $lang_module['api_remote_off'] = 'Remote API <strong>is off</strong> so API calls will not be possible. To support API calls, <strong><a href="%s">enable Remote API here</a></strong>';
 $lang_module['api_remote_off2'] = 'Remote API <strong>is off</strong> so API calls will not be possible.';
+$lang_module['api_check_time'] = 'Maximum deviation time between Client and API Server';
 $lang_module['cat_api_list'] = 'API list under category';
 $lang_module['flood_blocker'] = 'Query restriction';
 $lang_module['flood_blocker_note'] = 'If you leave these fields blank, the number of requests is unlimited';
