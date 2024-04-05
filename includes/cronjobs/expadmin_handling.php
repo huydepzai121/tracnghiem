@@ -22,7 +22,7 @@ function cron_expadmin_handling()
 {
     global $db, $db_config, $nv_Lang, $global_config, $nv_Cache, $language_array;
 
-    $sql = 'SELECT admin_id, lev, after_exp_action, susp_reason FROM ' . NV_AUTHORS_GLOBALTABLE . ' WHERE lev!=1 AND lev_expired <=' . NV_CURRENTTIME . ' AND is_suspend=0';
+    $sql = 'SELECT admin_id, lev, after_exp_action, susp_reason FROM ' . NV_AUTHORS_GLOBALTABLE . ' WHERE lev!=1 AND lev_expired <=' . NV_CURRENTTIME . ' AND lev_expired>0 AND is_suspend=0';
     $result = $db->query($sql);
     $suspends = [];
     $downgrades = [];
