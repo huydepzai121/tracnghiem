@@ -61,7 +61,7 @@
 </div>
 <!-- BEGIN: is_spadmin5 -->
 <div class="text-center">
-    <button type="button" title="{LANG.department_add}" data-url="{OP_URL}" class="btn btn-primary department_add">{LANG.department_add}</button>
+    <button type="button" title="{LANG.department_add}" data-url="{OP_URL}" class="btn btn-primary department_add<!-- BEGIN: show_form --> auto<!-- END: show_form -->">{LANG.department_add}</button>
 </div>
 <!-- END: is_spadmin5 -->
 <!-- BEGIN: is_spadmin6 -->

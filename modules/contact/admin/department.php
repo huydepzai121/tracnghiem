@@ -517,9 +517,6 @@ if ($nv_Request->isset_request('id', 'get')) {
 }
 
 $departments = get_department_list();
-if (empty($departments)) {
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&fc=content');
-}
 
 $xtpl = new XTemplate('department.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
 $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
@@ -585,6 +582,10 @@ foreach ($departments as $row) {
 }
 
 if (defined('NV_IS_SPADMIN')) {
+    if (empty($departments)) {
+        $xtpl->parse('main.is_spadmin5.show_form');
+    }
+
     $xtpl->parse('main.is_spadmin5');
     $xtpl->parse('main.is_spadmin6');
 }

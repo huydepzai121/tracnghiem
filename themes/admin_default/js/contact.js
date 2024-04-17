@@ -255,6 +255,9 @@ $(function() {
     $('.department_add, .supporter_add').on('click', function() {
         modal_content($(this).data('url'), 0)
     });
+    if ($('.department_add.auto, .supporter_add.auto').length) {
+        $('.department_add.auto, .supporter_add.auto').trigger('click');
+    }
 
     $('.department_edit, .supporter_edit').on('click', function() {
         modal_content($(this).parents('.list').data('url'), $(this).parents('.item').data('id'))
