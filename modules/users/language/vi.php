@@ -873,6 +873,7 @@ $lang_module['days'] = 'ngày (0 = Không áp dụng)';
 $lang_module['oldpass_num'] = 'Số mật khẩu cũ lưu trong CSDL';
 $lang_module['send_password'] = 'Gửi thông tin mật khẩu đến email người dùng';
 $lang_module['email_dot_equivalent'] = 'Email có dấu chấm trong phần trước @ là phiên bản của email không có dấu chấm';
+$lang_module['email_plus_equivalent'] = 'Email phụ (có dấu + và phía sau dấu + trước @) là phiên bản của email chính (phía trước dấu +)';
 $lang_module['login_name_type'] = 'Kiểu tên đăng nhập';
 $lang_module['censorship'] = 'Kiểm duyệt';
 $lang_module['leave_blank_note'] = 'Để trống nếu sử dụng giá trị mà người đăng ký đã nhập. Nếu khai báo mật khẩu mới - mật khẩu sẽ được gửi đến người đăng ký';
