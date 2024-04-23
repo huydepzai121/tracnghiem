@@ -110,7 +110,7 @@ $lang_module['email_deny_name'] = 'Sorry, email %s banned';
 $lang_module['email_registered_name'] = 'Email %s was registered. Using lost password function to reset password';
 $lang_module['account_register'] = 'Your account was created';
 $lang_module['account_register_info'] = '%1$s<br /><br />Your account at website %2$s activated. Your login information:<br /><br />URL: <a href="%3$s">%3$s</a><br /><br />Username: %4$s<br />Email: %5$s<br /><br /><br />This is email automatic sending from website %2$s.';
-$lang_module['account_register_openid_info'] = '%1$s<br /><br />Your account at website %2$s activated.<br />To log into your account please visit the page: <a href="%3$s">%3$s</a> and press the button: Sign in with %4$s.<br /><br /><br /><br />This is email automatic sending from website %2$s.';
+$lang_module['account_register_openid_info'] = '%1$s<br /><br />Your account at website %2$s activated.<br />To log into your account please visit the page: <a href="%3$s">%3$s</a> and press the button: Sign in with %4$s.<br /><br />This is email automatic sending from website %2$s.';
 $lang_module['account_register_to_admin'] = 'Your account was created. We\'ll check your register information and notify you soon.';
 $lang_module['account_active'] = 'Activate information';
 $lang_module['account_active_info'] = '%1$s<br /><br />Your account at website %2$s waitting to activate. To activate, please click link follow:<br /><br />URL: <a href="%3$s">%3$s</a><br /><br />Account information:<br /><br />Username: %4$s<br />Email: %5$s<br /><br />Activate expired on %6$s<br /><br />This is email automatic sending from website %2$s.';
