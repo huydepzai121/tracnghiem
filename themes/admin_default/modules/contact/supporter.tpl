@@ -47,7 +47,7 @@
 </div>
 <!-- END: list -->
 <div class="text-center">
-    <button type="button" data-url="{OP_URL}" class="btn btn-primary supporter_add">{LANG.supporter_add}</button>
+    <button type="button" data-url="{OP_URL}" class="btn btn-primary supporter_add<!-- BEGIN: show_form --> auto<!-- END: show_form -->">{LANG.supporter_add}</button>
 </div>
 <!-- Add_Supporter_Modal -->
 <div class="modal fade" id="content" data-backdrop="static" tabindex="-1" role="dialog">

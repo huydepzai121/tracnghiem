@@ -103,6 +103,10 @@
                     <td><input type="checkbox" value="1" name="email_dot_equivalent"{DATA.email_dot_equivalent}/></td>
                 </tr>
                 <tr>
+                    <td>{LANG.email_plus_equivalent}</td>
+                    <td><input type="checkbox" value="1" name="email_plus_equivalent"{DATA.email_plus_equivalent}/></td>
+                </tr>
+                <tr>
                     <td>{LANG.auto_login_after_reg}</td>
                     <td><input type="checkbox" value="1" name="auto_login_after_reg"{DATA.auto_login_after_reg}/></td>
                 </tr>

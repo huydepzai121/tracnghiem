@@ -389,7 +389,7 @@ if ($checkss == $array_register['checkss']) {
         $sql = 'INSERT INTO ' . NV_MOD_TABLE . ' (
             group_id, username, md5username, password, email, first_name, last_name, gender, photo, birthday, sig, regdate,
             question, answer, passlostkey, view_mail, remember, in_groups,
-            active, checknum, last_login, last_ip, last_agent, last_openid, idsite, 
+            active, checknum, last_login, last_ip, last_agent, last_openid, idsite,
             pass_creation_time, pass_reset_request, email_verification_time, active_obj
         ) VALUES (
             ' . (defined('ACCESS_ADDUS') ? $group_id : ($global_users_config['active_group_newusers'] ? 7 : 4)) . ",

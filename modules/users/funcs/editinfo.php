@@ -80,11 +80,24 @@ function nv_check_email_change(&$email, $edit_userid)
         return $nv_Lang->getModule('email_deny_name', $email);
     }
 
-    if (!empty($global_config['email_dot_equivalent'])) {
+    // Lấy email chính, không cho phép nhập alias. Nếu nhập alias cũng chuyển về email chính
+    if (!empty($global_config['email_plus_equivalent'])) {
         [$left, $right] = explode('@', $email);
-        $left = preg_replace('/[\.]+/', '', $left);
-        $pattern = str_split($left);
-        $pattern = implode('.?', $pattern);
+        $left = explode('+', $left)[0];
+        $email = $left . '@' . $right;
+    }
+
+    if (!empty($global_config['email_dot_equivalent']) or !empty($global_config['email_plus_equivalent'])) {
+        [$left, $right] = explode('@', $email);
+
+        if (!empty($global_config['email_dot_equivalent'])) {
+            $left = preg_replace('/[\.]+/', '', $left);
+            $pattern = str_split($left);
+            $pattern = implode('.?', $pattern);
+        }
+        if (!empty($global_config['email_plus_equivalent'])) {
+            $pattern = $pattern . '(\\+.+)*';
+        }
         $pattern = '^' . $pattern . '@' . $right . '$';
 
         $stmt = $db->prepare('SELECT userid FROM ' . NV_MOD_TABLE . ' WHERE userid!=' . $edit_userid . ' AND email RLIKE :pattern');

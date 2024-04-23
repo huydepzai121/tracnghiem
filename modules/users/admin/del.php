@@ -134,7 +134,7 @@ if (md5(NV_CHECK_SESSION . '_' . $module_name . '_main') == $nv_Request->get_str
                 }
 
                 $mail_message = nl2br($mail_message);
-                nv_sendmail_async([$gconfigs['site_name'], $gconfigs['site_email']], $email, $mail_subject, $mail_message);
+                nv_sendmail_async([$gconfigs['site_name'], $gconfigs['site_email']], $email, $mail_subject, $mail_message, '', false, false, [], [], true, [], $maillang);
             }
         }
     }

@@ -350,6 +350,10 @@ if (!empty($list)) {
     $xtpl->parse('main.list');
 }
 
+if (empty($supporters)) {
+    $xtpl->parse('main.show_form');
+}
+
 $xtpl->parse('main');
 $contents = $xtpl->text('main');
 

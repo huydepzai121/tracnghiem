@@ -585,6 +585,10 @@ if (!empty($departments)) {
 }
 
 if (defined('NV_IS_SPADMIN')) {
+    if (empty($departments)) {
+        $xtpl->parse('main.is_spadmin5.show_form');
+    }
+
     $xtpl->parse('main.is_spadmin5');
     $xtpl->parse('main.is_spadmin6');
 }
