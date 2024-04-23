@@ -1607,6 +1607,11 @@ function nv_sendmail_async($from, $to, $subject, $message, $files = '', $AddEmbe
 {
     global $global_config;
 
+    // Mặc định gửi email bằng ngôn ngữ giao diện hiện tại đang dùng. Nếu không sẽ chỉ gửi bằng ngôn ngữ mặc định của site.
+    if (empty($lang)) {
+        $lang = NV_LANG_INTERFACE;
+    }
+
     $json_contents = json_encode([
         'from' => $from,
         'to' => $to,
