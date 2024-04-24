@@ -68,7 +68,7 @@ function nv_check_username_change($login, $edit_userid)
  */
 function nv_check_email_change(&$email, $edit_userid)
 {
-    global $db, $nv_Lang, $user_info, $global_users_config, $global_config;
+    global $db, $nv_Lang, $user_info, $global_users_config, $global_config, $module_name;
 
     $error = nv_check_valid_email($email, true);
     if ($error[0] != '') {
@@ -78,6 +78,11 @@ function nv_check_email_change(&$email, $edit_userid)
 
     if (!empty($global_users_config['deny_email']) and preg_match('/' . $global_users_config['deny_email'] . '/i', $email)) {
         return $nv_Lang->getModule('email_deny_name', $email);
+    }
+
+    $custom_check = nv_apply_hook($module_name, 'check_email_already_exists', [$email]);
+    if (!empty($custom_check)) {
+        return $custom_check;
     }
 
     // Lấy email chính, không cho phép nhập alias. Nếu nhập alias cũng chuyển về email chính

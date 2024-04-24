@@ -166,12 +166,17 @@ function updateUserCookie($newValues)
  */
 function nv_check_email_reg(&$email)
 {
-    global $db, $nv_Lang, $global_users_config, $global_config;
+    global $db, $nv_Lang, $global_users_config, $global_config, $module_name;
 
     $error = nv_check_valid_email($email, true);
     $email = $error[1];
     if ($error[0] != '') {
         return preg_replace('/\&(l|r)dquo\;/', '', strip_tags($error[0]));
+    }
+
+    $custom_check = nv_apply_hook($module_name, 'check_email_already_exists', [$email]);
+    if (!empty($custom_check)) {
+        return $custom_check;
     }
 
     if (!empty($global_users_config['deny_email']) and preg_match('/' . $global_users_config['deny_email'] . '/i', $email)) {
