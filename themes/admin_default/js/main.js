@@ -296,7 +296,7 @@ $(document).ready(function() {
     });
 
     // Select File
-    $('body').on('click', '[data-toggle=selectfile]', function(e) {
+    $('body').delegate('[data-toggle=selectfile]', 'click', function(e) {
         e.preventDefault();
         var area = $(this).data('target'),
             alt = $(this).data('alt'),

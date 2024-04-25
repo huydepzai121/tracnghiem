@@ -121,6 +121,20 @@ $install_lang['vinades_address'] = '6ème étage, bâtiment Song Da, rue Tran Ph
 $install_lang['nukeviet_description'] = 'Partager le succès, connectez passions';
 $install_lang['disable_site_content'] = 'Notre site est fermé temporairement pour la maintenance. Veuillez revenir plus tard. Merci!';
 
+// Ngôn ngữ dữ liệu cho phần mẫu email
+use NukeViet\Template\Email\Cat as EmailCat;
+use NukeViet\Template\Email\Tpl as EmailTpl;
+
+$install_lang['emailtemplates'] = [];
+$install_lang['emailtemplates']['cats'] = [];
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_SYSTEM] = 'Messages système';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_USER] = 'Messages utilisateur';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_AUTHOR] = 'Messages Admin';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_MODULE] = 'Messages du module';
+
+$install_lang['emailtemplates']['emails'] = [];
+// FIXME
+
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],
     'link' => NV_BASE_SITEURL . 'index.php?language=' . $lang_data . '&nv=about',

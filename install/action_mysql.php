@@ -359,3 +359,44 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_inform_status (
   hidden_time INT(11) UNSIGNED NOT NULL DEFAULT '0',
   UNIQUE KEY pid_userid (pid, userid)
 ) ENGINE=MyISAM";
+
+// CSDL module email templates
+$sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_emailtemplates (
+  emailid mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  sys_pids varchar(255) NOT NULL DEFAULT '' COMMENT 'Các plugin xử lý dữ liệu của hệ thống',
+  pids varchar(255) NOT NULL DEFAULT '' COMMENT 'Các plugin xử lý dữ liệu',
+  catid smallint(4) unsigned NOT NULL DEFAULT '0',
+  time_add int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Tạo lúc',
+  time_update int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Cập nhật lúc',
+  send_name varchar(255) NOT NULL DEFAULT '' COMMENT 'Tên người gửi',
+  send_email varchar(255) NOT NULL DEFAULT '' COMMENT 'Email người gửi',
+  send_cc text NOT NULL COMMENT 'CC Emails',
+  send_bcc text NOT NULL COMMENT 'BCC Emails',
+  attachments text NOT NULL COMMENT 'Đính kèm',
+  is_system tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT 'Của hệ thống hay không',
+  is_plaintext tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Gửi dạng text thuần hay có định dạng',
+  is_disabled tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Đình chỉ gửi mail hay không',
+  is_selftemplate tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '1 thì không dùng template của giao diện, 0 thì dùng',
+  mailtpl varchar(20) NOT NULL DEFAULT '' COMMENT 'Tên mẫu cứng trong file nếu chọn',
+  default_subject varchar(250) NOT NULL DEFAULT '' COMMENT 'Tiêu đề email tất cả các ngôn ngữ',
+  default_content mediumtext NOT NULL COMMENT 'Nội dung email tất cả các ngôn ngữ',
+  PRIMARY KEY (emailid),
+  KEY catid (catid),
+  KEY time_add (time_add),
+  KEY time_update (time_update)
+) ENGINE=InnoDB COMMENT 'Bảng mẫu email'";
+
+$sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates AUTO_INCREMENT=1001;';
+
+$sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_emailtemplates_categories (
+  catid smallint(4) unsigned NOT NULL AUTO_INCREMENT,
+  time_add int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Tạo lúc',
+  time_update int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Cập nhật lúc',
+  weight smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT 'Sắp thứ tự',
+  is_system tinyint(1) unsigned NOT NULL DEFAULT '1',
+  status tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '0 ẩn, 1 hiển thị',
+  PRIMARY KEY (catid),
+  KEY status (status)
+) ENGINE=InnoDB COMMENT 'Bảng danh mục mẫu email'";
+
+$sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates_categories AUTO_INCREMENT=101;';

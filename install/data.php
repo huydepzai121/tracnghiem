@@ -13,17 +13,19 @@ if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }
 
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (1, 'siteinfo', 'mod_siteinfo', 1, 1, 1, 1, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (2, 'authors', 'mod_authors', 2, 1, 1, 1, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (3, 'settings', 'mod_settings', 3, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (4, 'database', 'mod_database', 4, 1, 0, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (5, 'webtools', 'mod_webtools', 5, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (6, 'seotools', 'mod_seotools', 6, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (7, 'language', 'mod_language', 7, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (8, 'modules', 'mod_modules', 8, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (9, 'themes', 'mod_themes', 9, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (10, 'extensions', 'mod_extensions', 10, 1, 0, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (11, 'upload', 'mod_upload', 11, 1, 1, 1, '')";
+$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES
+(1, 'siteinfo', 'mod_siteinfo', 1, 1, 1, 1, ''),
+(2, 'authors', 'mod_authors', 2, 1, 1, 1, ''),
+(3, 'settings', 'mod_settings', 3, 1, 1, 0, ''),
+(4, 'database', 'mod_database', 4, 1, 0, 0, ''),
+(5, 'webtools', 'mod_webtools', 5, 1, 1, 0, ''),
+(6, 'seotools', 'mod_seotools', 6, 1, 1, 0, ''),
+(7, 'language', 'mod_language', 7, 1, 1, 0, ''),
+(8, 'modules', 'mod_modules', 8, 1, 1, 0, ''),
+(9, 'themes', 'mod_themes', 9, 1, 1, 0, ''),
+(10, 'extensions', 'mod_extensions', 10, 1, 0, 0, ''),
+(11, 'upload', 'mod_upload', 11, 1, 1, 1, ''),
+(12, 'emailtemplates', 'mod_emailtemplates', 12, 1, 1, 0, '')";
 
 $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_upload_dir (did, dirname, time, thumb_type, thumb_width, thumb_height, thumb_quality) VALUES ('-1', '', 0, 3, 100, 150, 90)";
 $sql_create_table[] = 'UPDATE ' . $db_config['prefix'] . "_upload_dir SET did = '0' WHERE did = '-1'";

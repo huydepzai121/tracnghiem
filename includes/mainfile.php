@@ -372,6 +372,7 @@ define('NV_CRONJOBS_GLOBALTABLE', $db_config['prefix'] . '_cronjobs');
 define('NV_NOTIFICATION_GLOBALTABLE', $db_config['prefix'] . '_notification');
 define('NV_INFORM_GLOBALTABLE', $db_config['prefix'] . '_inform');
 define('NV_INFORM_STATUS_GLOBALTABLE', $db_config['prefix'] . '_inform_status');
+define('NV_EMAILTEMPLATES_GLOBALTABLE', $db_config['prefix'] . '_emailtemplates');
 
 define('NV_UPLOAD_GLOBALTABLE', $db_config['prefix'] . '_upload');
 define('NV_BANNERS_GLOBALTABLE', $db_config['prefix'] . '_banners');

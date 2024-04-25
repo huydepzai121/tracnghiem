@@ -46,6 +46,16 @@ function nv_delete_table_sys($lang)
     $sql_drop_table[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $lang . '_modthemes';
     $sql_drop_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_cronjobs DROP ' . $lang . '_cron_name';
 
+    // Xóa các trường theo ngôn ngữ email template
+    $sql_drop_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates
+      DROP ' . $lang . '_title,
+      DROP ' . $lang . '_subject,
+      DROP ' . $lang . '_content
+    ';
+    $sql_drop_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates_categories
+      DROP ' . $lang . '_title
+    ';
+
     return $sql_drop_table;
 }
 
@@ -248,6 +258,44 @@ function nv_create_table_sys($lang)
 
     $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . '_' . $lang . "_modthemes (func_id, layout, theme) VALUES ('0', '" . $layoutdefault . "', '" . $global_config['site_theme'] . "')";
     $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_cronjobs ADD ' . $lang . "_cron_name VARCHAR( 255 ) NOT NULL DEFAULT ''";
+
+    /*
+     * Tạo các trường theo ngôn ngữ email template
+     * Copy dữ liệu sang các trường
+     * Thêm khóa cho các trường
+     */
+    $array_columns = $db->columns_array($db_config['prefix'] . '_emailtemplates');
+    $default_lang = '';
+    foreach ($array_columns as $_colkey => $_coldata) {
+        if (preg_match('/^([a-z]{2})\_content$/', $_colkey, $m)) {
+            $default_lang = $m[1];
+            break;
+        }
+    }
+
+    $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates
+        ADD ' . $lang . "_title varchar(250) NOT NULL DEFAULT '',
+        ADD " . $lang . "_subject varchar(250) NOT NULL DEFAULT '',
+        ADD " . $lang . '_content mediumtext NOT NULL
+    ';
+    $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates_categories
+        ADD ' . $lang . '_title varchar(250) NOT NULL
+    ';
+
+    if (!empty($default_lang)) {
+        $sql_create_table[] = 'UPDATE ' . $db_config['prefix'] . '_emailtemplates SET
+            ' . $lang . '_title = ' . $default_lang . '_title
+        ';
+        $sql_create_table[] = 'UPDATE ' . $db_config['prefix'] . '_emailtemplates_categories SET
+            ' . $lang . '_title = ' . $default_lang . '_title
+        ';
+    }
+    $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates
+        ADD UNIQUE ' . $lang . '_title (' . $lang . '_title(191))
+    ';
+    $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates_categories
+        ADD UNIQUE ' . $lang . '_title (' . $lang . '_title(191))
+    ';
 
     return $sql_create_table;
 }

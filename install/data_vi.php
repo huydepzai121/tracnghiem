@@ -121,6 +121,20 @@ $install_lang['vinades_address'] = 'Tầng 6, tòa nhà Sông Đà, 131 Trần P
 $install_lang['nukeviet_description'] = 'Chia sẻ thành công, kết nối đam mê';
 $install_lang['disable_site_content'] = 'Vì lý do kỹ thuật website tạm ngưng hoạt động. Thành thật xin lỗi các bạn vì sự bất tiện này!';
 
+// Ngôn ngữ dữ liệu cho phần mẫu email
+use NukeViet\Template\Email\Cat as EmailCat;
+use NukeViet\Template\Email\Tpl as EmailTpl;
+
+$install_lang['emailtemplates'] = [];
+$install_lang['emailtemplates']['cats'] = [];
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_SYSTEM] = 'Email của hệ thống';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_USER] = 'Email về tài khoản';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_AUTHOR] = 'Email về quản trị';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_MODULE] = 'Email của các module';
+
+$install_lang['emailtemplates']['emails'] = [];
+// FIXME
+
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],
     'link' => NV_BASE_SITEURL . 'index.php?language=' . $lang_data . '&nv=about',
