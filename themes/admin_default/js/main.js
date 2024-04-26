@@ -187,7 +187,6 @@ $(document).ready(function() {
         rel: "noopener noreferrer nofollow"
     });
 
-
     // Show submenu
     $('#menu-horizontal .dropdown, #left-menu .dropdown:not(.active)').hover(function() {
         NV.openMenu(this);

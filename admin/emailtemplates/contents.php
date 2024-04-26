@@ -141,7 +141,7 @@ if ($emailid) {
 
 $array['showlang'] = NV_LANG_DATA;
 
-if ($nv_Request->isset_request('saveform', 'post')) {
+if ($nv_Request->get_title('saveform', 'post', '') == NV_CHECK_SESSION) {
     if (empty($array['is_system'])) {
         $array['catid'] = $nv_Request->get_int('catid', 'post', 0);
         $array['title'] = $nv_Request->get_typed_array('title', 'post', 'title', []);

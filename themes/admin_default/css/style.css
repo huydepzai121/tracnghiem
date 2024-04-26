@@ -182,6 +182,10 @@ a.text-white {
     margin-bottom: 0 !important;
 }
 
+.ml-1 {
+    margin-left: 5px;
+}
+
 .mt-2 {
     margin-top: 10px;
 }

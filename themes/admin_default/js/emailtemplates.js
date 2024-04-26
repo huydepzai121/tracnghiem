@@ -17,15 +17,16 @@ $(document).ready(function() {
             type: 'POST',
             url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=categories&nocache=' + new Date().getTime(),
             data: {
-                'changeweight': 1,
+                'changeweight': $(this).data('checksess'),
                 'catid': catid,
                 'new_weight': weight
             },
             cache: false,
-            success: function(c) {
+            success: function() {
                 location.reload();
             },
-            error: function(jqXHR, exception) {
+            error: function(jqXHR, exception, te) {
+                console.log(jqXHR, exception, te);
                 location.reload();
             }
         });
@@ -40,7 +41,7 @@ $(document).ready(function() {
                 type: 'POST',
                 url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=categories&nocache=' + new Date().getTime(),
                 data: {
-                    'delete': 1,
+                    'delete': $(this).data('checksess'),
                     'catid': catid
                 },
                 cache: false,
@@ -51,7 +52,8 @@ $(document).ready(function() {
                     }
                     location.reload();
                 },
-                error: function(jqXHR, exception) {
+                error: function(jqXHR, exception, te) {
+                    console.log(jqXHR, exception, te);
                     location.reload();
                 }
             });
@@ -59,7 +61,7 @@ $(document).ready(function() {
     });
 
     // Xóa mẫu email
-    $('[data-toggle="deltpl"]').on('click', function(e) {
+    $('[data-click="deltpl"]').on('click', function(e) {
         e.preventDefault();
         var emailid = $(this).data('emailid');
         if (confirm(nv_is_del_confirm[0])) {
@@ -67,7 +69,7 @@ $(document).ready(function() {
                 type: 'POST',
                 url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=main&nocache=' + new Date().getTime(),
                 data: {
-                    'delete': 1,
+                    'delete': $(this).data('checksess'),
                     'emailid': emailid
                 },
                 cache: false,
@@ -78,7 +80,8 @@ $(document).ready(function() {
                     }
                     location.reload();
                 },
-                error: function(jqXHR, exception) {
+                error: function(jqXHR, exception, te) {
+                    console.log(jqXHR, exception, te);
                     location.reload();
                 }
             });
@@ -176,6 +179,20 @@ $(document).ready(function() {
         $(".select2").select2({
             width: "100%",
             language: nv_lang_interface
+        });
+    }
+
+    // Pickdate
+    if ($('.datepicker-search').length) {
+        $('.datepicker-search').datepicker({
+            showOn: "both",
+            dateFormat: "dd-mm-yy",
+            changeMonth: true,
+            changeYear: true,
+            showOtherMonths: true,
+            buttonText: null,
+            buttonImage: null,
+            buttonImageOnly: true
         });
     }
 });

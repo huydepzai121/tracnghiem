@@ -17,7 +17,7 @@
                 {foreach from=$LIST item=row}
                 <tr>
                     <td>
-                        <select class="form-control input-sm" data-toggle="weightcat" data-catid="{$row.catid}">
+                        <select class="form-control input-sm" data-toggle="weightcat" data-catid="{$row.catid}" data-checksess="{$smarty.const.NV_CHECK_SESSION}">
                             {for $key=1 to $LISTCOUNT}
                             <option value="{$key}"{if $key eq $row.weight} selected="selected"{/if}>{$key}</option>
                             {/for}
@@ -27,7 +27,7 @@
                     <td class="text-center text-nowrap">
                         {if not $row.is_system}
                         <a href="{$BASE_URL}&amp;catid={$row.catid}" class="btn btn-sm btn-default"><i class="fa fa-pencil"></i> {$LANG->get('edit')}</a>
-                        <a href="#" class="btn btn-sm btn-danger" data-toggle="delcat" data-catid="{$row.catid}"><i class="fa fa-trash"></i> {$LANG->get('delete')}</a>
+                        <a href="#" class="btn btn-sm btn-danger" data-toggle="delcat" data-checksess="{$smarty.const.NV_CHECK_SESSION}" data-catid="{$row.catid}"><i class="fa fa-trash"></i> {$LANG->get('delete')}</a>
                         {/if}
                     </td>
                 </tr>
@@ -61,7 +61,7 @@
             </div>
             <div class="form-group row mb-0 pb-0">
                 <div class="col-xs-24 col-sm-16 col-sm-offset-6">
-                    <button class="btn btn-space btn-primary" type="submit" name="saveform">{$LANG->get('submit')}</button>
+                    <button class="btn btn-space btn-primary" type="submit" name="saveform" value="{$smarty.const.NV_CHECK_SESSION}">{$LANG->get('submit')}</button>
                 </div>
             </div>
         </form>

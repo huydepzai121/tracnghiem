@@ -202,7 +202,7 @@
         </div>
     </div>
     <input type="hidden" name="showlang" value="{$DATA.showlang}">
-    <input type="hidden" name="saveform" value="1">
+    <input type="hidden" name="saveform" value="{$smarty.const.NV_CHECK_SESSION}">
 </form>
 
 <div class="panel panel-default">

@@ -7,6 +7,6 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-.merge-fields-area {
-    max-height: 400px;
+.form-search .ui-datepicker-trigger {
+    display: none;
 }

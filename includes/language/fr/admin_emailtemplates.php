@@ -19,6 +19,7 @@ $lang_translator['copyright'] = '@Copyright (C) 2012 VINADES.,JSC. All rights re
 $lang_translator['info'] = '';
 $lang_translator['langtype'] = 'lang_module';
 
+$lang_module['copy'] = 'Copie';
 $lang_module['errorsave'] = 'Une erreur inconnue menant à des données ne peut pas être enregistrée';
 $lang_module['add_template'] = 'Ajouter un modèle de courrier électronique';
 $lang_module['edit_template'] = 'Modifier le modèle de courrier électronique';
@@ -66,6 +67,7 @@ $lang_module['tpl_plugin'] = 'Plugin';
 $lang_module['tpl_plugin_help'] = 'Choisissez le plugin qui gère les champs de fusion dans le contenu du courrier électronique';
 $lang_module['tpl_pluginsys'] = 'Plugin système';
 $lang_module['tpl_pluginsys_help'] = 'Ces plugins sont fixés sur le modèle de courrier électronique du système et ne peuvent pas être modifiés. Si vous souhaitez ajouter plus, sélectionnez ci-dessous';
+$lang_module['function'] = 'Fonction';
 $lang_module['merge_field'] = 'Merge fields';
 $lang_module['merge_field_help'] = 'Ces champs sont automatiquement remplacés par la valeur correspondante lors de l\'exportation du contenu de l\'e-mail. Cliquez sur la description des variables pour remplir l\'éditeur';
 $lang_module['merge_field_guild1'] = 'Affichage conditionnel';

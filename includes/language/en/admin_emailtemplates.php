@@ -19,6 +19,7 @@ $lang_translator['copyright'] = '@Copyright (C) 2012 VINADES.,JSC. All rights re
 $lang_translator['info'] = '';
 $lang_translator['langtype'] = 'lang_module';
 
+$lang_module['copy'] = 'Copy';
 $lang_module['errorsave'] = 'Unknown error leading to data can not be saved';
 $lang_module['add_template'] = 'Add email template';
 $lang_module['edit_template'] = 'Edit email template';
@@ -73,6 +74,7 @@ $lang_module['tpl_plugin_help'] = 'Choose plugin that handles merge fields in em
 $lang_module['tpl_pluginsys'] = 'System plugin';
 $lang_module['tpl_mailtpl'] = 'Template file';
 $lang_module['tpl_pluginsys_help'] = 'These plugin are fixed to the email template of the system and can not be changed. If you want to add more, select below';
+$lang_module['function'] = 'Function';
 $lang_module['merge_field'] = 'Merge fields';
 $lang_module['merge_field_help'] = 'These fields are automatically replaced with the corresponding value when exporting the email content. Click on the description of the variables to fill in the editor';
 $lang_module['merge_field_guild1'] = 'Conditional display';

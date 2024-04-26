@@ -3698,3 +3698,126 @@ function nv_parse_phone($phone)
 
     return $phones;
 }
+
+/**
+ * @param int|mixed $emailid
+ * @param string $lang
+ * @return bool|mixed
+ */
+function nv_get_email_template($emailid, $lang = '')
+{
+    global $db, $global_config;
+
+    if (empty($lang) or !in_array($lang, $global_config['setup_langs'], true)) {
+        $lang = NV_LANG_DATA;
+    }
+    $sql = 'SELECT sys_pids, pids, send_name, send_email, send_cc, send_bcc, attachments, is_plaintext, is_disabled,
+    is_selftemplate, mailtpl, default_subject, default_content,
+    ' . $lang . '_subject lang_subject, ' . $lang . '_content lang_content FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE emailid=:emailid';
+    $sth = $db->prepare($sql);
+    $sth->bindParam(':emailid', $emailid, PDO::PARAM_INT);
+    $sth->execute();
+    $email_data = $sth->fetch();
+    if (empty($email_data)) {
+        // Không
+        return false;
+    }
+
+    $attachments = [];
+    $email_data['attachments'] = explode(',', $email_data['attachments']);
+    foreach ($email_data['attachments'] as $attachment) {
+        if (is_file(NV_UPLOADS_REAL_DIR . '/emailtemplates/' . $attachment)) {
+            $attachments[] = NV_UPLOADS_REAL_DIR . '/emailtemplates/' . $attachment;
+        }
+    }
+
+    // Dữ liệu trả về
+    $data = [
+        'pids' => array_filter(array_unique(array_merge_recursive(explode(',', $email_data['sys_pids']), explode(',', $email_data['pids'])))),
+        'from' => [$email_data['send_name'], $email_data['send_email']],
+        'cc' => array_filter(explode(',', $email_data['send_cc'])),
+        'bcc' => array_filter(explode(',', $email_data['send_bcc'])),
+        'attachments' => $attachments,
+        'subject' => empty($email_data['lang_subject']) ? $email_data['default_subject'] : $email_data['lang_subject'],
+        'content' => empty($email_data['lang_content']) ? $email_data['default_content'] : $email_data['lang_content'],
+        'is_disabled' => $email_data['is_disabled'],
+        'is_plaintext' => $email_data['is_plaintext'],
+        'is_selftemplate' => $email_data['is_selftemplate'],
+        'mailtpl' => $email_data['mailtpl']
+    ];
+
+    return $data;
+}
+
+/**
+ * @param int|mixed $emailid
+ * @param array     $data
+ * @param string    $attachments
+ * @param string    $lang
+ * @return bool
+ */
+function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lang = '')
+{
+    global $global_config;
+
+    $email_data = nv_get_email_template($emailid, $lang);
+    if ($email_data === false) {
+        return false;
+    }
+    if ($email_data['is_disabled'] or empty($data)) {
+        return true;
+    }
+
+    $args = [
+        'mode' => 'FULL',
+        'setpids' => $email_data['pids']
+    ];
+    $result = true;
+    if (empty($email_data['from'][0])) {
+        $email_data['from'][0] = $global_config['site_name'];
+    }
+    if (empty($email_data['from'][1])) {
+        $email_data['from'][1] = $global_config['site_email'];
+    }
+    if (!empty($attachments)) {
+        $email_data['attachments'] = array_merge_recursive(array_unique(array_filter(array_map('trim', explode(',', $attachments)))));
+    }
+
+    try {
+        foreach ($data as $row) {
+            $_args = array_merge($args, $row['data']);
+            $merge_fields = nv_apply_hook('', 'get_email_merge_fields', $_args, [], 1);
+
+            $tpl = new \NukeViet\Template\NVSmarty();
+            foreach ($merge_fields as $field_key => $field_value) {
+                $tpl->assign($field_key, $field_value['data']);
+            }
+
+            // Dùng để xử lý cả biến $email_data trước khi gọi Smarty thực hiện
+            $_email_data = nv_apply_hook('', 'get_email_data_before_fetch', [$emailid, $email_data, $merge_fields, $row], $email_data);
+
+            $email_content = $tpl->fetch('string:' . $_email_data['content']);
+            $email_subject = $tpl->fetch('string:' . $_email_data['subject']);
+            if ($_email_data['is_plaintext']) {
+                $email_content = nv_nl2br(strip_tags($email_content));
+            } else {
+                $email_content = preg_replace('/(["|\'])[\s]*' . nv_preg_quote(NV_BASE_SITEURL . NV_UPLOADS_DIR . '/') . '/isu', '\\1' . NV_MY_DOMAIN . NV_BASE_SITEURL . NV_UPLOADS_DIR . '/', $email_content);
+            }
+
+            // Dùng để xử lý nội dung email trước khi gửi
+            $email_content = nv_apply_hook('', 'get_email_content_before_send', [$email_content, $_email_data, $row, $emailid], $email_content);
+            $email_lang = '';
+            if (is_array($email_content)) {
+                $email_lang = $email_content[1];
+                $email_content = $email_content[0];
+            }
+
+            $result = nv_sendmail($_email_data['from'], $row['to'], $email_subject, $email_content, implode(',', $_email_data['attachments']), false, $_email_data['cc'], $_email_data['bcc'], false, !$email_data['is_selftemplate'], $email_data['mailtpl'], $email_lang);
+        }
+    } catch (Throwable $e) {
+        trigger_error(print_r($e, true));
+        return false;
+    }
+
+    return $result;
+}

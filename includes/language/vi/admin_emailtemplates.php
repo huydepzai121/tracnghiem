@@ -19,6 +19,7 @@ $lang_translator['copyright'] = '@Copyright (C) 2012 VINADES.,JSC. All rights re
 $lang_translator['info'] = '';
 $lang_translator['langtype'] = 'lang_module';
 
+$lang_module['copy'] = 'Sao chép';
 $lang_module['errorsave'] = 'Lỗi không xác định dẫn đến không thể lưu dữ liệu';
 $lang_module['add_template'] = 'Thêm mẫu email';
 $lang_module['edit_template'] = 'Sửa mẫu email';
@@ -61,6 +62,7 @@ $lang_module['tpl_title'] = 'Tên';
 $lang_module['tpl_subject'] = 'Tiêu đề';
 $lang_module['tpl_content'] = 'Nội dung';
 $lang_module['tpl_incat'] = 'Danh mục';
+$lang_module['function'] = 'Chức năng';
 $lang_module['default_content'] = 'Nội dung email mặc định';
 $lang_module['default_content_info'] = 'Áp dụng cho tất cả các ngôn ngữ nếu ngôn ngữ đó chưa được định nghĩa bên dưới';
 $lang_module['lang_content'] = 'Nội dung email theo ngôn ngữ';

@@ -64,10 +64,6 @@ if ($nv_Request->get_title('tokend', 'post', '') === NV_CHECK_SESSION) {
     foreach ($merge_fields as $fieldname => $field) {
         $field_data[$fieldname] = $nv_Request->get_title('f_' . $fieldname, 'post', '');
     }
-    // dungpt bổ sung cái này để test mẫu full_field
-    if (sizeof($field_data) == 1 and isset($field_data['ct'])) {
-        $field_data['ct'] = [];
-    }
 
     $email_data = nv_get_email_template($emailid);
     if ($email_data === false) {
@@ -88,34 +84,39 @@ if ($nv_Request->get_title('tokend', 'post', '') === NV_CHECK_SESSION) {
         // Hook xử lý biến $email_data trước khi build ra HTML
         $email_data = nv_apply_hook('', 'get_email_data_before_fetch_test', [$emailid, $email_data, $merge_fields, $field_data], $email_data);
 
-        $tpl_string = new \NukeViet\Template\Smarty();
-        foreach ($merge_fields as $field_key => $field_value) {
-            $tpl_string->assign($field_key, $field_data[$field_key]);
+        try {
+            $tpl_string = new \NukeViet\Template\NVSmarty();
+            foreach ($merge_fields as $field_key => $field_value) {
+                $tpl_string->assign($field_key, $field_data[$field_key]);
+            }
+
+            $email_content = $tpl_string->fetch('string:' . $email_data['content']);
+            $email_subject = $tpl_string->fetch('string:' . $email_data['subject']);
+            if ($email_data['is_plaintext']) {
+                $email_content = nv_nl2br(strip_tags($email_content));
+            } else {
+                $email_content = preg_replace('/(["|\'])[\s]*' . nv_preg_quote(NV_BASE_SITEURL . NV_UPLOADS_DIR . '/') . '/isu', '\\1' . NV_MY_DOMAIN . NV_BASE_SITEURL . NV_UPLOADS_DIR . '/', $email_content);
+            }
+
+            // Gọi 1 hook trước khi gửi email test
+            nv_apply_hook('', 'event_before_sending_test_mail', [$emailid, $email_data, $merge_fields, $field_data]);
+
+            $check_send = nv_sendmail($email_data['from'], $array['test_tomail'], $email_subject, $email_content, implode(',', $email_data['attachments']), false, true, $email_data['cc'], $email_data['bcc'], !$email_data['is_selftemplate']);
+            if (!empty($check_send)) {
+                $error[] = $check_send;
+            } else {
+                $success = true;
+            }
+
+            unset($tpl_string);
+        } catch (Throwable $e) {
+            trigger_error(print_r($e, true));
+            $error[] = nv_htmlspecialchars($e->getMessage());
         }
-
-        $email_content = $tpl_string->fetch('string:' . $email_data['content']);
-        $email_subject = $tpl_string->fetch('string:' . $email_data['subject']);
-        if ($email_data['is_plaintext']) {
-            $email_content = nv_nl2br(strip_tags($email_content));
-        } else {
-            $email_content = preg_replace('/(["|\'])[\s]*' . nv_preg_quote(NV_BASE_SITEURL . NV_UPLOADS_DIR . '/') . '/isu', '\\1' . NV_MY_DOMAIN . NV_BASE_SITEURL . NV_UPLOADS_DIR . '/', $email_content);
-        }
-
-        // Gọi 1 hook trước khi gửi email test
-        nv_apply_hook('', 'event_before_sending_test_mail', [$emailid, $email_data, $merge_fields, $field_data]);
-
-        $check_send = nv_sendmail($email_data['from'], $array['test_tomail'], $email_subject, $email_content, implode(',', $email_data['attachments']), false, $email_data['cc'], $email_data['bcc'], true, !$email_data['is_selftemplate'], $email_data['mailtpl']);
-        if (!empty($check_send)) {
-            $error[] = $check_send;
-        } else {
-            $success = true;
-        }
-
-        unset($tpl_string);
     }
 }
 
-$tpl = new \NukeViet\Template\Smarty();
+$tpl = new \NukeViet\Template\NVSmarty();
 $tpl->registerPlugin('modifier', 'implode', 'implode');
 $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
 $tpl->assign('LANG', $nv_Lang);

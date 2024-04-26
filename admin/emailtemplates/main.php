@@ -14,7 +14,7 @@ if (!defined('NV_IS_FILE_EMAILTEMPLATES')) {
 }
 
 // Xóa mẫu email
-if ($nv_Request->isset_request('delete', 'post')) {
+if ($nv_Request->get_title('delete', 'post', '') == NV_CHECK_SESSION) {
     $emailid = $nv_Request->get_int('emailid', 'post', 0);
 
     $sql = 'SELECT emailid, is_system FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE emailid=' . $emailid;
@@ -81,7 +81,7 @@ if (!empty($array_search['q'])) {
     $dblikekey = $db->dblikeescape($array_search['q']);
 
     $where_or = [];
-    foreach ($global_module_languages as $lang) {
+    foreach ($global_config['setup_langs'] as $lang) {
         $where_or[] = $lang . "_title LIKE '%" . $dblikekey . "%'";
         $where_or[] = $lang . "_subject LIKE '%" . $dblikekey . "%'";
     }
