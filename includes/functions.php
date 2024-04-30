@@ -16,17 +16,13 @@ if (!defined('NV_MAINFILE')) {
 }
 
 /**
- * pr()
- *
  * @param mixed $a
  */
 function pr($a)
 {
-    echo '<pre>';
-    print_r($a);
-    echo '</pre>';
-    exit();
+    exit('<pre><code>' . htmlspecialchars(print_r($a, true)) . '</code></pre>');
 }
+
 
 /**
  * nv_object2array()

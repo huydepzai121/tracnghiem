@@ -77,7 +77,7 @@ function timeoutsessrun() {
                 nocache: (new Date).getTime()
             }).done(function(json) {
                 if (json.showtimeoutsess == 1) {
-                    $.get(nv_base_siteurl + "index.php?second=admin_logout&js=1&system=1&nocache=" + (new Date).getTime(), function(re) {
+                    $.get(nv_base_siteurl + "index.php?second=admin_logout&js=1&system=1&nocache=" + (new Date).getTime(), function() {
                         window.location.reload();
                     });
                 } else {
@@ -105,24 +105,16 @@ function modalShow(a, b, callback) {
 }
 
 function locationReplace(url) {
-    var uri = window.location.href.substr(window.location.protocol.length + window.location.hostname.length + 2);
+    var uri = window.location.href.substring(window.location.protocol.length + window.location.hostname.length + 2);
     if (url != uri && history.pushState) {
         history.pushState(null, null, url)
     }
 }
 
 function formXSSsanitize(form) {
-    $(form).find("input, textarea").not(":submit, :reset, :image, :file, :disabled").not('[data-sanitize-ignore]').each(function(e) {
-        $(this).val(DOMPurify.sanitize($(this).val(), {ALLOWED_TAGS: nv_whitelisted_tags, ADD_ATTR: nv_whitelisted_attr}))
-    })
-}
-
-function btnClickSubmit(event, form) {
-    event.preventDefault();
-    if (XSSsanitize) {
-        formXSSsanitize(form)
-    }
-    $(form).submit()
+    $(form).find("input, textarea").not(":submit, :reset, :image, :file, :disabled").not('[data-sanitize-ignore]').each(function() {
+        $(this).val(DOMPurify.sanitize($(this).val(), {ALLOWED_TAGS: nv_whitelisted_tags, ADD_ATTR: nv_whitelisted_attr}));
+    });
 }
 
 // checkAll
@@ -238,8 +230,19 @@ $(document).ready(function() {
     // XSSsanitize
     $('body').on('click', '[type=submit]:not([name],.ck-button-save)', function(e) {
         var form = $(this).parents('form');
-        if (!$('[name=submit]', form).length) {
-            btnClickSubmit(e, form)
+        if (XSSsanitize && !$('[name=submit]', form).length) {
+            // Khi không xử lý XSS thì trình submit mặc định sẽ thực hiện
+            e.preventDefault();
+
+            // Đưa CKEditor 5 trình soạn thảo vào textarea trước khi submit
+            $(form).find("textarea").each(function() {
+                if (this.dataset.editorname && window.nveditor && window.nveditor[this.dataset.editorname]) {
+                    $(this).val(window.nveditor[this.dataset.editorname].getData());
+                }
+            });
+
+            formXSSsanitize(form);
+            $(form).submit();
         }
     });
 
