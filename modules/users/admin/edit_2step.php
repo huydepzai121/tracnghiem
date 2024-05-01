@@ -152,37 +152,24 @@ if (empty($row['active2step'])) {
                 $maillang = NV_LANG_DATA;
             }
 
-            $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-            $gconfigs = [
-                'site_name' => $global_config['site_name'],
-                'site_email' => $global_config['site_email']
-            ];
-            if (!empty($maillang)) {
-                $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
-                $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $maillang . "' AND module='global' AND config_name IN (" . $in . ')');
-                while ($row = $result->fetch()) {
-                    $gconfigs[$row['config_name']] = $row['config_value'];
-                }
-
-                $nv_Lang->loadFile(NV_ROOTDIR . '/modules/' . $module_file . '/language/' . $maillang . '.php', true);
-
-                $mail_subject = $nv_Lang->getModule('user_2step_newcodes');
-                $mail_message = $nv_Lang->getModule('user_2step_bodymail', $greeting, $gconfigs['site_name'], implode('<br />', $new_code));
-
-                $nv_Lang->changeLang();
-            } else {
-                $mail_subject = $nv_Lang->getModule('user_2step_newcodes');
-                $mail_message = $nv_Lang->getModule('user_2step_bodymail', $greeting, $gconfigs['site_name'], implode('<br />', $new_code));
-            }
-
-            @nv_sendmail_async([$gconfigs['site_name'], $gconfigs['site_email']], $row['email'], $mail_subject, $mail_message, '', false, false, [], [], true, [], $maillang);
+            $send_data = [[
+                'to' => $row['email'],
+                'data' => [
+                    'first_name' => $row['first_name'],
+                    'last_name' => $row['last_name'],
+                    'username' => $row['username'],
+                    'email' => $row['email'],
+                    'gender' => $row['gender'],
+                    'new_code' => $new_code,
+                    'lang' => $maillang
+                ]
+            ]];
+            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_NEW_2STEP_CODE, $send_data, '', $maillang);
         }
 
         nv_insert_logs(NV_LANG_DATA, $module_name, 'log_reset_user2step_codes', 'userid ' . $row['userid'], $admin_info['userid']);
         $nv_Cache->delMod($module_name);
-
-        header('Location: ' . NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&userid=' . $row['userid']);
-        exit();
+        nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&userid=' . $row['userid']);
     }
 
     $sql = 'SELECT * FROM ' . NV_MOD_TABLE . '_backupcodes WHERE userid=' . $row['userid'];

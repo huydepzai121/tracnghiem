@@ -133,7 +133,27 @@ $install_lang['emailtemplates']['cats'][EmailCat::CAT_AUTHOR] = 'Admin Messages'
 $install_lang['emailtemplates']['cats'][EmailCat::CAT_MODULE] = 'Module Messages';
 
 $install_lang['emailtemplates']['emails'] = [];
-// FIXME
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_EMAIL_ACTIVE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Account activation via email',
+    's' => 'Activate information',
+    'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} waitting to activate. To activate, please click link follow:<br /><br />URL: <a href="{$active_link}">{$active_link}</a><br /><br />Account information:<br /><br />Username: {$username}<br />Email: {$email}<br /><br />Activate expired on {$active_deadline}<br /><br />This is email automatic sending from website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_DELETE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Email notification to delete account',
+    's' => 'Email notification to delete account',
+    'c' => '{$greeting_user}<br /><br />We are so sorry to delete your account at website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_2STEP_CODE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Send new backup code',
+    's' => 'New backup code',
+    'c' => '{$greeting_user}<br /><br /> backup code to your account at the website {$site_name} has been changed. Here is a new backup code: <br /><br />{foreach from=$new_code item=code}{$code}<br />{/foreach}<br />You keep your backup safe. If you lose your phone and lose your backup code, you will no longer be able to access your account.<br /><br />This is an automated message sent to your e-mail from website {$site_name}. If you do not understand the content of this letter, simply delete it.'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

@@ -107,34 +107,18 @@ if (md5(NV_CHECK_SESSION . '_' . $module_name . '_main') == $nv_Request->get_str
                     $maillang = NV_LANG_DATA;
                 }
 
-                $gconfigs = [
-                    'site_name' => $global_config['site_name'],
-                    'site_email' => $global_config['site_email']
-                ];
-                if (!empty($maillang)) {
-                    $greeting = greeting_for_user_create($username, $first_name, $last_name, $gender, $maillang);
-
-                    $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
-                    $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $maillang . "' AND module='global' AND config_name IN (" . $in . ')');
-                    while ($row = $result->fetch()) {
-                        $gconfigs[$row['config_name']] = $row['config_value'];
-                    }
-
-                    $nv_Lang->loadFile(NV_ROOTDIR . '/modules/' . $module_file . '/language/' . $maillang . '.php', true);
-
-                    $mail_subject = $nv_Lang->getModule('delconfirm_email_title');
-                    $mail_message = $nv_Lang->getModule('delconfirm_email_content', $greeting, $gconfigs['site_name']);
-
-                    $nv_Lang->changeLang();
-                } else {
-                    $greeting = greeting_for_user_create($username, $first_name, $last_name, $gender);
-
-                    $mail_subject = $nv_Lang->getModule('delconfirm_email_title');
-                    $mail_message = $nv_Lang->getModule('delconfirm_email_content', $greeting, $gconfigs['site_name']);
-                }
-
-                $mail_message = nl2br($mail_message);
-                nv_sendmail_async([$gconfigs['site_name'], $gconfigs['site_email']], $email, $mail_subject, $mail_message, '', false, false, [], [], true, [], $maillang);
+                $send_data = [[
+                    'to' => $email,
+                    'data' => [
+                        'first_name' => $first_name,
+                        'last_name' => $last_name,
+                        'username' => $username,
+                        'email' => $email,
+                        'gender' => $gender,
+                        'lang' => $maillang
+                    ]
+                ]];
+                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_DELETE, $send_data, '', $maillang);
             }
         }
     }

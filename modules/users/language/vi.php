@@ -112,8 +112,6 @@ $lang_module['account_register'] = 'Tài khoản của bạn đã được tạo
 $lang_module['account_register_info'] = '%1$s<br /><br />Tài khoản của bạn tại website %2$s đã được kích hoạt. Dưới đây là thông tin tài khoản:<br /><br />Bí danh: %4$s<br />Email: %5$s<br /><br />Vui lòng bấm vào đường dẫn dưới đây để đăng nhập và đổi mật khẩu:<br />URL: <a href="%3$s">%3$s</a><br /><br />Đây là thư tự động được gửi đến email của bạn từ website %2$s. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.';
 $lang_module['account_register_openid_info'] = '%1$s<br /><br />Tài khoản của bạn tại website %2$s đã được kích hoạt.<br />Để đăng nhập vui lòng truy cập vào trang: <a href="%3$s">%3$s</a> và click vào nút: Đăng nhập bằng %4$s.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website %2$s. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.';
 $lang_module['account_register_to_admin'] = 'Tài khoản của bạn đã được tạo, nhưng chưa qua kiểm duyệt của quản trị site. Chúng tôi sẽ nhanh chóng tiến hành kiểm tra và thông báo kết quả đến bạn';
-$lang_module['account_active'] = 'Thông tin kích hoạt tài khoản';
-$lang_module['account_active_info'] = '%1$s<br /><br />Tài khoản của bạn tại website %2$s đang chờ kích hoạt. Để kích hoạt, bạn hãy click vào link dưới đây:<br /><br />URL: <a href="%3$s">%3$s</a><br /><br />Các thông tin cần thiết:<br /><br />Bí danh: %4$s<br />Email: %5$s<br /><br />Việc kích hoạt tài khoản chỉ có hiệu lực đến %6$s<br /><br />Đây là thư tự động được gửi đến email của bạn từ website %2$s. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.';
 $lang_module['account_active_mess'] = 'Tài khoản của bạn đã được tạo và đang đợi kích hoạt.<br />Chúng tôi đã gửi đến email của bạn các thông tin cần thiết.<br />Hãy làm theo hướng dẫn để kích hoạt tài khoản. Nếu không tìm thấy thư trong hộp thư đến, vui lòng kiểm tra thư mục spam';
 $lang_module['account_active_mess_error_mail'] = 'Tài khoản của bạn đang ở trạng thái chờ kích hoạt. Rất tiếc là đã có lỗi xảy ra trong quá trình gửi thông tin kích hoạt đến địa chỉ email mà bạn vừa cung cấp. Vui lòng liên hệ đến quản trị Website để được hỗ trợ.';
 $lang_module['account_active_ok'] = 'Kích hoạt tài khoản thành công';
@@ -376,8 +374,6 @@ $lang_module['2step_require_directgo'] = 'Nhấp vào đây nếu trang không t
 $lang_module['2step_error_opt_backup'] = 'Vui lòng nhập mã do ứng dụng xác thực cung cấp hoặc mã dự phòng đã lưu';
 $lang_module['2step_status'] = 'Xác thực hai bước';
 $lang_module['2step_link'] = 'Thiết lập';
-$lang_module['delconfirm_email_title'] = 'Thư thông báo xóa tài khoản';
-$lang_module['delconfirm_email_content'] = '%1$s<br /><br />Chúng tôi rất lấy làm tiếc thông báo về việc tài khoản của bạn đã bị xóa khỏi website %2$s.';
 $lang_module['pass_reset1_info'] = 'Vì lý do bảo mật, vui lòng thay đổi mật khẩu trước khi sử dụng các tiện ích của site.';
 $lang_module['pass_reset2_info'] = 'Vì lý do bảo mật, chúng tôi khuyến cáo bạn thay đổi mật khẩu trước khi sử dụng các tiện ích của site. Hãy click <a href="%s">vào đây</a> để thay đổi mật khẩu.';
 $lang_module['pass_reset3_info'] = 'Đã hơn %d ngày bạn chưa thay đổi mật khẩu tài khoản người dùng. Vì lý do bảo mật, vui lòng thay đổi mật khẩu trước khi sử dụng các tiện ích của site.';
@@ -816,7 +812,6 @@ $lang_module['user_2step_codes_s0'] = 'Chưa sử dụng';
 $lang_module['user_2step_codes_s1'] = 'Đã sử dụng';
 $lang_module['user_2step_reset'] = 'Tạo lại mã dự phòng';
 $lang_module['user_2step_sendmail'] = 'Gửi email mã dự phòng mới cho người dùng';
-$lang_module['user_2step_bodymail'] = '%1$s<br /><br />Mã dự phòng cho tài khoản của bạn tại website %2$s đã được thay đổi. Dưới đây là mã dự phòng mới:<br /><br />%3$s<br /><br />Bạn chú ý giữ mã dự phòng an toàn. Nếu mất điện thoại và mất cả mã dự phòng bạn sẽ không thể truy cập vào tài khoản của mình được nữa.<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website %2$s. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.';
 $lang_module['user_oauthmanager'] = 'Quản lý tài khoản bên thứ ba của người dùng';
 $lang_module['user_oauthmanager_list'] = 'Danh sách tài khoản bên thứ ba đang kết nối với tài khoản người dùng';
 $lang_module['user_oauthmanager_empty'] = 'Chưa có tài khoản bên thứ ba nào được kết nối với tài khoản người dùng này';
@@ -919,3 +914,7 @@ $lang_module['active2step_status'] = 'Trạng thái xác thực 2 bước';
 $lang_module['active2step_status0'] = 'Chưa kích hoạt xác thực 2 bước';
 $lang_module['active2step_status1'] = 'Đã kích hoạt xác thực 2 bước';
 $lang_module['active2step_status2'] = 'Đã gửi yêu cầu tắt xác thực 2 bước';
+
+$lang_module['merge_field_active_deadline'] = 'Hạn hiệu lực kích hoạt';
+$lang_module['merge_field_active_link'] = 'Liên kết kích hoạt';
+$lang_module['mf_greeting_user'] = 'Câu chào';

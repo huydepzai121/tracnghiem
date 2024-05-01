@@ -257,5 +257,8 @@ $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions
 $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (22, 'module', 'inform', 1, 0, 'inform', 'inform', '4.6.00 1666092814', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
 $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (22, 'module', 'myapi', 1, 0, 'myapi', 'myapi', '4.6.00 1666092814', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
 
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_plugins (pid, plugin_file, plugin_area, plugin_module_name, plugin_module_file, weight) VALUES (1, 'qrcode.php', 'get_qr_code', '', '', 1)";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_plugins (pid, plugin_file, plugin_area, plugin_module_name, plugin_module_file, weight) VALUES (2, 'cdn_js_css_image.php', 'change_site_buffer', '', '', 1)";
+$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_plugins (pid, plugin_file, plugin_area, plugin_module_name, plugin_module_file, weight) VALUES
+(1, 'qrcode.php', 'get_qr_code', '', '', 1),
+(2, 'cdn_js_css_image.php', 'change_site_buffer', '', '', 1),
+(3, 'emf_code_user.php', 'get_email_merge_fields', 'users', 'users', 1)
+";

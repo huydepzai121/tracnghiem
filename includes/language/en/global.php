@@ -391,6 +391,7 @@ $lang_global['greeting_for_guest'] = 'Dear %s,';
 $lang_global['greeting_title'] = 'Mr/Mrs %s';
 $lang_global['greeting_title_M'] = 'Mr %s';
 $lang_global['greeting_title_F'] = 'Mrs %s';
+$lang_global['site_name'] = 'Website name';
 $lang_global['country_AD'] = 'Andorra';
 $lang_global['country_AE'] = 'United Arab Emirates';
 $lang_global['country_AF'] = 'Afghanistan';

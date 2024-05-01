@@ -301,13 +301,14 @@ function nv_del_user($userid)
 {
     global $db, $global_config, $module_name, $user_info, $nv_Lang;
 
-    $sql = 'SELECT group_id, username, first_name, last_name, gender, email, photo, in_groups, idsite FROM ' . NV_MOD_TABLE . ' WHERE userid=' . $userid;
+    $sql = 'SELECT group_id, username, first_name, last_name, gender, email, photo, in_groups, idsite, language
+    FROM ' . NV_MOD_TABLE . ' WHERE userid=' . $userid;
     $row = $db->query($sql)->fetch(3);
     if (empty($row)) {
         $return = 0;
     }
 
-    [$group_id, $username, $first_name, $last_name, $gender, $email, $photo, $in_groups, $idsite] = $row;
+    [$group_id, $username, $first_name, $last_name, $gender, $email, $photo, $in_groups, $idsite, $lang] = $row;
 
     if ($global_config['idsite'] > 0 and $idsite != $global_config['idsite']) {
         return 0;
@@ -337,11 +338,19 @@ function nv_del_user($userid)
         @nv_deletefile(NV_ROOTDIR . '/' . $photo);
     }
 
-    $subject = $nv_Lang->getModule('delconfirm_email_title');
-    $greeting = greeting_for_user_create($username, $first_name, $last_name, $gender);
-    $message = $nv_Lang->getModule('delconfirm_email_content', $greeting, $global_config['site_name']);
-    $message = nl2br($message);
-    nv_sendmail_async([$global_config['site_name'], $global_config['site_email']], $email, $subject, $message);
+    // Gửi email thông báo xóa tài khoản
+    $send_data = [[
+        'to' => $email,
+        'data' => [
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'username' => $username,
+            'email' => $email,
+            'gender' => $gender,
+            'lang' => $lang
+        ]
+    ]];
+    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_DELETE, $send_data, '', $lang);
 
     return $userid;
 }

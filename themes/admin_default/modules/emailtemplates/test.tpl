@@ -24,11 +24,10 @@
             </div>
             {if not empty($MERGE_FIELDS)}
             <div class="row">
-                <div class="col-xs-24 col-sm-16 col-lg-12 offset-sm-3">
-                    <h4 class="mb-0">{$LANG->get('test_value_fields')}</h4>
+                <div class="col-xs-24 col-sm-18 col-sm-offset-6">
+                    <h3 class="mb-1"><strong>{$LANG->get('test_value_fields')}</strong></h3>
                 </div>
             </div>
-            <div class="card-divider"></div>
             {foreach from=$MERGE_FIELDS key=fieldname item=field}
             <div class="form-group">
                 <label class="col-xs-24 col-sm-6 control-label" for="f_{$fieldname}">{$field.name}</label>

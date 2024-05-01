@@ -391,6 +391,7 @@ $lang_global['greeting_for_guest'] = 'Xin chào %s,';
 $lang_global['greeting_title'] = 'Ông/Bà %s';
 $lang_global['greeting_title_M'] = 'Ông %s';
 $lang_global['greeting_title_F'] = 'Bà %s';
+$lang_global['site_name'] = 'Tên website';
 $lang_global['country_AD'] = 'Andorra';
 $lang_global['country_AE'] = 'Ả Rập Thống nhất';
 $lang_global['country_AF'] = 'Afghanistan';

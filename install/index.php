@@ -621,7 +621,7 @@ if ($step == 1) {
                     // Cai dat du lieu cho ngon ngu
                     require_once NV_ROOTDIR . '/includes/action_' . $db_config['dbtype'] . '.php';
 
-                    $sql_create_table = nv_create_table_sys(NV_LANG_DATA);
+                    $sql_create_table = nv_create_table_sys(NV_LANG_DATA, $array_data);
                     foreach ($sql_create_table as $_sql) {
                         try {
                             $db->query($_sql);

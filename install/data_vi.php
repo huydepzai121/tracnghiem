@@ -133,7 +133,27 @@ $install_lang['emailtemplates']['cats'][EmailCat::CAT_AUTHOR] = 'Email về qu�
 $install_lang['emailtemplates']['cats'][EmailCat::CAT_MODULE] = 'Email của các module';
 
 $install_lang['emailtemplates']['emails'] = [];
-// FIXME
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_EMAIL_ACTIVE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Kích hoạt tài khoản qua email',
+    's' => 'Thông tin kích hoạt tài khoản',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đang chờ kích hoạt. Để kích hoạt, bạn hãy click vào link dưới đây:<br /><br />URL: <a href="{$active_link}">{$active_link}</a><br /><br />Các thông tin cần thiết:<br /><br />Tài khoản: {$username}<br />Email: {$email}<br /><br />Việc kích hoạt tài khoản chỉ có hiệu lực đến {$active_deadline}<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_DELETE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thư thông báo xóa tài khoản',
+    's' => 'Thư thông báo xóa tài khoản',
+    'c' => '{$greeting_user}<br /><br />Chúng tôi rất lấy làm tiếc thông báo về việc tài khoản của bạn đã bị xóa khỏi website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_2STEP_CODE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Gửi mã dự phòng mới',
+    's' => 'Mã dự phòng mới',
+    'c' => '{$greeting_user}<br /><br />Mã dự phòng cho tài khoản của bạn tại website {$site_name} đã được thay đổi. Dưới đây là mã dự phòng mới:<br /><br />{foreach from=$new_code item=code}{$code}<br />{/foreach}<br />Bạn chú ý giữ mã dự phòng an toàn. Nếu mất điện thoại và mất cả mã dự phòng bạn sẽ không thể truy cập vào tài khoản của mình được nữa.<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

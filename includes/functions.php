@@ -1630,6 +1630,37 @@ function nv_sendmail_async($from, $to, $subject, $message, $files = '', $AddEmbe
 }
 
 /**
+ * Khởi tạo một luồng truy vấn không đồng bộ/chạy nền để gửi mail theo mẫu
+ * Nếu gửi mail không cần trả về kết quả thì nên sử dụng function này
+ *
+ * @param int     $emailid
+ * @param array   $data
+ * @param string  $attachments
+ * @param string  $lang
+ */
+function nv_sendmail_template_async($emailid, $data = [], $attachments = '', $lang = '')
+{
+    global $global_config;
+
+    // Mặc định gửi email bằng ngôn ngữ giao diện hiện tại đang dùng. Nếu không sẽ chỉ gửi bằng ngôn ngữ mặc định của site.
+    if (empty($lang)) {
+        $lang = NV_LANG_INTERFACE;
+    }
+
+    $json_contents = json_encode([
+        'emailid' => $emailid,
+        'data' => $data,
+        'attachments' => $attachments,
+        'lang' => $lang
+    ], JSON_UNESCAPED_UNICODE);
+
+    $file_name = nv_genpass(8);
+    $temp_file = NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . md5($global_config['sitekey'] . $file_name);
+    file_put_contents($temp_file, $json_contents, LOCK_EX);
+    post_async(NV_BASE_SITEURL . 'sload.php', ['__sendmail_template' => $file_name]);
+}
+
+/**
  * betweenURLs()
  *
  * @param int    $page
@@ -3697,7 +3728,7 @@ function nv_parse_phone($phone)
 
 /**
  * @param int|mixed $emailid
- * @param string $lang
+ * @param string $lang ngôn ngữ nội dung và tiêu đề email
  * @return bool|mixed
  */
 function nv_get_email_template($emailid, $lang = '')
@@ -3705,7 +3736,7 @@ function nv_get_email_template($emailid, $lang = '')
     global $db, $global_config;
 
     if (empty($lang) or !in_array($lang, $global_config['setup_langs'], true)) {
-        $lang = NV_LANG_DATA;
+        $lang = NV_LANG_INTERFACE;
     }
     $sql = 'SELECT sys_pids, pids, send_name, send_email, send_cc, send_bcc, attachments, is_plaintext, is_disabled,
     is_selftemplate, mailtpl, default_subject, default_content,
@@ -3749,8 +3780,8 @@ function nv_get_email_template($emailid, $lang = '')
  * @param int|mixed $emailid
  * @param array     $data
  * @param string    $attachments
- * @param string    $lang
- * @return bool
+ * @param string    $lang ngôn ngữ để lấy nội dung mẫu email
+ * @return bool|bool[]
  */
 function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lang = '')
 {
@@ -3768,7 +3799,6 @@ function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lan
         'mode' => 'FULL',
         'setpids' => $email_data['pids']
     ];
-    $result = true;
     if (empty($email_data['from'][0])) {
         $email_data['from'][0] = $global_config['site_name'];
     }
@@ -3778,9 +3808,9 @@ function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lan
     if (!empty($attachments)) {
         $email_data['attachments'] = array_merge_recursive(array_unique(array_filter(array_map('trim', explode(',', $attachments)))));
     }
-
-    try {
-        foreach ($data as $row) {
+    $result = [];
+    foreach ($data as $row) {
+        try {
             $_args = array_merge($args, $row['data']);
             $merge_fields = nv_apply_hook('', 'get_email_merge_fields', $_args, [], 1);
 
@@ -3802,18 +3832,21 @@ function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lan
 
             // Dùng để xử lý nội dung email trước khi gửi
             $email_content = nv_apply_hook('', 'get_email_content_before_send', [$email_content, $_email_data, $row, $emailid], $email_content);
-            $email_lang = '';
+            $email_lang = $lang;
             if (is_array($email_content)) {
                 $email_lang = $email_content[1];
                 $email_content = $email_content[0];
             }
 
-            $result = nv_sendmail($_email_data['from'], $row['to'], $email_subject, $email_content, implode(',', $_email_data['attachments']), false, $_email_data['cc'], $_email_data['bcc'], false, !$email_data['is_selftemplate'], $email_data['mailtpl'], $email_lang);
+            $result[] = nv_sendmail($_email_data['from'], $row['to'], $email_subject, $email_content, implode(',', $_email_data['attachments']), false, false, $_email_data['cc'], $_email_data['bcc'], !$email_data['is_selftemplate'], [], $email_lang);
+        } catch (Throwable $e) {
+            trigger_error(print_r($e, true));
+            $result[] = false;
         }
-    } catch (Throwable $e) {
-        trigger_error(print_r($e, true));
-        return false;
     }
 
+    if (!isset($result[1])) {
+        return $result[0];
+    }
     return $result;
 }

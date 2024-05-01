@@ -133,7 +133,27 @@ $install_lang['emailtemplates']['cats'][EmailCat::CAT_AUTHOR] = 'Messages Admin'
 $install_lang['emailtemplates']['cats'][EmailCat::CAT_MODULE] = 'Messages du module';
 
 $install_lang['emailtemplates']['emails'] = [];
-// FIXME
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_EMAIL_ACTIVE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Activation du compte par email',
+    's' => 'Infos pour l\'activation du compte',
+    'c' => '{$greeting_user}<br /><br />Votre compte sur le site Web {$site_name} attend d\'être activé. Pour l\'activer, veuillez cliquer sur le lien suivant:<br /><br />URL: <a href="{$active_link}">{$active_link}</a><br /><br />Informations sur le compte:<br /><br />Nom d\'utilisateur: {$username}<br />E-mail: {$email}<br /><br />Activation expirée le {$active_deadline}<br /><br />Ceci est un envoi automatique d\'e-mail du site Web {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_DELETE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification de suppression du compte',
+    's' => 'Notification de suppression du compte',
+    'c' => '{$greeting_user}<br /><br />Nous sommes désolé de vous informer la suppression de votre compte sur le site {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_2STEP_CODE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Codes de sauvegarde',
+    's' => 'Codes de sauvegarde',
+    'c' => '{$greeting_user}<br /><br />Code de sauvegarde sur votre compte sur le site {$site_name} a été changé. Voici le nouveau code de sauvegarde:<br /><br />{foreach from=$new_code item=code}{$code}<br />{/foreach}<br />Vous gardez les codes de sauvegarde sécurisés. Si vous perdez votre téléphone et prenez les deux codes de sauvegarde que vous ne serez pas en mesure d\'accéder à votre compte. <br /> <br /> C\'est un message automatique envoyé à votre boîte de réception e-mail à partir du site {$site_name}. Si vous ne comprenez rien au sujet du contenu de cette lettre, supprimer tout simplement.'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

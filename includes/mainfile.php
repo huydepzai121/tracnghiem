@@ -505,9 +505,14 @@ if ($global_config['cronjobs_launcher'] == 'system') {
 }
 
 // Gửi mail từ luồng truy vấn không đồng bộ
-if (defined('NV_SYS_LOAD') and $nv_Request->isset_request('__sendmail', 'post')) {
-    require NV_ROOTDIR . '/includes/core/async_sendmail.php';
-    exit(0);
+if (defined('NV_SYS_LOAD')) {
+    if ($nv_Request->isset_request('__sendmail', 'post')) {
+        require NV_ROOTDIR . '/includes/core/async_sendmail.php';
+        exit(0);
+    } elseif ($nv_Request->isset_request('__sendmail_template', 'post')) {
+        require NV_ROOTDIR . '/includes/core/async_sendmail_template.php';
+        exit(0);
+    }
 }
 
 // Quản lý thẻ meta, header các máy chủ tìm kiếm
