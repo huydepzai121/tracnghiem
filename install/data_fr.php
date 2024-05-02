@@ -138,7 +138,7 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_EMAIL_ACTIVE] = [
     'catid' => EmailCat::CAT_USER,
     't' => 'Activation du compte par email',
     's' => 'Infos pour l\'activation du compte',
-    'c' => '{$greeting_user}<br /><br />Votre compte sur le site Web {$site_name} attend d\'être activé. Pour l\'activer, veuillez cliquer sur le lien suivant:<br /><br />URL: <a href="{$active_link}">{$active_link}</a><br /><br />Informations sur le compte:<br /><br />Nom d\'utilisateur: {$username}<br />E-mail: {$email}<br /><br />Activation expirée le {$active_deadline}<br /><br />Ceci est un envoi automatique d\'e-mail du site Web {$site_name}.'
+    'c' => '{$greeting_user}<br /><br />Votre compte sur le site Web {$site_name} attend d\'être activé. Pour l\'activer, veuillez cliquer sur le lien suivant:<br /><br />URL: <a href="{$link}">{$link}</a><br /><br />Informations sur le compte:<br /><br />Nom d\'utilisateur: {$username}<br />E-mail: {$email}<br /><br />Activation expirée le {$active_deadline}<br /><br />Ceci est un envoi automatique d\'e-mail du site Web {$site_name}.'
 ];
 $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_DELETE] = [
     'pids' => '3',
@@ -153,6 +153,27 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_2STEP_CODE] = [
     't' => 'Codes de sauvegarde',
     's' => 'Codes de sauvegarde',
     'c' => '{$greeting_user}<br /><br />Code de sauvegarde sur votre compte sur le site {$site_name} a été changé. Voici le nouveau code de sauvegarde:<br /><br />{foreach from=$new_code item=code}{$code}<br />{/foreach}<br />Vous gardez les codes de sauvegarde sécurisés. Si vous perdez votre téléphone et prenez les deux codes de sauvegarde que vous ne serez pas en mesure d\'accéder à votre compte. <br /> <br /> C\'est un message automatique envoyé à votre boîte de réception e-mail à partir du site {$site_name}. Si vous ne comprenez rien au sujet du contenu de cette lettre, supprimer tout simplement.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_INFO] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification que le compte a été créé lorsque le membre s\'inscrit avec succès dans le formulaire',
+    's' => 'Votre compte a été créé',
+    'c' => '{$greeting_user}<br /><br />Votre compte sur le site Web {$site_name} a été activé. Ci-dessous les informations du compte:<br /><br />Nom d\'utilisateur: {$username}<br />Email: {$email}<br /><br />Veuillez cliquer sur le lien ci-dessous pour vous connecter:<br />URL: <a href="{$link}">{$link}</a><br /><br />Il s\'agit d\'un message automatique envoyé à votre adresse e-mail depuis le site Web {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_INFOOAUTH] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification indiquant que le compte a été créé lorsque le membre s\'inscrit avec succès via Oauth',
+    's' => 'Votre compte a été créé',
+    'c' => '{$greeting_user}<br /><br />Votre compte sur le site Web {$site_name} est activé. Pour vous connecter à votre compte, veuillez visiter la page: <a href="{$link}">{$link}</a> et appuyez sur le bouton: Connectez-vous avec {$oauth_name}.<br /><br />Cela est un message automatique qui était envoyé à votre boîte mail à partir du site {$site_name}. Si vous ne comprenez pas le contenu de ce mail, vous pouvez simplement le supprimer.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LEADER_ADDED] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification de compte créé par le responsable d\'équipe',
+    's' => 'Votre compte a été créé',
+    'c' => '{$greeting_user}<br /><br />Votre compte Site de {$site_name} été activé. Voici vos informations de connexion:<br /><br />URL: <a href="{$link}">{$link}</a><br />Nom: {$username}<br />Email: {$email}<br /><br />Ceci est un message automatique envoyé à votre boîte de réception e-mail à partir du site {$site_name}. Si vous ne comprenez pas quelque chose sur le contenu de cette lettre, il suffit de le supprimer.'
 ];
 
 $menu_rows_lev0['about'] = [

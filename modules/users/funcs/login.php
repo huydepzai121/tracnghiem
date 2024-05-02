@@ -281,16 +281,20 @@ function new_openid_user_save($reg_username, $reg_email, $reg_password, $attribs
             nv_user_register_callback($userid);
         }
 
-        $subject = $nv_Lang->getModule('account_register');
-        $_url = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN);
-        $greeting = greeting_for_user_create($data_insert['username'], $data_insert['first_name'], $data_insert['last_name'], $data_insert['gender']);
-        $message = $nv_Lang->getModule('account_register_openid_info', $greeting, $global_config['site_name'], $_url, ucfirst($reg_attribs['server']));
-        nv_sendmail_async([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $reg_email, $subject, $message);
-
-        $nv_Cache->delMod($module_name);
+        $send_data = [[
+            'to' => $reg_email,
+            'data' => [
+                'first_name' => $data_insert['first_name'],
+                'last_name' => $data_insert['last_name'],
+                'username' => $data_insert['username'],
+                'email' => $reg_email,
+                'gender' => $data_insert['gender'],
+                'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN),
+                'oauth_name' => ucfirst($reg_attribs['server']),
+                'lang' => NV_LANG_INTERFACE
+            ]
+        ]];
+        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_NEW_INFOOAUTH, $send_data, '', NV_LANG_INTERFACE);
 
         if (defined('NV_IS_USER_FORUM') or defined('SSO_SERVER')) {
             require_once NV_ROOTDIR . '/' . $global_config['dir_forum'] . '/nukeviet/set_user_login.php';

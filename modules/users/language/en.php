@@ -108,9 +108,6 @@ $lang_module['account_registered_name'] = 'Sorry, account %s registered by anoth
 $lang_module['account_deny_name'] = 'Sorry, Account %s banned.';
 $lang_module['email_deny_name'] = 'Sorry, email %s banned';
 $lang_module['email_registered_name'] = 'Email %s was registered. Using lost password function to reset password';
-$lang_module['account_register'] = 'Your account was created';
-$lang_module['account_register_info'] = '%1$s<br /><br />Your account at website %2$s activated. Your login information:<br /><br />URL: <a href="%3$s">%3$s</a><br /><br />Username: %4$s<br />Email: %5$s<br /><br /><br />This is email automatic sending from website %2$s.';
-$lang_module['account_register_openid_info'] = '%1$s<br /><br />Your account at website %2$s activated.<br />To log into your account please visit the page: <a href="%3$s">%3$s</a> and press the button: Sign in with %4$s.<br /><br />This is email automatic sending from website %2$s.';
 $lang_module['account_register_to_admin'] = 'Your account was created. We\'ll check your register information and notify you soon.';
 $lang_module['account_active_mess'] = 'Your account was created. We sent information to your e-mail,<br /><br /> please follow instructions to activate account';
 $lang_module['account_active_mess_error_mail'] = 'Error: Your account was created, but system can not send email to activate your account, please contact administrator.';
@@ -351,7 +348,6 @@ $lang_module['active_users'] = 'Activate user';
 $lang_module['actived_users'] = 'The user has been successfully activated!';
 $lang_module['not_active'] = 'Can\'t active user, please check again!';
 $lang_module['adduser_register'] = 'Your account has been created';
-$lang_module['adduser_register_info'] = '%1$s<br /><br />Your account at website %2$s activated. Your login information:<br /><br />URL: <a href="%3$s">%3$s</a><br />Username: %4$s<br />Email: %5$s<br />This is email automatic sending from website %2$s.';
 $lang_module['noresult'] = 'There were no results matching your request';
 $lang_module['STT'] = 'Order';
 $lang_module['min_search'] = 'Please enter at least %s characters';
@@ -916,5 +912,5 @@ $lang_module['active2step_status1'] = '2-step verification enabled';
 $lang_module['active2step_status2'] = 'Request to disable 2-step verification';
 
 $lang_module['merge_field_active_deadline'] = 'Expired time for active';
-$lang_module['merge_field_active_link'] = 'Active link';
+$lang_module['merge_field_link'] = 'Link';
 $lang_module['mf_greeting_user'] = 'Greeting';

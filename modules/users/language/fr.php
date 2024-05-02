@@ -108,9 +108,6 @@ $lang_module['account_registered_name'] = 'Désolé, le compte %s a été utilis
 $lang_module['account_deny_name'] = 'Désolé, le compte %s est interdit';
 $lang_module['email_deny_name'] = 'Désolé, cet e-mail %s est interdit';
 $lang_module['email_registered_name'] = 'Cet E-mail %s a été enregistré. Si c\'est vous, utilisez l\'outil Mot de passe oublié pour le réinitialiser';
-$lang_module['account_register'] = 'Votre compte a été créé';
-$lang_module['account_register_info'] = '%1$s<br /><br />Your account at website %2$s activated. Your login information:<br /><br />URL: <a href="%3$s">%3$s</a><br /><br />Nom d\'utilisateur: %4$s<br />Email: %5$s<br /><br />Password: %5$s<br /><br />This is email automatic sending from website %2$s.';
-$lang_module['account_register_openid_info'] = '%1$s<br /><br />Votre compte sur le site Web %2$s est activé.<br />Pour vous connecter à votre compte, veuillez visiter la page: <a href="%3$s">%3$s</a> et appuyez sur le bouton: Connectez-vous avec %4$s.<br /><br />Cela est un message automatique qui était envoyé à votre boîte mail à partir du site %2$s. Si vous ne comprenez pas le contenu de ce mail, vous pouvez simplement le supprimer .';
 $lang_module['account_register_to_admin'] = 'Votre compte a été créé, mais il doit être activé par l\'administrateur. Nous allons vérifier et vous informer le résultat';
 $lang_module['account_active_mess'] = 'Votre compte est crée.<br />Nous vous avons envoyés dans votre email les informations nécessaires .<br />Suivez le guide pour activer votre compte. Si vous ne le trouvez pas dans votre boite de mails, veuillez le chercher dans le rubrique Spam';
 $lang_module['account_active_mess_error_mail'] = 'Erreur: Votre compte a été créé, mais le système ne vous a pas envoyé l’émail d\'activation. Merci de signaler l\'administrateur.';
@@ -351,7 +348,6 @@ $lang_module['active_users'] = 'Activer l\'utilisateur';
 $lang_module['actived_users'] = 'Le compte a été activé avec succès!';
 $lang_module['not_active'] = 'Pour une raison ou une autre, mais le système ne peut pas activer votre compte. S\'il vous plaît consulter.';
 $lang_module['adduser_register'] = 'Votre compte a été créé';
-$lang_module['adduser_register_info'] = '%1$s<br /><br />Votre compte Site de %2$s été activé. Voici vos informations de connexion: <br /><br />URL: <a href="%3$s">%3$s</a><br />Nom %4$s<br />Email: %5$s<br /><br /> Ceci est un message automatique envoyé à votre boîte de réception e-mail à partir du site %2$s. Si vous ne comprenez pas quelque chose sur le contenu de cette lettre, il suffit de le supprimer.';
 $lang_module['noresult'] = 'Aucun résultat ne correspond à votre demande';
 $lang_module['STT'] = 'Ordre';
 $lang_module['min_search'] = 'Veuillez saisir au moins %s caractères';
@@ -916,5 +912,5 @@ $lang_module['active2step_status1'] = 'Vérification en deux étapes activée';
 $lang_module['active2step_status2'] = 'Demande de désactivation de la vérification en deux étapes';
 
 $lang_module['merge_field_active_deadline'] = 'Temps écoulé pour actif';
-$lang_module['merge_field_active_link'] = 'Lien actif';
+$lang_module['merge_field_link'] = 'Lien';
 $lang_module['mf_greeting_user'] = 'Salutation';

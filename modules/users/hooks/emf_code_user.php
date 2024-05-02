@@ -26,42 +26,46 @@ $callback = function ($vars, $from_data, $receive_data) {
 
         $merge_fields['site_name'] = [
             'name' => $nv_Lang->getGlobal('site_name'),
-            'data' => '' // Dữ liệu ở đây
+            'data' => ''
         ];
         $merge_fields['greeting_user'] = [
             'name' => $nv_Lang->getModule('mf_greeting_user'),
-            'data' => '' // Dữ liệu ở đây
+            'data' => ''
         ];
         $merge_fields['full_name'] = [
             'name' => $nv_Lang->getModule('full_name'),
-            'data' => '' // Dữ liệu ở đây
+            'data' => ''
         ];
         $merge_fields['username'] = [
             'name' => $nv_Lang->getGlobal('username'),
-            'data' => '' // Dữ liệu ở đây
+            'data' => ''
         ];
         $merge_fields['email'] = [
             'name' => $nv_Lang->getGlobal('email'),
-            'data' => '' // Dữ liệu ở đây
+            'data' => ''
         ];
         $merge_fields['active_deadline'] = [
             'name' => $nv_Lang->getModule('merge_field_active_deadline'),
-            'data' => '' // Dữ liệu ở đây
+            'data' => ''
         ];
-        $merge_fields['active_link'] = [
-            'name' => $nv_Lang->getModule('merge_field_active_link'),
-            'data' => '' // Dữ liệu ở đây
+        $merge_fields['link'] = [
+            'name' => $nv_Lang->getModule('merge_field_link'),
+            'data' => ''
         ];
         $merge_fields['new_code'] = [
             'name' => $nv_Lang->getModule('user_2step_newcodes'),
-            'data' => [] // Dữ liệu ở đây
+            'data' => []
+        ];
+        $merge_fields['oauth_name'] = [
+            'name' => $nv_Lang->getModule('openid_server'),
+            'data' => ''
         ];
 
         if ($vars['mode'] != 'PRE') {
             // Field dữ liệu cho các fields
             global $global_config, $db;
 
-            $lang = !empty($vars['lang']) ? $lang : NV_LANG_INTERFACE;
+            $lang = !empty($vars['lang']) ? $vars['lang'] : NV_LANG_INTERFACE;
 
             // Tên website
             if ($lang != NV_LANG_DATA or empty($global_config['site_name'])) {
@@ -80,7 +84,7 @@ $callback = function ($vars, $from_data, $receive_data) {
             }
 
             // Các field dạng chuỗi thuần
-            $direct_keys = ['username', 'email', 'active_link'];
+            $direct_keys = ['username', 'email', 'link', 'oauth_name'];
             foreach ($direct_keys as $key) {
                 $merge_fields[$key]['data'] = $vars[$key] ?? '';
             }

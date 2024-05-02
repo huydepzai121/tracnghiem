@@ -138,7 +138,7 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_EMAIL_ACTIVE] = [
     'catid' => EmailCat::CAT_USER,
     't' => 'Kích hoạt tài khoản qua email',
     's' => 'Thông tin kích hoạt tài khoản',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đang chờ kích hoạt. Để kích hoạt, bạn hãy click vào link dưới đây:<br /><br />URL: <a href="{$active_link}">{$active_link}</a><br /><br />Các thông tin cần thiết:<br /><br />Tài khoản: {$username}<br />Email: {$email}<br /><br />Việc kích hoạt tài khoản chỉ có hiệu lực đến {$active_deadline}<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đang chờ kích hoạt. Để kích hoạt, bạn hãy click vào link dưới đây:<br /><br />URL: <a href="{$link}">{$link}</a><br /><br />Các thông tin cần thiết:<br /><br />Tài khoản: {$username}<br />Email: {$email}<br /><br />Việc kích hoạt tài khoản chỉ có hiệu lực đến {$active_deadline}<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_DELETE] = [
     'pids' => '3',
@@ -153,6 +153,27 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_2STEP_CODE] = [
     't' => 'Gửi mã dự phòng mới',
     's' => 'Mã dự phòng mới',
     'c' => '{$greeting_user}<br /><br />Mã dự phòng cho tài khoản của bạn tại website {$site_name} đã được thay đổi. Dưới đây là mã dự phòng mới:<br /><br />{foreach from=$new_code item=code}{$code}<br />{/foreach}<br />Bạn chú ý giữ mã dự phòng an toàn. Nếu mất điện thoại và mất cả mã dự phòng bạn sẽ không thể truy cập vào tài khoản của mình được nữa.<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_INFO] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo tài khoản đã được tạo khi thành viên đăng kí thành công tại form',
+    's' => 'Tài khoản của bạn đã được tạo',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. Dưới đây là thông tin tài khoản:<br /><br />Bí danh: {$username}<br />Email: {$email}<br /><br />Vui lòng bấm vào đường dẫn dưới đây để đăng nhập:<br />URL: <a href="{$link}">{$link}</a><br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_INFOOAUTH] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo tài khoản đã được tạo khi thành viên đăng kí thành công qua Oauth',
+    's' => 'Tài khoản của bạn đã được tạo',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. Để đăng nhập vui lòng truy cập vào trang: <a href="{$link}">{$link}</a> và click vào nút: Đăng nhập bằng {$oauth_name}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LEADER_ADDED] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo tài khoản được trưởng nhóm khởi tạo',
+    's' => 'Tài khoản của bạn đã được tạo',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />Email: {$email}<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 
 $menu_rows_lev0['about'] = [

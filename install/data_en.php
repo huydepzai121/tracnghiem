@@ -138,7 +138,7 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_EMAIL_ACTIVE] = [
     'catid' => EmailCat::CAT_USER,
     't' => 'Account activation via email',
     's' => 'Activate information',
-    'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} waitting to activate. To activate, please click link follow:<br /><br />URL: <a href="{$active_link}">{$active_link}</a><br /><br />Account information:<br /><br />Username: {$username}<br />Email: {$email}<br /><br />Activate expired on {$active_deadline}<br /><br />This is email automatic sending from website {$site_name}.'
+    'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} waitting to activate. To activate, please click link follow:<br /><br />URL: <a href="{$link}">{$link}</a><br /><br />Account information:<br /><br />Username: {$username}<br />Email: {$email}<br /><br />Activate expired on {$active_deadline}<br /><br />This is email automatic sending from website {$site_name}.'
 ];
 $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_DELETE] = [
     'pids' => '3',
@@ -153,6 +153,27 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_2STEP_CODE] = [
     't' => 'Send new backup code',
     's' => 'New backup code',
     'c' => '{$greeting_user}<br /><br /> backup code to your account at the website {$site_name} has been changed. Here is a new backup code: <br /><br />{foreach from=$new_code item=code}{$code}<br />{/foreach}<br />You keep your backup safe. If you lose your phone and lose your backup code, you will no longer be able to access your account.<br /><br />This is an automated message sent to your e-mail from website {$site_name}. If you do not understand the content of this letter, simply delete it.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_INFO] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification that the account has been created when the member successfully registers in the form',
+    's' => 'Your account was created',
+    'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} activated. Your login information:<br /><br />Username: {$username}<br />Email: {$email}<br /><br />Please click the link below to log in:<br />URL: <a href="{$link}">{$link}</a><br /><br />This is email automatic sending from website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_INFOOAUTH] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification that the account has been created when the member successfully registers via Oauth',
+    's' => 'Your account was created',
+    'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} activated. To log into your account please visit the page: <a href="{$link}">{$link}</a> and press the button: Sign in with {$oauth_name}.<br /><br />This is email automatic sending from website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LEADER_ADDED] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification of account created by group leader',
+    's' => 'Your account was created',
+    'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} activated. Your login information:<br /><br />URL: <a href="{$link}">{$link}</a><br />Username: {$username}<br />Email: {$email}<br /><br />This is email automatic sending from website {$site_name}.'
 ];
 
 $menu_rows_lev0['about'] = [

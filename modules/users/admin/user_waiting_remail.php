@@ -74,7 +74,7 @@ if ($nv_Request->isset_request('ajax', 'post')) {
                             'email' => $row['email'],
                             'gender' => $row['gender'],
                             'active_deadline' => NV_CURRENTTIME + ($global_users_config['register_active_time'] ?? 86400),
-                            'active_link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=active&userid=' . $row['userid'] . '&checknum=' . $row['checknum'], NV_MY_DOMAIN),
+                            'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=active&userid=' . $row['userid'] . '&checknum=' . $row['checknum'], NV_MY_DOMAIN),
                             'lang' => $maillang
                         ]
                     ]];

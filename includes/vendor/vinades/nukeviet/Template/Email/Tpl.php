@@ -20,10 +20,13 @@ class Tpl
     public const E_USER_DELETE = 2;
     public const E_USER_NEW_2STEP_CODE = 3;
     public const E_USER_NEW_INFO = 4;
-    public const E_USER_ADMIN_ADDED = 5;
-    public const E_USER_SAFE_KEY = 6;
-    public const E_USER_SELF_EDIT = 7;
-    public const E_USER_ADMIN_EDIT = 8;
+    public const E_USER_NEW_INFOOAUTH = 5;
+    public const E_USER_LEADER_ADDED = 6;
+
+    public const E_USER_ADMIN_ADDED = 6;
+    public const E_USER_SAFE_KEY = 7;
+    public const E_USER_SELF_EDIT = 8;
+    public const E_USER_ADMIN_EDIT = 9;
     public const E_USER_VERIFY_EMAIL = 9;
     public const E_USER_GROUP_JOIN = 10;
     public const E_USER_LOST_ACTIVE = 11;

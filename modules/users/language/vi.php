@@ -108,9 +108,6 @@ $lang_module['account_registered_name'] = 'Rất tiếc, bí danh %s đã đư�
 $lang_module['account_deny_name'] = 'Rất tiếc, bí danh %s đã bị cấm sử dụng';
 $lang_module['email_deny_name'] = 'Rất tiếc, địa chỉ email %s đã bị cấm sử dụng';
 $lang_module['email_registered_name'] = 'Rất tiếc, địa chỉ email %s đã được sử dụng';
-$lang_module['account_register'] = 'Tài khoản của bạn đã được tạo';
-$lang_module['account_register_info'] = '%1$s<br /><br />Tài khoản của bạn tại website %2$s đã được kích hoạt. Dưới đây là thông tin tài khoản:<br /><br />Bí danh: %4$s<br />Email: %5$s<br /><br />Vui lòng bấm vào đường dẫn dưới đây để đăng nhập và đổi mật khẩu:<br />URL: <a href="%3$s">%3$s</a><br /><br />Đây là thư tự động được gửi đến email của bạn từ website %2$s. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.';
-$lang_module['account_register_openid_info'] = '%1$s<br /><br />Tài khoản của bạn tại website %2$s đã được kích hoạt.<br />Để đăng nhập vui lòng truy cập vào trang: <a href="%3$s">%3$s</a> và click vào nút: Đăng nhập bằng %4$s.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website %2$s. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.';
 $lang_module['account_register_to_admin'] = 'Tài khoản của bạn đã được tạo, nhưng chưa qua kiểm duyệt của quản trị site. Chúng tôi sẽ nhanh chóng tiến hành kiểm tra và thông báo kết quả đến bạn';
 $lang_module['account_active_mess'] = 'Tài khoản của bạn đã được tạo và đang đợi kích hoạt.<br />Chúng tôi đã gửi đến email của bạn các thông tin cần thiết.<br />Hãy làm theo hướng dẫn để kích hoạt tài khoản. Nếu không tìm thấy thư trong hộp thư đến, vui lòng kiểm tra thư mục spam';
 $lang_module['account_active_mess_error_mail'] = 'Tài khoản của bạn đang ở trạng thái chờ kích hoạt. Rất tiếc là đã có lỗi xảy ra trong quá trình gửi thông tin kích hoạt đến địa chỉ email mà bạn vừa cung cấp. Vui lòng liên hệ đến quản trị Website để được hỗ trợ.';
@@ -356,7 +353,6 @@ $lang_module['active_users'] = 'Kích hoạt tài khoản';
 $lang_module['actived_users'] = 'Tài khoản đã được kích hoạt thành công!';
 $lang_module['not_active'] = 'Vì một lý do nào đó mà hệ thống không thể kích hoạt tài khoản. Vui lòng kiểm tra lại!';
 $lang_module['adduser_register'] = 'Tài khoản của bạn đã được tạo';
-$lang_module['adduser_register_info'] = '%1$s<br /><br />Tài khoản của bạn tại website %2$s đã được kích hoạt. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="%3$s">%3$s</a><br />Bí danh: %4$s<br />Email: %5$s<br /><br />Đây là thư tự động được gửi đến email của bạn từ website %2$s. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.';
 $lang_module['noresult'] = 'Không có kết quả nào phù hợp với yêu cầu của bạn';
 $lang_module['STT'] = 'STT';
 $lang_module['min_search'] = 'Vui lòng nhập ít nhất %s ký tự';
@@ -916,5 +912,5 @@ $lang_module['active2step_status1'] = 'Đã kích hoạt xác thực 2 bước';
 $lang_module['active2step_status2'] = 'Đã gửi yêu cầu tắt xác thực 2 bước';
 
 $lang_module['merge_field_active_deadline'] = 'Hạn hiệu lực kích hoạt';
-$lang_module['merge_field_active_link'] = 'Liên kết kích hoạt';
+$lang_module['merge_field_link'] = 'Liên kết';
 $lang_module['mf_greeting_user'] = 'Câu chào';
