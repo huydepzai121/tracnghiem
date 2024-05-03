@@ -60,6 +60,30 @@ $callback = function ($vars, $from_data, $receive_data) {
             'name' => $nv_Lang->getModule('openid_server'),
             'data' => ''
         ];
+        $merge_fields['pass_reset'] = [
+            'name' => $nv_Lang->getModule('pass_reset_request'),
+            'data' => 0
+        ];
+        $merge_fields['password'] = [
+            'name' => $nv_Lang->getModule('password'),
+            'data' => ''
+        ];
+        $merge_fields['code'] = [
+            'name' => $nv_Lang->getModule('code'),
+            'data' => ''
+        ];
+        $merge_fields['send_newvalue'] = [
+            'name' => $nv_Lang->getModule('mf_send_newvalue'),
+            'data' => 0
+        ];
+        $merge_fields['newvalue'] = [
+            'name' => $nv_Lang->getModule('editcensor_new'),
+            'data' => ''
+        ];
+        $merge_fields['label'] = [
+            'name' => $nv_Lang->getModule('mf_label'),
+            'data' => ''
+        ];
 
         if ($vars['mode'] != 'PRE') {
             // Field dữ liệu cho các fields
@@ -84,9 +108,15 @@ $callback = function ($vars, $from_data, $receive_data) {
             }
 
             // Các field dạng chuỗi thuần
-            $direct_keys = ['username', 'email', 'link', 'oauth_name'];
+            $direct_keys = ['username', 'email', 'link', 'oauth_name', 'password', 'code', 'label', 'newvalue'];
             foreach ($direct_keys as $key) {
                 $merge_fields[$key]['data'] = $vars[$key] ?? '';
+            }
+
+            // Các field dạng số, mặc định 0
+            $number_keys = ['send_newvalue', 'pass_reset'];
+            foreach ($number_keys as $key) {
+                $merge_fields[$key]['data'] = $vars[$key] ?? 0;
             }
 
             // Các field dạng thời gian

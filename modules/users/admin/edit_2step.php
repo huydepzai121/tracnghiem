@@ -143,7 +143,7 @@ if (empty($row['active2step'])) {
         }
 
         if ($nv_Request->get_int('sendmail', 'post', 0) == 1) {
-            $maillang = '';
+            $maillang = NV_LANG_INTERFACE;
             if (!empty($row['language']) and in_array($row['language'], $global_config['setup_langs'], true)) {
                 if ($row['language'] != NV_LANG_INTERFACE) {
                     $maillang = $row['language'];

@@ -98,7 +98,7 @@ if (md5(NV_CHECK_SESSION . '_' . $module_name . '_main') == $nv_Request->get_str
             }
 
             if (sizeof($userids) < 5) {
-                $maillang = '';
+                $maillang = NV_LANG_INTERFACE;
                 if (!empty($userlang) and in_array($userlang, $global_config['setup_langs'], true)) {
                     if ($userlang != NV_LANG_INTERFACE) {
                         $maillang = $userlang;

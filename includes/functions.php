@@ -1636,7 +1636,9 @@ function nv_sendmail_async($from, $to, $subject, $message, $files = '', $AddEmbe
  * @param int     $emailid
  * @param array   $data
  * @param string  $attachments
- * @param string  $lang
+ * @param string  $lang dùng để lấy ra subject và body của email.
+ *                      Nếu không chỉ ra thì là ngôn ngữ giao diện hiện hành.
+ *                      Biến này không nên trống, nếu để trống có khả năng nội dung email và tên website có thể lệch nhau
  */
 function nv_sendmail_template_async($emailid, $data = [], $attachments = '', $lang = '')
 {
@@ -3780,7 +3782,10 @@ function nv_get_email_template($emailid, $lang = '')
  * @param int|mixed $emailid
  * @param array     $data
  * @param string    $attachments
- * @param string    $lang ngôn ngữ để lấy nội dung mẫu email
+ * @param string    $lang ngôn ngữ để lấy subject và body của email,
+ *                        không chỉ ra thì lấy ngôn ngữ giao diện hiện hành.
+ *                        Trường hợp gửi email bất đồng bộ cần chú ý nếu không chỉ ra nó sẽ luôn gửi
+ *                        bằng ngôn ngữ mặc định của site
  * @return bool|bool[]
  */
 function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lang = '')

@@ -334,13 +334,19 @@ if ((int) $row['safemode'] > 0) {
         if ($nv_Request->isset_request('resend', 'post')) {
             $ss_safesend = $nv_Request->get_int('safesend', 'session', 0);
             if ($ss_safesend < NV_CURRENTTIME) {
-                $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-                $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-                $message = $nv_Lang->getModule('safe_send_content', $greeting, $sitename, $row['safekey']);
-                @nv_sendmail_async([
-                    $global_config['site_name'],
-                    $global_config['site_email']
-                ], $row['email'], $nv_Lang->getModule('safe_send_subject'), $message);
+                $send_data = [[
+                    'to' => $row['email'],
+                    'data' => [
+                        'first_name' => $row['first_name'],
+                        'last_name' => $row['last_name'],
+                        'username' => $row['username'],
+                        'email' => $row['email'],
+                        'gender' => $row['gender'],
+                        'code' => $row['safekey'],
+                        'lang' => NV_LANG_INTERFACE
+                    ]
+                ]];
+                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SAFE_KEY, $send_data, '', NV_LANG_INTERFACE);
 
                 $ss_safesend = NV_CURRENTTIME + 600;
                 $nv_Request->set_Session('safesend', $ss_safesend);
@@ -704,13 +710,21 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
     $stmt->bindParam(':md5username', $md5_username, PDO::PARAM_STR);
     $stmt->execute();
 
-    $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-    $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-    $message = $nv_Lang->getModule('edit_mail_content', $greeting, $sitename, $nv_Lang->getGlobal('username'), $nv_username);
-    @nv_sendmail_async([
-        $global_config['site_name'],
-        $global_config['site_email']
-    ], $row['email'], $nv_Lang->getModule('edit_mail_subject'), $message);
+    $send_data = [[
+        'to' => $row['email'],
+        'data' => [
+            'first_name' => $row['first_name'],
+            'last_name' => $row['last_name'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'gender' => $row['gender'],
+            'lang' => NV_LANG_INTERFACE,
+            'label' => $nv_Lang->getGlobal('username'),
+            'newvalue' => $nv_username,
+            'send_newvalue' => 1
+        ]
+    ]];
+    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SELF_EDIT, $send_data, '', NV_LANG_INTERFACE);
 
     $mess = $nv_Lang->getModule('editinfo_ok');
     if ($nv_Request->get_bool('forcedrelogin', 'post', false)) {
@@ -839,19 +853,28 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
         $stmt->bindParam(':email', $nv_email, PDO::PARAM_STR);
         $stmt->execute();
 
-        $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-        $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-        $message = $nv_Lang->getModule('edit_mail_content', $greeting, $sitename, $nv_Lang->getGlobal('email'), $nv_email);
-
         // Gửi thư cho cả email mới và email cũ
-        @nv_sendmail_async([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $nv_email, $nv_Lang->getModule('edit_mail_subject'), $message);
-        @nv_sendmail_async([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $row['email'], $nv_Lang->getModule('edit_mail_subject'), $message);
+        $sendfields = [
+            'first_name' => $row['first_name'],
+            'last_name' => $row['last_name'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'gender' => $row['gender'],
+            'lang' => NV_LANG_INTERFACE,
+            'label' => $nv_Lang->getGlobal('email'),
+            'newvalue' => $nv_email,
+            'send_newvalue' => 1
+        ];
+        $send_data = [[
+            'to' => $row['email'],
+            'data' => $sendfields
+        ]];
+        $sendfields['email'] = $nv_email;
+        $send_data[] = [
+            'to' => $nv_email,
+            'data' => $sendfields
+        ];
+        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SELF_EDIT, $send_data, '', NV_LANG_INTERFACE);
 
         $mess = $nv_Lang->getModule('editinfo_ok');
         if ($nv_Request->get_bool('forcedrelogin', 'post', false)) {
@@ -921,17 +944,21 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
     oldPassSave($edit_userid, $row['password'], $row['pass_creation_time']);
     nv_apply_hook($module_name, 'user_change_password', [$row, $new_password]);
 
-    $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-    $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-    if ($global_config['send_pass']) {
-        $message = $nv_Lang->getModule('edit_mail_content', $greeting, $sitename, $nv_Lang->getGlobal('password'), $new_password);
-    } else {
-        $message = $nv_Lang->getModule('edit_mail_content_pw', $greeting, $sitename, $nv_Lang->getGlobal('password'));
-    }
-    @nv_sendmail_async([
-        $global_config['site_name'],
-        $global_config['site_email']
-    ], $row['email'], $nv_Lang->getModule('edit_mail_subject'), $message);
+    $send_data = [[
+        'to' => $row['email'],
+        'data' => [
+            'first_name' => $row['first_name'],
+            'last_name' => $row['last_name'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'gender' => $row['gender'],
+            'lang' => NV_LANG_INTERFACE,
+            'label' => $nv_Lang->getGlobal('password'),
+            'newvalue' => $new_password,
+            'send_newvalue' => $global_config['send_pass']
+        ]
+    ]];
+    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SELF_EDIT, $send_data, '', NV_LANG_INTERFACE);
 
     $mess = $nv_Lang->getModule('editinfo_ok');
     if ($nv_Request->get_bool('forcedrelogin', 'post', false)) {
@@ -1227,13 +1254,19 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
 
         $ss_safesend = $nv_Request->get_int('safesend', 'session', 0);
         if ($ss_safesend < NV_CURRENTTIME) {
-            $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-            $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-            $message = $nv_Lang->getModule('safe_send_content', $greeting, $sitename, $row['safekey']);
-            @nv_sendmail_async([
-                $global_config['site_name'],
-                $global_config['site_email']
-            ], $row['email'], $nv_Lang->getModule('safe_send_subject'), $message);
+            $send_data = [[
+                'to' => $row['email'],
+                'data' => [
+                    'first_name' => $row['first_name'],
+                    'last_name' => $row['last_name'],
+                    'username' => $row['username'],
+                    'email' => $row['email'],
+                    'gender' => $row['gender'],
+                    'code' => $row['safekey'],
+                    'lang' => NV_LANG_INTERFACE
+                ]
+            ]];
+            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SAFE_KEY, $send_data, '', NV_LANG_INTERFACE);
 
             $ss_safesend = NV_CURRENTTIME + 600;
             $nv_Request->set_Session('safesend', $ss_safesend);

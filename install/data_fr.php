@@ -175,6 +175,27 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LEADER_ADDED] = [
     's' => 'Votre compte a été créé',
     'c' => '{$greeting_user}<br /><br />Votre compte Site de {$site_name} été activé. Voici vos informations de connexion:<br /><br />URL: <a href="{$link}">{$link}</a><br />Nom: {$username}<br />Email: {$email}<br /><br />Ceci est un message automatique envoyé à votre boîte de réception e-mail à partir du site {$site_name}. Si vous ne comprenez pas quelque chose sur le contenu de cette lettre, il suffit de le supprimer.'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_ADDED] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification de compte créé par l\'administrateur',
+    's' => 'Votre compte a été créé',
+    'c' => '{$greeting_user}<br /><br />Votre compte sur le site {$site_name} a été créé. Voici vos informations de connexion:<br /><br />URL: <a href="{$link}">{$link}</a><br />Nom: {$username}<br />Mot de passe: {$password}<br />{if $pass_reset eq 2}<br />Remarque: Nous vous recommandons de changer votre mot de passe avant d\'utiliser votre compte.<br />{elseif $pass_reset eq 1}<br />Remarque: Vous devez changer votre mot de passe avant d\'utiliser votre compte.<br />{/if}<br />Ceci est un message automatique envoyé. votre boîte de réception e-mail à partir du site web {$site_name}. Si vous ne comprenez rien au sujet du contenu de cette lettre, supprimer tout simplement.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_SAFE_KEY] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Envoyer le code de vérification lorsque l\'utilisateur active/désactive le mode sans échec',
+    's' => 'Code de certifier en mode sans échec',
+    'c' => '{$greeting_user}<br /><br />Vous avez demandé l\'utilisation du mode sans échec sur le site {$site_name}. En dessous est le code de certifier pour l\'activer ou le désactiver:<br /><br /><strong>{$code}</strong><br /><br />Ce code ne peut être utilisé qu\'une seule fois. Apres la désactivation de ce mode, ce code est inutilisable.<br /><br /> C\'est un courier automatique qui est envoyé à votre email à partir du site {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_SELF_EDIT] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notifier les modifications de compte que l\'utilisateur vient d\'effectuer',
+    's' => 'La mise à jour les infos du compte réussite',
+    'c' => '{$greeting_user}<br /><br />Votre compte sur le site Web {$site_name} {if $send_newvalue}mis à jour avec le nouveau {$label} <strong>{$newvalue}</strong>{else}le nouveau {$label} a été mis à jour{/if}.<br /><br />C\'est un courier automatique qui est envoyé à votre email à partir du site {$site_name}.'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

@@ -339,6 +339,9 @@ function nv_del_user($userid)
     }
 
     // Gửi email thông báo xóa tài khoản
+    if (empty($lang)) {
+        $lang = NV_LANG_INTERFACE;
+    }
     $send_data = [[
         'to' => $email,
         'data' => [

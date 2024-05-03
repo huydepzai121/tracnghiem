@@ -175,6 +175,27 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LEADER_ADDED] = [
     's' => 'Your account was created',
     'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} activated. Your login information:<br /><br />URL: <a href="{$link}">{$link}</a><br />Username: {$username}<br />Email: {$email}<br /><br />This is email automatic sending from website {$site_name}.'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_ADDED] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification of account created by administrator',
+    's' => 'Your account was created',
+    'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} has been created. Here are the logins:<br /><br />URL: <a href="{$link}">{$link}</a><br />Username: {$username}<br />Password: {$password}<br />{if $pass_reset eq 2}<br />Note: We recommend that you change your password before using your account.<br />{elseif $pass_reset eq 1}<br />Note: You need to change your password before using your account.<br />{/if}<br />This is an automated message sent to Your email box from website {$site_name}. If you do not understand the content of this letter, simply delete it.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_SAFE_KEY] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Send verification code when user turns on/ off safe mode',
+    's' => 'Safe mode verification code',
+    'c' => '{$greeting_user}<br /><br />You sent a request using safe mode in website {$site_name}. Below is a verifykey  for activating or off safe mode:<br /><br /><strong>{$code}</strong><br /><br />This verifykey only works on-off safe mode once only. After you turn off safe mode, this verification code will be worthless.<br /><br />These are automatic messages sent to your e-mail inbox from website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_SELF_EDIT] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notify account changes just made by the user',
+    's' => 'Update account infomation success',
+    'c' => '{$greeting_user}<br /><br />Your account on the website {$site_name} has been updated {if $send_newvalue}with new {$label}: <strong>{$newvalue}</strong>{else}new {$label}{/if}.<br /><br />These are automatic messages sent to your e-mail inbox from website {$site_name}.'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

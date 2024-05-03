@@ -175,6 +175,27 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LEADER_ADDED] = [
     's' => 'Tài khoản của bạn đã được tạo',
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />Email: {$email}<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_ADDED] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo tài khoản được quản trị khởi tạo',
+    's' => 'Tài khoản của bạn đã được tạo',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được khởi tạo. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />Mật khẩu: {$password}<br />{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.<br />{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.<br />{/if}<br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_SAFE_KEY] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Gửi mã xác minh khi người dùng bật/ tắt chế độ an toàn',
+    's' => 'Mã xác minh chế độ an toàn',
+    'c' => '{$greeting_user}<br /><br />Bạn đã gửi yêu cầu sử dụng chế độ an toàn tại website {$site_name}. Dưới đây là mã xác minh dùng cho việc kích hoạt hoặc tắt chế độ an toàn:<br /><br /><strong>{$code}</strong><br /><br />Mã xác minh này chỉ có tác dụng bật-tắt chế độ an toàn một lần duy nhất. Sau khi bạn tắt chế độ an toàn, mã xác minh này sẽ vô giá trị.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_SELF_EDIT] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo các thay đổi về tài khoản vừa được người dùng thực hiện',
+    's' => 'Hồ sơ của bạn đã được cập nhật',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được cập nhật {if $send_newvalue}với {$label} mới là <strong>{$newvalue}</strong>{else}{$label} mới{/if}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}.'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

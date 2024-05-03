@@ -39,22 +39,9 @@ if ($nv_Request->isset_request('ajax', 'post')) {
         $result = $db->query($sql);
         $numrows = $result->rowCount();
         if ($numrows) {
-            $maillang = '';
+            $maillang = NV_LANG_INTERFACE;
             if (NV_LANG_DATA != NV_LANG_INTERFACE) {
                 $maillang = NV_LANG_DATA;
-            }
-            $gconfigs = [
-                'site_name' => $global_config['site_name'],
-                'site_email' => $global_config['site_email']
-            ];
-            if (!empty($maillang)) {
-                $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
-                $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $maillang . "' AND module='global' AND config_name IN (" . $in . ')');
-                while ($row = $result->fetch()) {
-                    $gconfigs[$row['config_name']] = $row['config_value'];
-                }
-
-                $nv_Lang->loadFile(NV_ROOTDIR . '/modules/' . $module_file . '/language/' . $maillang . '.php', true);
             }
 
             while ($row = $result->fetch()) {
