@@ -139,11 +139,21 @@ if ($nv_Request->isset_request('checkss', 'post')) {
     if (!$email_sent) {
         $key = strtoupper(nv_genpass(10));
         $nv_Request->set_Session('cant_do_2step', $uid . '.' . $createtime . '.' . $count . '.' . $key);
-        $message = $nv_Lang->getModule('remove_2step_verifykey_content', $greeting, $global_config['site_name'], $key);
-        @nv_sendmail_async([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $row['email'], $nv_Lang->getModule('remove_2step_verifykey_subject'), $message);
+
+        $send_data = [[
+            'to' => $row['email'],
+            'data' => [
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'],
+                'username' => $row['username'],
+                'email' => $row['email'],
+                'gender' => $row['gender'],
+                'lang' => NV_LANG_INTERFACE,
+                'code' => $key
+            ]
+        ]];
+        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_R2S_REQUEST, $send_data, '', NV_LANG_INTERFACE);
+
         nv_jsonOutput([
             'status' => 'step2',
             'mess' => $nv_Lang->getModule('verifykey_info')
@@ -184,11 +194,18 @@ if ($nv_Request->isset_request('checkss', 'post')) {
             $db->query('DELETE FROM ' . NV_MOD_TABLE . '_backupcodes WHERE userid=' . $uid);
             $db->query('UPDATE ' . NV_MOD_TABLE . " SET active2step=0, secretkey='', last_update=" . NV_CURRENTTIME . ' WHERE userid=' . $uid);
 
-            $message = $nv_Lang->getModule('remove_2step_content', $greeting, $global_config['site_name']);
-            @nv_sendmail_async([
-                $global_config['site_name'],
-                $global_config['site_email']
-            ], $row['email'], $nv_Lang->getModule('remove_2step_subject'), $message);
+            $send_data = [[
+                'to' => $row['email'],
+                'data' => [
+                    'first_name' => $row['first_name'],
+                    'last_name' => $row['last_name'],
+                    'username' => $row['username'],
+                    'email' => $row['email'],
+                    'gender' => $row['gender'],
+                    'lang' => NV_LANG_INTERFACE
+                ]
+            ]];
+            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_R2S, $send_data, '', NV_LANG_INTERFACE);
 
             $info = $nv_Lang->getModule('remove_2step_success');
         }

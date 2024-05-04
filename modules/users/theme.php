@@ -1961,6 +1961,11 @@ function theme_changePass($pass_timeout, $pass_empty, $checkss)
     return $xtpl->text('main');
 }
 
+/**
+ * @param array $data
+ * @param string $page_url
+ * @return string
+ */
 function user_r2s($data, $page_url)
 {
     $xtpl = new XTemplate('r2s.tpl', get_module_tpl_dir('r2s.tpl'));

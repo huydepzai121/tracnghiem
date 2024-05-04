@@ -259,6 +259,48 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_AUTO_ERROR_REPORT] = [
     's' => 'Cảnh báo từ website {$site_name}',
     'c' => 'Hệ thống đã nhận được một số thông báo. Bạn hãy mở file đính kèm để xem chi tiết'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_R2S] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo xác thực hai bước đã gỡ thành công',
+    's' => 'Xác thực 2 bước đã tắt',
+    'c' => '{$greeting_user}<br /><br />Theo yêu cầu của bạn, chúng tôi đã tắt tính năng Xác thực 2 bước cho tài khoản của bạn tại website {$site_name}.<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_R2S_REQUEST] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Hướng dẫn tắt xác thực hai bước khi quên mã',
+    's' => 'Thông tin tắt xác thực 2 bước',
+    'c' => '{$greeting_user}<br /><br />Chúng tôi vừa nhận được yêu cầu tắt xác thực 2 bước cho tài khoản của bạn tại website {$site_name}. Nếu bạn là người gửi yêu cầu này, hãy sử dụng Mã xác minh dưới đây để tiến hành tắt:<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_LEADER_ADD] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo oauth được thêm vào tài khoản bởi trưởng nhóm',
+    's' => 'Thông báo bảo mật',
+    'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được kết nối với tài khoản <strong>{$username}</strong> của bạn bởi trưởng nhóm.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_SELF_ADD] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo oauth được thêm vào tài khoản bởi chính người dùng',
+    's' => 'Thông báo bảo mật',
+    'c' => '{$greeting_user}<br /><br />Tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được kết nối với tài khoản <strong>{$username}</strong> của bạn. Nếu đây không phải là chủ ý của bạn, vui lòng nhanh chóng xóa nó khỏi tài khoản của mình bằng cách truy cập vào khu vực quản lý tài khoản bên thứ ba.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_LEADER_DEL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo oauth được xóa khỏi tài khoản bởi trưởng nhóm',
+    's' => 'Thông báo bảo mật',
+    'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được ngắt kết nối khỏi tài khoản <strong>{$username}</strong> của bạn bởi trưởng nhóm.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_SELF_DEL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo oauth được xóa khỏi tài khoản bởi chính người dùng',
+    's' => 'Thông báo bảo mật',
+    'c' => '{$greeting_user}<br /><br />Tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được ngắt kết nối khỏi tài khoản <strong>{$username}</strong> của bạn. Nếu đây không phải là chủ ý của bạn, vui lòng nhanh chóng liên hệ với quản trị site để được giúp đỡ.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

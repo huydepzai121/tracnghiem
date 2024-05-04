@@ -259,6 +259,48 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_AUTO_ERROR_REPORT] = [
     's' => 'Notification du site {$site_name}',
     'c' => 'Le système a reçu des notifications. Veuillez étudier le fichier attaché pour les détails'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_R2S] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notez que l\'authentification en deux étapes a été supprimée avec succès',
+    's' => 'La vérification en deux étapes est désactivée',
+    'c' => '{$greeting_user}<br /><br />À votre demande, nous avons désactivé la vérification en deux étapes pour votre compte sur le site Web {$site_name}.<br /><br />Il s\'agit d\'un envoi automatique d\'e-mail depuis le site Web {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_R2S_REQUEST] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Instructions pour désactiver l\'authentification en deux étapes lorsque vous oubliez votre code',
+    's' => 'Informations sur la désactivation de la vérification en deux étapes',
+    'c' => '{$greeting_user}<br /><br />Nous avons reçu une demande de suppression de la vérification en deux étapes pour votre compte sur le site Web {$site_name}. Si vous avez envoyé cette demande vous-même, veuillez utiliser le code de vérification ci-dessous pour procéder à la suppression:<br /><br />Code de vérification: <strong>{$code}</strong><br /><br />Il s\'agit d\'un envoi automatique d\'e-mail depuis le site Web {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_LEADER_ADD] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'La notification oauth est ajoutée au compte par le chef d\'équipe',
+    's' => 'Avis de confidentialité',
+    'c' => '{$greeting_user}<br /><br />Nous vous informons qu\'un compte tiers <strong>{$oauth_name}</strong> vient d\'être connecté à votre compte <strong>{$username}</strong> par le chef d\'équipe.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Gérer les comptes tiers</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_SELF_ADD] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'La notification oauth est ajoutée au compte par l\'utilisateur lui-même',
+    's' => 'Avis de confidentialité',
+    'c' => '{$greeting_user}<br /><br />Le compte tiers <strong>{$oauth_name}</strong> vient d\'être connecté à votre compte <strong>{$username}</strong>. Si ce n\'était pas votre intention, veuillez le supprimer rapidement de votre compte en vous rendant dans la zone de gestion des comptes tiers.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Gérer les comptes tiers</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_LEADER_DEL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'La notification oauth est supprimée du compte par le chef d\'équipe',
+    's' => 'Avis de confidentialité',
+    'c' => '{$greeting_user}<br /><br />Nous vous informons que le compte tiers <strong>{$oauth_name}</strong> vient d\'être déconnecté de votre compte <strong>{$username}</strong> par le chef d\'équipe.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Gérer les comptes tiers</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_SELF_DEL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'La notification oauth est supprimée du compte par l\'utilisateur lui-même',
+    's' => 'Avis de confidentialité',
+    'c' => '{$greeting_user}<br /><br />Le compte tiers <strong>{$oauth_name}</strong> vient d\'être déconnecté de votre compte <strong>{$username}</strong>. Si ce n\'est pas votre intention, veuillez contacter rapidement l\'administrateur du site pour obtenir de l\'aide.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Gérer les comptes tiers</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

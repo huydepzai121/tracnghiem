@@ -259,6 +259,48 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_AUTO_ERROR_REPORT] = [
     's' => 'Error report from website {$site_name}',
     'c' => 'The system received some error messages. Please open the attached file for details.'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_R2S] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notice that two-step authentication has been successfully removed',
+    's' => '2-Step Verification is turned off',
+    'c' => '{$greeting_user}<br /><br />At your request, we have turned off 2-Step Verification for your account at the {$site_name} website.<br /><br />This is email automatic sending from website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_R2S_REQUEST] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Instructions for turning off two-step authentication when forgetting code',
+    's' => 'Information about turning off 2-step verification',
+    'c' => '{$greeting_user}<br /><br />We have received a request to turn off 2-step verification for your account at the {$site_name} website. If you sent this request yourself, please use the Verification Code below to proceed:<br /><br />Verification Code: <strong>{$code}</strong><br /><br />This is email automatic sending from website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_LEADER_ADD] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification oauth is added to the account by the team leader',
+    's' => 'Privacy Notice',
+    'c' => '{$greeting_user}<br /><br />We are informing you that a third party account <strong>{$oauth_name}</strong> has just been connected to your <strong>{$username}</strong> account by the group leader.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_SELF_ADD] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification oauth is added to the account by the user themselves',
+    's' => 'Privacy Notice',
+    'c' => '{$greeting_user}<br /><br />The third party account <strong>{$oauth_name}</strong> has just been connected to your <strong>{$username}</strong> account. If this was not your intention, please quickly remove it from your account by visiting the third party account management area.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_LEADER_DEL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification oauth is removed to the account by the team leader',
+    's' => 'Privacy Notice',
+    'c' => '{$greeting_user}<br /><br />We are informing you that the third party account <strong>{$oauth_name}</strong> has just been disconnected from your <strong>{$username}</strong> account by the group leader.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_SELF_DEL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification oauth is removed to the account by the user themselves',
+    's' => 'Privacy Notice',
+    'c' => '{$greeting_user}<br /><br />The third-party account <strong>{$oauth_name}</strong> has just been disconnected from your <strong>{$username}</strong> account. If this is not your intention, please quickly contact the site administrator for help.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],
