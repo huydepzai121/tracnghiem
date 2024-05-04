@@ -196,6 +196,69 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_SELF_EDIT] = [
     's' => 'Update account infomation success',
     'c' => '{$greeting_user}<br /><br />Your account on the website {$site_name} has been updated {if $send_newvalue}with new {$label}: <strong>{$newvalue}</strong>{else}new {$label}{/if}.<br /><br />These are automatic messages sent to your e-mail inbox from website {$site_name}.'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_EDIT] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notify account changes just made by the administrator',
+    's' => 'Your account has been updated',
+    'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} has been updated. Here are the login information:<br /><br />URL: <a href="{$link}">{$link}</a><br />Username: {$username}{if not empty($password)}<br />Password: {$password}{/if}<br />{if $pass_reset eq 2}<br />Note: We recommend that you change your password before using your account.<br />{elseif $pass_reset eq 1}<br />Note: You need to change your password before using your account.<br />{/if}<br />This is an automated message sent to your email from {$site_name}. If you do not understand the content of this letter, simply delete it.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_VERIFY_EMAIL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Confirmation email to change account email',
+    's' => 'Activation information for changing email',
+    'c' => '{$greeting_user}<br /><br />You sent a request to change the email address of the personal Account on the website {$site_name}. To complete this change, you must confirm your new email address by entering the verifykey below in the appropriate fields in the area Edit Account Information:<br /><br />Verifykey: <strong>{$code}</strong><br /><br />This key expires on {$deadline}.<br /><br />These are automatic messages sent to your e-mail inbox from website {$site_name}. If you do not understand anything about the contents of this letter, simply delete it.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_GROUP_JOIN] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notice asking to join the group',
+    's' => 'Request to join group',
+    'c' => 'Hello leader <strong>{$group_name}</strong>,<br /><br /><strong>{$full_name}</strong> has sent the request to join the group <strong>{$group_name}</strong> you are managing. You need to approve this request!<br /><br />Please <a href="{$link}"> visit this link </a> to approve membership.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LOST_ACTIVE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Resend account activation information',
+    's' => 'Activate account',
+    'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} waitting to activate. To activate, please click link follow:<br /><br />URL: <a href="{$link}">{$link}</a><br />Account information:<br />Account: {$username}<br />Email: {$email}<br />Password: {$password}<br /><br />Activate expired on {$active_deadline}<br /><br />This is email automatic sending from website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LOST_PASS] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Instructions for retrieving member password',
+    's' => 'Guide password recovery',
+    'c' => '{$greeting_user}<br /><br />You propose to change my login password at the website {$site_name}. To change your password, you will need to enter the verification code below in the corresponding box at the password change area.<br /><br />Verification code: <strong>{$code}</strong><br /><br />This code is only used once and before the deadline of {$deadline}.<br /><br />This letter is automatically sent to your email inbox from site {$site_name}. If you do not know anything about the contents of this letter, just delete it.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_DELETE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notice that the administrator account has been deleted',
+    's' => 'Information from {$site_name} website',
+    'c' => 'Administrator {$site_name} website notify:<br />Your administrator account in {$site_name} website deleted at {$time}{if not empty($note)}. Reason: {$note}{/if}.<br />If you have any questions... please email <a href="mailto:{$email}">{$email}</a>{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_SUSPEND] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notice of suspension of site administration',
+    's' => 'Information from {$site_name} website',
+    'c' => 'Information from {$site_name} aministrators:<br />Your administrator account in {$site_name} is suspended at {$time} reason: {$note}.<br />If you have any questions... please email <a href="mailto:{$email}">{$email}</a>{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_REACTIVE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notice of reactivation of site administration',
+    's' => 'Information from {$site_name} website',
+    'c' => 'Information from {$site_name} aministrators:<br />Your administrator account in {$site_name} is reactive at {$time}.<br />Your account has been suspended before because: {$note}{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTO_ERROR_REPORT] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Email auto-notification error',
+    's' => 'Error report from website {$site_name}',
+    'c' => 'The system received some error messages. Please open the attached file for details.'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

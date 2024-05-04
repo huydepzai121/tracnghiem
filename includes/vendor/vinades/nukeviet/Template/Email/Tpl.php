@@ -25,15 +25,13 @@ class Tpl
     public const E_USER_ADMIN_ADDED = 7;
     public const E_USER_SAFE_KEY = 8;
     public const E_USER_SELF_EDIT = 9;
-
     public const E_USER_ADMIN_EDIT = 10;
-
-    public const E_USER_VERIFY_EMAIL = 9;
-    public const E_USER_GROUP_JOIN = 10;
-    public const E_USER_LOST_ACTIVE = 11;
-    public const E_USER_LOST_PASS = 12;
-    public const E_AUTHOR_DELETE = 13;
-    public const E_AUTHOR_SUSPEND = 14;
-    public const E_AUTO_ERROR_REPORT = 15;
-    // Max ID: 15
+    public const E_USER_VERIFY_EMAIL = 11;
+    public const E_USER_GROUP_JOIN = 12;
+    public const E_USER_LOST_ACTIVE = 13;
+    public const E_USER_LOST_PASS = 14;
+    public const E_AUTHOR_DELETE = 15;
+    public const E_AUTHOR_SUSPEND = 16;
+    public const E_AUTHOR_REACTIVE = 17;
+    public const E_AUTO_ERROR_REPORT = 18;
 }

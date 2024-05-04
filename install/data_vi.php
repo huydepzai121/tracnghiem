@@ -196,6 +196,69 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_SELF_EDIT] = [
     's' => 'Hồ sơ của bạn đã được cập nhật',
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được cập nhật {if $send_newvalue}với {$label} mới là <strong>{$newvalue}</strong>{else}{$label} mới{/if}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}.'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_EDIT] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo các thay đổi về tài khoản vừa được quản trị thực hiện',
+    's' => 'Tài khoản của bạn đã được cập nhật',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được cập nhật. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}{if not empty($password)}<br />Mật khẩu: {$password}{/if}<br />{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.<br />{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.<br />{/if}<br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_VERIFY_EMAIL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thư xác nhận thay đổi email tài khoản',
+    's' => 'Thông tin kích hoạt thay đổi email',
+    'c' => '{$greeting_user}<br /><br />Bạn đã gửi đề nghị thay đổi email của tài khoản người dùng trên website {$site_name}. Để hoàn tất thay đổi này, bạn cần xác nhận email mới bằng cách nhập Mã xác minh dưới đây vào ô tương ứng tại khu vực Sửa thông tin tài khoản:<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Mã này hết hạn vào {$deadline}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_GROUP_JOIN] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo có yêu cầu tham gia nhóm',
+    's' => 'Yêu cầu tham gia nhóm',
+    'c' => 'Xin chào trưởng nhóm <strong>{$group_name}</strong>,<br /><br /><strong>{$full_name}</strong> đã gửi yêu cầu tham gia nhóm <strong>{$group_name}</strong> do bạn đang quản lý. Vui lòng xét duyệt yêu cầu bằng cách nhấn vào <a href="{$link}">liên kết này</a>.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LOST_ACTIVE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Gửi lại thông tin kích hoạt tài khoản',
+    's' => 'Thông tin kích hoạt tài khoản',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đang chờ kích hoạt. Để kích hoạt, bạn hãy click vào link dưới đây:<br /><br />URL: <a href="{$link}">{$link}</a><br />Các thông tin cần thiết:<br />Bí danh: {$username}<br />Email: {$email}<br />Mật khẩu: {$password}<br /><br />Việc kích hoạt tài khoản chỉ có hiệu lực đến {$active_deadline}<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LOST_PASS] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Hướng dẫn lấy lại mật khẩu thành viên',
+    's' => 'Hướng dẫn tạo lại mật khẩu',
+    'c' => '{$greeting_user}<br /><br />Bạn vừa gửi đề nghị thay đổi mật khẩu tài khoản người dùng tại website {$site_name}. Để thay đổi mật khẩu, bạn cần nhập mã xác minh dưới đây vào ô tương ứng tại khu vực thay đổi mật khẩu.<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Mã này chỉ được sử dụng một lần và trước thời hạn: {$deadline}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_DELETE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo tài khoản quản trị đã bị xóa',
+    's' => 'Thông báo từ website {$site_name}',
+    'c' => 'Ban quản trị website {$site_name} xin thông báo:<br />Tài khoản quản trị của bạn tại website {$site_name} đã bị xóa vào {$time}{if not empty($note)} vì lý do: {$note}{/if}.<br />Mọi đề nghị, thắc mắc... xin gửi email đến địa chỉ <a href="mailto:{$email}">{$email}</a>{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_SUSPEND] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo đình chỉ quản trị site',
+    's' => 'Thông báo từ website {$site_name}',
+    'c' => 'Ban quản trị website {$site_name} xin thông báo:<br />Tài khoản quản trị của bạn tại website {$site_name} đã bị đình chỉ hoạt động vào {$time} vì lý do: {$note}.<br />Mọi đề nghị, thắc mắc... xin gửi email đến địa chỉ <a href="mailto:{$email}">{$email}</a>{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_REACTIVE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo kích hoạt lại quản trị site',
+    's' => 'Thông báo từ website {$site_name}',
+    'c' => 'Ban quản trị website {$site_name} xin thông báo:<br />Tài khoản quản trị của bạn tại website {$site_name} đã hoạt động trở lại vào {$time}.<br />Trước đó tài khoản này đã bị đình chỉ hoạt động vì lý do: {$note}{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTO_ERROR_REPORT] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Email tự động thông báo lỗi',
+    's' => 'Cảnh báo từ website {$site_name}',
+    'c' => 'Hệ thống đã nhận được một số thông báo. Bạn hãy mở file đính kèm để xem chi tiết'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

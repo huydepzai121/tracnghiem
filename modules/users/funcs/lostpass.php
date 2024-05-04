@@ -41,14 +41,21 @@ function lost_pass_sendMail($row)
         $pa = NV_CURRENTTIME + 3600;
         $passlostkey = $pa . '|' . $passlostkey;
 
-        $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-        $nv_Lang->setModule('lostpass_email_subject', $nv_Lang->getModule('lostpass_email_subject', NV_MY_DOMAIN));
-        $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-        $message = $nv_Lang->getModule('lostpass_email_content', $greeting, $sitename, $key, nv_date('H:i d/m/Y', $pa));
-        if (!nv_sendmail([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $row['email'], $nv_Lang->getModule('lostpass_email_subject'), $message)) {
+        $send_data = [[
+            'to' => $row['email'],
+            'data' => [
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'],
+                'username' => $row['username'],
+                'email' => $row['email'],
+                'gender' => $row['gender'],
+                'lang' => NV_LANG_INTERFACE,
+                'code' => $key,
+                'deadline' => $pa
+            ]
+        ]];
+        $send = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_USER_LOST_PASS, $send_data, '', NV_LANG_INTERFACE);
+        if (!$send) {
             nv_jsonOutput([
                 'status' => 'error',
                 'input' => '',

@@ -801,14 +801,20 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
             $nv_Request->set_Session('verikey', (NV_CURRENTTIME + 300) . '|' . $p . '|' . $verikey);
         }
 
-        $p = nv_date('H:i d/m/Y', $p);
-        $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-        $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-        $message = $nv_Lang->getModule('email_active_info', $greeting, $sitename, $verikey, $p);
-        @nv_sendmail_async([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $nv_email, $nv_Lang->getModule('email_active'), $message);
+        $send_data = [[
+            'to' => $nv_email,
+            'data' => [
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'],
+                'username' => $row['username'],
+                'email' => $nv_email,
+                'gender' => $row['gender'],
+                'lang' => NV_LANG_INTERFACE,
+                'code' => $verikey,
+                'deadline' => $p
+            ]
+        ]];
+        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_VERIFY_EMAIL, $send_data, '', NV_LANG_INTERFACE);
 
         nv_jsonOutput([
             'status' => 'error',
@@ -1103,25 +1109,29 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
         foreach ($in_groups_add as $gid) {
             $approved = $groups_list['all'][$gid]['group_type'] == 1 ? 0 : 1;
             if (nv_groups_add_user($gid, $edit_userid, $approved, $module_data)) {
-                // Gửi thư thông báo kiểm duyệt
+                // Gửi thư thông báo kiểm duyệt đến các trưởng nhóm
                 if ($groups_list['all'][$gid]['group_type'] == 1) {
                     // Danh sách email trưởng nhóm
-                    $array_leader = [];
+                    $send_data = [];
+                    $url_group = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=groups/' . $gid, NV_MY_DOMAIN);
                     $result = $db->query('SELECT t2.email FROM ' . NV_MOD_TABLE . '_groups_users t1 INNER JOIN ' . NV_MOD_TABLE . ' t2 ON t1.userid=t2.userid WHERE t1.is_leader=1 AND t1.group_id=' . $gid);
                     while ([$email] = $result->fetch(3)) {
-                        $array_leader[] = $email;
+                        $send_data[] = [
+                            'to' => $email,
+                            'data' => [
+                                'first_name' => $user_info['first_name'],
+                                'last_name' => $user_info['last_name'],
+                                'username' => $user_info['username'],
+                                'email' => $user_info['email'],
+                                'gender' => $user_info['gender'],
+                                'lang' => NV_LANG_INTERFACE,
+                                'group_name' => $groups_list['all'][$gid]['title'],
+                                'link' => $url_group
+                            ]
+                        ];
                     }
-                    if (!empty($array_leader)) {
-                        $array_leader = array_unique($array_leader);
-                        foreach ($array_leader as $email) {
-                            $mail_from = [
-                                $global_config['site_name'],
-                                $global_config['site_email']
-                            ];
-                            $url_group = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=groups/' . $gid, NV_MY_DOMAIN);
-                            $message = $nv_Lang->getModule('group_join_queue_message', $groups_list['all'][$gid]['title'], $user_info['full_name'], $groups_list['all'][$gid]['title'], $url_group);
-                            @nv_sendmail_async($mail_from, $email, $nv_Lang->getModule('group_join_queue'), $message);
-                        }
+                    if (!empty($send_data)) {
+                        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_GROUP_JOIN, $send_data, '', NV_LANG_INTERFACE);
                     }
                 } elseif (in_array($gid, $groups_list['share'], true)) {
                     $messages = [];

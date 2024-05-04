@@ -84,6 +84,14 @@ $callback = function ($vars, $from_data, $receive_data) {
             'name' => $nv_Lang->getModule('mf_label'),
             'data' => ''
         ];
+        $merge_fields['deadline'] = [
+            'name' => $nv_Lang->getModule('mf_deadline'),
+            'data' => ''
+        ];
+        $merge_fields['group_name'] = [
+            'name' => $nv_Lang->getModule('group_name'),
+            'data' => ''
+        ];
 
         if ($vars['mode'] != 'PRE') {
             // Field dữ liệu cho các fields
@@ -108,7 +116,7 @@ $callback = function ($vars, $from_data, $receive_data) {
             }
 
             // Các field dạng chuỗi thuần
-            $direct_keys = ['username', 'email', 'link', 'oauth_name', 'password', 'code', 'label', 'newvalue'];
+            $direct_keys = ['username', 'email', 'link', 'oauth_name', 'password', 'code', 'label', 'newvalue', 'group_name'];
             foreach ($direct_keys as $key) {
                 $merge_fields[$key]['data'] = $vars[$key] ?? '';
             }
@@ -120,7 +128,7 @@ $callback = function ($vars, $from_data, $receive_data) {
             }
 
             // Các field dạng thời gian
-            $time_keys = ['active_deadline'];
+            $time_keys = ['active_deadline', 'deadline'];
             foreach ($time_keys as $key) {
                 if (!empty($vars[$key]) and is_numeric($vars[$key])) {
                     $merge_fields[$key]['data'] = nv_date('H:i d/m/Y', $vars[$key]);

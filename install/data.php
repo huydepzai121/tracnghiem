@@ -260,5 +260,7 @@ $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions
 $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_plugins (pid, plugin_file, plugin_area, plugin_module_name, plugin_module_file, weight) VALUES
 (1, 'qrcode.php', 'get_qr_code', '', '', 1),
 (2, 'cdn_js_css_image.php', 'change_site_buffer', '', '', 1),
-(3, 'emf_code_user.php', 'get_email_merge_fields', 'users', 'users', 1)
+(3, 'emf_code_user.php', 'get_email_merge_fields', 'users', 'users', 1),
+(4, 'emf_core_author.php', 'get_email_merge_fields', '', '', 2),
+(5, 'emf_all.php', 'get_email_merge_fields', '', '', 3)
 ";

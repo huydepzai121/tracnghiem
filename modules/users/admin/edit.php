@@ -445,7 +445,7 @@ if ($nv_Request->isset_request('confirm', 'post')) {
 
     // Gửi mail thông báo
     if (!empty($_user['adduser_email'])) {
-        $maillang = '';
+        $maillang = NV_LANG_INTERFACE;
         if (!empty($row['language']) and in_array($row['language'], $global_config['setup_langs'], true)) {
             if ($row['language'] != NV_LANG_INTERFACE) {
                 $maillang = $row['language'];
@@ -454,44 +454,21 @@ if ($nv_Request->isset_request('confirm', 'post')) {
             $maillang = NV_LANG_DATA;
         }
 
-        $_url = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN);
-        $gconfigs = [
-            'site_name' => $global_config['site_name'],
-            'site_email' => $global_config['site_email']
-        ];
-        if (!empty($maillang)) {
-            $greeting = greeting_for_user_create($_user['username'], $_user['first_name'], $_user['last_name'], $_user['gender'], $maillang);
-
-            $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
-            $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $maillang . "' AND module='global' AND config_name IN (" . $in . ')');
-            while ($row = $result->fetch()) {
-                $gconfigs[$row['config_name']] = $row['config_value'];
-            }
-
-            $nv_Lang->loadFile(NV_ROOTDIR . '/modules/' . $module_file . '/language/' . $maillang . '.php', true);
-
-            $pass_reset_request = $_user['pass_reset_request'] == 2 ? $nv_Lang->getModule('pass_reset_request2_info') : ($_user['pass_reset_request'] == 1 ? $nv_Lang->getModule('pass_reset_request1_info') : '');
-            $mail_subject = $nv_Lang->getModule('adduser_register1');
-            $mail_message = $nv_Lang->getModule('adduser_register_info2', $greeting, $gconfigs['site_name'], $_url, $_user['username']);
-            if (!empty($_user['password1'])) {
-                $mail_message .= $nv_Lang->getModule('adduser_register_info3', $_user['password1']);
-            }
-            $mail_message .= $nv_Lang->getModule('adduser_register_info4', $pass_reset_request, $gconfigs['site_name']);
-
-            $nv_Lang->changeLang();
-        } else {
-            $greeting = greeting_for_user_create($_user['username'], $_user['first_name'], $_user['last_name'], $_user['gender']);
-
-            $pass_reset_request = $_user['pass_reset_request'] == 2 ? $nv_Lang->getModule('pass_reset_request2_info') : ($_user['pass_reset_request'] == 1 ? $nv_Lang->getModule('pass_reset_request1_info') : '');
-            $mail_subject = $nv_Lang->getModule('adduser_register1');
-            $mail_message = $nv_Lang->getModule('adduser_register_info2', $greeting, $gconfigs['site_name'], $_url, $_user['username']);
-            if (!empty($_user['password1'])) {
-                $mail_message .= $nv_Lang->getModule('adduser_register_info3', $_user['password1']);
-            }
-            $mail_message .= $nv_Lang->getModule('adduser_register_info4', $pass_reset_request, $gconfigs['site_name']);
-        }
-
-        @nv_sendmail_async([$gconfigs['site_name'], $gconfigs['site_email']], $_user['email'], $mail_subject, $mail_message, '', false, false, [], [], true, [], $maillang);
+        $send_data = [[
+            'to' => $_user['email'],
+            'data' => [
+                'first_name' => $_user['first_name'],
+                'last_name' => $_user['last_name'],
+                'username' => $_user['username'],
+                'email' => $_user['email'],
+                'gender' => $_user['gender'],
+                'lang' => $maillang,
+                'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN),
+                'pass_reset' => $_user['pass_reset_request'],
+                'password' => $_user['password1']
+            ]
+        ]];
+        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_ADMIN_EDIT, $send_data, '', $maillang);
     }
 
     nv_insert_logs(NV_LANG_DATA, $module_name, 'log_edit_user', 'userid ' . $userid, $admin_info['userid']);

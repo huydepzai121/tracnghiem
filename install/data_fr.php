@@ -196,6 +196,69 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_SELF_EDIT] = [
     's' => 'La mise à jour les infos du compte réussite',
     'c' => '{$greeting_user}<br /><br />Votre compte sur le site Web {$site_name} {if $send_newvalue}mis à jour avec le nouveau {$label} <strong>{$newvalue}</strong>{else}le nouveau {$label} a été mis à jour{/if}.<br /><br />C\'est un courier automatique qui est envoyé à votre email à partir du site {$site_name}.'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_EDIT] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notifier les modifications de compte qui viennent d\'être apportées par l\'administrateur',
+    's' => 'Votre compte a été mis à jour',
+    'c' => '{$greeting_user}<br /><br />Votre compte sur le site {$site_name} a été mis à jour. Voici les informations de connexion:<br /><br />URL: <a href="{$link}">{$link}</a><br />Nom: {$username}{if not empty($password)}<br />Mot de passe: {$password}{/if}<br />{if $pass_reset eq 2}<br />Remarque: Nous vous recommandons de changer votre mot de passe avant d\'utiliser votre compte.<br />{elseif $pass_reset eq 1}<br />Remarque: Vous devez changer votre mot de passe avant d\'utiliser votre compte.<br />{/if}<br />Ceci est un message automatique envoyé à votre boîte de réception e-mail à partir du site {$site_name}. Si vous ne comprenez rien au sujet du contenu de cette lettre, supprimer tout simplement.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_VERIFY_EMAIL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'E-mail de confirmation pour changer l\'e-mail du compte',
+    's' => 'Infos d\'activation de changement d\'email',
+    'c' => '{$greeting_user}<br /><br />Vous avez demandé l\'utilisation du mode sans échec sur le site {$site_name}. Pour valider le changement, vous devez declarer votre nouvel email en saisissant le code de certifier en dessous dans le zone Modification des infos:<br /><br />Code de certifier: <strong>{$code}</strong><br /><br />Ce code est utilisable jusqu\'à {$deadline}.<br /><br />C\'est un courier automatique qui est envoyé à votre email à partir du site {$site_name}. SI vous ne comprenez pas le contenu de ce courrier vous pouvez le supprimer simplement.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_GROUP_JOIN] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Avis demandant de rejoindre le groupe',
+    's' => 'Demander à joindre le groupe',
+    'c' => 'Bonjour chef <strong>{$group_name}</strong>,<br /><br /><strong>{$full_name}</strong> a envoyé la demande à rejoindre le groupe <strong>{$group_name}</strong> parce que vous gérez. Vous devez approuver cette demande!<br /><br />S\'il vous plaît visitez <a href="{$link}">ce lien</a> d\'approuver l\'adhésion.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LOST_ACTIVE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Renvoyer les informations d\'activation du compte',
+    's' => 'Activer le compte',
+    'c' => '{$greeting_user}<br /><br />Votre compte dans le site Web {$site_name} est en attendant d\'être activé. Pour l\'activer, vous cliquez sur le lien au dessous:<br /><br />URL: <a href="{$link}">{$link}</a><br />Les informations nécessaires:<br />Compte: {$username}<br />Email: {$email}<br />Mot de passe: {$password}<br /><br />L\'activation du compte n\'est disponible que jusqu\'à {$active_deadline}<br /><br />Ce mail vous est envoyé automatiquement à partir du site Web {$site_name}. Si vous ne comprenez pas le contenu de ce mail, vous pouvez le supprimer simplement.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LOST_PASS] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Instructions pour récupérer le mot de passe du membre',
+    's' => 'Guide de rechercher le mot de passe',
+    'c' => '{$greeting_user}<br /><br />Vous proposez de changer mon mot de passe de connexion sur le site {$site_name}. Pour changer votre mot de passe, vous devrez saisir le code de vérification ci-dessous dans la case correspondante dans la zone de changement de mot de passe.<br /><br />Le code de vérification: <strong>{$code}</strong><br /><br />Ce code n\'est utilisé qu\'une seule fois et avant la date limite de: {$deadline}.<br /><br />Cette lettre est automatiquement envoyée dans votre boîte de réception e-mail depuis le site {$site_name}. Si vous ne comprenez rien au contenu de cette lettre, supprimez-la simplement. Si vous ne comprenez rien au contenu de cette lettre, supprimez-la simplement.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_DELETE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notez que le compte administrateur a été supprimé',
+    's' => 'Notification du site {$site_name}',
+    'c' => 'L\'administrateur du site {$site_name} informe:<br />Votre compte d\'administration sur le site {$site_name} est supprimé au {$time}{if not empty($note)} en raison de: {$note}{/if}.<br />Toute proposition, question... veuillez envoyer un e-mail à <a href="mailto:{$email}">{$email}</a>{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_SUSPEND] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Avis de suspension de l\'administration du site',
+    's' => 'Notification du site {$site_name}',
+    'c' => 'L\'administrateur du site {$site_name} informe:<br />Votre compte d\'administration sur le site {$site_name} est suspendu au {$time} en raison: {$note}.<br />Toute proposition, question... veuillez envoyer un e-mail à <a href="mailto:{$email}">{$email}</a>{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_REACTIVE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Avis de réactivation de l\'administration du site',
+    's' => 'Notification du site {$site_name}',
+    'c' => 'L\'administrateur du site {$site_name} informe:<br />Votre compte d\'administration sur le site {$site_name} est rétabli au {$time}.<br />Ce compte avait été suspendu en raison: {$note}{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTO_ERROR_REPORT] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Erreur de notification automatique par courrier électronique',
+    's' => 'Notification du site {$site_name}',
+    'c' => 'Le système a reçu des notifications. Veuillez étudier le fichier attaché pour les détails'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],
