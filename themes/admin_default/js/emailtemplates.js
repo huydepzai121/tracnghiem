@@ -195,4 +195,30 @@ $(document).ready(function() {
             buttonImageOnly: true
         });
     }
+
+    // Thêm phần tử cho dạng field list khi gửi test mẫu email
+    $('[data-toggle="addField"]').on('click', function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        var ctn = $this.parent().find('.field-ctns');
+        var lastItem = $('.item:last', ctn);
+
+        var offset = 0;
+        if (lastItem.length) {
+            offset = lastItem.data('offset') + 1;
+        }
+
+        ctn.append(`<div class="input-group mb-1 item" data-offset="` + offset + `">
+            <input type="text" class="form-control" id="f_` + $this.data('fieldname') + `_` + offset + `" name="f_` + $this.data('fieldname') + `[]" value="" placeholder="$` + $this.data('fieldname') + `[]">
+            <span class="input-group-btn">
+                <button data-toggle="delField" class="btn btn-danger" type="button"><i class="fa fa-times"></i></button>
+            </span>
+        </div>`);
+    });
+
+    // Xóa phần tử cho dạng field list khi gửi test mẫu email
+    $(document).delegate('[data-toggle="delField"]', 'click', function(e) {
+        e.preventDefault();
+        $(this).parent().parent().remove();
+    });
 });

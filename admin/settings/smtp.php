@@ -490,19 +490,15 @@ if ($nv_Request->isset_request('smimedownload, email, passphrase', 'post')) {
 
 // Gửi thử email để kiểm tra
 if ($nv_Request->isset_request('submittest', 'post') and $checkss == $nv_Request->get_string('checkss', 'post')) {
+    $maillang = NV_LANG_INTERFACE;
     if (NV_LANG_DATA != NV_LANG_INTERFACE) {
-        $nv_Lang->loadFile(NV_ROOTDIR . '/includes/language/' . NV_LANG_DATA . '/admin_' . $module_file . '.php', true);
-        $mail_subject = $nv_Lang->getModule('smtp_test_subject');
-        $mail_message = $nv_Lang->getModule('smtp_test_message');
-        $nv_Lang->changeLang();
-    } else {
-        $mail_subject = $nv_Lang->getModule('smtp_test_subject');
-        $mail_message = $nv_Lang->getModule('smtp_test_message');
+        $maillang = NV_LANG_DATA;
     }
-    $check = nv_sendmail([
-        $global_config['site_name'],
-        $global_config['site_email']
-    ], $admin_info['email'], $mail_subject, $mail_message, '', false, true);
+    $send_data = [[
+        'to' => $admin_info['email'],
+        'data' => []
+    ]];
+    $check = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_EMAIL_CONFIG_TEST, $send_data, '', $maillang, true);
     if (!empty($check)) {
         nv_htmlOutput($check);
     } else {

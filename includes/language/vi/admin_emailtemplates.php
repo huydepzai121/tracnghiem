@@ -92,3 +92,6 @@ $lang_module['test_error_template'] = 'Mẫu email này không tồn tại';
 $lang_module['test_tomail_note'] = 'Nhập một email mỗi dòng, thường tối đa 50 email';
 $lang_module['test_value_fields'] = 'Dữ liệu mẫu tùy biến';
 $lang_module['test_success'] = 'Đã gửi thử nghiệm email thành công, vui lòng kiểm tra hộp thư đến (cả hộp thư rác nếu không có ở hộp thư đến) để xem email nhận được';
+$lang_module['test_note1'] = 'Tính năng gửi thử nghiệm email hỗ trợ các biến đơn có dữ liệu dạng chuỗi hoặc số ví dụ như <code>$site_name</code>, <code>$username</code> và dữ liệu dạng mảng một chiều của chuỗi hoặc số ví dụ như <code>$user.full_name</code>';
+$lang_module['test_note2'] = 'Nếu biến của bạn có dạng mảng hãy viết dạng <code>$user.full_name</code> thay vì sử dụng dạng <code>$user[\'full_name\']</code>';
+$lang_module['test_note3'] = 'Khi bạn soạn thảo một mẫu email có các điều kiện, các biến phức tạp nằm ngoài phạm vi hỗ trợ bên trên, hãy thử nghiệm gửi email bằng hàm <code>nv_sendmail_from_template</code> hoặc hàm <code>nv_sendmail_template_async</code> qua hình thức lập trình';

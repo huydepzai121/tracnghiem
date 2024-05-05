@@ -699,13 +699,15 @@ if (defined('NV_OPENID_ALLOWED') and $nv_Request->isset_request('server', 'get')
         $sess_verify = serialize(['code' => md5($verikey), 'time' => NV_CURRENTTIME]);
         $nv_Request->set_Session($md5_reg_email, $sess_verify);
 
-        $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-        $message = $nv_Lang->getModule('verify_email_mess', $reg_email, $verikey, $sitename);
-        $send = @nv_sendmail([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $reg_email, $nv_Lang->getModule('verify_email_title'), $message);
-
+        $send_data = [[
+            'to' => $reg_email,
+            'data' => [
+                'email' => $reg_email,
+                'lang' => NV_LANG_INTERFACE,
+                'code' => $verikey
+            ]
+        ]];
+        $send = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_USER_OAUTH_VERIFY_EMAIL, $send_data, '', NV_LANG_INTERFACE);
         if (!$send) {
             nv_jsonOutput([
                 'status' => 'error',

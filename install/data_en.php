@@ -301,6 +301,27 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_SELF_DEL] = [
     's' => 'Privacy Notice',
     'c' => '{$greeting_user}<br /><br />The third-party account <strong>{$oauth_name}</strong> has just been disconnected from your <strong>{$username}</strong> account. If this is not your intention, please quickly contact the site administrator for help.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_VERIFY_EMAIL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Send email verification code when logging in via Oauth and the email matches your existing account',
+    's' => 'New e-mail verification',
+    'c' => 'Hello!<br /><br />You have sent a request to verify your email address: {$email}. Copy the code below and paste it into the Verification code box on the site.<br /><br />Verification code: <strong>{$code}</strong><br /><br />This is email automatic sending from website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_EMAIL_CONFIG_TEST] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Send test email to test email sending configuration',
+    's' => 'Test email',
+    'c' => 'This is a test email to check the mail configuration. Simply delete it!'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_NEWS_SENDMAIL] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_MODULE,
+    't' => 'Send an email introducing the article to friend at the news module',
+    's' => 'Message from {$from_name}',
+    'c' => 'Hello!<br />Your friend {$from_name} would like to introduce to you the article “{$post_name}” on website {$site_name}{if not empty($message)} with the message:<br />{$message}{/if}.<br/>----------<br/><strong>{$post_name}</strong><br/>{$hometext}<br/><br/>You can view the full article by clicking on the link below:<br /><a href="{$link}" title="{$post_name}">{$link}</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

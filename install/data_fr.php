@@ -301,6 +301,27 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_SELF_DEL] = [
     's' => 'Avis de confidentialité',
     'c' => '{$greeting_user}<br /><br />Le compte tiers <strong>{$oauth_name}</strong> vient d\'être déconnecté de votre compte <strong>{$username}</strong>. Si ce n\'est pas votre intention, veuillez contacter rapidement l\'administrateur du site pour obtenir de l\'aide.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Gérer les comptes tiers</a>'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_VERIFY_EMAIL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Envoyez un code de vérification par e-mail lors de la connexion via Oauth et l\'e-mail correspond à votre compte existant',
+    's' => 'Nouvelle vérification par e-mail',
+    'c' => 'Bonjour!<br /><br />Vous avez envoyé une demande de vérification de votre adresse e-mail: {$email}. Copiez le code ci-dessous et collez-le dans la case Code de vérification sur le site.<br /><br />Code de vérification: <strong>{$code}</strong><br /><br />Ceci est un e-mail envoyé automatiquement depuis site Web {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_EMAIL_CONFIG_TEST] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Envoyer un e-mail de test pour tester la configuration de l\'envoi d\'e-mails',
+    's' => 'Tester l\'e-mail',
+    'c' => 'Ceci est un courrier électronique de test pour vérifier la configuration du courrier. Supprimez-le simplement!'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_NEWS_SENDMAIL] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_MODULE,
+    't' => 'Envoyer un e-mail présentant l\'article à un ami dans le module d\'actualités',
+    's' => 'Message de {$from_name}',
+    'c' => 'Bonjour!<br />Votre ami {$from_name} aimerait vous présenter l\'article “{$post_name}” sur le site {$site_name}{if not empty($message)} avec le message:<br />{$message}{/if}.<br/>----------<br/><strong>{$post_name}</strong><br/>{$hometext}<br/><br/>Vous pouvez consulter l\'intégralité de l\'article en cliquant sur le lien ci-dessous:<br /><a href="{$link}" title="{$post_name}">{$link}</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

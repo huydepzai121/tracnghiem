@@ -117,6 +117,11 @@ class Tpl
     public const E_USER_OAUTH_SELF_DEL = 24;
 
     /**
+     * @var integer Gửi mã xác minh email khi đăng nhập qua Oauth mà email trùng với tài khoản đã có
+     */
+    public const E_USER_OAUTH_VERIFY_EMAIL = 25;
+
+    /**
      * @var integer Thông báo xóa tài khoản quản trị
      */
     public const E_AUTHOR_DELETE = 15;
@@ -136,5 +141,15 @@ class Tpl
      */
     public const E_AUTO_ERROR_REPORT = 18;
 
-    // Max ID: 24
+    /**
+     * @var integer Email gửi thử nghiệm để kiểm tra cấu hình gửi mail
+     */
+    public const E_EMAIL_CONFIG_TEST = 26;
+
+    /**
+     * @var integer Gửi email giới thiệu bài viết cho bạn bè tại module news
+     */
+    public const E_NEWS_SENDMAIL = 27;
+
+    // Max ID: 27
 }

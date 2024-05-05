@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_EMAILTEMPLATES')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Template\Email\Emf;
+
 $emailid = $nv_Request->get_absint('emailid', 'post,get', 0);
 
 $sql = 'SELECT * FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE emailid = ' . $emailid;
@@ -25,14 +27,54 @@ if (empty($array)) {
 $array['title'] = $array[NV_LANG_DATA . '_title'];
 $array['lang_subject'] = $array[NV_LANG_DATA . '_subject'];
 $array['lang_content'] = $array[NV_LANG_DATA . '_content'];
-$array['pids'] = array_filter(array_unique(array_merge_recursive(explode(',', $array['sys_pids']), explode(',', $array['pids']))));
+$array['pids'] = array_values(array_filter(array_unique(array_merge_recursive(explode(',', $array['sys_pids']), explode(',', $array['pids'])))));
 $array['test_tomail'] = [$admin_info['email']];
 
 // Hook xử lý biến $array khi lấy từ CSDL ra
 $array = nv_apply_hook('', 'emailtemplates_content_from_db', [$array], $array);
 
-$merge_fields = $field_data = [];
-if (!empty($array['pids'])) {
+$error = $merge_fields = $field_data = [];
+$email_data = nv_get_email_template($emailid);
+if ($email_data === false) {
+    $error[] = $nv_Lang->getModule('test_error_template');
+}
+
+if (sizeof($array['pids']) == 1 and $array['pids'][0] == Emf::P_ALL and !empty($email_data)) {
+    /*
+     * Các mẫu email chỉ sử dụng plugin all field thì lấy các biến trong nội dung email để làm $merge_fields
+     * Chỉ hỗ trợ các biến đơn dạng string, number. Muốn soạn thảo một mẫu email phức tạp hãy dùng plugin riêng để xử lý.
+     */
+    $pattern = '/\{[\s]*\$([a-zA-Z0-9\_]+)[\s]*\}/s';
+    unset($matches);
+    preg_match_all($pattern, $email_data['subject'] . ' ' . $email_data['content'], $matches);
+    if (!empty($matches[1])) {
+        foreach ($matches[1] as $key => $value) {
+            $merge_fields[$value] = [
+                'name' => $nv_Lang->getGlobal($value),
+                'data' => '',
+                'type' => Emf::T_STRING
+            ];
+        }
+    }
+
+    // Dạng mảng key value
+    $pattern = '/\{[\s]*\$([a-zA-Z0-9\_]+)[\s]*\.[\s]*([a-zA-Z0-9\_]+)\}/s';
+    unset($matches);
+    preg_match_all($pattern, $email_data['subject'] . ' ' . $email_data['content'], $matches);
+    if (!empty($matches[1])) {
+        foreach ($matches[1] as $key => $value) {
+            if (!isset($merge_fields[$value])) {
+                $merge_fields[$value] = [
+                    'name' => $nv_Lang->getGlobal($value),
+                    'data' => '',
+                    'type' => Emf::T_ARRAY,
+                    'keys' => []
+                ];
+            }
+            $merge_fields[$value]['keys'][$matches[2][$key]] = $matches[2][$key];
+        }
+    }
+} elseif (!empty($array['pids'])) {
     $args = [
         'mode' => 'PRE',
         'setpids' => $array['pids']
@@ -41,7 +83,6 @@ if (!empty($array['pids'])) {
 }
 
 $page_title = $nv_Lang->getModule('test');
-$error = [];
 $success = false;
 
 if ($nv_Request->get_title('tokend', 'post', '') === NV_CHECK_SESSION) {
@@ -62,12 +103,11 @@ if ($nv_Request->get_title('tokend', 'post', '') === NV_CHECK_SESSION) {
     }
 
     foreach ($merge_fields as $fieldname => $field) {
-        $field_data[$fieldname] = $nv_Request->get_title('f_' . $fieldname, 'post', '');
-    }
-
-    $email_data = nv_get_email_template($emailid);
-    if ($email_data === false) {
-        $error[] = $nv_Lang->getModule('test_error_template');
+        if (isset($field['type']) and in_array($field['type'], [Emf::T_LIST, Emf::T_ARRAY])) {
+            $field_data[$fieldname] = $nv_Request->get_typed_array('f_' . $fieldname, 'post', 'title', []);
+        } else {
+            $field_data[$fieldname] = $nv_Request->get_title('f_' . $fieldname, 'post', '');
+        }
     }
 
     if (empty($error)) {
@@ -118,6 +158,7 @@ if ($nv_Request->get_title('tokend', 'post', '') === NV_CHECK_SESSION) {
 
 $tpl = new \NukeViet\Template\NVSmarty();
 $tpl->registerPlugin('modifier', 'implode', 'implode');
+$tpl->registerPlugin('modifier', 'sizeof', 'sizeof');
 $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
 $tpl->assign('LANG', $nv_Lang);
 

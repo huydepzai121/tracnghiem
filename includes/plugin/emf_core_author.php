@@ -9,6 +9,10 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
+if (!defined('NV_MAINFILE')) {
+    exit('Stop!!!');
+}
+
 $callback = function ($vars, $from_data, $receive_data) {
     $merge_fields = [];
     $vars['pid'] = (int) $vars['pid'];

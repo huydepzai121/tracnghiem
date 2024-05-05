@@ -83,3 +83,6 @@ $lang_module['test_error_template'] = 'Ce modèle d\'e-mail n\'existe pas';
 $lang_module['test_tomail_note'] = 'Entrez un e-mail par ligne, généralement jusqu\'à 50 e-mails';
 $lang_module['test_value_fields'] = 'Les champs personnalisés';
 $lang_module['test_success'] = 'Test e-mail envoyé avec succès, veuillez vérifier votre boîte de réception (boîte de spam si elle n\'est pas dans votre boîte de réception) pour voir l\'e-mail reçu';
+$lang_module['test_note1'] = 'La fonctionnalité d\'envoi de test par e-mail prend en charge des variables uniques avec des données de chaîne ou numériques telles que <code>$site_name</code>, <code>$username</code> et des données de tableau unidimensionnelles de chaînes ou par exemple <code>$user.full_name</code>';
+$lang_module['test_note2'] = 'Si votre variable est un tableau, écrivez <code>$user.full_name</code> au lieu de <code>$user[\'full_name\']</code>';
+$lang_module['test_note3'] = 'Lorsque vous rédigez un modèle d\'e-mail avec des conditions et des variables complexes qui dépassent la portée de la prise en charge ci-dessus, testez l\'envoi d\'e-mails à l\'aide de la fonction <code>nv_sendmail_from_template</code> ou de la fonction <code>nv_sendmail_template_async</code> via la programmation';

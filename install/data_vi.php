@@ -301,6 +301,27 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_SELF_DEL] = [
     's' => 'Thông báo bảo mật',
     'c' => '{$greeting_user}<br /><br />Tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được ngắt kết nối khỏi tài khoản <strong>{$username}</strong> của bạn. Nếu đây không phải là chủ ý của bạn, vui lòng nhanh chóng liên hệ với quản trị site để được giúp đỡ.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_VERIFY_EMAIL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Gửi mã xác minh email khi đăng nhập qua Oauth mà email trùng với tài khoản đã có',
+    's' => 'Thư xác minh email mới',
+    'c' => 'Xin chào!<br /><br />Bạn đã gửi yêu cầu xác minh email: {$email}. Hãy chép mã dưới đây vào ô Mã xác minh trên site.<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_EMAIL_CONFIG_TEST] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Email gửi thử nghiệm để kiểm tra cấu hình gửi mail',
+    's' => 'Email thử nghiệm',
+    'c' => 'Đây là email thử nghiệm để kiểm tra cấu hình gửi mail. Đơn giản bạn hãy xóa nó đi!'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_NEWS_SENDMAIL] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_MODULE,
+    't' => 'Gửi email giới thiệu bài viết cho bạn bè tại module news',
+    's' => 'Tin nhắn từ {$from_name}',
+    'c' => 'Xin chào!<br />Bạn của bạn là {$from_name} mong muốn giới thiệu với bạn bài viết “{$post_name}” trên website {$site_name}{if not empty($message)} với lời nhắn:<br />{$message}{/if}.<br/>----------<br/><strong>{$post_name}</strong><br/>{$hometext}<br/><br/>Bạn có thể xem đầy đủ bài viết bằng cách click vào link bên dưới:<br /><a href="{$link}" title="{$post_name}">{$link}</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

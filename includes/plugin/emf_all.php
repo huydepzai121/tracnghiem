@@ -9,6 +9,10 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
+if (!defined('NV_MAINFILE')) {
+    exit('Stop!!!');
+}
+
 // Các trường dữ liệu tổng quát. Đưa vào gì thì sẽ assign ra cái đó.
 $callback = function ($vars, $from_data, $receive_data) {
     $merge_fields = [];

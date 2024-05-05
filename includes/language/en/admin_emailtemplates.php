@@ -90,3 +90,6 @@ $lang_module['test_error_template'] = 'This email template does not exist';
 $lang_module['test_tomail_note'] = 'Enter one email per line, usually up to 50 emails';
 $lang_module['test_value_fields'] = 'Custom fields';
 $lang_module['test_success'] = 'Test email sent successfully, please check your inbox (spam box if not in your inbox) to see the email received';
+$lang_module['test_note1'] = 'The email test sending feature supports single variables with string or numeric data such as <code>$site_name</code>, <code>$username</code>, and one-dimensional array data of strings or numbers e.g. <code>$user.full_name</code>';
+$lang_module['test_note2'] = 'If your variable is an array, write <code>$user.full_name</code> instead of <code>$user[\'full_name\']</code>';
+$lang_module['test_note3'] = 'When you draft an email template with complex conditions and variables that are beyond the scope of support above, test sending emails using the <code>nv_sendmail_from_template</code> function or the <code>nv_sendmail_template_async</code> function through programming';

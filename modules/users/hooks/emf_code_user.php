@@ -9,6 +9,12 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
+if (!defined('NV_MAINFILE')) {
+    exit('Stop!!!');
+}
+
+use NukeViet\Template\Email\Emf;
+
 // Các trường dữ liệu khi gửi email thông tin kích hoạt tài khoản đến email của thành viên
 $callback = function ($vars, $from_data, $receive_data) {
     $merge_fields = [];
@@ -54,7 +60,8 @@ $callback = function ($vars, $from_data, $receive_data) {
         ];
         $merge_fields['new_code'] = [
             'name' => $nv_Lang->getModule('user_2step_newcodes'),
-            'data' => []
+            'data' => [],
+            'type' => Emf::T_LIST
         ];
         $merge_fields['oauth_name'] = [
             'name' => $nv_Lang->getModule('openid_server'),

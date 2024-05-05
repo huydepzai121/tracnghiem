@@ -3786,11 +3786,12 @@ function nv_get_email_template($emailid, $lang = '')
  *                        không chỉ ra thì lấy ngôn ngữ giao diện hiện hành.
  *                        Trường hợp gửi email bất đồng bộ cần chú ý nếu không chỉ ra nó sẽ luôn gửi
  *                        bằng ngôn ngữ mặc định của site
+ * @param boolean   $test_mode
  * @return bool|bool[]
  */
-function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lang = '')
+function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lang = '', $test_mode = false)
 {
-    global $global_config;
+    global $global_config, $db;
 
     $email_data = nv_get_email_template($emailid, $lang);
     if ($email_data === false) {
@@ -3804,11 +3805,23 @@ function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lan
         'mode' => 'FULL',
         'setpids' => $email_data['pids']
     ];
+    $gconfigs = [
+        'site_name' => $global_config['site_name'],
+        'site_email' => $global_config['site_email']
+    ];
+    if ((empty($email_data['from'][0]) or empty($email_data['from'][1])) and !empty($lang) and $lang != NV_LANG_DATA and in_array($lang, $global_config['setup_langs'], true)) {
+        // Gửi email ngôn ngữ khác thì lấy lại tên site trong CSDL
+        $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
+        $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $lang . "' AND module='global' AND config_name IN (" . $in . ')');
+        while ($row = $result->fetch()) {
+            $gconfigs[$row['config_name']] = $row['config_value'];
+        }
+    }
     if (empty($email_data['from'][0])) {
-        $email_data['from'][0] = $global_config['site_name'];
+        $email_data['from'][0] = $gconfigs['site_name'];
     }
     if (empty($email_data['from'][1])) {
-        $email_data['from'][1] = $global_config['site_email'];
+        $email_data['from'][1] = $gconfigs['site_email'];
     }
     if (!empty($attachments)) {
         $email_data['attachments'] = array_merge_recursive(array_unique(array_filter(array_map('trim', explode(',', $attachments)))));
@@ -3842,8 +3855,16 @@ function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lan
                 $email_lang = $email_content[1];
                 $email_content = $email_content[0];
             }
+            if (!empty($row['from'])) {
+                if (is_array($row['from'])) {
+                    $_email_data['from'][0] = $row['from'][0];
+                    $_email_data['from'][1] = $row['from'][1];
+                } else {
+                    $_email_data['from'][1] = $row['from'];
+                }
+            }
 
-            $result[] = nv_sendmail($_email_data['from'], $row['to'], $email_subject, $email_content, implode(',', $_email_data['attachments']), false, false, $_email_data['cc'], $_email_data['bcc'], !$email_data['is_selftemplate'], [], $email_lang);
+            $result[] = nv_sendmail($_email_data['from'], $row['to'], $email_subject, $email_content, implode(',', $_email_data['attachments']), false, $test_mode, $_email_data['cc'], $_email_data['bcc'], !$email_data['is_selftemplate'], [], $email_lang);
         } catch (Throwable $e) {
             trigger_error(print_r($e, true));
             $result[] = false;
