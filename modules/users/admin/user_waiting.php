@@ -433,51 +433,28 @@ if ($nv_Request->isset_request('userid', 'get')) {
         nv_delete_notification(NV_LANG_DATA, $module_name, 'send_active_link_fail', $userid);
         nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('active_users'), 'userid: ' . $user_id . ' - username: ' . $post['username'], $admin_info['userid']);
 
-        $maillang = '';
+        $maillang = NV_LANG_INTERFACE;
         if (NV_LANG_DATA != NV_LANG_INTERFACE) {
             $maillang = NV_LANG_DATA;
         }
 
-        $_url = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN);
-        $gconfigs = [
-            'site_name' => $global_config['site_name'],
-            'site_email' => $global_config['site_email']
-        ];
-        if (!empty($maillang)) {
-            $greeting = greeting_for_user_create($post['username'], $post['first_name'], $post['last_name'], $post['gender'], $maillang);
-
-            $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
-            $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $maillang . "' AND module='global' AND config_name IN (" . $in . ')');
-            while ($row = $result->fetch()) {
-                $gconfigs[$row['config_name']] = $row['config_value'];
-            }
-
-            $nv_Lang->loadFile(NV_ROOTDIR . '/modules/' . $module_file . '/language/' . $maillang . '.php', true);
-        } else {
-            $greeting = greeting_for_user_create($post['username'], $post['first_name'], $post['last_name'], $post['gender']);
-        }
-
-        $pass_reset_request = $_user['pass_reset_request'] == 2 ? $nv_Lang->getModule('pass_reset_request2_info') : ($_user['pass_reset_request'] == 1 ? $nv_Lang->getModule('pass_reset_request1_info') : '');
-        if (!empty($userdata['openid_info'])) {
-            if (!empty($password)) {
-                $mail_message = $nv_Lang->getModule('adduser_register_openid_info_with_password', $greeting, $gconfigs['site_name'], $_url, ucfirst($reg_attribs['server']), $post['username'], $password);
-            } else {
-                $mail_message = $nv_Lang->getModule('adduser_register_openid_info', $greeting, $gconfigs['site_name'], $_url, ucfirst($reg_attribs['server']));
-            }
-        } else {
-            if (!empty($password)) {
-                $mail_message = $nv_Lang->getModule('adduser_register_info_with_password', $greeting, $gconfigs['site_name'], $_url, $post['username'], $password);
-            } else {
-                $mail_message = $nv_Lang->getModule('admin_adduser_register_info', $greeting, $gconfigs['site_name'], $_url, $post['username']);
-            }
-        }
-
-        if (!empty($maillang)) {
-            $nv_Lang->changeLang();
-        }
-
-        if (!nv_apply_hook($module_name, 'admin_active_account', [$user_id, $post, $userdata, $mail_subject, $mail_message], false)) {
-            @nv_sendmail_async([$gconfigs['site_name'], $gconfigs['site_email']], $post['email'], $mail_subject, $mail_message, '', false, false, [], [], true, [], $maillang);
+        if (!nv_apply_hook($module_name, 'admin_active_account', [$user_id, $post, $userdata, $maillang], false)) {
+            $send_data = [[
+                'to' => $post['email'],
+                'data' => [
+                    'first_name' => $post['first_name'],
+                    'last_name' => $post['last_name'],
+                    'username' => $post['username'],
+                    'email' => $post['email'],
+                    'gender' => $post['gender'],
+                    'lang' => $maillang,
+                    'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN),
+                    'oauth_name' => !empty($userdata['openid_info']) ? ucfirst($reg_attribs['server']) : '',
+                    'password' => $password,
+                    'pass_reset' => $post['pass_reset_request']
+                ]
+            ]];
+            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_ADMIN_ACTIVE, $send_data, $maillang);
         }
         nv_jsonOutput([
             'status' => 'OK',
@@ -498,6 +475,7 @@ if ($nv_Request->isset_request('userid', 'get')) {
     // Xuất HTML
     $xtpl = new XTemplate('user_waitting.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
     $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
     $xtpl->assign('FORM_ACTION', $base_url . '&amp;userid=' . $userid);
     $xtpl->assign('NV_UNICKMIN', $global_config['nv_unickmin']);
     $xtpl->assign('NV_UNICKMAX', $global_config['nv_unickmax']);

@@ -329,6 +329,34 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_NEWS_REPORT_THANKS] = [
     's' => 'Cảm ơn bạn đã báo lỗi',
     'c' => 'Xin chào!<br />Ban quản trị website {$site_name} cảm ơn bạn đã gửi đến chúng tôi báo cáo lỗi trong nội dung bài viết. Lỗi mà bạn thông báo đã được chúng tôi sửa lại.<br />Hy vọng sẽ nhận được sự giúp đỡ tiếp theo của bạn trong tương lai.<br />Chúc bạn luôn mạnh khỏe, hạnh phúc và thành công!'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_ACTIVE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Email thông báo cho người dùng khi quản trị kích hoạt tài khoản',
+    's' => 'Tài khoản của bạn đã được tạo',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. {if empty($oauth_name)}Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />{if not empty($password)}Mật khẩu: {$password}{/if}{else}Để đăng nhập vui lòng truy cập vào trang: <a href="{$link}">{$link}</a> và click vào nút: <strong>Đăng nhập bằng {$oauth_name}</strong>.{if not empty($password)}<br /><br />Bạn cũng có thể đăng nhập theo cách thông thường với thông tin:<br />Bí danh: {$username}<br />Mật khẩu: {$password}{/if}{/if}{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.{/if}<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_REQUEST_RESET_PASS] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Email yêu cầu người dùng thay đổi mật khẩu',
+    's' => '{if $pass_reset eq 2}Khuyến cáo thay đổi mật khẩu truy cập{else}Cần thay đổi mật khẩu truy cập{/if}',
+    'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo: Vì lý do bảo mật chúng tôi {if $pass_reset eq 2}khuyến cáo bạn nên{else}đề nghị bạn nhanh chóng{/if} thay đổi mật khẩu truy cập tài khoản của mình. Để thay đổi mật khẩu, trước hết bạn cần truy cập vào trang <a href="{$link}">Quản lý tài khoản cá nhân</a>, chọn nút Thiết lập tài khoản, sau đó chọn nút Mật khẩu và làm theo hướng dẫn.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPOFF_BYADMIN] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo đến người dùng xác thực hai bước đã được quản trị tắt',
+    's' => 'Thông báo bảo mật',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn vừa được tắt xác thực hai bước bởi quản trị viên. Chúng tôi gửi cho bạn email này để thông tin đến bạn.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý xác thực hai bước</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_ADMIN_DEL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo oauth được xóa khỏi tài khoản bởi quản trị',
+    's' => 'Thông báo bảo mật',
+    'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được ngắt kết nối khỏi tài khoản của bạn bởi quản trị viên.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

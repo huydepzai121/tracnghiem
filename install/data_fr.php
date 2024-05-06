@@ -329,6 +329,34 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_NEWS_REPORT_THANKS] = [
     's' => 'Merci d\'avoir soumis un rapport d\'erreur',
     'c' => 'Bonjour!<br />L\'administration du site Web de {$site_name} vous remercie beaucoup d\'avoir soumis un rapport d\'erreur dans le contenu de l\'article de notre site Web. Nous avons corrigé l\'erreur que vous avez signalée.<br />Nous espérons recevoir votre prochaine aide à l\'avenir. Je vous souhaite toujours la santé, le bonheur et le succès!'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_ACTIVE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Un e-mail avertit les utilisateurs lorsque l\'administrateur active le compte',
+    's' => 'Votre compte a été créé',
+    'c' => '{$greeting_user}<br /><br />Votre compte sur le site Web {$site_name} est activé. {if empty($oauth_name)}Les informations de connexion est au dessous:<br /><br />URL: <a href="{$link}">{$link}</a><br />Nom de compte: {$username}<br />{if not empty($password)}Mot de passe: {$password}{/if}{else}Pour vous connecter à votre compte, veuillez visiter la page: <a href="{$link}">{$link}</a> et appuyez sur le bouton: <strong>Connectez-vous avec {$oauth_name}</strong>.{if not empty($password)}<br /><br />Vous pouvez également vous connecter en utilisant la méthode habituelle avec les informations suivantes:<br />Nom de compte: {$username}<br />Mot de passe: {$password}{/if}{/if}{if $pass_reset eq 2}<br />Remarque: Nous vous recommandons de changer votre mot de passe avant d\'utiliser votre compte.{elseif $pass_reset eq 1}<br />Remarque: Vous devez changer votre mot de passe avant d\'utiliser votre compte.{/if}<br /><br />Cela est un message automatique qui était envoyé à votre boîte mail à partir du site {$site_name}. Si vous ne comprenez pas le contenu de ce mail, vous pouvez simplement le supprimer.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_REQUEST_RESET_PASS] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'E-mail demandant à l\'utilisateur de modifier son mot de passe',
+    's' => '{if $pass_reset eq 2}Changement de mot de passe de compte recommandé{else}Besoin de changer le mot de passe du compte{/if}',
+    'c' => '{$greeting_user}<br /><br />L\'administration du site {$site_name} informe: Pour des raisons de sécurité, {if $pass_reset eq 2}nous vous recommandons de modifier{else}vous devez changer{/if} le mot de passe de votre compte dès que possible. Pour modifier votre mot de passe, vous devez d\'abord vous rendre sur la page <a href="{$link}">Gestion du compte personnel</a>, sélectionner le bouton Paramètres du compte, puis le bouton Mot de passe, et suivre les instructions.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPOFF_BYADMIN] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification aux utilisateurs indiquant que l\'authentification en deux étapes a été désactivée par l\'administrateur',
+    's' => 'Avis de confidentialité',
+    'c' => '{$greeting_user}<br /><br />Votre compte vient de voir l\'authentification en deux étapes désactivée par votre administrateur. Nous vous envoyons cet e-mail pour vous informer.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Gérer l\'authentification en deux étapes</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_ADMIN_DEL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Avertir les utilisateurs lorsque les administrateurs suppriment leur compte tiers',
+    's' => 'Avis de confidentialité',
+    'c' => '{$greeting_user}<br /><br />Nous vous informons que le compte tiers <strong>{$oauth_name}</strong> vient d\'être déconnecté de votre compte par un administrateur.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Gérer les comptes tiers</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

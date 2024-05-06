@@ -112,6 +112,11 @@ class Tpl
     public const E_USER_OAUTH_LEADER_DEL = 23;
 
     /**
+     * @var integer Thông báo oauth được xóa khỏi tài khoản bởi quản trị
+     */
+    public const E_USER_OAUTH_ADMIN_DEL = 32;
+
+    /**
      * @var integer Thông báo oauth được xóa khỏi tài khoản bởi chính người dùng
      */
     public const E_USER_OAUTH_SELF_DEL = 24;
@@ -120,6 +125,21 @@ class Tpl
      * @var integer Gửi mã xác minh email khi đăng nhập qua Oauth mà email trùng với tài khoản đã có
      */
     public const E_USER_OAUTH_VERIFY_EMAIL = 25;
+
+    /**
+     * @var integer Email thông báo cho người dùng khi quản trị kích hoạt tài khoản
+     */
+    public const E_USER_ADMIN_ACTIVE = 29;
+
+    /**
+     * @var integer Email yêu cầu người dùng thay đổi mật khẩu
+     */
+    public const E_USER_REQUEST_RESET_PASS = 30;
+
+    /**
+     * @var integer Thông báo đến người dùng xác thực hai bước đã được quản trị tắt
+     */
+    public const E_USER_2STEPOFF_BYADMIN = 31;
 
     /**
      * @var integer Thông báo xóa tài khoản quản trị
@@ -156,5 +176,8 @@ class Tpl
      */
     public const E_NEWS_REPORT_THANKS = 28;
 
-    // Max ID: 27
+    /**
+     * @var integer ID mẫu email lớn nhất của hệ thống
+     */
+    public const MAX_SYS_TPL = 32;
 }

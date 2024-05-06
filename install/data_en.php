@@ -329,6 +329,34 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_NEWS_REPORT_THANKS] = [
     's' => 'Thank you for submitting an error report',
     'c' => 'Hello!<br />{$site_name} website administration thank you very much for submitting an error report in the content of the article of our website. We fixed the error you reported.<br />Hope to receive your next help in the future. Wish you always healthy, happy and successful!'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_ACTIVE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Email notifies users when the administrator activates the account',
+    's' => 'Your account has been created',
+    'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} activated. {if empty($oauth_name)}Your login information:<br /><br />URL: <a href="{$link}">{$link}</a><br />Username: {$username}<br />{if not empty($password)}Password: {$password}{/if}{else}To log into your account please visit the page: <a href="{$link}">{$link}</a> and press the button: <strong>Sign in with {$oauth_name}</strong>.{if not empty($password)}<br /><br />You can also log in using the usual method with the following information:<br />Username: {$username}<br />Password: {$password}{/if}{/if}{if $pass_reset eq 2}<br />Note: We recommend that you change your password before using your account.{elseif $pass_reset eq 1}<br />Note: You need to change your password before using your account.{/if}<br /><br />This is email automatic sending from website {$site_name}.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_REQUEST_RESET_PASS] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Email asking user to change password',
+    's' => '{if $pass_reset eq 2}Recommended account password change{else}Need to change account password{/if}',
+    'c' => '{$greeting_user}<br /><br />The {$site_name} website administration informs: For security reasons, {if $pass_reset eq 2}we recommend that you{else}you need to{/if} change your account password as soon as possible. To change your password, you need to first visit the <a href="{$link}">Manage Personal Account page</a>, select the Account Settings button, then the Password button, and follow the instructions.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPOFF_BYADMIN] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notification to users that two-step authentication has been turned off by the administrator',
+    's' => 'Privacy Notice',
+    'c' => '{$greeting_user}<br /><br />Your account has just had two-step authentication disabled by your administrator. We send you this email to inform you.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Manage two-step authentication</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_ADMIN_DEL] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notify users when administrators delete their third-party account',
+    's' => 'Privacy Notice',
+    'c' => '{$greeting_user}<br /><br />We are informing you that the third party account <strong>{$oauth_name}</strong> has just been disconnected from your account by an administrator. We send you this email to inform you.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],
