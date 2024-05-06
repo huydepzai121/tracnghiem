@@ -133,7 +133,7 @@ if ($allow_change and $nv_Request->get_int('save', 'post', 0)) {
                     'username' => $admin_info['username']
                 ]
             ]];
-            nv_sendmail_template_async($new_suspend ? NukeViet\Template\Email\Tpl::E_AUTHOR_SUSPEND : NukeViet\Template\Email\Tpl::E_AUTHOR_REACTIVE, $send_data, '', $maillang);
+            nv_sendmail_template_async($new_suspend ? NukeViet\Template\Email\Tpl::E_AUTHOR_SUSPEND : NukeViet\Template\Email\Tpl::E_AUTHOR_REACTIVE, $send_data, $maillang);
         }
         nv_jsonOutput([
             'status' => 'OK',

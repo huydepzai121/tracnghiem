@@ -495,10 +495,9 @@ if ($nv_Request->isset_request('submittest', 'post') and $checkss == $nv_Request
         $maillang = NV_LANG_DATA;
     }
     $send_data = [[
-        'to' => $admin_info['email'],
-        'data' => []
+        'to' => $admin_info['email']
     ]];
-    $check = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_EMAIL_CONFIG_TEST, $send_data, '', $maillang, true);
+    $check = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_EMAIL_CONFIG_TEST, $send_data, $maillang, '', true);
     if (!empty($check)) {
         nv_htmlOutput($check);
     } else {

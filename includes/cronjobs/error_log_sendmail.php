@@ -34,7 +34,7 @@ function cron_auto_sendmail_error_log()
                 'site_name' => $global_config['site_name']
             ],
         ]];
-        $result = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_AUTO_ERROR_REPORT, $send_data, $file);
+        $result = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_AUTO_ERROR_REPORT, $send_data, '', $file);
         if ($result) {
             if (!@unlink($file)) {
                 $result = false;

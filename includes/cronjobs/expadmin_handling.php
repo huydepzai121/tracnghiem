@@ -72,7 +72,7 @@ function cron_expadmin_handling()
             $nv_Lang->changeLang();
 
             if (!empty($is_sendmail)) {
-                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_AUTHOR_SUSPEND, $is_sendmail, '', $userlang);
+                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_AUTHOR_SUSPEND, $is_sendmail, $userlang);
             }
         }
     }

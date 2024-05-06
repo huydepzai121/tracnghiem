@@ -118,7 +118,7 @@ if (md5(NV_CHECK_SESSION . '_' . $module_name . '_main') == $nv_Request->get_str
                         'lang' => $maillang
                     ]
                 ]];
-                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_DELETE, $send_data, '', $maillang);
+                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_DELETE, $send_data, $maillang);
             }
         }
     }

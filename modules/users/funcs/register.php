@@ -462,7 +462,7 @@ if ($checkss == $array_register['checkss']) {
                     'lang' => NV_LANG_INTERFACE
                 ]
             ]];
-            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_NEW_INFO, $send_data, '', NV_LANG_INTERFACE);
+            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_NEW_INFO, $send_data, NV_LANG_INTERFACE);
 
             if (defined('ACCESS_ADDUS')) {
                 $url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=groups/' . $group_id;

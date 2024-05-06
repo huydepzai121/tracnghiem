@@ -1635,12 +1635,12 @@ function nv_sendmail_async($from, $to, $subject, $message, $files = '', $AddEmbe
  *
  * @param int     $emailid
  * @param array   $data
- * @param string  $attachments
  * @param string  $lang dùng để lấy ra subject và body của email.
  *                      Nếu không chỉ ra thì là ngôn ngữ giao diện hiện hành.
  *                      Biến này không nên trống, nếu để trống có khả năng nội dung email và tên website có thể lệch nhau
+ * @param string  $attachments
  */
-function nv_sendmail_template_async($emailid, $data = [], $attachments = '', $lang = '')
+function nv_sendmail_template_async($emailid, $data = [], $lang = '', $attachments = '')
 {
     global $global_config;
 
@@ -3781,17 +3781,17 @@ function nv_get_email_template($emailid, $lang = '')
 /**
  * @param int|mixed $emailid
  * @param array     $data
- * @param string    $attachments
  * @param string    $lang ngôn ngữ để lấy subject và body của email,
  *                        không chỉ ra thì lấy ngôn ngữ giao diện hiện hành.
  *                        Trường hợp gửi email bất đồng bộ cần chú ý nếu không chỉ ra nó sẽ luôn gửi
  *                        bằng ngôn ngữ mặc định của site
+ * @param string    $attachments
  * @param boolean   $test_mode
  * @return bool|bool[]
  */
-function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lang = '', $test_mode = false)
+function nv_sendmail_from_template($emailid, $data = [], $lang = '', $attachments = '', $test_mode = false)
 {
-    global $global_config, $db;
+    global $global_config, $db, $nv_Lang;
 
     $email_data = nv_get_email_template($emailid, $lang);
     if ($email_data === false) {
@@ -3807,7 +3807,8 @@ function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lan
     ];
     $gconfigs = [
         'site_name' => $global_config['site_name'],
-        'site_email' => $global_config['site_email']
+        'site_email' => $global_config['site_email'],
+        'site_phone' => $global_config['site_phone']
     ];
     if ((empty($email_data['from'][0]) or empty($email_data['from'][1])) and !empty($lang) and $lang != NV_LANG_DATA and in_array($lang, $global_config['setup_langs'], true)) {
         // Gửi email ngôn ngữ khác thì lấy lại tên site trong CSDL
@@ -3829,8 +3830,19 @@ function nv_sendmail_from_template($emailid, $data = [], $attachments = '', $lan
     $result = [];
     foreach ($data as $row) {
         try {
+            !isset($row['data']) && $row['data'] = [];
             $_args = array_merge($args, $row['data']);
             $merge_fields = nv_apply_hook('', 'get_email_merge_fields', $_args, [], 1);
+
+            // Thêm một số biến global nếu chúng chưa chỉ ra trong $merge_fields
+            foreach ($gconfigs as $key => $value) {
+                if (!isset($merge_fields[$key])) {
+                    $merge_fields[$key] = [
+                        'name' => $nv_Lang->getGlobal($key),
+                        'data' => $value
+                    ];
+                }
+            }
 
             $tpl = new \NukeViet\Template\NVSmarty();
             foreach ($merge_fields as $field_key => $field_value) {

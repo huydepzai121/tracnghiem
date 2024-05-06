@@ -468,7 +468,7 @@ if ($nv_Request->isset_request('confirm', 'post')) {
                 'password' => $_user['password1']
             ]
         ]];
-        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_ADMIN_EDIT, $send_data, '', $maillang);
+        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_ADMIN_EDIT, $send_data, $maillang);
     }
 
     nv_insert_logs(NV_LANG_DATA, $module_name, 'log_edit_user', 'userid ' . $userid, $admin_info['userid']);

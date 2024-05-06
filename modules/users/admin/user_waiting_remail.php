@@ -65,7 +65,7 @@ if ($nv_Request->isset_request('ajax', 'post')) {
                             'lang' => $maillang
                         ]
                     ]];
-                    $checkSend = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_USER_EMAIL_ACTIVE, $send_data, '', $maillang);
+                    $checkSend = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_USER_EMAIL_ACTIVE, $send_data, $maillang);
                     if ($checkSend) {
                         /*
                          * Cập nhật lại thời gian đăng ký là ngay lúc gửi mail này

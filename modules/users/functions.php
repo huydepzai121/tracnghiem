@@ -353,7 +353,7 @@ function nv_del_user($userid)
             'lang' => $lang
         ]
     ]];
-    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_DELETE, $send_data, '', $lang);
+    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_DELETE, $send_data, $lang);
 
     return $userid;
 }

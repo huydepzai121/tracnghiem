@@ -179,7 +179,7 @@ if ($nv_Request->isset_request('gid, getuserid', 'post, get')) {
                         'lang' => NV_LANG_INTERFACE
                     ]
                 ]];
-                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_LEADER_ADDED, $send_data, '', NV_LANG_INTERFACE);
+                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_LEADER_ADDED, $send_data, NV_LANG_INTERFACE);
             } else {
                 $db->query('DELETE FROM ' . NV_MOD_TABLE . ' WHERE userid=' . $row['userid']);
             }

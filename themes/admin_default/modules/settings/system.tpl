@@ -67,7 +67,7 @@
                 <ul class="list-group type2n1">
                     <li class="list-group-item">
                         <div class="form-group mb-0">
-                            <label class="col-sm-10 control-label"><strong>{LANG.site_email}</strong></label>
+                            <label class="col-sm-10 control-label"><strong>{GLANG.site_email}</strong></label>
                             <div class="col-sm-14">
                                 <input type="email" name="site_email" value="{DATA.site_email}" class="form-control" />
                             </div>
@@ -76,7 +76,7 @@
 
                     <li class="list-group-item">
                         <div class="form-group mb-0">
-                            <label class="col-sm-10 control-label"><strong>{LANG.site_phone}</strong></label>
+                            <label class="col-sm-10 control-label"><strong>{GLANG.site_phone}</strong></label>
                             <div class="col-sm-14">
                                 <div class="input-group">
                                     <input type="text" name="site_phone" value="{DATA.site_phone}" class="form-control" />

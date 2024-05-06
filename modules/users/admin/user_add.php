@@ -359,7 +359,7 @@ if ($nv_Request->isset_request('confirm', 'post')) {
                 'lang' => $maillang
             ]
         ]];
-        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_ADMIN_ADDED, $send_data, '', $maillang);
+        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_ADMIN_ADDED, $send_data, $maillang);
     }
 
     $redirect = $nv_redirect != '' ? nv_redirect_decrypt($nv_redirect) . '&userid=' . $userid : '';

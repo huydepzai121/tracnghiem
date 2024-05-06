@@ -50,6 +50,9 @@ if ($nv_Request->isset_request('getMergeFields', 'post')) {
     $merge_fields = nv_apply_hook('', 'get_email_merge_fields', $args, [], 1);
 
     // Các field của hệ thống luôn khả dụng với mọi trình xử lý
+    $merge_fields['site_name'] = ['name' => $nv_Lang->getGlobal('site_name')];
+    $merge_fields['site_mail'] = ['name' => $nv_Lang->getGlobal('site_mail')];
+    $merge_fields['site_phone'] = ['name' => $nv_Lang->getGlobal('site_phone')];
     $merge_fields['NV_BASE_SITEURL'] = ['name' => $nv_Lang->getGlobal('merge_field_sys_siteurl')];
     $merge_fields['NV_NAME_VARIABLE'] = ['name' => $nv_Lang->getGlobal('merge_field_sys_nv')];
     $merge_fields['NV_OP_VARIABLE'] = ['name' => $nv_Lang->getGlobal('merge_field_sys_op')];

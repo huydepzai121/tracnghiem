@@ -132,7 +132,7 @@ if ($checkss == $data['checkss']) {
                                     'active_deadline' => $row['regdate'] + 86400
                                 ]
                             ]];
-                            $ok = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_USER_LOST_ACTIVE, $send_data, '', NV_LANG_INTERFACE);
+                            $ok = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_USER_LOST_ACTIVE, $send_data, NV_LANG_INTERFACE);
 
                             if ($ok) {
                                 $password = $crypt->hash_password($password_new, $global_config['hashprefix']);

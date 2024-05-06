@@ -294,7 +294,7 @@ function new_openid_user_save($reg_username, $reg_email, $reg_password, $attribs
                 'lang' => NV_LANG_INTERFACE
             ]
         ]];
-        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_NEW_INFOOAUTH, $send_data, '', NV_LANG_INTERFACE);
+        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_NEW_INFOOAUTH, $send_data, NV_LANG_INTERFACE);
 
         if (defined('NV_IS_USER_FORUM') or defined('SSO_SERVER')) {
             require_once NV_ROOTDIR . '/' . $global_config['dir_forum'] . '/nukeviet/set_user_login.php';
@@ -707,7 +707,7 @@ if (defined('NV_OPENID_ALLOWED') and $nv_Request->isset_request('server', 'get')
                 'code' => $verikey
             ]
         ]];
-        $send = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_USER_OAUTH_VERIFY_EMAIL, $send_data, '', NV_LANG_INTERFACE);
+        $send = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_USER_OAUTH_VERIFY_EMAIL, $send_data, NV_LANG_INTERFACE);
         if (!$send) {
             nv_jsonOutput([
                 'status' => 'error',

@@ -54,7 +54,7 @@ function lost_pass_sendMail($row)
                 'deadline' => $pa
             ]
         ]];
-        $send = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_USER_LOST_PASS, $send_data, '', NV_LANG_INTERFACE);
+        $send = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_USER_LOST_PASS, $send_data, NV_LANG_INTERFACE);
         if (!$send) {
             nv_jsonOutput([
                 'status' => 'error',
@@ -326,7 +326,7 @@ if ($checkss == $data['checkss']) {
             'send_newvalue' => $global_config['send_pass']
         ]
     ]];
-    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SELF_EDIT, $send_data, '', NV_LANG_INTERFACE);
+    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SELF_EDIT, $send_data, NV_LANG_INTERFACE);
 
     $redirect = nv_redirect_decrypt($nv_redirect, true);
     $url = !empty($redirect) ? $redirect : nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, true);

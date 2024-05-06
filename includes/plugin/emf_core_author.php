@@ -24,10 +24,6 @@ $callback = function ($vars, $from_data, $receive_data) {
         // Đọc ngôn ngữ tạm của module
         $nv_Lang->loadModule('authors', true, true);
 
-        $merge_fields['site_name'] = [
-            'name' => $nv_Lang->getGlobal('site_name'),
-            'data' => ''
-        ];
         $merge_fields['link'] = [
             'name' => $nv_Lang->getGlobal('link'),
             'data' => ''
@@ -59,20 +55,6 @@ $callback = function ($vars, $from_data, $receive_data) {
 
         if ($vars['mode'] != 'PRE') {
             // Field dữ liệu cho các fields
-            global $global_config, $db;
-
-            $lang = !empty($vars['lang']) ? $vars['lang'] : NV_LANG_INTERFACE;
-
-            // Tên website
-            if ($lang != NV_LANG_DATA or empty($global_config['site_name'])) {
-                // Trường hợp gửi khác ngôn ngữ hiện tại thì lấy tên site theo ngôn ngữ khác.
-                $result = $db->query('SELECT config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang=" . $db->quote($lang) . " AND module='global' AND config_name='site_name'");
-                $site_name = $result->fetchColumn() ?: '';
-            } else {
-                $site_name = $global_config['site_name'];
-            }
-            $merge_fields['site_name']['data'] = $site_name;
-
             // Các field dạng chuỗi thuần
             $direct_keys = ['link', 'note', 'email', 'sig', 'position', 'username'];
             foreach ($direct_keys as $key) {

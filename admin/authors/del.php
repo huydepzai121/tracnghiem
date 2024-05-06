@@ -190,7 +190,7 @@ if ($nv_Request->get_title('checkss', 'post') == $checkss) {
                     'username' => $admin_info['username']
                 ]
             ]];
-            $send = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_AUTHOR_DELETE, $send_data, '', $maillang);
+            $send = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_AUTHOR_DELETE, $send_data, $maillang);
             if (!$send) {
                 $page_title = $nv_Lang->getGlobal('error_info_caption');
 

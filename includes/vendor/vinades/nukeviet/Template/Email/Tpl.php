@@ -151,5 +151,10 @@ class Tpl
      */
     public const E_NEWS_SENDMAIL = 27;
 
+    /**
+     * @var integer Gửi cảm ơn người báo lỗi khi xử lý thông báo lỗi tại module news
+     */
+    public const E_NEWS_REPORT_THANKS = 28;
+
     // Max ID: 27
 }
