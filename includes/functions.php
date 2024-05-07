@@ -1286,8 +1286,12 @@ function mailAddHtml($subject, $body, $gconfigs, $lang)
     }
 
     $mail_tpl = NV_ROOTDIR . '/' . NV_ASSETS_DIR . '/tpl/mail.tpl';
-    if (!empty($gconfigs['mail_tpl']) and file_exists(NV_ROOTDIR . '/' . $gconfigs['mail_tpl'])) {
-        $mail_tpl = NV_ROOTDIR . '/' . $gconfigs['mail_tpl'];
+    if (!empty($gconfigs['mail_tpl'])) {
+        if (file_exists(NV_ROOTDIR . '/' . $gconfigs['mail_tpl'])) {
+            $mail_tpl = NV_ROOTDIR . '/' . $gconfigs['mail_tpl'];
+        } elseif (file_exists($gconfigs['mail_tpl'])) {
+            $mail_tpl = $gconfigs['mail_tpl'];
+        }
     }
 
     $xtpl = new XTemplate($mail_tpl);
@@ -1352,13 +1356,14 @@ function mailAddHtml($subject, $body, $gconfigs, $lang)
  * $custom_headers:   Tiêu đề tùy chỉnh thêm vào phần header của mail (Dạng: Khóa => Giá trị)
  *
  * $lang:             Ngôn ngữ gửi mail, nếu rỗng sẽ là NV_LANG_DATA
+ * string $mail_tpl:  Tệp mẫu thư tùy chỉnh, nếu trống sẽ lấy theo cấu hình gửi mail
  */
-function nv_sendmail($from, $to, $subject, $message, $files = '', $AddEmbeddedImage = false, $testmode = false, $cc = [], $bcc = [], $mailhtml = true, $custom_headers = [], $lang = '')
+function nv_sendmail($from, $to, $subject, $message, $files = '', $AddEmbeddedImage = false, $testmode = false, $cc = [], $bcc = [], $mailhtml = true, $custom_headers = [], $lang = '', $mail_tpl = '')
 {
     global $global_config, $db, $crypt;
 
     $sm_parameters = [];
-    $sm_parameters['language'] = (empty($lang) or !in_array($lang, $global_config['setup_langs'], true)) ? NV_LANG_DATA : $lang;
+    $sm_parameters['language'] = (empty($lang) or !in_array($lang, $global_config['setup_langs'], true)) ? NV_LANG_INTERFACE : $lang;
 
     $gconfigs = $global_config;
     if ($lang != NV_LANG_DATA) {
@@ -1374,6 +1379,9 @@ function nv_sendmail($from, $to, $subject, $message, $files = '', $AddEmbeddedIm
             }
             $gconfigs[$row['config_name']] = $row['config_value'];
         }
+    }
+    if (!empty($mail_tpl)) {
+        $gconfigs['mail_tpl'] = $mail_tpl;
     }
 
     if ($gconfigs['mailer_mode'] == 'no') {
@@ -3773,6 +3781,19 @@ function nv_get_email_template($emailid, $lang = '')
         }
     }
 
+    // Xác định tệp mẫu thư tùy biến
+    $mailtpl = '';
+    if (!empty($email_data['mailtpl']) and preg_match('/^([a-zA-Z0-9\-\_]+)\:([a-zA-Z0-9\-\_]+)\.tpl$/i', $email_data['mailtpl'], $matches)) {
+        if ($matches[1] == 'assets') {
+            $mailtpl = NV_ROOTDIR . '/' . NV_ASSETS_DIR . '/tpl/' . $matches[2] . '.tpl';
+        } else {
+            $mailtpl = NV_ROOTDIR . '/themes/' . $matches[1] . '/system/' . $matches[2] . '.tpl';
+        }
+        if (!file_exists($mailtpl)) {
+            $mailtpl = '';
+        }
+    }
+
     // Dữ liệu trả về
     $data = [
         'pids' => array_filter(array_unique(array_merge_recursive(explode(',', $email_data['sys_pids']), explode(',', $email_data['pids'])))),
@@ -3785,7 +3806,7 @@ function nv_get_email_template($emailid, $lang = '')
         'is_disabled' => $email_data['is_disabled'],
         'is_plaintext' => $email_data['is_plaintext'],
         'is_selftemplate' => $email_data['is_selftemplate'],
-        'mailtpl' => $email_data['mailtpl']
+        'mailtpl' => $mailtpl
     ];
 
     return $data;
@@ -3889,7 +3910,7 @@ function nv_sendmail_from_template($emailid, $data = [], $lang = '', $attachment
                 }
             }
 
-            $result[] = nv_sendmail($_email_data['from'], $row['to'], $email_subject, $email_content, implode(',', $_email_data['attachments']), false, $test_mode, $_email_data['cc'], $_email_data['bcc'], !$email_data['is_selftemplate'], [], $email_lang);
+            $result[] = nv_sendmail($_email_data['from'], $row['to'], $email_subject, $email_content, implode(',', $_email_data['attachments']), false, $test_mode, $_email_data['cc'], $_email_data['bcc'], !$email_data['is_selftemplate'], [], $email_lang, $_email_data['mailtpl']);
         } catch (Throwable $e) {
             trigger_error(print_r($e, true));
             $result[] = false;

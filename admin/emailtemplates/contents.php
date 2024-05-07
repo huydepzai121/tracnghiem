@@ -29,13 +29,17 @@ while ($row = $result->fetch()) {
 
 // Đọc mẫu email
 $array_mailtpl = [];
-$lists = nv_scandir(NV_ROOTDIR . '/themes/' . $global_config['site_theme'] . '/system/', '/^mail\-(.*)\.tpl$/');
-foreach ($lists as $mailtpl) {
-    if (!preg_match('/\-en\.tpl$/', $mailtpl)) {
-        $mailtpl = substr($mailtpl, 5);
-        $mailtpl = substr($mailtpl, 0, -4);
-        $array_mailtpl[] = $mailtpl;
+$themes = nv_scandir(NV_ROOTDIR . '/themes', [$global_config['check_theme'], $global_config['check_theme_mobile'], $global_config['check_theme_admin']]);
+
+foreach ($themes as $theme) {
+    $lists = nv_scandir(NV_ROOTDIR . '/themes/' . $theme . '/system/', '/^mail(\-|\_)*(.*)\.tpl$/');
+    foreach ($lists as $mailtpl) {
+        $array_mailtpl[] = $theme . ':' . $mailtpl;
     }
+}
+$lists = nv_scandir(NV_ROOTDIR . '/' . NV_ASSETS_DIR . '/tpl/', '/^mail(\-|\_)*(.*)\.tpl$/');
+foreach ($lists as $mailtpl) {
+    $array_mailtpl[] = 'assets:' . $mailtpl;
 }
 
 // List các merge fields
@@ -178,7 +182,7 @@ if ($nv_Request->get_title('saveform', 'post', '') == NV_CHECK_SESSION) {
     if (!empty($array['catid']) and !isset($global_array_cat[$array['catid']])) {
         $array['catid'] = 0;
     }
-    if (!in_array($array['mailtpl'], $array_mailtpl)) {
+    if (!in_array($array['mailtpl'], $array_mailtpl, true)) {
         $array['mailtpl'] = '';
     }
     $array['send_cc'] = array_unique(array_filter(array_map('trim', explode(',', $array['send_cc']))));
