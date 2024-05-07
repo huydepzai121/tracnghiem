@@ -127,6 +127,11 @@ class Tpl
     public const E_USER_OAUTH_VERIFY_EMAIL = 25;
 
     /**
+     * @var integer Thông báo đến người dùng khi quản trị xóa tất cả Oauth của họ
+     */
+    public const E_USER_OAUTH_TRUNCATE = 36;
+
+    /**
      * @var integer Email thông báo cho người dùng khi quản trị kích hoạt tài khoản
      */
     public const E_USER_ADMIN_ACTIVE = 29;
@@ -142,6 +147,21 @@ class Tpl
     public const E_USER_2STEPOFF_BYADMIN = 31;
 
     /**
+     * @var integer Thông báo bật xác thực hai bước cho tài khoản thành viên
+     */
+    public const E_USER_2STEPON = 37;
+
+    /**
+     * @var integer Thông báo tắt xác thực hai bước cho tài khoản thành viên
+     */
+    public const E_USER_2STEPOFF = 38;
+
+    /**
+     * @var integer Thông báo tạo lại mã dự phòng xác thực hai bước cho tài khoản thành viên
+     */
+    public const E_USER_2STEPRENEW = 39;
+
+    /**
      * @var integer Thông báo xóa tài khoản quản trị
      */
     public const E_AUTHOR_DELETE = 15;
@@ -155,6 +175,21 @@ class Tpl
      * @var integer Thông báo kích hoạt lại tài khoản quản trị
      */
     public const E_AUTHOR_REACTIVE = 17;
+
+    /**
+     * @var integer Thông báo kích hoạt lại tài khoản quản trị
+     */
+    public const E_AUTHOR_2STEP_ADD = 33;
+
+    /**
+     * @var integer Thông báo kích hoạt lại tài khoản quản trị
+     */
+    public const E_AUTHOR_2STEP_TRUNCATE = 34;
+
+    /**
+     * @var integer Thông báo kích hoạt lại tài khoản quản trị
+     */
+    public const E_AUTHOR_2STEP_DEL = 35;
 
     /**
      * @var integer Gửi email thông báo lỗi tự động cho webmaster
@@ -179,5 +214,5 @@ class Tpl
     /**
      * @var integer ID mẫu email lớn nhất của hệ thống
      */
-    public const MAX_SYS_TPL = 32;
+    public const MAX_SYS_TPL = 39;
 }

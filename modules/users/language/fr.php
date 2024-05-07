@@ -360,7 +360,6 @@ $lang_module['another_option'] = 'Une autre option';
 $lang_module['verify_mail_error'] = 'Erreur : Le code de vérification de l\'e-mail n\'a pas été saisi ou est mal saisi.';
 $lang_module['verify_email_sent'] = 'Le code de vérification a été envoyé à l\'adresse que vous avez fournie ci-dessus (Si vous ne le voyez pas dans le dossier de la boîte de réception, vérifiez le dossier SPAM). Copiez et collez-le dans la case Code de vérification ci-dessous';
 $lang_module['verify_email_sent_error'] = 'Une erreur technique s\'est produite lors de l\'envoi du code de vérification à votre adresse e-mail. Veuillez contacter l\'administrateur du site à ce sujet.';
-$lang_module['security_alert'] = 'Avis de confidentialité';
 $lang_module['forcedrelogin'] = 'Reconnexion forcée partout';
 $lang_module['forcedrelogin_note'] = 'Vous êtes déconnecté de votre compte. Veuillez vous reconnecter';
 $lang_module['welcome_new_account'] = 'Bienvenue sur %s! Vous vous êtes inscrit avec succès. Commençons par la création de votre compte... Nous espérons que vous passerez un moment agréable et enrichissant sur notre site.';
@@ -828,7 +827,6 @@ $lang_module['pass_timeout'] = 'L\'utilisateur doit changer de mot de passe tous
 $lang_module['days'] = 'jours (0 = Non applicable)';
 $lang_module['oldpass_num'] = 'Nombre d\'anciens mots de passe stockés dans la base de données';
 $lang_module['send_password'] = 'Envoyer les informations de mot de passe à l\'e-mail de l\'utilisateur';
-$lang_module['security_alert_openid_truncate'] = 'Nous vous informons que tous les comptes tiers ont été déconnectés de votre compte <strong>%s</strong> par un administrateur.<br /><br /><a href="%s" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Gérer les comptes tiers</a>';
 $lang_module['email_dot_equivalent'] = 'Les e-mails avec un point avant le @ sont la version d\'un e-mail sans point';
 $lang_module['email_plus_equivalent'] = 'L\'alias d\'email (avec le signe + et après le + avant @) est une version de l\'e-mail principal (avant le +)';
 $lang_module['login_name_type'] = 'Type de nom de connexion';
@@ -873,7 +871,6 @@ $lang_module['active2step_status2'] = 'Demande de désactivation de la vérifica
 
 $lang_module['merge_field_active_deadline'] = 'Temps écoulé pour actif';
 $lang_module['merge_field_link'] = 'Lien';
-$lang_module['mf_greeting_user'] = 'Salutation';
 $lang_module['mf_send_newvalue'] = 'Envoyer une nouvelle valeur par e-mail';
 $lang_module['mf_label'] = 'Étiquette';
 $lang_module['mf_deadline'] = 'Date d\'expiration';

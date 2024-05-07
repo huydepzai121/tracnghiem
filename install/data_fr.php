@@ -357,6 +357,55 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_ADMIN_DEL] = [
     's' => 'Avis de confidentialité',
     'c' => '{$greeting_user}<br /><br />Nous vous informons que le compte tiers <strong>{$oauth_name}</strong> vient d\'être déconnecté de votre compte par un administrateur.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Gérer les comptes tiers</a>'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_ADD] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notez qu\'une nouvelle méthode d\'authentification en deux étapes a été ajoutée au compte administrateur',
+    's' => 'Configurer la vérification en 2 étapes à l\'aide d\'Oauth terminé',
+    'c' => '{$greeting_user}<br /><br />L\'administration du site {$site_name} tient à informer:<br />L\'authentification en deux étapes utilisant Oauth dans le panneau d\'administration a été installée avec succès. Vous pouvez utiliser le compte <strong>{$oauth_id}</strong> du fournisseur <strong>{$oauth_name}</strong> pour l\'authentification lorsque vous vous connectez à la zone d\'administration du site.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_TRUNCATE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notification indiquant que toutes les méthodes d\'authentification en deux étapes ont été supprimées du compte administrateur',
+    's' => 'La configuration de l\'authentification en deux étapes avec Oauth a été annulée',
+    'c' => '{$greeting_user}<br /><br />L\'administration du site {$site_name} tient à informer:<br />À votre demande, la validation en deux étapes à l\'aide d\'Oauth a été annulée avec succès. Désormais, vous ne pouvez plus utiliser le fournisseur de comptes <strong>{$oauth_id}</strong> pour vous authentifier dans la zone d\'administration du site.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_DEL] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notez que l\'authentification en deux étapes a été supprimée du compte administrateur',
+    's' => 'La configuration de l\'authentification en deux étapes avec Oauth a été annulée',
+    'c' => '{$greeting_user}<br /><br />L\'administration du site {$site_name} tient à informer:<br />À votre demande, la validation en deux étapes à l\'aide d\Oauth a été annulée avec succès. Désormais, vous ne pouvez plus utiliser le compte <strong>{$oauth_id}</strong> du fournisseur <strong>{$oauth_name}</strong> pour vous authentifier dans la zone d\'administration du site.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_TRUNCATE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Avertir les utilisateurs lorsque les administrateurs suppriment tous leurs comptes tiers',
+    's' => 'Avis de confidentialité',
+    'c' => '{$greeting_user}<br /><br />Nous vous informons que tous les comptes tiers ont été déconnectés de votre compte par un administrateur.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Gérer les comptes tiers</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPON] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Avis pour activer l\'authentification en deux étapes pour les comptes membres',
+    's' => 'Avis de confidentialité',
+    'c' => '{$greeting_user}<br /><br />Votre compte sur <a href="{$Home}"><strong>{$site_name}</strong></a> vient d\'activer Two-Factor Authentication. Information:<br /><br />- Temps: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Navigateur: <strong>{$browser}</strong><br /><br />Si c\'est vous, ignorez cet email. Si ce n\'est pas vous, votre compte est très probablement volé. Veuillez contacter l\'administrateur du site pour obtenir de l\'aide'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPOFF] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Avis de désactivation de l\'authentification en deux étapes pour les comptes membres',
+    's' => 'Avis de confidentialité',
+    'c' => '{$greeting_user}<br /><br />Votre compte sur <a href="{$Home}"><strong>{$site_name}</strong></a> vient d\'activer Two-Factor Authentication. Information:<br /><br />- Temps: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Navigateur: <strong>{$browser}</strong><br /><br />Si c\'est vous, ignorez cet email. Si ce n\'est pas vous, veuillez vérifier vos informations personnelles à l\'adresse <a href="{$link}">{$link}</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPRENEW] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Avis de régénération des codes de sauvegarde d\'authentification en deux étapes pour les comptes membres',
+    's' => 'Avis de confidentialité',
+    'c' => '{$greeting_user}<br /><br />Votre compte sur <a href="{$Home}"><strong>{$site_name}</strong></a> vient de recréer le code de sauvegarde. Information:<br /><br />- Temps: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Navigateur: <strong>{$browser}</strong><br /><br />Si c\'est vous, ignorez cet email. Si ce n\'est pas vous, veuillez vérifier vos informations personnelles à l\'adresse <a href="{$link}">{$link}</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

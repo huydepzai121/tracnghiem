@@ -31,7 +31,7 @@ $callback = function ($vars, $from_data, $receive_data) {
         }
 
         $merge_fields['greeting_user'] = [
-            'name' => $nv_Lang->getModule('mf_greeting_user'),
+            'name' => $nv_Lang->getGlobal('greeting_user'),
             'data' => ''
         ];
         $merge_fields['full_name'] = [

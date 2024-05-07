@@ -42,10 +42,6 @@ $lang_module['backupcode_2step_note'] = 'Chú ý: Vui lòng lưu trữ mã dự 
 $lang_module['turnoff2step'] = 'Click để tắt xác thực hai bước';
 $lang_module['turnon2step'] = 'Click để bật xác thực hai bước';
 $lang_module['creat_other_code'] = 'Tạo lại mã dự phòng';
-$lang_module['email_subject'] = 'Thông báo bảo mật';
-$lang_module['email_2step_on'] = 'Tài khoản <strong>%4$s</strong> của bạn tại website <a href="%5$s"><strong>%6$s</strong></a> vừa kích hoạt chức năng xác thực hai bước qua ứng dụng. Thông tin:<br /><br />- Thời gian: <strong>%1$s</strong><br />- IP: <strong>%2$s</strong><br />- Trình duyệt: <strong>%3$s</strong><br /><br />Nếu đây đúng là bạn, hãy bỏ qua email này. Nếu đây không phải là bạn, rất có thể tài khoản của bạn đã bị đánh cắp. Hãy liên hệ với quản trị site để được hỗ trợ';
-$lang_module['email_2step_off'] = 'Tài khoản <strong>%5$s</strong> của bạn tại website <a href="%6$s"><strong>%7$s</strong></a> vừa tắt chức năng xác thực hai bước qua ứng dụng. Thông tin:<br /><br />- Thời gian: <strong>%1$s</strong><br />- IP: <strong>%2$s</strong><br />- Trình duyệt: <strong>%3$s</strong><br /><br />Nếu đây đúng là bạn, hãy bỏ qua email này. Nếu đây không phải là bạn, mời kiểm tra lại thông tin cá nhân tại <a href="%4$s">%4$s</a>';
-$lang_module['email_code_renew'] = 'Tài khoản <strong>%5$s</strong> của bạn tại website <a href="%6$s"><strong>%7$s</strong></a> vừa tạo lại mã dự phòng. Thông tin:<br /><br />- Thời gian: <strong>%1$s</strong><br />- IP: <strong>%2$s</strong><br />- Trình duyệt: <strong>%3$s</strong><br /><br />Nếu đây đúng là bạn, hãy bỏ qua email này. Nếu đây không phải là bạn, mời kiểm tra lại thông tin cá nhân tại <a href="%4$s">%4$s</a>';
 $lang_module['change_2step_notvalid'] = 'Tài khoản của bạn chưa có mật khẩu nên không thể thay đổi tính năng Xác thực hai bước. Vui lòng tạo mật khẩu sau đó quay lại trang này.<br />Hãy <a href="%s">click vào đây</a> để tạo mật khẩu';
 $lang_module['deactive_mess'] = 'Bạn thực sự muốn tắt xác thực hai bước?';
 $lang_module['setup_2step'] = 'Thiết lập xác thực hai bước';

@@ -129,12 +129,20 @@ if ($checkss == NV_CHECK_SESSION) {
         $db->query($sql);
 
         // Gửi email thông báo bảo mật
-        $m_time = nv_date('H:i:s d/m/Y', NV_CURRENTTIME);
-        $m_link = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA, NV_MY_DOMAIN);
-        $message = $nv_Lang->getModule('email_2step_on', $m_time, NV_CLIENT_IP, NV_USER_AGENT, $user_info['username'], $m_link, $global_config['site_name']);
-        nv_sendmail_async('', $user_info['email'], $nv_Lang->getModule('email_subject'), $message);
-    } catch (Exception $e) {
-        trigger_error('Error active 2-step Auth!!!', 256);
+        $send_data = [[
+            'to' => $user_info['email'],
+            'data' => [
+                'greeting_user' => greeting_for_user_create($user_info['username'], $user_info['first_name'], $user_info['last_name'], $user_info['gender']),
+                'Home' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA, NV_MY_DOMAIN),
+                'time' => nv_date('H:i:s d/m/Y', NV_CURRENTTIME),
+                'ip' => NV_CLIENT_IP,
+                'browser' => NV_USER_AGENT
+            ]
+        ]];
+        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_2STEPON, $send_data);
+    } catch (Throwable $e) {
+        trigger_error(print_r($e, true));
+        trigger_error('Error active 2-step Auth!!!', E_USER_ERROR);
     }
 
     nv_creat_backupcodes();

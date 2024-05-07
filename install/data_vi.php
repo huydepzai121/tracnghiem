@@ -357,6 +357,55 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_ADMIN_DEL] = [
     's' => 'Thông báo bảo mật',
     'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được ngắt kết nối khỏi tài khoản của bạn bởi quản trị viên.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_ADD] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo phương thức xác thực hai bước mới được thêm vào tài khoản quản trị',
+    's' => 'Định cấu hình Xác thực hai bước bằng Oauth đã hoàn tất',
+    'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo:<br />Việc xác thực đăng nhập quản trị của bạn bằng Oauth đã được thiết lập thành công. Bạn có thể sử dụng tài khoản <strong>{$oauth_id}</strong> của nhà cung cấp <strong>{$oauth_name}</strong> để xác thực mỗi khi đăng nhập vào quản trị hệ thống.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_TRUNCATE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo tất cả phương thức xác thực hai bước đã bị xóa khỏi tài khoản quản trị',
+    's' => 'Định cấu hình Xác thực hai bước bằng Oauth đã bị hủy',
+    'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo:<br />Theo yêu cầu của bạn, việc xác thực hai bước bằng Oauth đã hủy thành công. Bạn đã không thể sử dụng các tài khoản <strong>{$oauth_id}</strong> để xác thực đăng nhập vào quản trị hệ thống.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_DEL] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo phương thức xác thực hai bước đã bị xóa khỏi tài khoản quản trị',
+    's' => 'Định cấu hình Xác thực hai bước bằng Oauth đã bị hủy',
+    'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo:<br />Theo yêu cầu của bạn, việc xác thực hai bước bằng Oauth đã hủy thành công. Bạn đã không thể sử dụng tài khoản <strong>{$oauth_id}</strong> của nhà cung cấp <strong>{$oauth_name}</strong> để xác thực đăng nhập vào quản trị hệ thống.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_TRUNCATE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo đến người dùng khi quản trị xóa tất cả Oauth của họ',
+    's' => 'Thông báo bảo mật',
+    'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tất cả các tài khoản bên thứ ba vừa được ngắt kết nối khỏi tài khoản của bạn bởi quản trị viên.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPON] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo bật xác thực hai bước cho tài khoản thành viên',
+    's' => 'Thông báo bảo mật',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website <a href="{$Home}"><strong>{$site_name}</strong></a> vừa kích hoạt chức năng xác thực hai bước qua ứng dụng. Thông tin:<br /><br />- Thời gian: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Trình duyệt: <strong>{$browser}</strong><br /><br />Nếu đây đúng là bạn, hãy bỏ qua email này. Nếu đây không phải là bạn, rất có thể tài khoản của bạn đã bị đánh cắp. Hãy liên hệ với quản trị site để được hỗ trợ'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPOFF] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo tắt xác thực hai bước cho tài khoản thành viên',
+    's' => 'Thông báo bảo mật',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website <a href="{$Home}"><strong>{$site_name}</strong></a> vừa tắt chức năng xác thực hai bước qua ứng dụng. Thông tin:<br /><br />- Thời gian: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Trình duyệt: <strong>{$browser}</strong><br /><br />Nếu đây đúng là bạn, hãy bỏ qua email này. Nếu đây không phải là bạn, mời kiểm tra lại thông tin cá nhân tại <a href="{$link}">{$link}</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPRENEW] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Thông báo tạo lại mã dự phòng xác thực hai bước cho tài khoản thành viên',
+    's' => 'Thông báo bảo mật',
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website <a href="{$Home}"><strong>{$site_name}</strong></a> vừa tạo lại mã dự phòng. Thông tin:<br /><br />- Thời gian: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Trình duyệt: <strong>{$browser}</strong><br /><br />Nếu đây đúng là bạn, hãy bỏ qua email này. Nếu đây không phải là bạn, mời kiểm tra lại thông tin cá nhân tại <a href="{$link}">{$link}</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

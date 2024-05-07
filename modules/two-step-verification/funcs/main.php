@@ -39,12 +39,18 @@ if ($nv_Request->isset_request('turnoff2step', 'post')) {
     $db->query($sql);
 
     // Gửi email thông báo bảo mật
-    $m_time = nv_date('H:i:s d/m/Y', NV_CURRENTTIME);
-    $m_link = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA, NV_MY_DOMAIN);
-    $m_link_manager = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN);
-    $message = $nv_Lang->getModule('email_2step_off', $m_time, NV_CLIENT_IP, NV_USER_AGENT, $m_link_manager, $user_info['username'], $m_link, $global_config['site_name']);
-    nv_sendmail_async('', $user_info['email'], $nv_Lang->getModule('email_subject'), $message);
-
+    $send_data = [[
+        'to' => $user_info['email'],
+        'data' => [
+            'greeting_user' => greeting_for_user_create($user_info['username'], $user_info['first_name'], $user_info['last_name'], $user_info['gender']),
+            'Home' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA, NV_MY_DOMAIN),
+            'time' => nv_date('H:i:s d/m/Y', NV_CURRENTTIME),
+            'ip' => NV_CLIENT_IP,
+            'browser' => NV_USER_AGENT,
+            'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN)
+        ]
+    ]];
+    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_2STEPOFF, $send_data);
     nv_htmlOutput('OK');
 }
 
@@ -58,12 +64,18 @@ if ($nv_Request->isset_request('changecode2step', 'post')) {
     $nv_Request->set_Session('showcode_' . $module_data, 1);
 
     // Gửi email thông báo bảo mật
-    $m_time = nv_date('H:i:s d/m/Y', NV_CURRENTTIME);
-    $m_link = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA, NV_MY_DOMAIN);
-    $m_link_manager = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN);
-    $message = $nv_Lang->getModule('email_code_renew', $m_time, NV_CLIENT_IP, NV_USER_AGENT, $m_link_manager, $user_info['username'], $m_link, $global_config['site_name']);
-    nv_sendmail_async('', $user_info['email'], $nv_Lang->getModule('email_subject'), $message);
-
+    $send_data = [[
+        'to' => $user_info['email'],
+        'data' => [
+            'greeting_user' => greeting_for_user_create($user_info['username'], $user_info['first_name'], $user_info['last_name'], $user_info['gender']),
+            'Home' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA, NV_MY_DOMAIN),
+            'time' => nv_date('H:i:s d/m/Y', NV_CURRENTTIME),
+            'ip' => NV_CLIENT_IP,
+            'browser' => NV_USER_AGENT,
+            'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN)
+        ]
+    ]];
+    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_2STEPRENEW, $send_data);
     nv_htmlOutput('OK');
 }
 

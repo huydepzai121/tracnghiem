@@ -268,7 +268,6 @@ $lang_module['openid_deleted'] = 'Đã ngắt kết nối với tài khoản bê
 $lang_module['openid_choose'] = 'Hãy chọn ít nhất một tài khoản bên thứ ba';
 $lang_module['openid_default'] = 'Không thể ngắt kết nối với tài khoản bên thứ ba này vì nó đang được bạn sử dụng để đăng nhập tài khoản';
 $lang_module['openid_added'] = 'Tài khoản bên thứ ba đã được kết nối thành công với tài khoản của bạn. Vui lòng đợi vài giây...';
-$lang_module['security_alert'] = 'Thông báo bảo mật';
 $lang_module['openid_not_found'] = 'Tài khoản bên thứ ba chưa được kết nối';
 $lang_module['group'] = 'Nhóm';
 $lang_module['no_in_group'] = 'Bạn chưa đăng ký nhóm nào.';
@@ -811,7 +810,6 @@ $lang_module['is_email_verified'] = 'E-mail không cần xác minh';
 $lang_module['is_email_verified1'] = 'Nếu tích chọn, địa chỉ email của tài khoản sẽ không cần xác minh. Trong trường hợp ngược lại email tài khoản sẽ có trạng thái là chưa được xác minh';
 $lang_module['auto_assign_oauthuser'] = 'Tự động xử lý trùng email Oauth';
 $lang_module['auto_assign_oauthuser_note'] = 'Khi bật tùy chọn này, nếu đăng nhập qua Oauth mà email đã được sử dụng thì hệ thống sẽ tự động gán Oauth vào tài khoản đó mà không cần nhập mật khẩu để xác nhận';
-$lang_module['security_alert_openid_truncate'] = 'Chúng tôi thông tin đến bạn là tất cả các tài khoản bên thứ ba vừa được ngắt kết nối khỏi tài khoản <strong>%s</strong> của bạn bởi quản trị viên.<br /><br /><a href="%s" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>';
 $lang_module['userwait_note'] = 'Các tài khoản chờ kích hoạt sẽ bị xóa tự động trong vòng %s giờ kể từ lúc đăng ký nếu không được kích hoạt';
 $lang_module['userwait_resend_email'] = 'Gửi lại email kích hoạt';
 $lang_module['userwait_resend_per_email'] = 'Số email một lần gửi';
@@ -873,7 +871,6 @@ $lang_module['active2step_status2'] = 'Đã gửi yêu cầu tắt xác thực 2
 
 $lang_module['merge_field_active_deadline'] = 'Hạn hiệu lực kích hoạt';
 $lang_module['merge_field_link'] = 'Liên kết';
-$lang_module['mf_greeting_user'] = 'Câu chào';
 $lang_module['mf_send_newvalue'] = 'Gửi giá trị mới qua mail';
 $lang_module['mf_label'] = 'Nhãn';
 $lang_module['mf_deadline'] = 'Thời điểm hết hạn';

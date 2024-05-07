@@ -357,6 +357,55 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_ADMIN_DEL] = [
     's' => 'Privacy Notice',
     'c' => '{$greeting_user}<br /><br />We are informing you that the third party account <strong>{$oauth_name}</strong> has just been disconnected from your account by an administrator. We send you this email to inform you.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
 ];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_ADD] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notice that a new two-step authentication method has been added to the admin account',
+    's' => 'Configuring 2-step verification using Oauth done',
+    'c' => '{$greeting_user}<br /><br />Administration of the site {$site_name} would like to inform:<br />Two-step authentication using Oauth in the admin panel has been successfully installed. You can use the account <strong>{$oauth_id}</strong> of the provider <strong>{$oauth_name}</strong> for authentication when you log into the site admin area.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_TRUNCATE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notification that all two-step authentication methods have been removed from the admin account',
+    's' => 'Configuring Two-Step Authentication with Oauth has been canceled',
+    'c' => '{$greeting_user}<br /><br />Administration of the site {$site_name} would like to inform:<br />At your request, 2-Step Verification using Oauth has been successfully canceled. From now on, you cannot use the accounts <strong>{$oauth_id}</strong> to authenticate in the site admin area.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_DEL] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notice that two-step authentication has been removed from the admin account',
+    's' => 'Configuring Two-Step Authentication with Oauth has been canceled',
+    'c' => '{$greeting_user}<br /><br />Administration of the site {$site_name} would like to inform:<br />At your request, 2-Step Verification using Oauth has been successfully canceled. From now on, you cannot use the account <strong>{$oauth_id}</strong> of the provider <strong>{$oauth_name}</strong> to authenticate in the site admin area.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_TRUNCATE] = [
+    'pids' => '3',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notify users when administrators delete all of their third-party accounts',
+    's' => 'Privacy Notice',
+    'c' => '{$greeting_user}<br /><br />We inform you that all third party accounts have been disconnected from your account by an administrator.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPON] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notice to enable two-step authentication for member accounts',
+    's' => 'Privacy Notice',
+    'c' => '{$greeting_user}<br /><br />Your account at <a href="{$Home}"><strong>{$site_name}</strong></a> has just enabled Two-Factor Authentication. Information:<br /><br />- Time: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Browser: <strong>{$browser}</strong><br /><br />If this is you, ignore this email. If this is not you, your account is most likely stolen. Please contact the site administrator for assistance'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPOFF] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notice to turn off two-step authentication for member accounts',
+    's' => 'Privacy Notice',
+    'c' => '{$greeting_user}<br /><br />Your account at <a href="{$Home}"><strong>{$site_name}</strong></a> has just disabled Two-Factor Authentication. Information:<br /><br />- Time: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Browser: <strong>{$browser}</strong><br /><br />If this is you, ignore this email. If this is not you, please check your personal information at <a href="{$link}">{$link}</a>'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPRENEW] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_USER,
+    't' => 'Notice of regenerating two-step authentication backup codes for member accounts',
+    's' => 'Privacy Notice',
+    'c' => '{$greeting_user}<br /><br />Your account at <a href="{$Home}"><strong>{$site_name}</strong></a> has just recreated the backup code. Information:<br /><br />- Time: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Browser: <strong>{$browser}</strong><br /><br />If this is you, ignore this email. If this is not you, please check your personal information at <a href="{$link}">{$link}</a>'
+];
 
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],

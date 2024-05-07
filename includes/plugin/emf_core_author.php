@@ -24,6 +24,10 @@ $callback = function ($vars, $from_data, $receive_data) {
         // Đọc ngôn ngữ tạm của module
         $nv_Lang->loadModule('authors', true, true);
 
+        $merge_fields['greeting_user'] = [
+            'name' => $nv_Lang->getGlobal('greeting_user'),
+            'data' => ''
+        ];
         $merge_fields['link'] = [
             'name' => $nv_Lang->getGlobal('link'),
             'data' => ''
@@ -52,11 +56,26 @@ $callback = function ($vars, $from_data, $receive_data) {
             'name' => $nv_Lang->getGlobal('username'),
             'data' => ''
         ];
+        $merge_fields['oauth_name'] = [
+            'name' => $nv_Lang->getModule('2step_oauth_gate'),
+            'data' => ''
+        ];
+        $merge_fields['oauth_id'] = [
+            'name' => $nv_Lang->getModule('2step_oauth_email_or_id'),
+            'data' => ''
+        ];
 
         if ($vars['mode'] != 'PRE') {
             // Field dữ liệu cho các fields
+            $lang = !empty($vars['lang']) ? $vars['lang'] : NV_LANG_INTERFACE;
+
+            // Họ tên và câu chào
+            if (isset($vars['username'], $vars['first_name'])) {
+                $merge_fields['greeting_user']['data'] = greeting_for_user_create($vars['username'], $vars['first_name'], $vars['last_name'] ?? '', $vars['gender'] ?? '', $lang);
+            }
+
             // Các field dạng chuỗi thuần
-            $direct_keys = ['link', 'note', 'email', 'sig', 'position', 'username'];
+            $direct_keys = ['link', 'note', 'email', 'sig', 'position', 'username', 'oauth_name', 'oauth_id'];
             foreach ($direct_keys as $key) {
                 $merge_fields[$key]['data'] = $vars[$key] ?? '';
             }
