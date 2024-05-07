@@ -315,20 +315,6 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_EMAIL_CONFIG_TEST] = [
     's' => 'Test email',
     'c' => 'This is a test email to check the mail configuration. Simply delete it!'
 ];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_NEWS_SENDMAIL] = [
-    'pids' => '5',
-    'catid' => EmailCat::CAT_MODULE,
-    't' => 'Send an email introducing the article to friend at the news module',
-    's' => 'Message from {$from_name}',
-    'c' => 'Hello!<br />Your friend {$from_name} would like to introduce to you the article “{$post_name}” on website {$site_name}{if not empty($message)} with the message:<br />{$message}{/if}.<br/>----------<br/><strong>{$post_name}</strong><br/>{$hometext}<br/><br/>You can view the full article by clicking on the link below:<br /><a href="{$link}" title="{$post_name}">{$link}</a>'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_NEWS_REPORT_THANKS] = [
-    'pids' => '5',
-    'catid' => EmailCat::CAT_MODULE,
-    't' => 'Email thanking the person who reported the error at module news',
-    's' => 'Thank you for submitting an error report',
-    'c' => 'Hello!<br />{$site_name} website administration thank you very much for submitting an error report in the content of the article of our website. We fixed the error you reported.<br />Hope to receive your next help in the future. Wish you always healthy, happy and successful!'
-];
 $install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_ACTIVE] = [
     'pids' => '3',
     'catid' => EmailCat::CAT_USER,

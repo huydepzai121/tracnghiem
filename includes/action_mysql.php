@@ -277,7 +277,8 @@ function nv_create_table_sys($lang, $init = [])
     $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates
         ADD ' . $lang . "_title varchar(250) NOT NULL DEFAULT '',
         ADD " . $lang . "_subject varchar(250) NOT NULL DEFAULT '',
-        ADD " . $lang . '_content mediumtext NOT NULL
+        ADD " . $lang . '_content mediumtext NOT NULL,
+        ADD INDEX ' . $lang . '_title (' . $lang . '_title)
     ';
     $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates_categories
         ADD ' . $lang . '_title varchar(250) NOT NULL
@@ -291,9 +292,6 @@ function nv_create_table_sys($lang, $init = [])
             ' . $lang . '_title = ' . $default_lang . '_title
         ';
     }
-    $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates
-        ADD UNIQUE ' . $lang . '_title (' . $lang . '_title(191))
-    ';
     $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates_categories
         ADD UNIQUE ' . $lang . '_title (' . $lang . '_title(191))
     ';

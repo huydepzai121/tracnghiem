@@ -1633,12 +1633,12 @@ function nv_sendmail_async($from, $to, $subject, $message, $files = '', $AddEmbe
  * Khởi tạo một luồng truy vấn không đồng bộ/chạy nền để gửi mail theo mẫu
  * Nếu gửi mail không cần trả về kết quả thì nên sử dụng function này
  *
- * @param int     $emailid
- * @param array   $data
- * @param string  $lang dùng để lấy ra subject và body của email.
- *                      Nếu không chỉ ra thì là ngôn ngữ giao diện hiện hành.
- *                      Biến này không nên trống, nếu để trống có khả năng nội dung email và tên website có thể lệch nhau
- * @param string  $attachments
+ * @param int|array     $emailid
+ * @param array         $data
+ * @param string        $lang dùng để lấy ra subject và body của email.
+ *                            Nếu không chỉ ra thì là ngôn ngữ giao diện hiện hành.
+ *                            Biến này không nên trống, nếu để trống có khả năng nội dung email và tên website có thể lệch nhau
+ * @param string        $attachments
  */
 function nv_sendmail_template_async($emailid, $data = [], $lang = '', $attachments = '')
 {
@@ -3729,7 +3729,7 @@ function nv_parse_phone($phone)
 }
 
 /**
- * @param int|mixed $emailid
+ * @param int|array $emailid
  * @param string $lang ngôn ngữ nội dung và tiêu đề email
  * @return bool|mixed
  */
@@ -3740,11 +3740,24 @@ function nv_get_email_template($emailid, $lang = '')
     if (empty($lang) or !in_array($lang, $global_config['setup_langs'], true)) {
         $lang = NV_LANG_INTERFACE;
     }
+
     $sql = 'SELECT sys_pids, pids, send_name, send_email, send_cc, send_bcc, attachments, is_plaintext, is_disabled,
     is_selftemplate, mailtpl, default_subject, default_content,
-    ' . $lang . '_subject lang_subject, ' . $lang . '_content lang_content FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE emailid=:emailid';
+    ' . $lang . '_subject lang_subject, ' . $lang . '_content lang_content FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE ';
+    if (is_array($emailid)) {
+        $sql .= 'module=:module AND id=:id';
+    } else {
+        $sql .= 'emailid=:emailid';
+    }
+
     $sth = $db->prepare($sql);
-    $sth->bindParam(':emailid', $emailid, PDO::PARAM_INT);
+    if (is_array($emailid)) {
+        $sth->bindValue(':module', $emailid[0] ?? '', PDO::PARAM_STR);
+        $sth->bindValue(':id', $emailid[1] ?? 0, PDO::PARAM_INT);
+    } else {
+        $sth->bindParam(':emailid', $emailid, PDO::PARAM_INT);
+    }
+
     $sth->execute();
     $email_data = $sth->fetch();
     if (empty($email_data)) {
@@ -3779,7 +3792,7 @@ function nv_get_email_template($emailid, $lang = '')
 }
 
 /**
- * @param int|mixed $emailid
+ * @param int|array $emailid
  * @param array     $data
  * @param string    $lang ngôn ngữ để lấy subject và body của email,
  *                        không chỉ ra thì lấy ngôn ngữ giao diện hiện hành.

@@ -363,6 +363,8 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_inform_status (
 // CSDL module email templates
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_emailtemplates (
   emailid mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  module varchar(50) NOT NULL DEFAULT '' COMMENT 'Module file của email',
+  id int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'ID mẫu theo module',
   sys_pids varchar(255) NOT NULL DEFAULT '' COMMENT 'Các plugin xử lý dữ liệu của hệ thống',
   pids varchar(255) NOT NULL DEFAULT '' COMMENT 'Các plugin xử lý dữ liệu',
   catid smallint(4) unsigned NOT NULL DEFAULT '0',
@@ -377,10 +379,11 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_emailtemplates 
   is_plaintext tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Gửi dạng text thuần hay có định dạng',
   is_disabled tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Đình chỉ gửi mail hay không',
   is_selftemplate tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '1 thì không dùng template của giao diện, 0 thì dùng',
-  mailtpl varchar(20) NOT NULL DEFAULT '' COMMENT 'Tên mẫu cứng trong file nếu chọn',
+  mailtpl varchar(255) NOT NULL DEFAULT '' COMMENT 'Tên mẫu cứng trong file nếu chọn',
   default_subject varchar(250) NOT NULL DEFAULT '' COMMENT 'Tiêu đề email tất cả các ngôn ngữ',
   default_content mediumtext NOT NULL COMMENT 'Nội dung email tất cả các ngôn ngữ',
   PRIMARY KEY (emailid),
+  UNIQUE KEY module_id (module, id),
   KEY catid (catid),
   KEY time_add (time_add),
   KEY time_update (time_update)

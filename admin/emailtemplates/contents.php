@@ -230,7 +230,7 @@ if ($nv_Request->get_title('saveform', 'post', '') == NV_CHECK_SESSION) {
             $error[] = $nv_Lang->getModule('tpl_error_title', $language_array[$lang]['name']);
         } elseif (!empty($default_title)) {
             // Kiểm tra trùng
-            $sql = 'SELECT * FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE ' . NV_LANG_DATA . '_title = :title AND emailid != ' . $array['emailid'];
+            $sql = 'SELECT * FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE ' . NV_LANG_DATA . '_title = :title AND module=\'\' AND emailid != ' . $array['emailid'];
             $sth = $db->prepare($sql);
             $sth->bindParam(':title', $array['title'][$lang], PDO::PARAM_STR);
             $sth->execute();
@@ -314,12 +314,16 @@ if ($nv_Request->get_title('saveform', 'post', '') == NV_CHECK_SESSION) {
             }
 
             $sth->execute();
+            $new_emailid = $db->lastInsertId();
 
             if ($sth->rowCount()) {
                 if ($array['emailid']) {
                     nv_insert_logs(NV_LANG_DATA, $module_name, 'Edit Email Template', 'ID: ' . $array['emailid'], $admin_info['userid']);
                 } else {
-                    nv_insert_logs(NV_LANG_DATA, $module_name, 'Add Email Template', ' ', $admin_info['userid']);
+                    nv_insert_logs(NV_LANG_DATA, $module_name, 'Add Email Template', 'ID: ' . $new_emailid, $admin_info['userid']);
+
+                    $sql = "UPDATE " . NV_EMAILTEMPLATES_GLOBALTABLE . " SET id=" . $new_emailid . " WHERE emailid=" . $new_emailid;
+                    $db->query($sql);
                 }
 
                 nv_apply_hook('', 'emailtemplates_content_after_save', [$array]);

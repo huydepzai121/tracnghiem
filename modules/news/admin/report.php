@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\news\Shared\Emails;
+
 $action = $nv_Request->get_title('action', 'post', '');
 
 // Xóa báo cáo lỗi
@@ -38,7 +40,7 @@ if (($action == 'del_action' or $action == 'del_mail_action') and $nv_Request->i
         $send_data = [[
             'to' => $report_rows['post_email']
         ]];
-        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_NEWS_REPORT_THANKS, $send_data, $maillang);
+        nv_sendmail_template_async([$module_file, Emails::E_REPORT_THANKS], $send_data, $maillang);
     }
     nv_htmlOutput('OK');
 }

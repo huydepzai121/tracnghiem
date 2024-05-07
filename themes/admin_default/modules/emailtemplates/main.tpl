@@ -58,12 +58,14 @@
                 <td>
                     <div>
                         {if $row.is_disabled}<i class="text-muted fa fa-times-circle" title="{$LANG->get('tpl_is_disabled')}"></i>{else}<i class="text-success fa fa-check-circle" title="{$LANG->get('tpl_is_active')}"></i>{/if}
-                        {if $row.is_disabled}<span class="text-muted">{$row.title}</span> <span class="label label-default">{$LANG->get('tpl_is_disabled_label')}</span>{else}{$row.title}{/if}{if not $row.is_system} <span class="label label-danger">{$LANG->get('tpl_custom_label')}</span>{/if}
+                        {if $row.is_disabled}<span class="text-muted">{$row.title}</span> <span class="label label-default">{$LANG->get('tpl_is_disabled_label')}</span>{else}{$row.title}{/if}
+                        {if $row.module}<a href="{$NV_BASE_ADMINURL}?index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$MODULE_NAME}&amp;m={$row.module}"><span class="label label-primary">{$row.module}</span></a>
+                        {elseif not $row.is_system}<span class="label label-danger">{$LANG->get('tpl_custom_label')}</span>{/if}
                     </div>
                 </td>
                 <td>
                     {if isset($CATS[$row.catid])}
-                    <a href="{$NV_BASE_ADMINURL}?index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$NV_OP_VARIABLE}={$OP}&amp;c={$row.catid}">{$CATS[$row.catid].title}</a>
+                    <a href="{$NV_BASE_ADMINURL}?index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$MODULE_NAME}&amp;c={$row.catid}">{$CATS[$row.catid].title}</a>
                     {elseif not empty($row.catid)}
                     #{$row.catid}
                     {/if}
@@ -76,7 +78,7 @@
                     <a href="{$NV_BASE_ADMINURL}?index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$NV_OP_VARIABLE}=test&amp;emailid={$row.emailid}" class="text-primary" title="{$LANG->get('test')}" data-toggle="tooltip"><i class="fa fa-lg fa-paper-plane"></i></a>
                     <a href="{$NV_BASE_ADMINURL}?index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$NV_OP_VARIABLE}=contents&amp;copyid={$row.emailid}" class="text-primary ml-1" title="{$LANG->get('copy')}" data-toggle="tooltip"><i class="fa fa-lg fa-copy"></i></a>
                     <a href="{$NV_BASE_ADMINURL}?index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$NV_OP_VARIABLE}=contents&amp;emailid={$row.emailid}" class="text-primary ml-1" title="{$LANG->get('edit')}" data-toggle="tooltip"><i class="fa fa-lg fa-pencil"></i></a>
-                    {if not $row.is_system}<a href="#" class="text-danger ml-1" title="{$LANG->get('delete')}" data-click="deltpl" data-emailid="{$row.emailid}" data-checksess="{$smarty.const.NV_CHECK_SESSION}" data-toggle="tooltip"><i class="fa fa-lg fa-trash"></i></a>{/if}
+                    {if not $row.is_system and not $row.module}<a href="#" class="text-danger ml-1" title="{$LANG->get('delete')}" data-click="deltpl" data-emailid="{$row.emailid}" data-checksess="{$smarty.const.NV_CHECK_SESSION}" data-toggle="tooltip"><i class="fa fa-lg fa-trash"></i></a>{/if}
                 </td>
             </tr>
             {/foreach}

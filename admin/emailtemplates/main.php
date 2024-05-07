@@ -20,7 +20,7 @@ if ($nv_Request->get_title('delete', 'post', '') == NV_CHECK_SESSION) {
     $sql = 'SELECT emailid, is_system FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE emailid=' . $emailid;
     $row = $db->query($sql)->fetch();
 
-    if (empty($row) or $row['is_system']) {
+    if (empty($row) or $row['is_system'] or $row['module']) {
         exit('NO_' . $emailid);
     }
 
@@ -57,6 +57,7 @@ $array_search['q'] = $nv_Request->get_title('q', 'get', '');
 $array_search['from'] = $nv_Request->get_title('f', 'get', '');
 $array_search['to'] = $nv_Request->get_title('t', 'get', '');
 $array_search['catid'] = $nv_Request->get_absint('c', 'get', 0);
+$array_search['module'] = $nv_Request->get_title('m', 'get', '');
 
 // Xử lý dữ liệu tìm kiếm
 if (preg_match('/^([0-9]{1,2})\-([0-9]{1,2})\-([0-9]{4})$/', $array_search['from'], $m)) {
@@ -102,6 +103,12 @@ if (!empty($array_search['catid'])) {
     $base_url .= '&amp;c=' . $array_search['catid'];
     $where[] = "catid=" . $array_search['catid'];
     $is_search++;
+}
+if (!empty($array_search['module'])) {
+    $base_url .= '&amp;m=' . urlencode($array_search['module']);
+    $where[] = "module=" . $db->quote($array_search['module']);
+    $is_search++;
+    $per_page = 200;
 }
 
 // Phần sắp xếp

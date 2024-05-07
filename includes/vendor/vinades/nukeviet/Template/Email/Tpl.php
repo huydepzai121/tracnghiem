@@ -89,92 +89,92 @@ class Tpl
     /**
      * @var integer Thông báo gỡ xác thực hai bước khi quên ứng dụng và mã dự phòng
      */
-    public const E_USER_R2S = 19;
+    public const E_USER_R2S = 15;
 
     /**
      * @var integer Gửi mã xác minh gỡ xác thực hai bước khi quên ứng dụng và mã dự phòng
      */
-    public const E_USER_R2S_REQUEST = 20;
+    public const E_USER_R2S_REQUEST = 16;
 
     /**
      * @var integer Thông báo oauth được thêm vào tài khoản bởi trưởng nhóm
      */
-    public const E_USER_OAUTH_LEADER_ADD = 21;
+    public const E_USER_OAUTH_LEADER_ADD = 17;
 
     /**
      * @var integer Thông báo oauth được thêm vào tài khoản bởi chính người dùng
      */
-    public const E_USER_OAUTH_SELF_ADD = 22;
+    public const E_USER_OAUTH_SELF_ADD = 18;
 
     /**
      * @var integer Thông báo oauth được xóa khỏi tài khoản bởi trưởng nhóm
      */
-    public const E_USER_OAUTH_LEADER_DEL = 23;
+    public const E_USER_OAUTH_LEADER_DEL = 19;
 
     /**
      * @var integer Thông báo oauth được xóa khỏi tài khoản bởi quản trị
      */
-    public const E_USER_OAUTH_ADMIN_DEL = 32;
+    public const E_USER_OAUTH_ADMIN_DEL = 20;
 
     /**
      * @var integer Thông báo oauth được xóa khỏi tài khoản bởi chính người dùng
      */
-    public const E_USER_OAUTH_SELF_DEL = 24;
+    public const E_USER_OAUTH_SELF_DEL = 21;
 
     /**
      * @var integer Gửi mã xác minh email khi đăng nhập qua Oauth mà email trùng với tài khoản đã có
      */
-    public const E_USER_OAUTH_VERIFY_EMAIL = 25;
+    public const E_USER_OAUTH_VERIFY_EMAIL = 22;
 
     /**
      * @var integer Thông báo đến người dùng khi quản trị xóa tất cả Oauth của họ
      */
-    public const E_USER_OAUTH_TRUNCATE = 36;
+    public const E_USER_OAUTH_TRUNCATE = 23;
 
     /**
      * @var integer Email thông báo cho người dùng khi quản trị kích hoạt tài khoản
      */
-    public const E_USER_ADMIN_ACTIVE = 29;
+    public const E_USER_ADMIN_ACTIVE = 24;
 
     /**
      * @var integer Email yêu cầu người dùng thay đổi mật khẩu
      */
-    public const E_USER_REQUEST_RESET_PASS = 30;
+    public const E_USER_REQUEST_RESET_PASS = 25;
 
     /**
      * @var integer Thông báo đến người dùng xác thực hai bước đã được quản trị tắt
      */
-    public const E_USER_2STEPOFF_BYADMIN = 31;
+    public const E_USER_2STEPOFF_BYADMIN = 26;
 
     /**
      * @var integer Thông báo bật xác thực hai bước cho tài khoản thành viên
      */
-    public const E_USER_2STEPON = 37;
+    public const E_USER_2STEPON = 27;
 
     /**
      * @var integer Thông báo tắt xác thực hai bước cho tài khoản thành viên
      */
-    public const E_USER_2STEPOFF = 38;
+    public const E_USER_2STEPOFF = 28;
 
     /**
      * @var integer Thông báo tạo lại mã dự phòng xác thực hai bước cho tài khoản thành viên
      */
-    public const E_USER_2STEPRENEW = 39;
+    public const E_USER_2STEPRENEW = 29;
 
     /**
      * @var integer Thông báo xóa tài khoản quản trị
      */
-    public const E_AUTHOR_DELETE = 15;
+    public const E_AUTHOR_DELETE = 30;
 
     /**
      * @var integer Thông báo đình chỉ tài khoản quản trị
      */
-    public const E_AUTHOR_SUSPEND = 16;
+    public const E_AUTHOR_SUSPEND = 31;
 
     /**
      * @var integer Thông báo kích hoạt lại tài khoản quản trị
      */
-    public const E_AUTHOR_REACTIVE = 17;
+    public const E_AUTHOR_REACTIVE = 32;
 
     /**
      * @var integer Thông báo kích hoạt lại tài khoản quản trị
@@ -194,25 +194,15 @@ class Tpl
     /**
      * @var integer Gửi email thông báo lỗi tự động cho webmaster
      */
-    public const E_AUTO_ERROR_REPORT = 18;
+    public const E_AUTO_ERROR_REPORT = 36;
 
     /**
      * @var integer Email gửi thử nghiệm để kiểm tra cấu hình gửi mail
      */
-    public const E_EMAIL_CONFIG_TEST = 26;
-
-    /**
-     * @var integer Gửi email giới thiệu bài viết cho bạn bè tại module news
-     */
-    public const E_NEWS_SENDMAIL = 27;
-
-    /**
-     * @var integer Gửi cảm ơn người báo lỗi khi xử lý thông báo lỗi tại module news
-     */
-    public const E_NEWS_REPORT_THANKS = 28;
+    public const E_EMAIL_CONFIG_TEST = 37;
 
     /**
      * @var integer ID mẫu email lớn nhất của hệ thống
      */
-    public const MAX_SYS_TPL = 39;
+    public const MAX_SYS_TPL = 37;
 }
