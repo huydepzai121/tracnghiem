@@ -120,6 +120,7 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
     $deletekeylang = $nv_Request->get_title('deletekeylang', 'get', '', 1);
 
     if ($nv_Request->isset_request('activelang', 'get') and $checksess == md5('activelang_' . $keylang . NV_CHECK_SESSION) and preg_match('/^[a-z]{2}$/', $keylang)) {
+        // Kích hoạt hiển thị ngoài site một ngôn ngữ
         if (empty($global_config['idsite'])) {
             $activelang = $nv_Request->get_int('activelang', 'get', 0);
             $allow_sitelangs = $global_config['allow_sitelangs'];
@@ -143,6 +144,7 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
             nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=site&' . NV_OP_VARIABLE . '=edit&idsite=' . $global_config['idsite']);
         }
     } elseif ($checksess == md5($keylang . NV_CHECK_SESSION) and in_array($keylang, $lang_array_exit, true)) {
+        // Cài đặt ngôn ngữ data mới
         if (isset($array_lang_setup[$keylang]) and $array_lang_setup[$keylang] == 1) {
             nv_jsonOutput([
                 'status' => 'error',
@@ -318,15 +320,18 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
             ]);
         }
     } elseif ($checksess == md5($deletekeylang . NV_CHECK_SESSION . 'deletekeylang') and !in_array($deletekeylang, $global_config['allow_sitelangs'], true)) {
+        // Xóa ngôn ngữ data
         define('NV_IS_FILE_MODULES', true);
 
         $lang = $deletekeylang;
 
         nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('nv_setup_delete'), ' langkey : ' . $deletekeylang, $admin_info['userid']);
 
+        // Lấy các modules và xóa CSDL của module trên ngôn ngữ này
         $sql = 'SELECT title, module_file, module_data FROM ' . $db_config['prefix'] . '_' . $lang . '_modules ORDER BY weight ASC';
         $result_del_module = $db->query($sql);
 
+        $deleted_modules = [];
         while ([$title, $module_file, $module_data] = $result_del_module->fetch(3)) {
             if (file_exists(NV_ROOTDIR . '/modules/' . $module_file . '/action_' . $db->dbtype . '.php')) {
                 $sql_drop_module = [];
@@ -342,6 +347,23 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
                         } catch (PDOException $e) {
                             trigger_error($e->getMessage());
                         }
+                    }
+                }
+            }
+            $deleted_modules[$module_file] = $module_file;
+
+            // Xóa plugin của module theo ngôn ngữ
+            $sql = 'SELECT * FROM ' . $db_config['prefix'] . '_plugins WHERE plugin_lang=' . $db->quote($lang) . " AND plugin_module_file!='' AND plugin_module_name=" . $db->quote($title);
+            $plugins = $db->query($sql)->fetchAll();
+            foreach ($plugins as $plugin) {
+                if ($db->exec('DELETE FROM ' . $db_config['prefix'] . '_plugins WHERE pid=' . $plugin['pid'])) {
+                    // Sắp xếp lại thứ tự
+                    $sql = 'SELECT pid FROM ' . $db_config['prefix'] . '_plugins WHERE (plugin_lang=' . $db->quote($lang) . ' OR plugin_lang=\'all\') AND plugin_area=' . $db->quote($plugin['plugin_area']) . ' AND hook_module=' . $db->quote($plugin['hook_module']) . ' ORDER BY weight ASC';
+                    $result = $db->query($sql);
+                    $weight = 0;
+                    while ($row = $result->fetch()) {
+                        ++$weight;
+                        $db->query('UPDATE ' . $db_config['prefix'] . '_plugins SET weight=' . $weight . ' WHERE pid=' . $row['pid']);
                     }
                 }
             }
@@ -364,17 +386,42 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
         $db->query('DELETE FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang = '" . $deletekeylang . "'");
         $db->query('DELETE FROM ' . $db_config['prefix'] . "_setup_language WHERE lang = '" . $deletekeylang . "'");
 
-        $sql = 'SELECT lang FROM ' . $db_config['prefix'] . '_setup_language ORDER BY weight ASC';
+        $sql = 'SELECT lang, setup FROM ' . $db_config['prefix'] . '_setup_language ORDER BY weight ASC';
         $result = $db->query($sql);
 
         $weight = 0;
+        $langs = [];
         while ($row = $result->fetch()) {
             ++$weight;
             $sql = 'UPDATE ' . $db_config['prefix'] . '_setup_language SET weight=' . $weight . ' WHERE lang=' . $db->quote($row['lang']);
             $db->query($sql);
+
+            if (!empty($row['setup'])) {
+                $langs[] = $row['lang'];
+            }
         }
 
         nv_deletefile(NV_ROOTDIR . '/' . NV_DATADIR . '/disable_site_content.' . $deletekeylang . '.txt');
+
+        // Kiểm tra và xóa template của các module
+        foreach ($deleted_modules as $module_file) {
+            $exists_at_least = false;
+
+            foreach ($langs as $lang_i) {
+                $sth = $db->prepare('SELECT COUNT(*) FROM ' . $db_config['prefix'] . '_' . $lang_i . '_modules WHERE module_file=:module_file');
+                $sth->bindParam(':module_file', $module_file, PDO::PARAM_STR);
+                $sth->execute();
+                if ($sth->fetchColumn()) {
+                    $exists_at_least = true;
+                    break;
+                }
+            }
+
+            if (!$exists_at_least) {
+                // Xóa các mẫu email
+                $db->query('DELETE FROM ' . $db_config['prefix'] . '_emailtemplates WHERE module=' . $db->quote($module_file));
+            }
+        }
 
         $nv_Cache->delAll();
 
