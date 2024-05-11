@@ -373,34 +373,42 @@ function nv_setup_data_module($lang, $module_name, $sample = 0)
     }
 
     // Cài đặt emailtemplate của module nếu có
-    $langmail = NV_ROOTDIR . '/modules/' . $module_file . '/language/email_' . $lang . '.php';
-    $defaultmail = NV_ROOTDIR . '/modules/' . $module_file . '/language/email_en.php';
-    $module_emails = [];
-
-    if (file_exists($langmail)) {
-        include $langmail;
-    } elseif (file_exists($defaultmail)) {
-        include $defaultmail;
+    $email_files = nv_scandir(NV_ROOTDIR . '/modules/' . $module_file . '/language', '/^email\_([a-z]{2})\.php$/');
+    $email_langs = [];
+    foreach ($email_files as $file_i) {
+        $email_langs[] = substr($file_i, 6, 2);
     }
-    if (!empty($module_emails)) {
+
+    if (!empty($email_langs)) {
         $array_columns = $db->columns_array($db_config['prefix'] . '_emailtemplates');
-        $default_lang = '';
-        $langs = [];
+        $langs = $email_data = [];
         foreach ($array_columns as $key => $value) {
             if (preg_match('/^([a-z]{2})\_content$/', $key, $m)) {
-                if (empty($default_lang)) {
-                    $default_lang = $m[1];
-                }
                 $langs[] = $m[1];
+
+                // Đọc email trên tất cả các ngôn ngữ
+                if (in_array($m[1], $email_langs, true)) {
+                    $module_emails = [];
+                    include NV_ROOTDIR . '/modules/' . $module_file . '/language/email_' . $m[1] . '.php';
+                    if (!empty($module_emails)) {
+                        $email_data[$m[1]] = $module_emails;
+                    }
+                }
             }
         }
 
-        foreach ($module_emails as $key => $value) {
-            $sql = "SELECT * FROM " . $db_config['prefix'] . "_emailtemplates WHERE module=" . $db->quote($module_file) . " AND id=" . $key;
-            $email = $db->query($sql)->fetch();
+        if (!empty($email_data)) {
+            // Tìm ngôn ngữ email mà module hỗ trợ
+            if (isset($email_data[$lang])) {
+                $email_lang = $lang;
+            } elseif (isset($email_data['en'])) {
+                $email_lang = 'en';
+            } else {
+                $email_lang = array_key_first($email_data);
+            }
 
-            if (empty($email)) {
-                // Thêm mới mẫu email
+            foreach ($email_data[$email_lang] as $key => $value) {
+                // Thêm mới mẫu email cho module này, lấy data của toàn bộ các ngôn ngữ hiện có
                 $field_title = $field_value = '';
                 foreach ($langs as $lang_i) {
                     $field_title .= ', ' . $lang_i . '_title, ' . $lang_i . '_subject, ' . $lang_i . '_content';
@@ -409,10 +417,12 @@ function nv_setup_data_module($lang, $module_name, $sample = 0)
 
                 try {
                     $sql = 'INSERT INTO ' . $db_config['prefix'] . '_emailtemplates (
-                        module, id, catid, pids, time_add, send_name, send_email, send_cc, send_bcc, attachments, is_system, is_plaintext, is_disabled,
+                        lang, module_file, module_name, id, catid, pids, time_add, send_name, send_email,
+                        send_cc, send_bcc, attachments, is_system, is_plaintext, is_disabled,
                         is_selftemplate, default_subject, default_content' . $field_title . '
                     ) VALUES (
-                        ' . $db->quote($module_file) . ', ' . $key . ', ' . intval($value['catid'] ?? EmailCat::CAT_MODULE) . ',
+                        ' . $db->quote($lang) . ', ' . $db->quote($module_file) . ', ' . $db->quote($module_name) . ',
+                        ' . $key . ', ' . intval($value['catid'] ?? EmailCat::CAT_MODULE) . ',
                         ' . $db->quote($value['pids'] ?? '') . ', ' . NV_CURRENTTIME . ', :send_name, :send_email, :send_cc, :send_bcc,
                         :attachments, 0, ' . intval($value['is_plaintext'] ?? 0) . ', ' . intval($value['is_disabled'] ?? 0) . ',
                         ' . intval($value['is_selftemplate'] ?? 0) . ', :default_subject, :default_content' . $field_value . '
@@ -428,39 +438,21 @@ function nv_setup_data_module($lang, $module_name, $sample = 0)
                     $sth->bindValue(':default_content', $value['c'], PDO::PARAM_STR);
 
                     foreach ($langs as $lang_i) {
-                        $sth->bindValue(':' . $lang_i . '_title', $value['t'], PDO::PARAM_STR);
-                        $sth->bindValue(':' . $lang_i . '_subject', '', PDO::PARAM_STR);
-                        $sth->bindValue(':' . $lang_i . '_content', '', PDO::PARAM_STR);
+                        if ($lang_i == $lang or !isset($email_data[$lang_i], $email_data[$lang_i][$key])) {
+                            $sth->bindValue(':' . $lang_i . '_title', $value['t'], PDO::PARAM_STR);
+                            $sth->bindValue(':' . $lang_i . '_subject', '', PDO::PARAM_STR);
+                            $sth->bindValue(':' . $lang_i . '_content', '', PDO::PARAM_STR);
+                        } else {
+                            $sth->bindValue(':' . $lang_i . '_title', $email_data[$lang_i][$key]['t'] ?? $value['t'], PDO::PARAM_STR);
+                            $sth->bindValue(':' . $lang_i . '_subject', $email_data[$lang_i][$key]['s'] ?? '', PDO::PARAM_STR);
+                            $sth->bindValue(':' . $lang_i . '_content', $email_data[$lang_i][$key]['c'] ?? '', PDO::PARAM_STR);
+                        }
                     }
 
                     $sth->execute();
                 } catch (Throwable $e) {
                     trigger_error(print_r($e, true));
                     return $return;
-                }
-            } else {
-                /*
-                 * Cập nhật lại tiêu đề, subject và content trên ngôn ngữ mới của email
-                 * nếu nó chưa có hoặc tiêu đề bằng với ngôn ngữ hiện tại
-                 */
-                $upds = [];
-                if ($email[$default_lang . '_title'] == $email[$lang . '_title'] or empty($email[$lang . '_title'])) {
-                    $upds[] = $lang . '_title=' . $db->quote($value['t']);
-                }
-                if (empty($email[$lang . '_subject'])) {
-                    $upds[] = $lang . '_subject=' . $db->quote($value['s']);
-                }
-                if (empty($email[$lang . '_content'])) {
-                    $upds[] = $lang . '_content=' . $db->quote($value['c']);
-                }
-                if (!empty($upds)) {
-                    try {
-                        $sql = 'UPDATE ' . $db_config['prefix'] . '_emailtemplates SET ' . implode(', ', $upds) . ' WHERE emailid=' . $email['emailid'];
-                        $db->query($sql);
-                    } catch (Throwable $e) {
-                        trigger_error(print_r($e, true));
-                        return $return;
-                    }
                 }
             }
         }

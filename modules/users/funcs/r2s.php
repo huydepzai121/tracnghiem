@@ -13,6 +13,8 @@ if (!defined('NV_IS_MOD_USER')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 if (defined('NV_IS_USER')) {
     nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
 }
@@ -152,7 +154,7 @@ if ($nv_Request->isset_request('checkss', 'post')) {
                 'code' => $key
             ]
         ]];
-        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_R2S_REQUEST, $send_data, NV_LANG_INTERFACE);
+        nv_sendmail_template_async([$module_name, Emails::R2S_REQUEST], $send_data, NV_LANG_INTERFACE);
 
         nv_jsonOutput([
             'status' => 'step2',
@@ -205,7 +207,7 @@ if ($nv_Request->isset_request('checkss', 'post')) {
                     'lang' => NV_LANG_INTERFACE
                 ]
             ]];
-            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_R2S, $send_data, NV_LANG_INTERFACE);
+            nv_sendmail_template_async([$module_name, Emails::R2S], $send_data, NV_LANG_INTERFACE);
 
             $info = $nv_Lang->getModule('remove_2step_success');
         }

@@ -1656,6 +1656,10 @@ function nv_sendmail_template_async($emailid, $data = [], $lang = '', $attachmen
     if (empty($lang)) {
         $lang = NV_LANG_INTERFACE;
     }
+    // Mặc định gửi email trên module dữ liệu hiện hành
+    if (is_array($emailid) and !isset($emailid[2])) {
+        $emailid[2] = NV_LANG_DATA;
+    }
 
     $json_contents = json_encode([
         'emailid' => $emailid,
@@ -3753,14 +3757,15 @@ function nv_get_email_template($emailid, $lang = '')
     is_selftemplate, mailtpl, default_subject, default_content,
     ' . $lang . '_subject lang_subject, ' . $lang . '_content lang_content FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE ';
     if (is_array($emailid)) {
-        $sql .= 'module=:module AND id=:id';
+        $sql .= 'lang=:lang AND module_name=:module_name AND id=:id';
     } else {
         $sql .= 'emailid=:emailid';
     }
 
     $sth = $db->prepare($sql);
     if (is_array($emailid)) {
-        $sth->bindValue(':module', $emailid[0] ?? '', PDO::PARAM_STR);
+        $sth->bindValue(':lang', $emailid[2] ?? NV_LANG_DATA, PDO::PARAM_STR);
+        $sth->bindValue(':module_name', $emailid[0] ?? '', PDO::PARAM_STR);
         $sth->bindValue(':id', $emailid[1] ?? 0, PDO::PARAM_INT);
     } else {
         $sth->bindParam(':emailid', $emailid, PDO::PARAM_INT);

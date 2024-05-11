@@ -153,21 +153,8 @@ if (!empty($modname) and preg_match($global_config['check_module'], $modname) an
             }
         }
 
-        // Kiểm tra có bất cứ module nào còn
-        $exists_at_least = false;
-        foreach ($langs as $lang_i) {
-            $sth = $db->prepare('SELECT COUNT(*) FROM ' . $db_config['prefix'] . '_' . $lang_i . '_modules WHERE module_file=:module_file');
-            $sth->bindParam(':module_file', $module_file, PDO::PARAM_STR);
-            $sth->execute();
-            if ($sth->fetchColumn()) {
-                $exists_at_least = true;
-                break;
-            }
-        }
-        if (!$exists_at_least) {
-            // Xóa các mẫu email
-            $db->query('DELETE FROM ' . $db_config['prefix'] . '_emailtemplates WHERE module=' . $db->quote($module_file));
-        }
+        // Xóa các mẫu email
+        $db->query('DELETE FROM ' . $db_config['prefix'] . '_emailtemplates WHERE lang=' . $db->quote(NV_LANG_DATA) . ' AND module_name=' . $db->quote($modname));
 
         $nv_Cache->delAll();
     }

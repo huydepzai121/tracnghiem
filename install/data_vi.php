@@ -133,103 +133,28 @@ $install_lang['emailtemplates']['cats'][EmailCat::CAT_AUTHOR] = 'Email về qu�
 $install_lang['emailtemplates']['cats'][EmailCat::CAT_MODULE] = 'Email của các module';
 
 $install_lang['emailtemplates']['emails'] = [];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_EMAIL_ACTIVE] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Kích hoạt tài khoản qua email',
-    's' => 'Thông tin kích hoạt tài khoản',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đang chờ kích hoạt. Để kích hoạt, bạn hãy click vào link dưới đây:<br /><br />URL: <a href="{$link}">{$link}</a><br /><br />Các thông tin cần thiết:<br /><br />Tài khoản: {$username}<br />Email: {$email}<br /><br />Việc kích hoạt tài khoản chỉ có hiệu lực đến {$active_deadline}<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTO_ERROR_REPORT] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Email tự động thông báo lỗi',
+    's' => 'Cảnh báo từ website {$site_name}',
+    'c' => 'Hệ thống đã nhận được một số thông báo. Bạn hãy mở file đính kèm để xem chi tiết'
 ];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_DELETE] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thư thông báo xóa tài khoản',
-    's' => 'Thư thông báo xóa tài khoản',
-    'c' => '{$greeting_user}<br /><br />Chúng tôi rất lấy làm tiếc thông báo về việc tài khoản của bạn đã bị xóa khỏi website {$site_name}.'
+$install_lang['emailtemplates']['emails'][EmailTpl::E_EMAIL_CONFIG_TEST] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Email gửi thử nghiệm để kiểm tra cấu hình gửi mail',
+    's' => 'Email thử nghiệm',
+    'c' => 'Đây là email thử nghiệm để kiểm tra cấu hình gửi mail. Đơn giản bạn hãy xóa nó đi!'
 ];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_2STEP_CODE] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Gửi mã dự phòng mới',
-    's' => 'Mã dự phòng mới',
-    'c' => '{$greeting_user}<br /><br />Mã dự phòng cho tài khoản của bạn tại website {$site_name} đã được thay đổi. Dưới đây là mã dự phòng mới:<br /><br />{foreach from=$new_code item=code}{$code}<br />{/foreach}<br />Bạn chú ý giữ mã dự phòng an toàn. Nếu mất điện thoại và mất cả mã dự phòng bạn sẽ không thể truy cập vào tài khoản của mình được nữa.<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_INFO] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo tài khoản đã được tạo khi thành viên đăng kí thành công tại form',
-    's' => 'Tài khoản của bạn đã được tạo',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. Dưới đây là thông tin tài khoản:<br /><br />Bí danh: {$username}<br />Email: {$email}<br /><br />Vui lòng bấm vào đường dẫn dưới đây để đăng nhập:<br />URL: <a href="{$link}">{$link}</a><br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_NEW_INFOOAUTH] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo tài khoản đã được tạo khi thành viên đăng kí thành công qua Oauth',
-    's' => 'Tài khoản của bạn đã được tạo',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. Để đăng nhập vui lòng truy cập vào trang: <a href="{$link}">{$link}</a> và click vào nút: Đăng nhập bằng {$oauth_name}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LEADER_ADDED] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo tài khoản được trưởng nhóm khởi tạo',
-    's' => 'Tài khoản của bạn đã được tạo',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />Email: {$email}<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_ADDED] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo tài khoản được quản trị khởi tạo',
-    's' => 'Tài khoản của bạn đã được tạo',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được khởi tạo. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />Mật khẩu: {$password}<br />{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.<br />{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.<br />{/if}<br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_SAFE_KEY] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Gửi mã xác minh khi người dùng bật/ tắt chế độ an toàn',
-    's' => 'Mã xác minh chế độ an toàn',
-    'c' => '{$greeting_user}<br /><br />Bạn đã gửi yêu cầu sử dụng chế độ an toàn tại website {$site_name}. Dưới đây là mã xác minh dùng cho việc kích hoạt hoặc tắt chế độ an toàn:<br /><br /><strong>{$code}</strong><br /><br />Mã xác minh này chỉ có tác dụng bật-tắt chế độ an toàn một lần duy nhất. Sau khi bạn tắt chế độ an toàn, mã xác minh này sẽ vô giá trị.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_SELF_EDIT] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo các thay đổi về tài khoản vừa được người dùng thực hiện',
-    's' => 'Hồ sơ của bạn đã được cập nhật',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được cập nhật {if $send_newvalue}với {$label} mới là <strong>{$newvalue}</strong>{else}{$label} mới{/if}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_EDIT] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo các thay đổi về tài khoản vừa được quản trị thực hiện',
-    's' => 'Tài khoản của bạn đã được cập nhật',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được cập nhật. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}{if not empty($password)}<br />Mật khẩu: {$password}{/if}<br />{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.<br />{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.<br />{/if}<br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_VERIFY_EMAIL] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thư xác nhận thay đổi email tài khoản',
-    's' => 'Thông tin kích hoạt thay đổi email',
-    'c' => '{$greeting_user}<br /><br />Bạn đã gửi đề nghị thay đổi email của tài khoản người dùng trên website {$site_name}. Để hoàn tất thay đổi này, bạn cần xác nhận email mới bằng cách nhập Mã xác minh dưới đây vào ô tương ứng tại khu vực Sửa thông tin tài khoản:<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Mã này hết hạn vào {$deadline}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_GROUP_JOIN] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo có yêu cầu tham gia nhóm',
-    's' => 'Yêu cầu tham gia nhóm',
-    'c' => 'Xin chào trưởng nhóm <strong>{$group_name}</strong>,<br /><br /><strong>{$full_name}</strong> đã gửi yêu cầu tham gia nhóm <strong>{$group_name}</strong> do bạn đang quản lý. Vui lòng xét duyệt yêu cầu bằng cách nhấn vào <a href="{$link}">liên kết này</a>.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LOST_ACTIVE] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Gửi lại thông tin kích hoạt tài khoản',
-    's' => 'Thông tin kích hoạt tài khoản',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đang chờ kích hoạt. Để kích hoạt, bạn hãy click vào link dưới đây:<br /><br />URL: <a href="{$link}">{$link}</a><br />Các thông tin cần thiết:<br />Bí danh: {$username}<br />Email: {$email}<br />Mật khẩu: {$password}<br /><br />Việc kích hoạt tài khoản chỉ có hiệu lực đến {$active_deadline}<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_LOST_PASS] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Hướng dẫn lấy lại mật khẩu thành viên',
-    's' => 'Hướng dẫn tạo lại mật khẩu',
-    'c' => '{$greeting_user}<br /><br />Bạn vừa gửi đề nghị thay đổi mật khẩu tài khoản người dùng tại website {$site_name}. Để thay đổi mật khẩu, bạn cần nhập mã xác minh dưới đây vào ô tương ứng tại khu vực thay đổi mật khẩu.<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Mã này chỉ được sử dụng một lần và trước thời hạn: {$deadline}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_DEL] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo phương thức xác thực hai bước đã bị xóa khỏi tài khoản quản trị',
+    's' => 'Định cấu hình Xác thực hai bước bằng Oauth đã bị hủy',
+    'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo:<br />Theo yêu cầu của bạn, việc xác thực hai bước bằng Oauth đã hủy thành công. Bạn đã không thể sử dụng tài khoản <strong>{$oauth_id}</strong> của nhà cung cấp <strong>{$oauth_name}</strong> để xác thực đăng nhập vào quản trị hệ thống.'
 ];
 $install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_DELETE] = [
     'pids' => '4',
@@ -252,97 +177,6 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_REACTIVE] = [
     's' => 'Thông báo từ website {$site_name}',
     'c' => 'Ban quản trị website {$site_name} xin thông báo:<br />Tài khoản quản trị của bạn tại website {$site_name} đã hoạt động trở lại vào {$time}.<br />Trước đó tài khoản này đã bị đình chỉ hoạt động vì lý do: {$note}{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
 ];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTO_ERROR_REPORT] = [
-    'pids' => '5',
-    'catid' => EmailCat::CAT_SYSTEM,
-    't' => 'Email tự động thông báo lỗi',
-    's' => 'Cảnh báo từ website {$site_name}',
-    'c' => 'Hệ thống đã nhận được một số thông báo. Bạn hãy mở file đính kèm để xem chi tiết'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_R2S] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo xác thực hai bước đã gỡ thành công',
-    's' => 'Xác thực 2 bước đã tắt',
-    'c' => '{$greeting_user}<br /><br />Theo yêu cầu của bạn, chúng tôi đã tắt tính năng Xác thực 2 bước cho tài khoản của bạn tại website {$site_name}.<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_R2S_REQUEST] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Hướng dẫn tắt xác thực hai bước khi quên mã',
-    's' => 'Thông tin tắt xác thực 2 bước',
-    'c' => '{$greeting_user}<br /><br />Chúng tôi vừa nhận được yêu cầu tắt xác thực 2 bước cho tài khoản của bạn tại website {$site_name}. Nếu bạn là người gửi yêu cầu này, hãy sử dụng Mã xác minh dưới đây để tiến hành tắt:<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_LEADER_ADD] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo oauth được thêm vào tài khoản bởi trưởng nhóm',
-    's' => 'Thông báo bảo mật',
-    'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được kết nối với tài khoản <strong>{$username}</strong> của bạn bởi trưởng nhóm.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_SELF_ADD] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo oauth được thêm vào tài khoản bởi chính người dùng',
-    's' => 'Thông báo bảo mật',
-    'c' => '{$greeting_user}<br /><br />Tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được kết nối với tài khoản <strong>{$username}</strong> của bạn. Nếu đây không phải là chủ ý của bạn, vui lòng nhanh chóng xóa nó khỏi tài khoản của mình bằng cách truy cập vào khu vực quản lý tài khoản bên thứ ba.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_LEADER_DEL] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo oauth được xóa khỏi tài khoản bởi trưởng nhóm',
-    's' => 'Thông báo bảo mật',
-    'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được ngắt kết nối khỏi tài khoản <strong>{$username}</strong> của bạn bởi trưởng nhóm.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_SELF_DEL] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo oauth được xóa khỏi tài khoản bởi chính người dùng',
-    's' => 'Thông báo bảo mật',
-    'c' => '{$greeting_user}<br /><br />Tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được ngắt kết nối khỏi tài khoản <strong>{$username}</strong> của bạn. Nếu đây không phải là chủ ý của bạn, vui lòng nhanh chóng liên hệ với quản trị site để được giúp đỡ.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_VERIFY_EMAIL] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Gửi mã xác minh email khi đăng nhập qua Oauth mà email trùng với tài khoản đã có',
-    's' => 'Thư xác minh email mới',
-    'c' => 'Xin chào!<br /><br />Bạn đã gửi yêu cầu xác minh email: {$email}. Hãy chép mã dưới đây vào ô Mã xác minh trên site.<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_EMAIL_CONFIG_TEST] = [
-    'pids' => '5',
-    'catid' => EmailCat::CAT_SYSTEM,
-    't' => 'Email gửi thử nghiệm để kiểm tra cấu hình gửi mail',
-    's' => 'Email thử nghiệm',
-    'c' => 'Đây là email thử nghiệm để kiểm tra cấu hình gửi mail. Đơn giản bạn hãy xóa nó đi!'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_ADMIN_ACTIVE] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Email thông báo cho người dùng khi quản trị kích hoạt tài khoản',
-    's' => 'Tài khoản của bạn đã được tạo',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. {if empty($oauth_name)}Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />{if not empty($password)}Mật khẩu: {$password}{/if}{else}Để đăng nhập vui lòng truy cập vào trang: <a href="{$link}">{$link}</a> và click vào nút: <strong>Đăng nhập bằng {$oauth_name}</strong>.{if not empty($password)}<br /><br />Bạn cũng có thể đăng nhập theo cách thông thường với thông tin:<br />Bí danh: {$username}<br />Mật khẩu: {$password}{/if}{/if}{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.{/if}<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_REQUEST_RESET_PASS] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Email yêu cầu người dùng thay đổi mật khẩu',
-    's' => '{if $pass_reset eq 2}Khuyến cáo thay đổi mật khẩu truy cập{else}Cần thay đổi mật khẩu truy cập{/if}',
-    'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo: Vì lý do bảo mật chúng tôi {if $pass_reset eq 2}khuyến cáo bạn nên{else}đề nghị bạn nhanh chóng{/if} thay đổi mật khẩu truy cập tài khoản của mình. Để thay đổi mật khẩu, trước hết bạn cần truy cập vào trang <a href="{$link}">Quản lý tài khoản cá nhân</a>, chọn nút Thiết lập tài khoản, sau đó chọn nút Mật khẩu và làm theo hướng dẫn.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPOFF_BYADMIN] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo đến người dùng xác thực hai bước đã được quản trị tắt',
-    's' => 'Thông báo bảo mật',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn vừa được tắt xác thực hai bước bởi quản trị viên. Chúng tôi gửi cho bạn email này để thông tin đến bạn.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý xác thực hai bước</a>'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_ADMIN_DEL] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo oauth được xóa khỏi tài khoản bởi quản trị',
-    's' => 'Thông báo bảo mật',
-    'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được ngắt kết nối khỏi tài khoản của bạn bởi quản trị viên.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
-];
 $install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_ADD] = [
     'pids' => '4',
     'catid' => EmailCat::CAT_AUTHOR,
@@ -356,41 +190,6 @@ $install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_TRUNCATE] = [
     't' => 'Thông báo tất cả phương thức xác thực hai bước đã bị xóa khỏi tài khoản quản trị',
     's' => 'Định cấu hình Xác thực hai bước bằng Oauth đã bị hủy',
     'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo:<br />Theo yêu cầu của bạn, việc xác thực hai bước bằng Oauth đã hủy thành công. Bạn đã không thể sử dụng các tài khoản <strong>{$oauth_id}</strong> để xác thực đăng nhập vào quản trị hệ thống.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_DEL] = [
-    'pids' => '4',
-    'catid' => EmailCat::CAT_AUTHOR,
-    't' => 'Thông báo phương thức xác thực hai bước đã bị xóa khỏi tài khoản quản trị',
-    's' => 'Định cấu hình Xác thực hai bước bằng Oauth đã bị hủy',
-    'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo:<br />Theo yêu cầu của bạn, việc xác thực hai bước bằng Oauth đã hủy thành công. Bạn đã không thể sử dụng tài khoản <strong>{$oauth_id}</strong> của nhà cung cấp <strong>{$oauth_name}</strong> để xác thực đăng nhập vào quản trị hệ thống.'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_OAUTH_TRUNCATE] = [
-    'pids' => '3',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo đến người dùng khi quản trị xóa tất cả Oauth của họ',
-    's' => 'Thông báo bảo mật',
-    'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tất cả các tài khoản bên thứ ba vừa được ngắt kết nối khỏi tài khoản của bạn bởi quản trị viên.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPON] = [
-    'pids' => '5',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo bật xác thực hai bước cho tài khoản thành viên',
-    's' => 'Thông báo bảo mật',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website <a href="{$Home}"><strong>{$site_name}</strong></a> vừa kích hoạt chức năng xác thực hai bước qua ứng dụng. Thông tin:<br /><br />- Thời gian: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Trình duyệt: <strong>{$browser}</strong><br /><br />Nếu đây đúng là bạn, hãy bỏ qua email này. Nếu đây không phải là bạn, rất có thể tài khoản của bạn đã bị đánh cắp. Hãy liên hệ với quản trị site để được hỗ trợ'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPOFF] = [
-    'pids' => '5',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo tắt xác thực hai bước cho tài khoản thành viên',
-    's' => 'Thông báo bảo mật',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website <a href="{$Home}"><strong>{$site_name}</strong></a> vừa tắt chức năng xác thực hai bước qua ứng dụng. Thông tin:<br /><br />- Thời gian: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Trình duyệt: <strong>{$browser}</strong><br /><br />Nếu đây đúng là bạn, hãy bỏ qua email này. Nếu đây không phải là bạn, mời kiểm tra lại thông tin cá nhân tại <a href="{$link}">{$link}</a>'
-];
-$install_lang['emailtemplates']['emails'][EmailTpl::E_USER_2STEPRENEW] = [
-    'pids' => '5',
-    'catid' => EmailCat::CAT_USER,
-    't' => 'Thông báo tạo lại mã dự phòng xác thực hai bước cho tài khoản thành viên',
-    's' => 'Thông báo bảo mật',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website <a href="{$Home}"><strong>{$site_name}</strong></a> vừa tạo lại mã dự phòng. Thông tin:<br /><br />- Thời gian: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Trình duyệt: <strong>{$browser}</strong><br /><br />Nếu đây đúng là bạn, hãy bỏ qua email này. Nếu đây không phải là bạn, mời kiểm tra lại thông tin cá nhân tại <a href="{$link}">{$link}</a>'
 ];
 
 $menu_rows_lev0['about'] = [

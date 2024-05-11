@@ -13,6 +13,8 @@ if (!defined('NV_IS_MOD_USER')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 if (defined('NV_IS_USER')) {
     nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
 }
@@ -132,7 +134,7 @@ if ($checkss == $data['checkss']) {
                                     'active_deadline' => $row['regdate'] + 86400
                                 ]
                             ]];
-                            $ok = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_USER_LOST_ACTIVE, $send_data, NV_LANG_INTERFACE);
+                            $ok = nv_sendmail_from_template([$module_name, Emails::LOST_ACTIVE], $send_data, NV_LANG_INTERFACE);
 
                             if ($ok) {
                                 $password = $crypt->hash_password($password_new, $global_config['hashprefix']);

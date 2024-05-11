@@ -50,7 +50,7 @@ if ($nv_Request->isset_request('turnoff2step', 'post')) {
             'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN)
         ]
     ]];
-    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_2STEPOFF, $send_data);
+    nv_sendmail_template_async([$module_file, NukeViet\Template\Email\Tpl2Step::DEACTIVATE_2STEP], $send_data);
     nv_htmlOutput('OK');
 }
 
@@ -75,7 +75,7 @@ if ($nv_Request->isset_request('changecode2step', 'post')) {
             'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN)
         ]
     ]];
-    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_2STEPRENEW, $send_data);
+    nv_sendmail_template_async([$module_file, NukeViet\Template\Email\Tpl2Step::RENEW_BACKUPCODE], $send_data);
     nv_htmlOutput('OK');
 }
 

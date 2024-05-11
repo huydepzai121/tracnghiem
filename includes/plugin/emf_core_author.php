@@ -13,6 +13,7 @@ if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }
 
+// Các trường dữ liệu gửi email liên quan đến quản trị viên
 $callback = function ($vars, $from_data, $receive_data) {
     $merge_fields = [];
     $vars['pid'] = (int) $vars['pid'];

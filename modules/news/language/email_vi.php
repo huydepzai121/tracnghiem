@@ -16,13 +16,13 @@ if (!defined('NV_MAINFILE')) {
 use NukeViet\Module\news\Shared\Emails;
 use NukeViet\Template\Email\Emf;
 
-$module_emails[Emails::E_SENDMAIL] = [
+$module_emails[Emails::SENDMAIL] = [
     'pids' => Emf::P_ALL,
     't' => 'Gửi email giới thiệu bài viết cho bạn bè tại module news',
     's' => 'Tin nhắn từ {$from_name}',
     'c' => 'Xin chào!<br />Bạn của bạn là {$from_name} mong muốn giới thiệu với bạn bài viết “{$post_name}” trên website {$site_name}{if not empty($message)} với lời nhắn:<br />{$message}{/if}.<br/>----------<br/><strong>{$post_name}</strong><br/>{$hometext}<br/><br/>Bạn có thể xem đầy đủ bài viết bằng cách click vào link bên dưới:<br /><a href="{$link}" title="{$post_name}">{$link}</a>'
 ];
-$module_emails[Emails::E_REPORT_THANKS] = [
+$module_emails[Emails::REPORT_THANKS] = [
     'pids' => Emf::P_ALL,
     't' => 'Email cảm ơn người báo lỗi tại module news',
     's' => 'Cảm ơn bạn đã báo lỗi',

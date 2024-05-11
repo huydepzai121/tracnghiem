@@ -146,7 +146,7 @@ if ($id > 0 and $catid > 0) {
                             'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$catid]['alias'] . '/' . $alias . '-' . $id . $global_config['rewrite_exturl'], NV_MY_DOMAIN)
                         ]
                     ]];
-                    $check = nv_sendmail_from_template([$module_file, Emails::E_SENDMAIL], $send_data, NV_LANG_INTERFACE);
+                    $check = nv_sendmail_from_template([$module_file, Emails::SENDMAIL], $send_data, NV_LANG_INTERFACE);
                     if ($check) {
                         file_put_contents($dir . '/' . $logfile, '', LOCK_EX);
                         nv_jsonOutput([

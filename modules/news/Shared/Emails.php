@@ -23,10 +23,10 @@ class Emails
     /**
      * @var integer Gửi email giới thiệu bài viết cho bạn bè tại module news
      */
-    public const E_SENDMAIL = 1;
+    public const SENDMAIL = 1;
 
     /**
      * @var integer Email cảm ơn người báo lỗi tại module news
      */
-    public const E_REPORT_THANKS = 2;
+    public const REPORT_THANKS = 2;
 }

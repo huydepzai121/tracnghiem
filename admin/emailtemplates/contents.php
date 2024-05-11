@@ -234,7 +234,7 @@ if ($nv_Request->get_title('saveform', 'post', '') == NV_CHECK_SESSION) {
             $error[] = $nv_Lang->getModule('tpl_error_title', $language_array[$lang]['name']);
         } elseif (!empty($default_title)) {
             // Kiểm tra trùng
-            $sql = 'SELECT * FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE ' . NV_LANG_DATA . '_title = :title AND module=\'\' AND emailid != ' . $array['emailid'];
+            $sql = 'SELECT * FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE ' . NV_LANG_DATA . '_title = :title AND module_name=\'\' AND emailid != ' . $array['emailid'];
             $sth = $db->prepare($sql);
             $sth->bindParam(':title', $array['title'][$lang], PDO::PARAM_STR);
             $sth->execute();

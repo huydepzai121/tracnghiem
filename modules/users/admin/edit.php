@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 $page_title = $nv_Lang->getModule('edit_title');
 
 $userid = $nv_Request->get_int('userid', 'get', 0);
@@ -108,7 +110,7 @@ if ($nv_Request->isset_request('psr', 'post')) {
                     'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN)
                 ]
             ]];
-            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_REQUEST_RESET_PASS, $send_data, $maillang);
+            nv_sendmail_template_async([$module_name, Emails::REQUEST_RESET_PASS], $send_data, $maillang);
         }
         exit($nv_Lang->getModule('pass_reset_request_sent'));
     }
@@ -454,7 +456,7 @@ if ($nv_Request->isset_request('confirm', 'post')) {
                 'password' => $_user['password1']
             ]
         ]];
-        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_ADMIN_EDIT, $send_data, $maillang);
+        nv_sendmail_template_async([$module_name, Emails::EDIT_BY_ADMIN], $send_data, $maillang);
     }
 
     nv_insert_logs(NV_LANG_DATA, $module_name, 'log_edit_user', 'userid ' . $userid, $admin_info['userid']);

@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 if (!defined('NV_IS_AJAX')) {
     nv_htmlOutput('Wrong URL');
 }
@@ -118,7 +120,7 @@ if (md5(NV_CHECK_SESSION . '_' . $module_name . '_main') == $nv_Request->get_str
                         'lang' => $maillang
                     ]
                 ]];
-                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_DELETE, $send_data, $maillang);
+                nv_sendmail_template_async([$module_name, Emails::USER_DELETE], $send_data, $maillang);
             }
         }
     }

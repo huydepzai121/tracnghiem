@@ -15,7 +15,7 @@ if (!defined('NV_MAINFILE')) {
 
 use NukeViet\Template\Email\Emf;
 
-// Các trường dữ liệu khi gửi email thông tin kích hoạt tài khoản đến email của thành viên
+// Các trường dữ liệu gửi email liên quan đến thành viên
 $callback = function ($vars, $from_data, $receive_data) {
     $merge_fields = [];
     $vars['pid'] = (int) $vars['pid'];

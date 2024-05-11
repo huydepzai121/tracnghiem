@@ -304,6 +304,53 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
                 }
             }
 
+            /*
+             * Sau khi cài đặt ngôn ngữ mới, cập nhật ngôn ngữ mới này cho
+             * các mẫu email của module trên các ngôn ngữ khác nếu nó có trong
+             * tệp email_langmới.php. Đối với mẫu email của các module này khi thiết lập
+             * nó đã tự cài trên tất cả các ngôn ngữ
+             */
+            $sql = "SELECT * FROM " . NV_EMAILTEMPLATES_GLOBALTABLE . " WHERE lang!='' AND lang!=" . $db->quote($keylang);
+            $result = $db->query($sql);
+
+            $email_langs = [];
+            while ($row = $result->fetch()) {
+                if (isset($email_langs[$row['module_file']])) {
+                    // Mỗi module chỉ đọc 1 lần
+                    $module_emails = $email_langs[$row['module_file']];
+                } else {
+                    $file = NV_ROOTDIR . '/modules/' . $row['module_file'] . '/language/email_' . $keylang . '.php';
+                    if (!file_exists($file)) {
+                        continue;
+                    }
+                    $module_emails = [];
+                    include $file;
+                    if (empty($module_emails)) {
+                        continue;
+                    }
+                    $email_langs[$row['module_file']] = $module_emails;
+                }
+                if (!isset($module_emails[$row['id']]) or !isset($module_emails[$row['id']]['t'])) {
+                    continue;
+                }
+
+                try {
+                    $sql = "UPDATE " . NV_EMAILTEMPLATES_GLOBALTABLE . " SET
+                        " . $keylang . "_title=" . $db->quote($module_emails[$row['id']]['t']) . ",
+                        " . $keylang . "_subject=" . $db->quote($module_emails[$row['id']]['s'] ?? '') . ",
+                        " . $keylang . "_content=" . $db->quote($module_emails[$row['id']]['c'] ?? '') . "
+                    WHERE emailid=" . $row['emailid'];
+                    $db->query($sql);
+                } catch (Throwable $e) {
+                    nv_jsonOutput([
+                        'status' => 'error',
+                        'mess' => 'ERROR EMAIL: <br />' . $e->getMessage()
+                    ]);
+                }
+            }
+            $result->closeCursor();
+            unset($email_langs, $module_emails);
+
             nv_save_file_config_global();
             $global_config['setup_langs'][] = $keylang;
             nv_rewrite_change();
@@ -331,7 +378,6 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
         $sql = 'SELECT title, module_file, module_data FROM ' . $db_config['prefix'] . '_' . $lang . '_modules ORDER BY weight ASC';
         $result_del_module = $db->query($sql);
 
-        $deleted_modules = [];
         while ([$title, $module_file, $module_data] = $result_del_module->fetch(3)) {
             if (file_exists(NV_ROOTDIR . '/modules/' . $module_file . '/action_' . $db->dbtype . '.php')) {
                 $sql_drop_module = [];
@@ -350,7 +396,6 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
                     }
                 }
             }
-            $deleted_modules[$module_file] = $module_file;
 
             // Xóa plugin của module theo ngôn ngữ
             $sql = 'SELECT * FROM ' . $db_config['prefix'] . '_plugins WHERE plugin_lang=' . $db->quote($lang) . " AND plugin_module_file!='' AND plugin_module_name=" . $db->quote($title);
@@ -367,6 +412,9 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
                     }
                 }
             }
+
+            // Xóa các mẫu email
+            $db->query('DELETE FROM ' . $db_config['prefix'] . '_emailtemplates WHERE lang=' . $db->quote($lang) . ' AND module_name=' . $db->quote($title));
         }
 
         $db->query('ALTER TABLE ' . NV_COUNTER_GLOBALTABLE . ' DROP ' . $deletekeylang . '_count');
@@ -390,39 +438,13 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
         $result = $db->query($sql);
 
         $weight = 0;
-        $langs = [];
         while ($row = $result->fetch()) {
             ++$weight;
             $sql = 'UPDATE ' . $db_config['prefix'] . '_setup_language SET weight=' . $weight . ' WHERE lang=' . $db->quote($row['lang']);
             $db->query($sql);
-
-            if (!empty($row['setup'])) {
-                $langs[] = $row['lang'];
-            }
         }
 
         nv_deletefile(NV_ROOTDIR . '/' . NV_DATADIR . '/disable_site_content.' . $deletekeylang . '.txt');
-
-        // Kiểm tra và xóa template của các module
-        foreach ($deleted_modules as $module_file) {
-            $exists_at_least = false;
-
-            foreach ($langs as $lang_i) {
-                $sth = $db->prepare('SELECT COUNT(*) FROM ' . $db_config['prefix'] . '_' . $lang_i . '_modules WHERE module_file=:module_file');
-                $sth->bindParam(':module_file', $module_file, PDO::PARAM_STR);
-                $sth->execute();
-                if ($sth->fetchColumn()) {
-                    $exists_at_least = true;
-                    break;
-                }
-            }
-
-            if (!$exists_at_least) {
-                // Xóa các mẫu email
-                $db->query('DELETE FROM ' . $db_config['prefix'] . '_emailtemplates WHERE module=' . $db->quote($module_file));
-            }
-        }
-
         $nv_Cache->delAll();
 
         nv_save_file_config_global();

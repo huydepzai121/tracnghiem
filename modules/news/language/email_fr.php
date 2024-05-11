@@ -16,13 +16,13 @@ if (!defined('NV_MAINFILE')) {
 use NukeViet\Module\news\Shared\Emails;
 use NukeViet\Template\Email\Emf;
 
-$module_emails[Emails::E_SENDMAIL] = [
+$module_emails[Emails::SENDMAIL] = [
     'pids' => Emf::P_ALL,
     't' => 'Envoyer un e-mail présentant l\'article à un ami dans le module d\'actualités',
     's' => 'Message de {$from_name}',
     'c' => 'Bonjour!<br />Votre ami {$from_name} aimerait vous présenter l\'article “{$post_name}” sur le site {$site_name}{if not empty($message)} avec le message:<br />{$message}{/if}.<br/>----------<br/><strong>{$post_name}</strong><br/>{$hometext}<br/><br/>Vous pouvez consulter l\'intégralité de l\'article en cliquant sur le lien ci-dessous:<br /><a href="{$link}" title="{$post_name}">{$link}</a>'
 ];
-$module_emails[Emails::E_REPORT_THANKS] = [
+$module_emails[Emails::REPORT_THANKS] = [
     'pids' => Emf::P_ALL,
     't' => 'Email remerciant la personne qui a signalé l\'erreur sur les actualités du module',
     's' => 'Merci d\'avoir soumis un rapport d\'erreur',

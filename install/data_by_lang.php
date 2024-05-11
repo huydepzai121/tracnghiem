@@ -1239,13 +1239,13 @@ if (!empty($module_data) and $module_data == 'language') {
     $sql_emailtpl = [];
     foreach ($install_lang['emailtemplates']['emails'] as $_tplid => $_tpldata) {
         $sql_emailtpl[] = '(
-            ' . $_tplid . ", '', " . $_tplid . ", '" . $_tpldata['pids'] . "', " . $_tpldata['catid'] . ', ' . NV_CURRENTTIME . ", '', '', '', 1,
+            ' . $_tplid . ", " . $_tplid . ", '" . $_tpldata['pids'] . "', " . $_tpldata['catid'] . ', ' . NV_CURRENTTIME . ", '', '', '', 1,
             " . $db->quote($_tpldata['s']) . ', ' . $db->quote($_tpldata['c']) . ', ' . $db->quote($_tpldata['t']) . ", '', ''
         )";
     }
     if (!empty($sql_emailtpl)) {
         $db->query('INSERT INTO ' . $db_config['prefix'] . '_emailtemplates (
-            emailid, module, id, sys_pids, catid, time_add, send_cc, send_bcc, attachments, is_system, default_subject, default_content,
+            emailid, id, sys_pids, catid, time_add, send_cc, send_bcc, attachments, is_system, default_subject, default_content,
             ' . $lang_data . '_title, ' . $lang_data . '_subject, ' . $lang_data . '_content
         ) VALUES ' . implode(', ', $sql_emailtpl));
     }

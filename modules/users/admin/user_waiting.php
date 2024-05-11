@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 $page_title = $table_caption = $nv_Lang->getModule('member_wating');
 $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=user_waiting';
 
@@ -454,7 +456,7 @@ if ($nv_Request->isset_request('userid', 'get')) {
                     'pass_reset' => $post['pass_reset_request']
                 ]
             ]];
-            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_ADMIN_ACTIVE, $send_data, $maillang);
+            nv_sendmail_template_async([$module_name, Emails::ACTIVE_BY_ADMIN], $send_data, $maillang);
         }
         nv_jsonOutput([
             'status' => 'OK',

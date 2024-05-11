@@ -13,6 +13,8 @@ if (!defined('NV_IS_MOD_USER')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 if (!defined('NV_IS_USER') or !$global_config['allowuserlogin']) {
     nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
 }
@@ -346,7 +348,7 @@ if ((int) $row['safemode'] > 0) {
                         'lang' => NV_LANG_INTERFACE
                     ]
                 ]];
-                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SAFE_KEY, $send_data, NV_LANG_INTERFACE);
+                nv_sendmail_template_async([$module_name, Emails::SAFE_KEY], $send_data, NV_LANG_INTERFACE);
 
                 $ss_safesend = NV_CURRENTTIME + 600;
                 $nv_Request->set_Session('safesend', $ss_safesend);
@@ -573,7 +575,7 @@ if (in_array('openid', $types, true) and $nv_Request->isset_request('server', 'g
         ]
     ]];
 
-    $tpl_id = defined('ACCESS_EDITUS') ? NukeViet\Template\Email\Tpl::E_USER_OAUTH_LEADER_ADD : NukeViet\Template\Email\Tpl::E_USER_OAUTH_SELF_ADD;
+    $tpl_id = defined('ACCESS_EDITUS') ? [$module_name, Emails::OAUTH_LEADER_ADD] : [$module_name, Emails::OAUTH_SELF_ADD];
     nv_sendmail_template_async($tpl_id, $send_data, NV_LANG_INTERFACE);
 
     nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('openid_add'), $user_info['username'] . ' | ' . $client_info['ip'] . ' | ' . $opid, 0);
@@ -733,7 +735,7 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
             'send_newvalue' => 1
         ]
     ]];
-    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SELF_EDIT, $send_data, NV_LANG_INTERFACE);
+    nv_sendmail_template_async([$module_name, Emails::SELF_EDIT], $send_data, NV_LANG_INTERFACE);
 
     $mess = $nv_Lang->getModule('editinfo_ok');
     if ($nv_Request->get_bool('forcedrelogin', 'post', false)) {
@@ -823,7 +825,7 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
                 'deadline' => $p
             ]
         ]];
-        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_VERIFY_EMAIL, $send_data, NV_LANG_INTERFACE);
+        nv_sendmail_template_async([$module_name, Emails::VERIFY_EMAIL], $send_data, NV_LANG_INTERFACE);
 
         nv_jsonOutput([
             'status' => 'error',
@@ -889,7 +891,7 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
             'to' => $nv_email,
             'data' => $sendfields
         ];
-        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SELF_EDIT, $send_data, NV_LANG_INTERFACE);
+        nv_sendmail_template_async([$module_name, Emails::SELF_EDIT], $send_data, NV_LANG_INTERFACE);
 
         $mess = $nv_Lang->getModule('editinfo_ok');
         if ($nv_Request->get_bool('forcedrelogin', 'post', false)) {
@@ -973,7 +975,7 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
             'send_newvalue' => $global_config['send_pass']
         ]
     ]];
-    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SELF_EDIT, $send_data, NV_LANG_INTERFACE);
+    nv_sendmail_template_async([$module_name, Emails::SELF_EDIT], $send_data, NV_LANG_INTERFACE);
 
     $mess = $nv_Lang->getModule('editinfo_ok');
     if ($nv_Request->get_bool('forcedrelogin', 'post', false)) {
@@ -1066,7 +1068,7 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
             ]
         ]];
 
-        $tpl_id = defined('ACCESS_EDITUS') ? NukeViet\Template\Email\Tpl::E_USER_OAUTH_LEADER_DEL : NukeViet\Template\Email\Tpl::E_USER_OAUTH_SELF_DEL;
+        $tpl_id = defined('ACCESS_EDITUS') ? [$module_name, Emails::OAUTH_LEADER_DEL] : [$module_name, Emails::OAUTH_SELF_DEL];
         nv_sendmail_template_async($tpl_id, $send_data, NV_LANG_INTERFACE);
     }
 
@@ -1149,7 +1151,7 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
                         ];
                     }
                     if (!empty($send_data)) {
-                        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_GROUP_JOIN, $send_data, NV_LANG_INTERFACE);
+                        nv_sendmail_template_async([$module_name, Emails::GROUP_JOIN], $send_data, NV_LANG_INTERFACE);
                     }
                 } elseif (in_array($gid, $groups_list['share'], true)) {
                     $messages = [];
@@ -1294,7 +1296,7 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
                     'lang' => NV_LANG_INTERFACE
                 ]
             ]];
-            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_SAFE_KEY, $send_data, NV_LANG_INTERFACE);
+            nv_sendmail_template_async([$module_name, Emails::SAFE_KEY], $send_data, NV_LANG_INTERFACE);
 
             $ss_safesend = NV_CURRENTTIME + 600;
             $nv_Request->set_Session('safesend', $ss_safesend);

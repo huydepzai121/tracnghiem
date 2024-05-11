@@ -13,6 +13,8 @@ if (!defined('NV_IS_MOD_USER')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 $page_title = $nv_Lang->getModule('group_manage');
 $page_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op;
 
@@ -179,7 +181,7 @@ if ($nv_Request->isset_request('gid, getuserid', 'post, get')) {
                         'lang' => NV_LANG_INTERFACE
                     ]
                 ]];
-                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_LEADER_ADDED, $send_data, NV_LANG_INTERFACE);
+                nv_sendmail_template_async([$module_name, Emails::ADDED_BY_LEADER], $send_data, NV_LANG_INTERFACE);
             } else {
                 $db->query('DELETE FROM ' . NV_MOD_TABLE . ' WHERE userid=' . $row['userid']);
             }

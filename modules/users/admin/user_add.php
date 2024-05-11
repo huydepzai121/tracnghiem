@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 if ($nv_Request->isset_request('nv_genpass', 'post')) {
     $_len = round(($global_config['nv_upassmin'] + $global_config['nv_upassmax']) / 2);
     echo nv_genpass($_len, $global_config['nv_upass_type']);
@@ -359,7 +361,7 @@ if ($nv_Request->isset_request('confirm', 'post')) {
                 'lang' => $maillang
             ]
         ]];
-        nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_ADMIN_ADDED, $send_data, $maillang);
+        nv_sendmail_template_async([$module_name, Emails::ADDED_BY_ADMIN], $send_data, $maillang);
     }
 
     $redirect = $nv_redirect != '' ? nv_redirect_decrypt($nv_redirect) . '&userid=' . $userid : '';

@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 $userid = $nv_Request->get_int('userid', 'get', 0);
 
 $sql = 'SELECT * FROM ' . NV_MOD_TABLE . ' WHERE userid=' . $userid;
@@ -101,7 +103,7 @@ if (empty($row['active2step'])) {
                     'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . NV_2STEP_VERIFICATION_MODULE, NV_MY_DOMAIN)
                 ]
             ]];
-            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_2STEPOFF_BYADMIN, $send_data, $maillang);
+            nv_sendmail_template_async([$module_name, Emails::OFF2S_BY_ADMIN], $send_data, $maillang);
         }
 
         nv_insert_logs(NV_LANG_DATA, $module_name, 'log_turnoff_user2step', 'userid ' . $row['userid'], $admin_info['userid']);
@@ -150,7 +152,7 @@ if (empty($row['active2step'])) {
                     'lang' => $maillang
                 ]
             ]];
-            nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_NEW_2STEP_CODE, $send_data, $maillang);
+            nv_sendmail_template_async([$module_name, Emails::NEW_2STEP_CODE], $send_data, $maillang);
         }
 
         nv_insert_logs(NV_LANG_DATA, $module_name, 'log_reset_user2step_codes', 'userid ' . $row['userid'], $admin_info['userid']);

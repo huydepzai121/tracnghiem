@@ -13,6 +13,8 @@ if (!defined('NV_SYSTEM')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 define('NV_IS_MOD_USER', true);
 define('NV_MOD_TABLE', ($module_data == 'users') ? NV_USERS_GLOBALTABLE : $db_config['prefix'] . '_' . $module_data);
 
@@ -353,7 +355,7 @@ function nv_del_user($userid)
             'lang' => $lang
         ]
     ]];
-    nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_USER_DELETE, $send_data, $lang);
+    nv_sendmail_template_async([$module_name, Emails::USER_DELETE], $send_data, $lang);
 
     return $userid;
 }
