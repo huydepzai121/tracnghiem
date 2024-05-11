@@ -18,16 +18,19 @@ use NukeViet\Template\Email\Cat;
 
 if ($module_data == 'users') {
     $catid = Cat::CAT_USER;
-    $pids = '3';
+    $sys_pids = '3';
+    $is_system = 1;
     $pfile = '';
 } else {
     $catid = Cat::CAT_MODULE;
-    $pids = '';
+    $sys_pids = '';
+    $is_system = 0;
     $pfile = 'emf_code_user.php';
 }
 
 $module_emails[Emails::REGISTER_ACTIVE] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Account activation via email',
@@ -35,7 +38,8 @@ $module_emails[Emails::REGISTER_ACTIVE] = [
     'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} waitting to activate. To activate, please click link follow:<br /><br />URL: <a href="{$link}">{$link}</a><br /><br />Account information:<br /><br />Username: {$username}<br />Email: {$email}<br /><br />Activate expired on {$active_deadline}<br /><br />This is email automatic sending from website {$site_name}.'
 ];
 $module_emails[Emails::USER_DELETE] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Email notification to delete account',
@@ -43,7 +47,8 @@ $module_emails[Emails::USER_DELETE] = [
     'c' => '{$greeting_user}<br /><br />We are so sorry to delete your account at website {$site_name}.'
 ];
 $module_emails[Emails::NEW_2STEP_CODE] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Send new backup code',
@@ -51,7 +56,8 @@ $module_emails[Emails::NEW_2STEP_CODE] = [
     'c' => '{$greeting_user}<br /><br /> backup code to your account at the website {$site_name} has been changed. Here is a new backup code: <br /><br />{foreach from=$new_code item=code}{$code}<br />{/foreach}<br />You keep your backup safe. If you lose your phone and lose your backup code, you will no longer be able to access your account.<br /><br />This is an automated message sent to your e-mail from website {$site_name}. If you do not understand the content of this letter, simply delete it.'
 ];
 $module_emails[Emails::NEW_INFO] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification that the account has been created when the member successfully registers in the form',
@@ -59,7 +65,8 @@ $module_emails[Emails::NEW_INFO] = [
     'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} activated. Your login information:<br /><br />Username: {$username}<br />Email: {$email}<br /><br />Please click the link below to log in:<br />URL: <a href="{$link}">{$link}</a><br /><br />This is email automatic sending from website {$site_name}.'
 ];
 $module_emails[Emails::NEW_INFO_OAUTH] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification that the account has been created when the member successfully registers via Oauth',
@@ -67,7 +74,8 @@ $module_emails[Emails::NEW_INFO_OAUTH] = [
     'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} activated. To log into your account please visit the page: <a href="{$link}">{$link}</a> and press the button: Sign in with {$oauth_name}.<br /><br />This is email automatic sending from website {$site_name}.'
 ];
 $module_emails[Emails::ADDED_BY_LEADER] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification of account created by group leader',
@@ -75,7 +83,8 @@ $module_emails[Emails::ADDED_BY_LEADER] = [
     'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} activated. Your login information:<br /><br />URL: <a href="{$link}">{$link}</a><br />Username: {$username}<br />Email: {$email}<br /><br />This is email automatic sending from website {$site_name}.'
 ];
 $module_emails[Emails::ADDED_BY_ADMIN] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification of account created by administrator',
@@ -83,7 +92,8 @@ $module_emails[Emails::ADDED_BY_ADMIN] = [
     'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} has been created. Here are the logins:<br /><br />URL: <a href="{$link}">{$link}</a><br />Username: {$username}<br />Password: {$password}<br />{if $pass_reset eq 2}<br />Note: We recommend that you change your password before using your account.<br />{elseif $pass_reset eq 1}<br />Note: You need to change your password before using your account.<br />{/if}<br />This is an automated message sent to Your email box from website {$site_name}. If you do not understand the content of this letter, simply delete it.'
 ];
 $module_emails[Emails::SAFE_KEY] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Send verification code when user turns on/ off safe mode',
@@ -91,7 +101,8 @@ $module_emails[Emails::SAFE_KEY] = [
     'c' => '{$greeting_user}<br /><br />You sent a request using safe mode in website {$site_name}. Below is a verifykey  for activating or off safe mode:<br /><br /><strong>{$code}</strong><br /><br />This verifykey only works on-off safe mode once only. After you turn off safe mode, this verification code will be worthless.<br /><br />These are automatic messages sent to your e-mail inbox from website {$site_name}.'
 ];
 $module_emails[Emails::SELF_EDIT] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notify account changes just made by the user',
@@ -99,7 +110,8 @@ $module_emails[Emails::SELF_EDIT] = [
     'c' => '{$greeting_user}<br /><br />Your account on the website {$site_name} has been updated {if $send_newvalue}with new {$label}: <strong>{$newvalue}</strong>{else}new {$label}{/if}.<br /><br />These are automatic messages sent to your e-mail inbox from website {$site_name}.'
 ];
 $module_emails[Emails::EDIT_BY_ADMIN] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notify account changes just made by the administrator',
@@ -107,7 +119,8 @@ $module_emails[Emails::EDIT_BY_ADMIN] = [
     'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} has been updated. Here are the login information:<br /><br />URL: <a href="{$link}">{$link}</a><br />Username: {$username}{if not empty($password)}<br />Password: {$password}{/if}<br />{if $pass_reset eq 2}<br />Note: We recommend that you change your password before using your account.<br />{elseif $pass_reset eq 1}<br />Note: You need to change your password before using your account.<br />{/if}<br />This is an automated message sent to your email from {$site_name}. If you do not understand the content of this letter, simply delete it.'
 ];
 $module_emails[Emails::VERIFY_EMAIL] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Confirmation email to change account email',
@@ -115,7 +128,8 @@ $module_emails[Emails::VERIFY_EMAIL] = [
     'c' => '{$greeting_user}<br /><br />You sent a request to change the email address of the personal Account on the website {$site_name}. To complete this change, you must confirm your new email address by entering the verifykey below in the appropriate fields in the area Edit Account Information:<br /><br />Verifykey: <strong>{$code}</strong><br /><br />This key expires on {$deadline}.<br /><br />These are automatic messages sent to your e-mail inbox from website {$site_name}. If you do not understand anything about the contents of this letter, simply delete it.'
 ];
 $module_emails[Emails::GROUP_JOIN] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notice asking to join the group',
@@ -123,7 +137,8 @@ $module_emails[Emails::GROUP_JOIN] = [
     'c' => 'Hello leader <strong>{$group_name}</strong>,<br /><br /><strong>{$full_name}</strong> has sent the request to join the group <strong>{$group_name}</strong> you are managing. You need to approve this request!<br /><br />Please <a href="{$link}"> visit this link </a> to approve membership.'
 ];
 $module_emails[Emails::LOST_ACTIVE] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Resend account activation information',
@@ -131,7 +146,8 @@ $module_emails[Emails::LOST_ACTIVE] = [
     'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} waitting to activate. To activate, please click link follow:<br /><br />URL: <a href="{$link}">{$link}</a><br />Account information:<br />Account: {$username}<br />Email: {$email}<br />Password: {$password}<br /><br />Activate expired on {$active_deadline}<br /><br />This is email automatic sending from website {$site_name}.'
 ];
 $module_emails[Emails::LOST_PASS] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Instructions for retrieving member password',
@@ -139,7 +155,8 @@ $module_emails[Emails::LOST_PASS] = [
     'c' => '{$greeting_user}<br /><br />You propose to change my login password at the website {$site_name}. To change your password, you will need to enter the verification code below in the corresponding box at the password change area.<br /><br />Verification code: <strong>{$code}</strong><br /><br />This code is only used once and before the deadline of {$deadline}.<br /><br />This letter is automatically sent to your email inbox from site {$site_name}. If you do not know anything about the contents of this letter, just delete it.'
 ];
 $module_emails[Emails::R2S] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notice that two-step authentication has been successfully removed',
@@ -147,7 +164,8 @@ $module_emails[Emails::R2S] = [
     'c' => '{$greeting_user}<br /><br />At your request, we have turned off 2-Step Verification for your account at the {$site_name} website.<br /><br />This is email automatic sending from website {$site_name}.'
 ];
 $module_emails[Emails::R2S_REQUEST] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Instructions for turning off two-step authentication when forgetting code',
@@ -155,7 +173,8 @@ $module_emails[Emails::R2S_REQUEST] = [
     'c' => '{$greeting_user}<br /><br />We have received a request to turn off 2-step verification for your account at the {$site_name} website. If you sent this request yourself, please use the Verification Code below to proceed:<br /><br />Verification Code: <strong>{$code}</strong><br /><br />This is email automatic sending from website {$site_name}.'
 ];
 $module_emails[Emails::OAUTH_LEADER_ADD] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification oauth is added to the account by the team leader',
@@ -163,7 +182,8 @@ $module_emails[Emails::OAUTH_LEADER_ADD] = [
     'c' => '{$greeting_user}<br /><br />We are informing you that a third party account <strong>{$oauth_name}</strong> has just been connected to your <strong>{$username}</strong> account by the group leader.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
 ];
 $module_emails[Emails::OAUTH_SELF_ADD] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification oauth is added to the account by the user themselves',
@@ -171,7 +191,8 @@ $module_emails[Emails::OAUTH_SELF_ADD] = [
     'c' => '{$greeting_user}<br /><br />The third party account <strong>{$oauth_name}</strong> has just been connected to your <strong>{$username}</strong> account. If this was not your intention, please quickly remove it from your account by visiting the third party account management area.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
 ];
 $module_emails[Emails::OAUTH_LEADER_DEL] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification oauth is removed to the account by the team leader',
@@ -179,7 +200,8 @@ $module_emails[Emails::OAUTH_LEADER_DEL] = [
     'c' => '{$greeting_user}<br /><br />We are informing you that the third party account <strong>{$oauth_name}</strong> has just been disconnected from your <strong>{$username}</strong> account by the group leader.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
 ];
 $module_emails[Emails::OAUTH_SELF_DEL] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification oauth is removed to the account by the user themselves',
@@ -187,7 +209,8 @@ $module_emails[Emails::OAUTH_SELF_DEL] = [
     'c' => '{$greeting_user}<br /><br />The third-party account <strong>{$oauth_name}</strong> has just been disconnected from your <strong>{$username}</strong> account. If this is not your intention, please quickly contact the site administrator for help.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
 ];
 $module_emails[Emails::OAUTH_VERIFY_EMAIL] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Send email verification code when logging in via Oauth and the email matches your existing account',
@@ -195,7 +218,8 @@ $module_emails[Emails::OAUTH_VERIFY_EMAIL] = [
     'c' => 'Hello!<br /><br />You have sent a request to verify your email address: {$email}. Copy the code below and paste it into the Verification code box on the site.<br /><br />Verification code: <strong>{$code}</strong><br /><br />This is email automatic sending from website {$site_name}.'
 ];
 $module_emails[Emails::ACTIVE_BY_ADMIN] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Email notifies users when the administrator activates the account',
@@ -203,7 +227,8 @@ $module_emails[Emails::ACTIVE_BY_ADMIN] = [
     'c' => '{$greeting_user}<br /><br />Your account at website {$site_name} activated. {if empty($oauth_name)}Your login information:<br /><br />URL: <a href="{$link}">{$link}</a><br />Username: {$username}<br />{if not empty($password)}Password: {$password}{/if}{else}To log into your account please visit the page: <a href="{$link}">{$link}</a> and press the button: <strong>Sign in with {$oauth_name}</strong>.{if not empty($password)}<br /><br />You can also log in using the usual method with the following information:<br />Username: {$username}<br />Password: {$password}{/if}{/if}{if $pass_reset eq 2}<br />Note: We recommend that you change your password before using your account.{elseif $pass_reset eq 1}<br />Note: You need to change your password before using your account.{/if}<br /><br />This is email automatic sending from website {$site_name}.'
 ];
 $module_emails[Emails::REQUEST_RESET_PASS] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Email asking user to change password',
@@ -211,7 +236,8 @@ $module_emails[Emails::REQUEST_RESET_PASS] = [
     'c' => '{$greeting_user}<br /><br />The {$site_name} website administration informs: For security reasons, {if $pass_reset eq 2}we recommend that you{else}you need to{/if} change your account password as soon as possible. To change your password, you need to first visit the <a href="{$link}">Manage Personal Account page</a>, select the Account Settings button, then the Password button, and follow the instructions.'
 ];
 $module_emails[Emails::OFF2S_BY_ADMIN] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification to users that two-step authentication has been turned off by the administrator',
@@ -219,7 +245,8 @@ $module_emails[Emails::OFF2S_BY_ADMIN] = [
     'c' => '{$greeting_user}<br /><br />Your account has just had two-step authentication disabled by your administrator. We send you this email to inform you.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Manage two-step authentication</a>'
 ];
 $module_emails[Emails::OAUTH_ADMIN_DEL] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notify users when administrators delete their third-party account',
@@ -227,7 +254,8 @@ $module_emails[Emails::OAUTH_ADMIN_DEL] = [
     'c' => '{$greeting_user}<br /><br />We are informing you that the third party account <strong>{$oauth_name}</strong> has just been disconnected from your account by an administrator. We send you this email to inform you.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Third-party accounts Management</a>'
 ];
 $module_emails[Emails::OAUTH_TRUNCATE] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notify users when administrators delete all of their third-party accounts',

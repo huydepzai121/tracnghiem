@@ -59,7 +59,9 @@
                     <div>
                         {if $row.is_disabled}<i class="text-muted fa fa-times-circle" title="{$LANG->get('tpl_is_disabled')}"></i>{else}<i class="text-success fa fa-check-circle" title="{$LANG->get('tpl_is_active')}"></i>{/if}
                         {if $row.is_disabled}<span class="text-muted">{$row.title}</span> <span class="label label-default">{$LANG->get('tpl_is_disabled_label')}</span>{else}{$row.title}{/if}
-                        {if $row.module_name}<a href="{$NV_BASE_ADMINURL}?index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$MODULE_NAME}&amp;m={$row.module_name}&amp;l={$row.lang}"><span class="label label-primary">{$row.module_name}</span></a>
+                        {if $row.module_name}
+                        <a href="{$NV_BASE_ADMINURL}?index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$MODULE_NAME}&amp;m={$row.module_name}&amp;l={$row.lang}"><span class="label label-primary">{$MODULES[$row.lang][$row.module_name]}</span></a>
+                        <a href="{$NV_BASE_ADMINURL}?index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$MODULE_NAME}&amp;l={$row.lang}"><span class="label label-info">{$LANGS[{$row.lang}].name}</span></a>
                         {elseif not $row.is_system}<span class="label label-danger">{$LANG->get('tpl_custom_label')}</span>{/if}
                     </div>
                 </td>

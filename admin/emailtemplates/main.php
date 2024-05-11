@@ -105,12 +105,16 @@ if (!empty($array_search['catid'])) {
     $where[] = "catid=" . $array_search['catid'];
     $is_search++;
 }
-if (!empty($array_search['module_name']) and !empty($array_search['lang'])) {
-    $base_url .= '&amp;m=' . urlencode($array_search['module_name']) . '&amp;l=' . urlencode($array_search['lang']);
+if (!empty($array_search['module_name'])) {
+    $base_url .= '&amp;m=' . urlencode($array_search['module_name']);
     $where[] = "module_name=" . $db->quote($array_search['module_name']);
-    $where[] = "lang=" . $db->quote($array_search['lang']);
     $is_search++;
     $per_page = 200;
+}
+if (!empty($array_search['lang'])) {
+    $base_url .= '&amp;l=' . urlencode($array_search['lang']);
+    $where[] = "lang=" . $db->quote($array_search['lang']);
+    $is_search++;
 }
 
 // Phần sắp xếp
@@ -165,6 +169,19 @@ $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
 $tpl->assign('OP', $op);
+$tpl->assign('LANGS', $language_array);
+
+// Module trên tất cả các ngôn ngữ
+$modules = [];
+foreach ($global_config['setup_langs'] as $lang) {
+    $sql = "SELECT title, custom_title FROM " . $db_config['prefix'] . "_" . $lang . "_modules";
+    $result = $db->query($sql);
+    while ($row = $result->fetch()) {
+        $modules[$lang][$row['title']] = $row['custom_title'];
+    }
+    $result->closeCursor();
+}
+$tpl->assign('MODULES', $modules);
 
 $array_search['from'] = empty($array_search['from']) ? '' : nv_date('d-m-Y', $array_search['from']);
 $array_search['to'] = empty($array_search['to']) ? '' : nv_date('d-m-Y', $array_search['to']);

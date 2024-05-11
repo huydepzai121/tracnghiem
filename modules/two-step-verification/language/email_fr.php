@@ -17,21 +17,24 @@ use NukeViet\Template\Email\Cat;
 use NukeViet\Template\Email\Tpl2Step;
 
 $module_emails[Tpl2Step::ACTIVE_2STEP] = [
-    'pids' => '5',
+    'sys_pids' => '5',
+    'is_system' => 1,
     'catid' => Cat::CAT_USER,
     't' => 'Avis pour activer l\'authentification en deux étapes pour les comptes membres',
     's' => 'Avis de confidentialité',
     'c' => '{$greeting_user}<br /><br />Votre compte sur <a href="{$Home}"><strong>{$site_name}</strong></a> vient d\'activer Two-Factor Authentication. Information:<br /><br />- Temps: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Navigateur: <strong>{$browser}</strong><br /><br />Si c\'est vous, ignorez cet email. Si ce n\'est pas vous, votre compte est très probablement volé. Veuillez contacter l\'administrateur du site pour obtenir de l\'aide'
 ];
 $module_emails[Tpl2Step::DEACTIVATE_2STEP] = [
-    'pids' => '5',
+    'sys_pids' => '5',
+    'is_system' => 1,
     'catid' => Cat::CAT_USER,
     't' => 'Avis de désactivation de l\'authentification en deux étapes pour les comptes membres',
     's' => 'Avis de confidentialité',
     'c' => '{$greeting_user}<br /><br />Votre compte sur <a href="{$Home}"><strong>{$site_name}</strong></a> vient d\'activer Two-Factor Authentication. Information:<br /><br />- Temps: <strong>{$time}</strong><br />- IP: <strong>{$ip}</strong><br />- Navigateur: <strong>{$browser}</strong><br /><br />Si c\'est vous, ignorez cet email. Si ce n\'est pas vous, veuillez vérifier vos informations personnelles à l\'adresse <a href="{$link}">{$link}</a>'
 ];
 $module_emails[Tpl2Step::RENEW_BACKUPCODE] = [
-    'pids' => '5',
+    'sys_pids' => '5',
+    'is_system' => 1,
     'catid' => Cat::CAT_USER,
     't' => 'Avis de régénération des codes de sauvegarde d\'authentification en deux étapes pour les comptes membres',
     's' => 'Avis de confidentialité',

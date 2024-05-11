@@ -145,7 +145,9 @@ function nv_setup_data_module($lang, $module_name, $sample = 0)
 {
     global $nv_Cache, $db, $db_config, $global_config, $install_lang;
 
-    $return = 'NO_' . $module_name;
+    $return = [
+        'success' => 0
+    ];
 
     $sth = $db->prepare('SELECT module_file, module_data, module_upload, theme FROM ' . $db_config['prefix'] . '_' . $lang . '_modules WHERE title= :title');
     $sth->bindParam(':title', $module_name, PDO::PARAM_STR);
@@ -417,14 +419,15 @@ function nv_setup_data_module($lang, $module_name, $sample = 0)
 
                 try {
                     $sql = 'INSERT INTO ' . $db_config['prefix'] . '_emailtemplates (
-                        lang, module_file, module_name, id, catid, pids, time_add, send_name, send_email,
+                        lang, module_file, module_name, id, catid, sys_pids, pids, time_add, send_name, send_email,
                         send_cc, send_bcc, attachments, is_system, is_plaintext, is_disabled,
                         is_selftemplate, default_subject, default_content' . $field_title . '
                     ) VALUES (
                         ' . $db->quote($lang) . ', ' . $db->quote($module_file) . ', ' . $db->quote($module_name) . ',
                         ' . $key . ', ' . intval($value['catid'] ?? EmailCat::CAT_MODULE) . ',
-                        ' . $db->quote($value['pids'] ?? '') . ', ' . NV_CURRENTTIME . ', :send_name, :send_email, :send_cc, :send_bcc,
-                        :attachments, 0, ' . intval($value['is_plaintext'] ?? 0) . ', ' . intval($value['is_disabled'] ?? 0) . ',
+                        ' . $db->quote($value['sys_pids'] ?? '') . ', ' . $db->quote($value['pids'] ?? '') . ', ' . NV_CURRENTTIME . ',
+                        :send_name, :send_email, :send_cc, :send_bcc, :attachments, ' . intval($value['is_system'] ?? 0) . ',
+                        ' . intval($value['is_plaintext'] ?? 0) . ', ' . intval($value['is_disabled'] ?? 0) . ',
                         ' . intval($value['is_selftemplate'] ?? 0) . ', :default_subject, :default_content' . $field_value . '
                     )';
 
@@ -460,7 +463,8 @@ function nv_setup_data_module($lang, $module_name, $sample = 0)
 
     $nv_Cache->delAll();
 
-    return 'OK_' . $module_name;
+    $return['success'] = 1;
+    return $return;
 }
 
 /**

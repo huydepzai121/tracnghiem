@@ -94,9 +94,9 @@ if (!empty($setmodule) and preg_match($global_config['check_module'], $setmodule
 
             try {
                 $sth = $db->prepare('INSERT INTO ' . NV_MODULES_TABLE . "
-					(title, module_file, module_data, module_upload, module_theme, custom_title, admin_title, set_time, main_file, admin_file, theme, mobile, description, keywords, groups_view, weight, act, admins, rss, sitemap) VALUES
-					(:title, :module_file, :module_data, :module_upload, :module_theme, :custom_title, '', " . NV_CURRENTTIME . ', ' . $_main_file . ', ' . $_admin_file . ", '', '', '', '', '6', " . $weight . ", 0, '', 1, 1)
-				");
+                    (title, module_file, module_data, module_upload, module_theme, custom_title, admin_title, set_time, main_file, admin_file, theme, mobile, description, keywords, groups_view, weight, act, admins, rss, sitemap) VALUES
+                    (:title, :module_file, :module_data, :module_upload, :module_theme, :custom_title, '', " . NV_CURRENTTIME . ', ' . $_main_file . ', ' . $_admin_file . ", '', '', '', '', '6', " . $weight . ", 0, '', 1, 1)
+                ");
 
                 $sth->bindParam(':title', $setmodule, PDO::PARAM_STR);
                 $sth->bindParam(':module_file', $modrow['basename'], PDO::PARAM_STR);
@@ -114,7 +114,7 @@ if (!empty($setmodule) and preg_match($global_config['check_module'], $setmodule
                 define('NV_MODULE_ADD', true);
             }
             $return = nv_setup_data_module(NV_LANG_DATA, $setmodule, $sample);
-            if ($return == 'OK_' . $setmodule) {
+            if ($return['success']) {
                 nv_setup_block_module($setmodule);
 
                 $sth = $db->prepare('UPDATE ' . NV_MODULES_TABLE . ' SET act=1 WHERE title=:title');
@@ -235,7 +235,7 @@ foreach ($arr_module_news as $module_name_i => $arr) {
         $module_version['virtual'] = ($module_version['virtual'] == 1) ? 1 : 0;
 
         $sth = $db->prepare('INSERT INTO ' . $db_config['prefix'] . '_setup_extensions (type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (
-			\'module\', :title, ' . (int) ($module_version['is_sysmod']) . ', ' . (int) ($module_version['virtual']) . ', :basename, :table_prefix, :version, ' . NV_CURRENTTIME . ', :author, :note)');
+            \'module\', :title, ' . (int) ($module_version['is_sysmod']) . ', ' . (int) ($module_version['virtual']) . ', :basename, :table_prefix, :version, ' . NV_CURRENTTIME . ', :author, :note)');
 
         $sth->bindParam(':title', $module_name_i, PDO::PARAM_STR);
         $sth->bindParam(':basename', $module_name_i, PDO::PARAM_STR);

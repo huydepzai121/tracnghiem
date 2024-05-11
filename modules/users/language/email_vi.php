@@ -18,16 +18,19 @@ use NukeViet\Template\Email\Cat;
 
 if ($module_data == 'users') {
     $catid = Cat::CAT_USER;
-    $pids = '3';
+    $sys_pids = '3';
+    $is_system = 1;
     $pfile = '';
 } else {
     $catid = Cat::CAT_MODULE;
-    $pids = '';
+    $sys_pids = '';
+    $is_system = 0;
     $pfile = 'emf_code_user.php';
 }
 
 $module_emails[Emails::REGISTER_ACTIVE] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Kích hoạt tài khoản qua email',
@@ -35,7 +38,8 @@ $module_emails[Emails::REGISTER_ACTIVE] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đang chờ kích hoạt. Để kích hoạt, bạn hãy click vào link dưới đây:<br /><br />URL: <a href="{$link}">{$link}</a><br /><br />Các thông tin cần thiết:<br /><br />Tài khoản: {$username}<br />Email: {$email}<br /><br />Việc kích hoạt tài khoản chỉ có hiệu lực đến {$active_deadline}<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::USER_DELETE] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thư thông báo xóa tài khoản',
@@ -43,7 +47,8 @@ $module_emails[Emails::USER_DELETE] = [
     'c' => '{$greeting_user}<br /><br />Chúng tôi rất lấy làm tiếc thông báo về việc tài khoản của bạn đã bị xóa khỏi website {$site_name}.'
 ];
 $module_emails[Emails::NEW_2STEP_CODE] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Gửi mã dự phòng mới',
@@ -51,7 +56,8 @@ $module_emails[Emails::NEW_2STEP_CODE] = [
     'c' => '{$greeting_user}<br /><br />Mã dự phòng cho tài khoản của bạn tại website {$site_name} đã được thay đổi. Dưới đây là mã dự phòng mới:<br /><br />{foreach from=$new_code item=code}{$code}<br />{/foreach}<br />Bạn chú ý giữ mã dự phòng an toàn. Nếu mất điện thoại và mất cả mã dự phòng bạn sẽ không thể truy cập vào tài khoản của mình được nữa.<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::NEW_INFO] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo tài khoản đã được tạo khi thành viên đăng kí thành công tại form',
@@ -59,7 +65,8 @@ $module_emails[Emails::NEW_INFO] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. Dưới đây là thông tin tài khoản:<br /><br />Bí danh: {$username}<br />Email: {$email}<br /><br />Vui lòng bấm vào đường dẫn dưới đây để đăng nhập:<br />URL: <a href="{$link}">{$link}</a><br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::NEW_INFO_OAUTH] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo tài khoản đã được tạo khi thành viên đăng kí thành công qua Oauth',
@@ -67,7 +74,8 @@ $module_emails[Emails::NEW_INFO_OAUTH] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. Để đăng nhập vui lòng truy cập vào trang: <a href="{$link}">{$link}</a> và click vào nút: Đăng nhập bằng {$oauth_name}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::ADDED_BY_LEADER] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo tài khoản được trưởng nhóm khởi tạo',
@@ -75,7 +83,8 @@ $module_emails[Emails::ADDED_BY_LEADER] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />Email: {$email}<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::ADDED_BY_ADMIN] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo tài khoản được quản trị khởi tạo',
@@ -83,7 +92,8 @@ $module_emails[Emails::ADDED_BY_ADMIN] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được khởi tạo. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />Mật khẩu: {$password}<br />{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.<br />{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.<br />{/if}<br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::SAFE_KEY] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Gửi mã xác minh khi người dùng bật/ tắt chế độ an toàn',
@@ -91,7 +101,8 @@ $module_emails[Emails::SAFE_KEY] = [
     'c' => '{$greeting_user}<br /><br />Bạn đã gửi yêu cầu sử dụng chế độ an toàn tại website {$site_name}. Dưới đây là mã xác minh dùng cho việc kích hoạt hoặc tắt chế độ an toàn:<br /><br /><strong>{$code}</strong><br /><br />Mã xác minh này chỉ có tác dụng bật-tắt chế độ an toàn một lần duy nhất. Sau khi bạn tắt chế độ an toàn, mã xác minh này sẽ vô giá trị.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}.'
 ];
 $module_emails[Emails::SELF_EDIT] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo các thay đổi về tài khoản vừa được người dùng thực hiện',
@@ -99,7 +110,8 @@ $module_emails[Emails::SELF_EDIT] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được cập nhật {if $send_newvalue}với {$label} mới là <strong>{$newvalue}</strong>{else}{$label} mới{/if}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}.'
 ];
 $module_emails[Emails::EDIT_BY_ADMIN] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo các thay đổi về tài khoản vừa được quản trị thực hiện',
@@ -107,7 +119,8 @@ $module_emails[Emails::EDIT_BY_ADMIN] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được cập nhật. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}{if not empty($password)}<br />Mật khẩu: {$password}{/if}<br />{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.<br />{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.<br />{/if}<br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::VERIFY_EMAIL] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thư xác nhận thay đổi email tài khoản',
@@ -115,7 +128,8 @@ $module_emails[Emails::VERIFY_EMAIL] = [
     'c' => '{$greeting_user}<br /><br />Bạn đã gửi đề nghị thay đổi email của tài khoản người dùng trên website {$site_name}. Để hoàn tất thay đổi này, bạn cần xác nhận email mới bằng cách nhập Mã xác minh dưới đây vào ô tương ứng tại khu vực Sửa thông tin tài khoản:<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Mã này hết hạn vào {$deadline}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::GROUP_JOIN] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo có yêu cầu tham gia nhóm',
@@ -123,7 +137,8 @@ $module_emails[Emails::GROUP_JOIN] = [
     'c' => 'Xin chào trưởng nhóm <strong>{$group_name}</strong>,<br /><br /><strong>{$full_name}</strong> đã gửi yêu cầu tham gia nhóm <strong>{$group_name}</strong> do bạn đang quản lý. Vui lòng xét duyệt yêu cầu bằng cách nhấn vào <a href="{$link}">liên kết này</a>.'
 ];
 $module_emails[Emails::LOST_ACTIVE] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Gửi lại thông tin kích hoạt tài khoản',
@@ -131,7 +146,8 @@ $module_emails[Emails::LOST_ACTIVE] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đang chờ kích hoạt. Để kích hoạt, bạn hãy click vào link dưới đây:<br /><br />URL: <a href="{$link}">{$link}</a><br />Các thông tin cần thiết:<br />Bí danh: {$username}<br />Email: {$email}<br />Mật khẩu: {$password}<br /><br />Việc kích hoạt tài khoản chỉ có hiệu lực đến {$active_deadline}<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::LOST_PASS] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Hướng dẫn lấy lại mật khẩu thành viên',
@@ -139,7 +155,8 @@ $module_emails[Emails::LOST_PASS] = [
     'c' => '{$greeting_user}<br /><br />Bạn vừa gửi đề nghị thay đổi mật khẩu tài khoản người dùng tại website {$site_name}. Để thay đổi mật khẩu, bạn cần nhập mã xác minh dưới đây vào ô tương ứng tại khu vực thay đổi mật khẩu.<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Mã này chỉ được sử dụng một lần và trước thời hạn: {$deadline}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::R2S] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo xác thực hai bước đã gỡ thành công',
@@ -147,7 +164,8 @@ $module_emails[Emails::R2S] = [
     'c' => '{$greeting_user}<br /><br />Theo yêu cầu của bạn, chúng tôi đã tắt tính năng Xác thực 2 bước cho tài khoản của bạn tại website {$site_name}.<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::R2S_REQUEST] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Hướng dẫn tắt xác thực hai bước khi quên mã',
@@ -155,7 +173,8 @@ $module_emails[Emails::R2S_REQUEST] = [
     'c' => '{$greeting_user}<br /><br />Chúng tôi vừa nhận được yêu cầu tắt xác thực 2 bước cho tài khoản của bạn tại website {$site_name}. Nếu bạn là người gửi yêu cầu này, hãy sử dụng Mã xác minh dưới đây để tiến hành tắt:<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::OAUTH_LEADER_ADD] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo oauth được thêm vào tài khoản bởi trưởng nhóm',
@@ -163,7 +182,8 @@ $module_emails[Emails::OAUTH_LEADER_ADD] = [
     'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được kết nối với tài khoản <strong>{$username}</strong> của bạn bởi trưởng nhóm.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
 ];
 $module_emails[Emails::OAUTH_SELF_ADD] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo oauth được thêm vào tài khoản bởi chính người dùng',
@@ -171,7 +191,8 @@ $module_emails[Emails::OAUTH_SELF_ADD] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được kết nối với tài khoản <strong>{$username}</strong> của bạn. Nếu đây không phải là chủ ý của bạn, vui lòng nhanh chóng xóa nó khỏi tài khoản của mình bằng cách truy cập vào khu vực quản lý tài khoản bên thứ ba.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
 ];
 $module_emails[Emails::OAUTH_LEADER_DEL] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo oauth được xóa khỏi tài khoản bởi trưởng nhóm',
@@ -179,7 +200,8 @@ $module_emails[Emails::OAUTH_LEADER_DEL] = [
     'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được ngắt kết nối khỏi tài khoản <strong>{$username}</strong> của bạn bởi trưởng nhóm.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
 ];
 $module_emails[Emails::OAUTH_SELF_DEL] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo oauth được xóa khỏi tài khoản bởi chính người dùng',
@@ -187,7 +209,8 @@ $module_emails[Emails::OAUTH_SELF_DEL] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được ngắt kết nối khỏi tài khoản <strong>{$username}</strong> của bạn. Nếu đây không phải là chủ ý của bạn, vui lòng nhanh chóng liên hệ với quản trị site để được giúp đỡ.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
 ];
 $module_emails[Emails::OAUTH_VERIFY_EMAIL] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Gửi mã xác minh email khi đăng nhập qua Oauth mà email trùng với tài khoản đã có',
@@ -195,7 +218,8 @@ $module_emails[Emails::OAUTH_VERIFY_EMAIL] = [
     'c' => 'Xin chào!<br /><br />Bạn đã gửi yêu cầu xác minh email: {$email}. Hãy chép mã dưới đây vào ô Mã xác minh trên site.<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::ACTIVE_BY_ADMIN] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Email thông báo cho người dùng khi quản trị kích hoạt tài khoản',
@@ -203,7 +227,8 @@ $module_emails[Emails::ACTIVE_BY_ADMIN] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. {if empty($oauth_name)}Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />{if not empty($password)}Mật khẩu: {$password}{/if}{else}Để đăng nhập vui lòng truy cập vào trang: <a href="{$link}">{$link}</a> và click vào nút: <strong>Đăng nhập bằng {$oauth_name}</strong>.{if not empty($password)}<br /><br />Bạn cũng có thể đăng nhập theo cách thông thường với thông tin:<br />Bí danh: {$username}<br />Mật khẩu: {$password}{/if}{/if}{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.{/if}<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::REQUEST_RESET_PASS] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Email yêu cầu người dùng thay đổi mật khẩu',
@@ -211,7 +236,8 @@ $module_emails[Emails::REQUEST_RESET_PASS] = [
     'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo: Vì lý do bảo mật chúng tôi {if $pass_reset eq 2}khuyến cáo bạn nên{else}đề nghị bạn nhanh chóng{/if} thay đổi mật khẩu truy cập tài khoản của mình. Để thay đổi mật khẩu, trước hết bạn cần truy cập vào trang <a href="{$link}">Quản lý tài khoản cá nhân</a>, chọn nút Thiết lập tài khoản, sau đó chọn nút Mật khẩu và làm theo hướng dẫn.'
 ];
 $module_emails[Emails::OFF2S_BY_ADMIN] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo đến người dùng xác thực hai bước đã được quản trị tắt',
@@ -219,7 +245,8 @@ $module_emails[Emails::OFF2S_BY_ADMIN] = [
     'c' => '{$greeting_user}<br /><br />Tài khoản của bạn vừa được tắt xác thực hai bước bởi quản trị viên. Chúng tôi gửi cho bạn email này để thông tin đến bạn.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý xác thực hai bước</a>'
 ];
 $module_emails[Emails::OAUTH_ADMIN_DEL] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo oauth được xóa khỏi tài khoản bởi quản trị',
@@ -227,7 +254,8 @@ $module_emails[Emails::OAUTH_ADMIN_DEL] = [
     'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tài khoản bên thứ ba <strong>{$oauth_name}</strong> vừa được ngắt kết nối khỏi tài khoản của bạn bởi quản trị viên.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
 ];
 $module_emails[Emails::OAUTH_TRUNCATE] = [
-    'pids' => $pids,
+    'is_system' => $is_system,
+    'sys_pids' => $sys_pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo đến người dùng khi quản trị xóa tất cả Oauth của họ',

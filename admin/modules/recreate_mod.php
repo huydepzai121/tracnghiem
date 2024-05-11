@@ -23,6 +23,7 @@ if (!empty($modname) and preg_match($global_config['check_module'], $modname) an
         define('NV_MODULE_RECREATE', true);
     }
     $contents = nv_setup_data_module(NV_LANG_DATA, $modname, $sample);
+    $contents = ($contents['success'] ? 'OK' : 'NO') . '_' . $module_name;
 }
 
 include NV_ROOTDIR . '/includes/header.php';
