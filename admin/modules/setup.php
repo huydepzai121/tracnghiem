@@ -122,6 +122,7 @@ if (!empty($setmodule) and preg_match($global_config['check_module'], $setmodule
                 $sth->execute();
 
                 // Cài đặt hook
+                $email_pids = [];
                 if (!empty($array_hooks)) {
                     foreach ($array_hooks as $hook) {
                         try {
@@ -141,11 +142,29 @@ if (!empty($setmodule) and preg_match($global_config['check_module'], $setmodule
                                 ' . $db->quote($hook['hook_module']) . ',
                                 ' . $weight . '
                             )');
+                            $pid = $db->lastInsertId();
+
+                            if ($hook['plugin_area'] == 'get_email_merge_fields') {
+                                $email_pids[$hook['plugin_file']] = $pid;
+                            }
                         } catch (PDOException $e) {
                             trigger_error(print_r($e, true));
                         }
                     }
                     nv_save_file_config_global();
+                }
+
+                // Kết nối hook và các mẫu email nếu có
+                if (!empty($email_pids) and !empty($return['emails'])) {
+                    foreach ($return['emails'] as $emailid => $pfiles) {
+                        $pids = array_intersect_key($email_pids, array_flip($pfiles));
+                        if (empty($pids)) {
+                            continue;
+                        }
+                        $pids = implode(',', $pids);
+                        $sql = "UPDATE " . NV_EMAILTEMPLATES_GLOBALTABLE . " SET pids=" . $db->quote($pids). " WHERE emailid=" . $emailid;
+                        $db->query($sql);
+                    }
                 }
 
                 nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('modules') . ' ' . $setmodule, '', $admin_info['userid']);

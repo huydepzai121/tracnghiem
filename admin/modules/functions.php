@@ -374,14 +374,14 @@ function nv_setup_data_module($lang, $module_name, $sample = 0)
         }
     }
 
-    // Cài đặt emailtemplate của module nếu có
+    // Cài đặt emailtemplate của module nếu có (không cài đặt nếu cài lại module)
     $email_files = nv_scandir(NV_ROOTDIR . '/modules/' . $module_file . '/language', '/^email\_([a-z]{2})\.php$/');
-    $email_langs = [];
+    $email_langs = $return_emails = [];
     foreach ($email_files as $file_i) {
         $email_langs[] = substr($file_i, 6, 2);
     }
 
-    if (!empty($email_langs)) {
+    if (!empty($email_langs) and !defined('NV_MODULE_RECREATE')) {
         $array_columns = $db->columns_array($db_config['prefix'] . '_emailtemplates');
         $langs = $email_data = [];
         foreach ($array_columns as $key => $value) {
@@ -453,6 +453,10 @@ function nv_setup_data_module($lang, $module_name, $sample = 0)
                     }
 
                     $sth->execute();
+                    $emailid = $db->lastInsertId();
+                    if (!empty($value['pfile'])) {
+                        $return_emails[$emailid] = is_array($value['pfile']) ? $value['pfile'] : [$value['pfile']];
+                    }
                 } catch (Throwable $e) {
                     trigger_error(print_r($e, true));
                     return $return;
@@ -464,6 +468,7 @@ function nv_setup_data_module($lang, $module_name, $sample = 0)
     $nv_Cache->delAll();
 
     $return['success'] = 1;
+    $return['emails'] = $return_emails;
     return $return;
 }
 
