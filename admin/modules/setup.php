@@ -162,7 +162,7 @@ if (!empty($setmodule) and preg_match($global_config['check_module'], $setmodule
                             continue;
                         }
                         $pids = implode(',', $pids);
-                        $sql = "UPDATE " . NV_EMAILTEMPLATES_GLOBALTABLE . " SET pids=" . $db->quote($pids). " WHERE emailid=" . $emailid;
+                        $sql = "UPDATE " . NV_EMAILTEMPLATES_GLOBALTABLE . " SET sys_pids=" . $db->quote($pids). " WHERE emailid=" . $emailid;
                         $db->query($sql);
                     }
                 }
