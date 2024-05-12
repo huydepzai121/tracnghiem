@@ -55,7 +55,7 @@ if ($nv_Request->isset_request('getMergeFields', 'post')) {
 
     // Các field của hệ thống luôn khả dụng với mọi trình xử lý
     $merge_fields['site_name'] = ['name' => $nv_Lang->getGlobal('site_name')];
-    $merge_fields['site_mail'] = ['name' => $nv_Lang->getGlobal('site_mail')];
+    $merge_fields['site_email'] = ['name' => $nv_Lang->getGlobal('site_email')];
     $merge_fields['site_phone'] = ['name' => $nv_Lang->getGlobal('site_phone')];
     $merge_fields['NV_BASE_SITEURL'] = ['name' => $nv_Lang->getGlobal('merge_field_sys_siteurl')];
     $merge_fields['NV_NAME_VARIABLE'] = ['name' => $nv_Lang->getGlobal('merge_field_sys_nv')];
@@ -96,22 +96,97 @@ if ($emailid or $copyid) {
         $array['content'][$lang] = nv_editor_br2nl($array[$lang . '_content']);
     }
 
-    $array['send_cc'] = explode(',', $array['send_cc']);
-    $array['send_bcc'] = explode(',', $array['send_bcc']);
-    $array['attachments'] = explode(',', $array['attachments']);
-    $array['pids'] = explode(',', $array['pids']);
-    $array['sys_pids'] = explode(',', $array['sys_pids']);
+    $array['send_cc'] = $array['send_cc'] ? explode(',', $array['send_cc']) : [];
+    $array['send_bcc'] = $array['send_bcc'] ? explode(',', $array['send_bcc']) : [];
+    $array['attachments'] = $array['attachments'] ? explode(',', $array['attachments']) : [];
+    $array['pids'] = $array['pids'] ? explode(',', $array['pids']) : [];
+    $array['sys_pids'] = $array['sys_pids'] ? explode(',', $array['sys_pids']) : [];
 
     // Hook xử lý biến $array khi lấy từ CSDL ra
     $array = nv_apply_hook('', 'emailtemplates_content_from_db', [$array], $array);
 }
 
+$update_for = [];
+
 if ($emailid) {
     $form_action = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;emailid=' . $emailid;
     $page_title = $nv_Lang->getModule('edit_template');
+
+    // Tìm thông tin khôi phục lại nguyên bản như email gốc
+    $array['allow_rollback'] = 0;
+    $array['data_rollback'] = [
+        'pids' => [],
+        'default_subject' => '',
+        'default_content' => '',
+        'langs' => []
+    ];
+    if (!empty($array['module_file'])) {
+        foreach ($global_config['setup_langs'] as $lang) {
+            $module_emails = [];
+            $file = NV_ROOTDIR . '/modules/' . $array['module_file'] . '/language/email_' . $lang . '.php';
+            if (file_exists($file)) {
+                $module_name_backup = $module_name;
+                $module_name = $array['module_name'];
+                include $file;
+                $module_name = $module_name_backup;
+            }
+            if (!empty($module_emails) and isset($module_emails[$array['id']], $module_emails[$array['id']]['t'], $module_emails[$array['id']]['s'], $module_emails[$array['id']]['c'])) {
+                if ($lang == $array['lang']) {
+                    $array['data_rollback']['default_subject'] = $module_emails[$array['id']]['s'];
+                    $array['data_rollback']['default_content'] = $module_emails[$array['id']]['c'];
+                    $array['data_rollback']['langs'][$lang]['title'] = $module_emails[$array['id']]['t'];
+                    $array['data_rollback']['langs'][$lang]['subject'] = '';
+                    $array['data_rollback']['langs'][$lang]['content'] = '';
+                    $array['allow_rollback'] = 1;
+                } else {
+                    $array['data_rollback']['langs'][$lang]['title'] = $module_emails[$array['id']]['t'];
+                    $array['data_rollback']['langs'][$lang]['subject'] = $module_emails[$array['id']]['s'];
+                    $array['data_rollback']['langs'][$lang]['content'] = $module_emails[$array['id']]['c'];
+                }
+            }
+        }
+        unset($module_emails);
+
+        $update_for = [
+            1 => $nv_Lang->getModule('update_for1'),
+            2 => $nv_Lang->getModule('update_for2', $language_array[$array['lang']]['name']),
+            3 => $nv_Lang->getModule('update_for3', $array['module_name']),
+            4 => $nv_Lang->getModule('update_for4'),
+        ];
+    } elseif ($array['is_system']) {
+        foreach ($global_config['setup_langs'] as $lang) {
+            // Init các biến để gọi file
+            $install_lang = [];
+            $lang_data = '';
+            $file = NV_ROOTDIR . '/install/data_' . $lang . '.php';
+            if (file_exists($file)) {
+                include $file;
+            }
+            if (!empty($install_lang['emailtemplates']) and !empty($install_lang['emailtemplates']['emails']) and isset($install_lang['emailtemplates']['emails'][$emailid])) {
+                $email = $install_lang['emailtemplates']['emails'][$emailid];
+                if ($lang == $global_config['site_lang']) {
+                    $array['allow_rollback'] = 1;
+                    $array['data_rollback']['default_subject'] = $email['s'];
+                    $array['data_rollback']['default_content'] = $email['c'];
+                    $array['data_rollback']['langs'][$lang]['title'] = $email['t'];
+                    $array['data_rollback']['langs'][$lang]['subject'] = '';
+                    $array['data_rollback']['langs'][$lang]['content'] = '';
+                } else {
+                    $array['data_rollback']['langs'][$lang]['title'] = $email['t'];
+                    $array['data_rollback']['langs'][$lang]['subject'] = $email['s'];
+                    $array['data_rollback']['langs'][$lang]['content'] = $email['c'];
+                }
+            }
+            unset($email, $install_lang, $menu_rows_lev0, $menu_rows_lev1);
+        }
+    }
 } elseif ($copyid) {
     $array['emailid'] = 0;
     $array['is_system'] = 0;
+    $array['allow_rollback'] = 0;
+    $array['module_name'] = '';
+    $array['module_file'] = '';
+    $array['sys_pids'] = [];
 
     $form_action = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op;
     $page_title = $nv_Lang->getModule('add_template');
@@ -135,7 +210,8 @@ if ($emailid) {
         'content' => [],
         'is_system' => 0,
         'pids' => [],
-        'sys_pids' => []
+        'sys_pids' => [],
+        'allow_rollback' => 0
     ];
     foreach ($global_config['setup_langs'] as $lang) {
         $array['title'][$lang] = '';
@@ -147,12 +223,12 @@ if ($emailid) {
 }
 
 $array['showlang'] = NV_LANG_DATA;
+$array['update_for'] = 1;
 
 if ($nv_Request->get_title('saveform', 'post', '') == NV_CHECK_SESSION) {
     if (empty($array['is_system'])) {
         $array['catid'] = $nv_Request->get_int('catid', 'post', 0);
         $array['title'] = $nv_Request->get_typed_array('title', 'post', 'title', []);
-        $array['sys_pids'] = [];
     }
     $array['showlang'] = $nv_Request->get_title('showlang', 'post', '');
     if (!in_array($array['showlang'], $global_config['setup_langs'])) {
@@ -168,15 +244,36 @@ if ($nv_Request->get_title('saveform', 'post', '') == NV_CHECK_SESSION) {
     $array['is_selftemplate'] = (int) ($nv_Request->get_bool('is_selftemplate', 'post', false));
     $array['mailtpl'] = $nv_Request->get_title('mailtpl', 'post', '');
     $array['attachments'] = $nv_Request->get_typed_array('attachments', 'post', 'string', []);
-    $array['default_subject'] = $nv_Request->get_title('default_subject', 'post', '');
-    $array['default_content'] = $nv_Request->get_editor('default_content', '', NV_ALLOWED_HTML_TAGS);
-    $array['pids'] = $nv_Request->get_typed_array('pids', 'post', 'int', []);
-    $array['pids'] = array_intersect(array_unique(array_filter(array_diff($array['pids'], $array['sys_pids']))), array_keys($array_mplugins));
+    $array['update_for'] = $nv_Request->get_absint('update_for', 'post', 0);
 
-    $array['subject'] = $nv_Request->get_typed_array('subject', 'post', 'title', '');
-    $array['content'] = [];
-    foreach ($global_config['setup_langs'] as $lang) {
-        $array['content'][$lang] = $nv_Request->get_editor('lang_content_' . $lang, '', NV_ALLOWED_HTML_TAGS);
+    if ($array['allow_rollback'] and $nv_Request->isset_request('submitrollback', 'post')) {
+        $array['default_subject'] = $array['data_rollback']['default_subject'];
+        $array['default_content'] = $array['data_rollback']['default_content'];
+        $array['pids'] = $array['data_rollback']['pids'];
+        $array['subject'] = $array['content'] = $array['title'] = [];
+
+        foreach ($global_config['setup_langs'] as $lang) {
+            if (isset($array['data_rollback']['langs'][$lang])) {
+                $array['title'][$lang] = $array['data_rollback']['langs'][$lang]['title'];
+                $array['subject'][$lang] = $array['data_rollback']['langs'][$lang]['subject'];
+                $array['content'][$lang] = $array['data_rollback']['langs'][$lang]['content'];
+            } else {
+                $array['title'][$lang] = '';
+                $array['subject'][$lang] = '';
+                $array['content'][$lang] = '';
+            }
+        }
+    } else {
+        $array['default_subject'] = $nv_Request->get_title('default_subject', 'post', '');
+        $array['default_content'] = $nv_Request->get_editor('default_content', '', NV_ALLOWED_HTML_TAGS);
+        $array['pids'] = $nv_Request->get_typed_array('pids', 'post', 'int', []);
+        $array['pids'] = array_intersect(array_unique(array_filter(array_diff($array['pids'], $array['sys_pids']))), array_keys($array_mplugins));
+
+        $array['subject'] = $nv_Request->get_typed_array('subject', 'post', 'title', '');
+        $array['content'] = [];
+        foreach ($global_config['setup_langs'] as $lang) {
+            $array['content'][$lang] = $nv_Request->get_editor('lang_content_' . $lang, '', NV_ALLOWED_HTML_TAGS);
+        }
     }
 
     if (!empty($array['catid']) and !isset($global_array_cat[$array['catid']])) {
@@ -244,11 +341,29 @@ if ($nv_Request->get_title('saveform', 'post', '') == NV_CHECK_SESSION) {
         }
     }
 
+    $pattern_smarty = '/\{[\s]*\$smarty[\s]*(\.|\[)/i';
+
     if (empty($array['default_subject'])) {
         $error[] = $nv_Lang->getModule('tpl_error_default_subject');
+    } elseif (preg_match($pattern_smarty, $array['default_subject'])) {
+        $error[] = $nv_Lang->getModule('tpl_error_smarty_subject');
     }
     if (empty($array['default_content'])) {
         $error[] = $nv_Lang->getModule('tpl_error_default_content');
+    } elseif (preg_match($pattern_smarty, $array['default_content'])) {
+        $error[] = $nv_Lang->getModule('tpl_error_smarty_content');
+    }
+
+    // Kiểm tra bảo mật tiêu đề và nội dung email theo ngôn ngữ
+    foreach ($array['subject'] as $lang => $subject) {
+        if (preg_match($pattern_smarty, $subject)) {
+            $error[] = $nv_Lang->getModule('tpl_error_smarty_subject1', $language_array[$lang]['name']);
+        }
+    }
+    foreach ($array['content'] as $lang => $content) {
+        if (preg_match($pattern_smarty, $content)) {
+            $error[] = $nv_Lang->getModule('tpl_error_smarty_content1', $language_array[$lang]['name']);
+        }
     }
 
     if (empty($error)) {
@@ -330,6 +445,41 @@ if ($nv_Request->get_title('saveform', 'post', '') == NV_CHECK_SESSION) {
                     $db->query($sql);
                 }
 
+                // Thực hiện cập nhật cho các mẫu khác
+                if (!empty($update_for) and isset($update_for[$array['update_for']]) and $array['update_for'] != 4) {
+                    $sql = 'UPDATE ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' SET
+                        time_update = ' . NV_CURRENTTIME . ',
+                        default_subject = :default_subject,
+                        default_content = :default_content';
+                    foreach ($global_config['setup_langs'] as $lang) {
+                        $sql .= ', ' . $lang . '_title = :' . $lang . '_title,
+                        ' . $lang . '_subject = :' . $lang . '_subject,
+                        ' . $lang . '_content = :' . $lang . '_content';
+                    }
+                    $sql .= ' WHERE emailid != ' . $array['emailid'] . ' AND id=' . $array['id'] . ' AND ';
+                    if ($array['update_for'] == 1) {
+                        // Tất cả
+                        $sql .= 'module_file=' . $db->quote($array['module_file']) . " AND module_file!=''";
+                    } elseif ($array['update_for'] == 2) {
+                        // Cùng ngôn ngữ
+                        $sql .= "lang=" . $db->quote($array['lang']) . " AND lang!='' AND module_file=" . $db->quote($array['module_file']) . " AND module_file!=''";
+                    } else {
+                        // Cùng tên
+                        $sql .= "module_file=" . $db->quote($array['module_file']) . " AND module_file!='' AND module_name=" . $db->quote($array['module_name']) . " AND module_name!=''";
+                    }
+                    $sth = $db->prepare($sql);
+                    $sth->bindParam(':default_subject', $array['default_subject'], PDO::PARAM_STR);
+                    $sth->bindParam(':default_content', $default_content, PDO::PARAM_STR, strlen($default_content));
+
+                    foreach ($global_config['setup_langs'] as $lang) {
+                        $sth->bindValue(':' . $lang . '_title', $array['title'][$lang] ?? '', PDO::PARAM_STR);
+                        $sth->bindValue(':' . $lang . '_subject', $array['subject'][$lang] ?? '', PDO::PARAM_STR);
+                        $sth->bindValue(':' . $lang . '_content', nv_editor_nl2br($array['content'][$lang] ?? ''), PDO::PARAM_STR);
+                    }
+
+                    $sth->execute();
+                }
+
                 nv_apply_hook('', 'emailtemplates_content_after_save', [$array]);
 
                 $nv_Cache->delMod($module_name);
@@ -383,6 +533,7 @@ $tpl->assign('CATS', $global_array_cat);
 $tpl->assign('UPLOAD_PATH', NV_UPLOADS_DIR . '/' . $module_upload);
 $tpl->assign('PLUGINS', $array_mplugins);
 $tpl->assign('ARRAY_MAILTPL', $array_mailtpl);
+$tpl->assign('UPDATE_FOR', $update_for);
 
 $contents = $tpl->fetch('contents.tpl');
 

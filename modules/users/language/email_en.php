@@ -16,21 +16,21 @@ if (!defined('NV_MAINFILE')) {
 use NukeViet\Module\users\Shared\Emails;
 use NukeViet\Template\Email\Cat;
 
-if ($module_data == 'users') {
+if ($module_name == 'users') {
     $catid = Cat::CAT_USER;
-    $sys_pids = '3';
+    $pids = '3';
     $is_system = 1;
     $pfile = '';
 } else {
     $catid = Cat::CAT_MODULE;
-    $sys_pids = '';
+    $pids = '';
     $is_system = 0;
     $pfile = 'emf_code_user.php';
 }
 
 $module_emails[Emails::REGISTER_ACTIVE] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Account activation via email',
@@ -39,7 +39,7 @@ $module_emails[Emails::REGISTER_ACTIVE] = [
 ];
 $module_emails[Emails::USER_DELETE] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Email notification to delete account',
@@ -48,7 +48,7 @@ $module_emails[Emails::USER_DELETE] = [
 ];
 $module_emails[Emails::NEW_2STEP_CODE] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Send new backup code',
@@ -57,7 +57,7 @@ $module_emails[Emails::NEW_2STEP_CODE] = [
 ];
 $module_emails[Emails::NEW_INFO] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification that the account has been created when the member successfully registers in the form',
@@ -66,7 +66,7 @@ $module_emails[Emails::NEW_INFO] = [
 ];
 $module_emails[Emails::NEW_INFO_OAUTH] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification that the account has been created when the member successfully registers via Oauth',
@@ -75,7 +75,7 @@ $module_emails[Emails::NEW_INFO_OAUTH] = [
 ];
 $module_emails[Emails::ADDED_BY_LEADER] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification of account created by group leader',
@@ -84,7 +84,7 @@ $module_emails[Emails::ADDED_BY_LEADER] = [
 ];
 $module_emails[Emails::ADDED_BY_ADMIN] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification of account created by administrator',
@@ -93,7 +93,7 @@ $module_emails[Emails::ADDED_BY_ADMIN] = [
 ];
 $module_emails[Emails::SAFE_KEY] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Send verification code when user turns on/ off safe mode',
@@ -102,7 +102,7 @@ $module_emails[Emails::SAFE_KEY] = [
 ];
 $module_emails[Emails::SELF_EDIT] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notify account changes just made by the user',
@@ -111,7 +111,7 @@ $module_emails[Emails::SELF_EDIT] = [
 ];
 $module_emails[Emails::EDIT_BY_ADMIN] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notify account changes just made by the administrator',
@@ -120,7 +120,7 @@ $module_emails[Emails::EDIT_BY_ADMIN] = [
 ];
 $module_emails[Emails::VERIFY_EMAIL] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Confirmation email to change account email',
@@ -129,7 +129,7 @@ $module_emails[Emails::VERIFY_EMAIL] = [
 ];
 $module_emails[Emails::GROUP_JOIN] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notice asking to join the group',
@@ -138,7 +138,7 @@ $module_emails[Emails::GROUP_JOIN] = [
 ];
 $module_emails[Emails::LOST_ACTIVE] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Resend account activation information',
@@ -147,7 +147,7 @@ $module_emails[Emails::LOST_ACTIVE] = [
 ];
 $module_emails[Emails::LOST_PASS] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Instructions for retrieving member password',
@@ -156,7 +156,7 @@ $module_emails[Emails::LOST_PASS] = [
 ];
 $module_emails[Emails::R2S] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notice that two-step authentication has been successfully removed',
@@ -165,7 +165,7 @@ $module_emails[Emails::R2S] = [
 ];
 $module_emails[Emails::R2S_REQUEST] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Instructions for turning off two-step authentication when forgetting code',
@@ -174,7 +174,7 @@ $module_emails[Emails::R2S_REQUEST] = [
 ];
 $module_emails[Emails::OAUTH_LEADER_ADD] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification oauth is added to the account by the team leader',
@@ -183,7 +183,7 @@ $module_emails[Emails::OAUTH_LEADER_ADD] = [
 ];
 $module_emails[Emails::OAUTH_SELF_ADD] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification oauth is added to the account by the user themselves',
@@ -192,7 +192,7 @@ $module_emails[Emails::OAUTH_SELF_ADD] = [
 ];
 $module_emails[Emails::OAUTH_LEADER_DEL] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification oauth is removed to the account by the team leader',
@@ -201,7 +201,7 @@ $module_emails[Emails::OAUTH_LEADER_DEL] = [
 ];
 $module_emails[Emails::OAUTH_SELF_DEL] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification oauth is removed to the account by the user themselves',
@@ -210,7 +210,7 @@ $module_emails[Emails::OAUTH_SELF_DEL] = [
 ];
 $module_emails[Emails::OAUTH_VERIFY_EMAIL] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Send email verification code when logging in via Oauth and the email matches your existing account',
@@ -219,7 +219,7 @@ $module_emails[Emails::OAUTH_VERIFY_EMAIL] = [
 ];
 $module_emails[Emails::ACTIVE_BY_ADMIN] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Email notifies users when the administrator activates the account',
@@ -228,7 +228,7 @@ $module_emails[Emails::ACTIVE_BY_ADMIN] = [
 ];
 $module_emails[Emails::REQUEST_RESET_PASS] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Email asking user to change password',
@@ -237,7 +237,7 @@ $module_emails[Emails::REQUEST_RESET_PASS] = [
 ];
 $module_emails[Emails::OFF2S_BY_ADMIN] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notification to users that two-step authentication has been turned off by the administrator',
@@ -246,7 +246,7 @@ $module_emails[Emails::OFF2S_BY_ADMIN] = [
 ];
 $module_emails[Emails::OAUTH_ADMIN_DEL] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notify users when administrators delete their third-party account',
@@ -255,7 +255,7 @@ $module_emails[Emails::OAUTH_ADMIN_DEL] = [
 ];
 $module_emails[Emails::OAUTH_TRUNCATE] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Notify users when administrators delete all of their third-party accounts',

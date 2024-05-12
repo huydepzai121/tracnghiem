@@ -170,18 +170,7 @@ $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
 $tpl->assign('OP', $op);
 $tpl->assign('LANGS', $language_array);
-
-// Module trên tất cả các ngôn ngữ
-$modules = [];
-foreach ($global_config['setup_langs'] as $lang) {
-    $sql = "SELECT title, custom_title FROM " . $db_config['prefix'] . "_" . $lang . "_modules";
-    $result = $db->query($sql);
-    while ($row = $result->fetch()) {
-        $modules[$lang][$row['title']] = $row['custom_title'];
-    }
-    $result->closeCursor();
-}
-$tpl->assign('MODULES', $modules);
+$tpl->assign('MODULES', $all_modules);
 
 $array_search['from'] = empty($array_search['from']) ? '' : nv_date('d-m-Y', $array_search['from']);
 $array_search['to'] = empty($array_search['to']) ? '' : nv_date('d-m-Y', $array_search['to']);

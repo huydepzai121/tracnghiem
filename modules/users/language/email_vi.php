@@ -16,21 +16,21 @@ if (!defined('NV_MAINFILE')) {
 use NukeViet\Module\users\Shared\Emails;
 use NukeViet\Template\Email\Cat;
 
-if ($module_data == 'users') {
+if ($module_name == 'users') {
     $catid = Cat::CAT_USER;
-    $sys_pids = '3';
+    $pids = '3';
     $is_system = 1;
     $pfile = '';
 } else {
     $catid = Cat::CAT_MODULE;
-    $sys_pids = '';
+    $pids = '';
     $is_system = 0;
     $pfile = 'emf_code_user.php';
 }
 
 $module_emails[Emails::REGISTER_ACTIVE] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Kích hoạt tài khoản qua email',
@@ -39,7 +39,7 @@ $module_emails[Emails::REGISTER_ACTIVE] = [
 ];
 $module_emails[Emails::USER_DELETE] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thư thông báo xóa tài khoản',
@@ -48,7 +48,7 @@ $module_emails[Emails::USER_DELETE] = [
 ];
 $module_emails[Emails::NEW_2STEP_CODE] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Gửi mã dự phòng mới',
@@ -57,7 +57,7 @@ $module_emails[Emails::NEW_2STEP_CODE] = [
 ];
 $module_emails[Emails::NEW_INFO] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo tài khoản đã được tạo khi thành viên đăng kí thành công tại form',
@@ -66,7 +66,7 @@ $module_emails[Emails::NEW_INFO] = [
 ];
 $module_emails[Emails::NEW_INFO_OAUTH] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo tài khoản đã được tạo khi thành viên đăng kí thành công qua Oauth',
@@ -75,7 +75,7 @@ $module_emails[Emails::NEW_INFO_OAUTH] = [
 ];
 $module_emails[Emails::ADDED_BY_LEADER] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo tài khoản được trưởng nhóm khởi tạo',
@@ -84,7 +84,7 @@ $module_emails[Emails::ADDED_BY_LEADER] = [
 ];
 $module_emails[Emails::ADDED_BY_ADMIN] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo tài khoản được quản trị khởi tạo',
@@ -93,7 +93,7 @@ $module_emails[Emails::ADDED_BY_ADMIN] = [
 ];
 $module_emails[Emails::SAFE_KEY] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Gửi mã xác minh khi người dùng bật/ tắt chế độ an toàn',
@@ -102,7 +102,7 @@ $module_emails[Emails::SAFE_KEY] = [
 ];
 $module_emails[Emails::SELF_EDIT] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo các thay đổi về tài khoản vừa được người dùng thực hiện',
@@ -111,7 +111,7 @@ $module_emails[Emails::SELF_EDIT] = [
 ];
 $module_emails[Emails::EDIT_BY_ADMIN] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo các thay đổi về tài khoản vừa được quản trị thực hiện',
@@ -120,7 +120,7 @@ $module_emails[Emails::EDIT_BY_ADMIN] = [
 ];
 $module_emails[Emails::VERIFY_EMAIL] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thư xác nhận thay đổi email tài khoản',
@@ -129,7 +129,7 @@ $module_emails[Emails::VERIFY_EMAIL] = [
 ];
 $module_emails[Emails::GROUP_JOIN] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo có yêu cầu tham gia nhóm',
@@ -138,7 +138,7 @@ $module_emails[Emails::GROUP_JOIN] = [
 ];
 $module_emails[Emails::LOST_ACTIVE] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Gửi lại thông tin kích hoạt tài khoản',
@@ -147,7 +147,7 @@ $module_emails[Emails::LOST_ACTIVE] = [
 ];
 $module_emails[Emails::LOST_PASS] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Hướng dẫn lấy lại mật khẩu thành viên',
@@ -156,7 +156,7 @@ $module_emails[Emails::LOST_PASS] = [
 ];
 $module_emails[Emails::R2S] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo xác thực hai bước đã gỡ thành công',
@@ -165,7 +165,7 @@ $module_emails[Emails::R2S] = [
 ];
 $module_emails[Emails::R2S_REQUEST] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Hướng dẫn tắt xác thực hai bước khi quên mã',
@@ -174,7 +174,7 @@ $module_emails[Emails::R2S_REQUEST] = [
 ];
 $module_emails[Emails::OAUTH_LEADER_ADD] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo oauth được thêm vào tài khoản bởi trưởng nhóm',
@@ -183,7 +183,7 @@ $module_emails[Emails::OAUTH_LEADER_ADD] = [
 ];
 $module_emails[Emails::OAUTH_SELF_ADD] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo oauth được thêm vào tài khoản bởi chính người dùng',
@@ -192,7 +192,7 @@ $module_emails[Emails::OAUTH_SELF_ADD] = [
 ];
 $module_emails[Emails::OAUTH_LEADER_DEL] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo oauth được xóa khỏi tài khoản bởi trưởng nhóm',
@@ -201,7 +201,7 @@ $module_emails[Emails::OAUTH_LEADER_DEL] = [
 ];
 $module_emails[Emails::OAUTH_SELF_DEL] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo oauth được xóa khỏi tài khoản bởi chính người dùng',
@@ -210,7 +210,7 @@ $module_emails[Emails::OAUTH_SELF_DEL] = [
 ];
 $module_emails[Emails::OAUTH_VERIFY_EMAIL] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Gửi mã xác minh email khi đăng nhập qua Oauth mà email trùng với tài khoản đã có',
@@ -219,7 +219,7 @@ $module_emails[Emails::OAUTH_VERIFY_EMAIL] = [
 ];
 $module_emails[Emails::ACTIVE_BY_ADMIN] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Email thông báo cho người dùng khi quản trị kích hoạt tài khoản',
@@ -228,7 +228,7 @@ $module_emails[Emails::ACTIVE_BY_ADMIN] = [
 ];
 $module_emails[Emails::REQUEST_RESET_PASS] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Email yêu cầu người dùng thay đổi mật khẩu',
@@ -237,7 +237,7 @@ $module_emails[Emails::REQUEST_RESET_PASS] = [
 ];
 $module_emails[Emails::OFF2S_BY_ADMIN] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo đến người dùng xác thực hai bước đã được quản trị tắt',
@@ -246,7 +246,7 @@ $module_emails[Emails::OFF2S_BY_ADMIN] = [
 ];
 $module_emails[Emails::OAUTH_ADMIN_DEL] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo oauth được xóa khỏi tài khoản bởi quản trị',
@@ -255,7 +255,7 @@ $module_emails[Emails::OAUTH_ADMIN_DEL] = [
 ];
 $module_emails[Emails::OAUTH_TRUNCATE] = [
     'is_system' => $is_system,
-    'sys_pids' => $sys_pids,
+    'pids' => $pids,
     'pfile' => $pfile,
     'catid' => $catid,
     't' => 'Thông báo đến người dùng khi quản trị xóa tất cả Oauth của họ',

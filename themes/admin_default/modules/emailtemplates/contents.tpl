@@ -58,7 +58,7 @@
                     </div>
                     {/if}
                     {* Các plugin của hệ thống bắt buộc chọn và không thể sửa *}
-                    {if $DATA['is_system']}
+                    {if not empty($DATA.sys_pids)}
                     <div class="form-group">
                         <label class="col-xs-24 col-sm-6 control-label">{$LANG->get('tpl_pluginsys')}</label>
                         <div class="col-xs-24 col-sm-16">
@@ -147,6 +147,16 @@
                             {/foreach}
                         </select>
                     </div>
+                    {if not empty($DATA.module_name)}
+                    <div class="form-group mb-0">
+                        <label class="control-label text-danger" for="element_update_for">{$LANG->getModule('update_for')}</label>
+                        <select class="form-control" name="update_for" id="element_update_for">
+                            {foreach from=$UPDATE_FOR key=key item=value}
+                            <option value="{$key}"{if $key eq $DATA.update_for} selected="selected"{/if}>{$value}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    {/if}
                 </div>
             </div>
         </div>
@@ -189,7 +199,7 @@
             {foreach from=$DATA.content key=lang item=bodycontent}
             <div class="collapse{if $lang eq $DATA.showlang} in{/if}" data-toggle="collapsecontent" id="collapse-content-{$lang}">
                 <div class="form-group">
-                    <label for="lang_subject_{$lang}" class="control-label">{$LANG->get('tpl_subject')}:</label>
+                    <label for="lang_subject_{$lang}" class="control-label">{$LANG->getModule('tpl_subject')}:</label>
                     <input type="text" class="form-control" id="lang_subject_{$lang}" name="subject[{$lang}]" value="{$DATA.subject[$lang]}">
                 </div>
                 <div class="form-group">
@@ -201,6 +211,14 @@
             <button class="btn btn-primary" type="submit">{$LANG->get('submit')}</button>
         </div>
     </div>
+    {if $DATA.allow_rollback}
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <p>{$LANG->getModule('rollback_message')}.</p>
+            <button class="btn btn-primary" type="submit" name="submitrollback" value="1">{$LANG->get('submit')}</button>
+        </div>
+    </div>
+    {/if}
     <input type="hidden" name="showlang" value="{$DATA.showlang}">
     <input type="hidden" name="saveform" value="{$smarty.const.NV_CHECK_SESSION}">
 </form>
@@ -217,7 +235,7 @@
             <div class="col-xs-24 col-md-12">
                 <h4 class="mb-1"><strong>{$LANG->get('merge_field_guild1')}</strong></h4>
                 {$LANG->get('merge_field_guild2')}
-                {literal}<pre><code>{if $username eq "hoaquynhtim99"}<br>Is Admin<br>{/if}</code></pre>{/literal}
+                {literal}<pre><code>{if $username eq "nukeviet"}<br>Is Admin<br>{/if}</code></pre>{/literal}
                 {$LANG->get('merge_field_guild3')}.
                 <h4 class="mb-1 mt-2"><strong>{$LANG->get('merge_field_guild4')}</strong></h4>
                 {$LANG->get('merge_field_guild5')}

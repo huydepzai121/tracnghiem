@@ -31,3 +31,14 @@ $menu_top = [
 $sql = 'SELECT catid, time_add, time_update, weight, is_system, ' . NV_LANG_DATA . '_title title
 FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . '_categories ORDER BY weight ASC';
 $global_array_cat = $nv_Cache->db($sql, 'catid', $module_name);
+
+// Module trên tất cả các ngôn ngữ
+$all_modules = [];
+foreach ($global_config['setup_langs'] as $lang) {
+    $sql = "SELECT title, custom_title FROM " . $db_config['prefix'] . "_" . $lang . "_modules";
+    $result = $db->query($sql);
+    while ($row = $result->fetch()) {
+        $all_modules[$lang][$row['title']] = $row['custom_title'];
+    }
+    $result->closeCursor();
+}
