@@ -819,7 +819,7 @@ function nv_get_mod_tags($content)
     $db->sqlreset()
         ->select('keywords')
         ->from(NV_PREFIXLANG . '_' . $module_data . '_tags')
-        ->where("keywords REGEXP '^" . $ts . "$' OR keywords REGEXP '^" . $ts . ",' OR keywords REGEXP '," . $ts . ",' OR keywords REGEXP '," . $ts . "$'");
+        ->where("keywords REGEXP " . $db->quote('^' . $ts . '$')  . " OR keywords REGEXP " . $db->quote('^' . $ts . ',')   . " OR keywords REGEXP " . $db->quote(',' . $ts . ',')   . " OR keywords REGEXP " . $db->quote(',' . $ts . '$'));
 
     $result = $db->query($db->sql());
     $ts = [];
