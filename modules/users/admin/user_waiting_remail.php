@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 $page_title = $nv_Lang->getModule('userwait_resend_email');
 $set_active_op = 'user_waiting';
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $set_active_op);
@@ -39,22 +41,9 @@ if ($nv_Request->isset_request('ajax', 'post')) {
         $result = $db->query($sql);
         $numrows = $result->rowCount();
         if ($numrows) {
-            $maillang = '';
+            $maillang = NV_LANG_INTERFACE;
             if (NV_LANG_DATA != NV_LANG_INTERFACE) {
                 $maillang = NV_LANG_DATA;
-            }
-            $gconfigs = [
-                'site_name' => $global_config['site_name'],
-                'site_email' => $global_config['site_email']
-            ];
-            if (!empty($maillang)) {
-                $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
-                $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $maillang . "' AND module='global' AND config_name IN (" . $in . ')');
-                while ($row = $result->fetch()) {
-                    $gconfigs[$row['config_name']] = $row['config_value'];
-                }
-
-                $nv_Lang->loadFile(NV_ROOTDIR . '/modules/' . $module_file . '/language/' . $maillang . '.php', true);
             }
 
             while ($row = $result->fetch()) {
@@ -65,14 +54,20 @@ if ($nv_Request->isset_request('ajax', 'post')) {
                         $useriddel[] = (int) $row['userid'];
                     }
                 } else {
-                    $register_active_time = $global_users_config['register_active_time'] ?? 86400;
-
-                    $mail_subject = $nv_Lang->getModule('account_active');
-                    $_url = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=active&userid=' . $row['userid'] . '&checknum=' . $row['checknum'], NV_MY_DOMAIN);
-                    $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-                    $mail_message = $nv_Lang->getModule('account_active_info', $greeting, $gconfigs['site_name'], $_url, $row['username'], $row['email'], nv_date('H:i d/m/Y', NV_CURRENTTIME + $register_active_time));
-                    $checkSend = nv_sendmail([$global_config['site_name'], $global_config['site_email']], $row['email'], $mail_subject, $mail_message, '', false, false, [], [], true, [], $maillang);
-
+                    $send_data = [[
+                        'to' => $row['email'],
+                        'data' => [
+                            'first_name' => $row['first_name'],
+                            'last_name' => $row['last_name'],
+                            'username' => $row['username'],
+                            'email' => $row['email'],
+                            'gender' => $row['gender'],
+                            'active_deadline' => NV_CURRENTTIME + ($global_users_config['register_active_time'] ?? 86400),
+                            'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=active&userid=' . $row['userid'] . '&checknum=' . $row['checknum'], NV_MY_DOMAIN),
+                            'lang' => $maillang
+                        ]
+                    ]];
+                    $checkSend = nv_sendmail_from_template([$module_name, Emails::REGISTER_ACTIVE], $send_data, $maillang);
                     if ($checkSend) {
                         /*
                          * Cập nhật lại thời gian đăng ký là ngay lúc gửi mail này

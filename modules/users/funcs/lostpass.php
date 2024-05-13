@@ -13,6 +13,8 @@ if (!defined('NV_IS_MOD_USER')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 if (defined('NV_IS_USER')) {
     nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
 }
@@ -41,14 +43,21 @@ function lost_pass_sendMail($row)
         $pa = NV_CURRENTTIME + 3600;
         $passlostkey = $pa . '|' . $passlostkey;
 
-        $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-        $nv_Lang->setModule('lostpass_email_subject', $nv_Lang->getModule('lostpass_email_subject', NV_MY_DOMAIN));
-        $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-        $message = $nv_Lang->getModule('lostpass_email_content', $greeting, $sitename, $key, nv_date('H:i d/m/Y', $pa));
-        if (!nv_sendmail([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $row['email'], $nv_Lang->getModule('lostpass_email_subject'), $message)) {
+        $send_data = [[
+            'to' => $row['email'],
+            'data' => [
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'],
+                'username' => $row['username'],
+                'email' => $row['email'],
+                'gender' => $row['gender'],
+                'lang' => NV_LANG_INTERFACE,
+                'code' => $key,
+                'deadline' => $pa
+            ]
+        ]];
+        $send = nv_sendmail_from_template([$module_name, Emails::LOST_PASS], $send_data, NV_LANG_INTERFACE);
+        if (!$send) {
             nv_jsonOutput([
                 'status' => 'error',
                 'input' => '',
@@ -305,19 +314,21 @@ if ($checkss == $data['checkss']) {
     oldPassSave($row['userid'], $row['password'], $row['pass_creation_time']);
     nv_apply_hook($module_name, 'user_lostpass_success', [$row, $new_password]);
 
-    $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-    $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-    if ($global_config['send_pass']) {
-        // Gửi mật khẩu qua email
-        $message = $nv_Lang->getModule('edit_mail_content', $greeting, $sitename, $nv_Lang->getGlobal('password'), $new_password);
-    } else {
-        // Không gửi mật khẩu qua email
-        $message = $nv_Lang->getModule('edit_mail_content_pw', $greeting, $sitename, $nv_Lang->getGlobal('password'));
-    }
-    @nv_sendmail_async([
-        $global_config['site_name'],
-        $global_config['site_email']
-    ], $row['email'], $nv_Lang->getModule('edit_mail_subject'), $message);
+    $send_data = [[
+        'to' => $row['email'],
+        'data' => [
+            'first_name' => $row['first_name'],
+            'last_name' => $row['last_name'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'gender' => $row['gender'],
+            'lang' => NV_LANG_INTERFACE,
+            'label' => $nv_Lang->getGlobal('password'),
+            'newvalue' => $new_password,
+            'send_newvalue' => $global_config['send_pass']
+        ]
+    ]];
+    nv_sendmail_template_async([$module_name, Emails::SELF_EDIT], $send_data, NV_LANG_INTERFACE);
 
     $redirect = nv_redirect_decrypt($nv_redirect, true);
     $url = !empty($redirect) ? $redirect : nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, true);

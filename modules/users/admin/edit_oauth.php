@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 $userid = $nv_Request->get_int('userid', 'get,post', 0);
 
 $sql = 'SELECT * FROM ' . NV_MOD_TABLE . ' WHERE userid=' . $userid;
@@ -90,7 +92,7 @@ if (empty($array_oauth)) {
 
             // Gửi email thông báo
             if (!empty($global_users_config['admin_email'])) {
-                $maillang = '';
+                $maillang = NV_LANG_INTERFACE;
                 if (!empty($row['language']) and in_array($row['language'], $global_config['setup_langs'], true)) {
                     if ($row['language'] != NV_LANG_INTERFACE) {
                         $maillang = $row['language'];
@@ -99,41 +101,28 @@ if (empty($array_oauth)) {
                     $maillang = NV_LANG_DATA;
                 }
 
-                $url = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=editinfo/openid', NV_MY_DOMAIN);
-                $gconfigs = [
-                    'site_name' => $global_config['site_name'],
-                    'site_email' => $global_config['site_email']
-                ];
-                if (!empty($maillang)) {
-                    $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
-                    $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $maillang . "' AND module='global' AND config_name IN (" . $in . ')');
-                    while ($row = $result->fetch()) {
-                        $gconfigs[$row['config_name']] = $row['config_value'];
-                    }
-
-                    $nv_Lang->loadFile(NV_ROOTDIR . '/modules/' . $module_file . '/language/' . $maillang . '.php', true);
-
-                    $mail_subject = $nv_Lang->getModule('security_alert');
-                    $mail_message = $nv_Lang->getModule('admin_security_alert_openid_delete', $openid['openid'], $row['username'], $url);
-
-                    $nv_Lang->changeLang();
-                } else {
-                    $mail_subject = $nv_Lang->getModule('security_alert');
-                    $mail_message = $nv_Lang->getModule('admin_security_alert_openid_delete', $openid['openid'], $row['username'], $url);
-                }
-
-                nv_sendmail_async([
-                    $gconfigs['site_name'],
-                    $gconfigs['site_email']
-                ], $row['email'], $mail_subject, $mail_message, '', false, false, [], [], true, [], $maillang);
+                $send_data = [[
+                    'to' => $row['email'],
+                    'data' => [
+                        'first_name' => $row['first_name'],
+                        'last_name' => $row['last_name'],
+                        'username' => $row['username'],
+                        'email' => $row['email'],
+                        'gender' => $row['gender'],
+                        'lang' => $maillang,
+                        'oauth_name' => $openid['openid'],
+                        'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=editinfo/openid', NV_MY_DOMAIN)
+                    ]
+                ]];
+                nv_sendmail_template_async([$module_name, Emails::OAUTH_ADMIN_DEL], $send_data, $maillang);
             }
 
             nv_insert_logs(NV_LANG_DATA, $module_name, 'log_delete_one_openid', 'userid ' . $row['userid'], $admin_info['userid']);
             $nv_Cache->delMod($module_name);
-            exit('OK');
+            nv_htmlOutput('OK');
         }
 
-        exit('NO');
+        nv_htmlOutput('NO');
     }
 
     // Xóa tất cả các OpenID của thành viên
@@ -147,7 +136,7 @@ if (empty($array_oauth)) {
 
             // Gửi email thông báo
             if (!empty($global_users_config['admin_email'])) {
-                $maillang = '';
+                $maillang = NV_LANG_INTERFACE;
                 if (!empty($row['language']) and in_array($row['language'], $global_config['setup_langs'], true)) {
                     if ($row['language'] != NV_LANG_INTERFACE) {
                         $maillang = $row['language'];
@@ -156,40 +145,26 @@ if (empty($array_oauth)) {
                     $maillang = NV_LANG_DATA;
                 }
 
-                $url = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=editinfo/openid', NV_MY_DOMAIN);
-                $gconfigs = [
-                    'site_name' => $global_config['site_name'],
-                    'site_email' => $global_config['site_email']
-                ];
-                if (!empty($maillang)) {
-                    $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
-                    $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $maillang . "' AND module='global' AND config_name IN (" . $in . ')');
-                    while ($row = $result->fetch()) {
-                        $gconfigs[$row['config_name']] = $row['config_value'];
-                    }
-
-                    $nv_Lang->loadFile(NV_ROOTDIR . '/modules/' . $module_file . '/language/' . $maillang . '.php', true);
-
-                    $mail_subject = $nv_Lang->getModule('security_alert');
-                    $mail_message = $nv_Lang->getModule('security_alert_openid_truncate', $row['username'], $url);
-
-                    $nv_Lang->changeLang();
-                } else {
-                    $mail_subject = $nv_Lang->getModule('security_alert');
-                    $mail_message = $nv_Lang->getModule('security_alert_openid_truncate', $row['username'], $url);
-                }
-
-                nv_sendmail_async([
-                    $gconfigs['site_name'],
-                    $gconfigs['site_email']
-                ], $row['email'], $mail_subject, $mail_message, '', false, false, [], [], true, [], $maillang);
+                $send_data = [[
+                    'to' => $row['email'],
+                    'data' => [
+                        'first_name' => $row['first_name'],
+                        'last_name' => $row['last_name'],
+                        'username' => $row['username'],
+                        'email' => $row['email'],
+                        'gender' => $row['gender'],
+                        'lang' => $maillang,
+                        'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=editinfo/openid', NV_MY_DOMAIN)
+                    ]
+                ]];
+                nv_sendmail_template_async([$module_name, Emails::OAUTH_TRUNCATE], $send_data, NV_LANG_INTERFACE);
             }
 
             $nv_Cache->delMod($module_name);
-            exit('OK');
+            nv_htmlOutput('OK');
         }
 
-        exit('NO');
+        nv_htmlOutput('NO');
     }
 
     foreach ($array_oauth as $oauth) {

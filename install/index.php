@@ -621,7 +621,7 @@ if ($step == 1) {
                     // Cai dat du lieu cho ngon ngu
                     require_once NV_ROOTDIR . '/includes/action_' . $db_config['dbtype'] . '.php';
 
-                    $sql_create_table = nv_create_table_sys(NV_LANG_DATA);
+                    $sql_create_table = nv_create_table_sys(NV_LANG_DATA, $array_data);
                     foreach ($sql_create_table as $_sql) {
                         try {
                             $db->query($_sql);
@@ -656,8 +656,7 @@ if ($step == 1) {
 
                         if (in_array($row['module_file'], $modules_exit, true)) {
                             $sm = nv_setup_data_module(NV_LANG_DATA, $setmodule);
-
-                            if ($sm != 'OK_' . $setmodule) {
+                            if (!$sm['success']) {
                                 exit('error set module: ' . $setmodule);
                             }
                         } else {

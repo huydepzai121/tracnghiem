@@ -169,7 +169,7 @@ if ($nv_Request->get_title('checkss', 'post') == $checkss) {
         $db->query('OPTIMIZE TABLE ' . NV_AUTHORS_GLOBALTABLE);
 
         if ($sendmail) {
-            $maillang = '';
+            $maillang = NV_LANG_INTERFACE;
             if (!empty($row_user['language']) and in_array($row_user['language'], $global_config['setup_langs'], true)) {
                 if ($row_user['language'] != NV_LANG_INTERFACE) {
                     $maillang = $row_user['language'];
@@ -178,45 +178,19 @@ if ($nv_Request->get_title('checkss', 'post') == $checkss) {
                 $maillang = NV_LANG_DATA;
             }
 
-            $gconfigs = [
-                'site_name' => $global_config['site_name'],
-                'site_email' => $global_config['site_email']
-            ];
-            if (!empty($maillang)) {
-                $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
-                $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $maillang . "' AND module='global' AND config_name IN (" . $in . ')');
-                while ($row = $result->fetch()) {
-                    $gconfigs[$row['config_name']] = $row['config_value'];
-                }
-
-                $my_mail = $admin_info['view_mail'] ? $admin_info['email'] : $gconfigs['site_email'];
-
-                $nv_Lang->loadFile(NV_ROOTDIR . '/includes/language/' . $maillang . '/admin_' . $module_file . '.php', true);
-
-                $mail_subject = $nv_Lang->getModule('delete_sendmail_title', $gconfigs['site_name']);
-                if (empty($reason)) {
-                    $mail_message = $nv_Lang->getModule('delete_sendmail_mess0', $gconfigs['site_name'], nv_date('d/m/Y H:i', NV_CURRENTTIME), $my_mail);
-                } else {
-                    $mail_message = $nv_Lang->getModule('delete_sendmail_mess1', $gconfigs['site_name'], nv_date('d/m/Y H:i', NV_CURRENTTIME), $reason, $my_mail);
-                }
-
-                $nv_Lang->changeLang();
-            } else {
-                $my_mail = $admin_info['view_mail'] ? $admin_info['email'] : $gconfigs['site_email'];
-                $mail_subject = $nv_Lang->getModule('delete_sendmail_title', $gconfigs['site_name']);
-                if (empty($reason)) {
-                    $mail_message = $nv_Lang->getModule('delete_sendmail_mess0', $gconfigs['site_name'], nv_date('d/m/Y H:i', NV_CURRENTTIME), $my_mail);
-                } else {
-                    $mail_message = $nv_Lang->getModule('delete_sendmail_mess1', $gconfigs['site_name'], nv_date('d/m/Y H:i', NV_CURRENTTIME), $reason, $my_mail);
-                }
-            }
-
-            $mail_message = trim($mail_message);
-            $mail_message = nv_nl2br($mail_message, '<br />');
-            $mail_message .= '<br/><br/>' . (!empty($admin_info['sig']) ? $admin_info['sig'] : 'All the best');
-            $mail_message .= '<br/><br/>' . $admin_info['username'] . '<br/>' . $admin_info['position'] . '<br/>' . $my_mail;
-
-            $send = nv_sendmail([$admin_info['username'], $my_mail], $row_user['email'], $mail_subject, $mail_message, '', false, false, [], [], true, [], $maillang);
+            $send_data = [[
+                'to' => $row_user['email'],
+                'data' => [
+                    'lang' => $maillang,
+                    'time' => NV_CURRENTTIME,
+                    'note' => $reason,
+                    'email' => $admin_info['view_mail'] ? $admin_info['email'] : $global_config['site_email'],
+                    'sig' => (!empty($admin_info['sig']) ? $admin_info['sig'] : 'All the best'),
+                    'position' => $admin_info['position'],
+                    'username' => $admin_info['username']
+                ]
+            ]];
+            $send = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_AUTHOR_DELETE, $send_data, $maillang);
             if (!$send) {
                 $page_title = $nv_Lang->getGlobal('error_info_caption');
 

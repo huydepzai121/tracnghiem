@@ -116,6 +116,14 @@ a.text-white {
     overflow: hidden;
 }
 
+.text-monospace {
+    font-family: Consolas, Lucida Console, monospace;
+}
+
+.text-black {
+    color: #333!important;
+}
+
 .d-block {
     display: block !important;
 }
@@ -142,12 +150,14 @@ a.text-white {
 }
 
 .m-bottom,
-.mb {
+.mb,
+.mb-2 {
     margin-bottom: 10px;
 }
 
 .m-bottom-sm,
-.mb-sm {
+.mb-sm,
+.mb-1 {
     margin-bottom: 5px;
 }
 
@@ -161,7 +171,9 @@ a.text-white {
     margin-bottom: 25px;
 }
 
-.m-left {
+.m-left,
+.ml-2,
+.ms-2 {
     margin-left: 10px;
 }
 
@@ -170,8 +182,30 @@ a.text-white {
     margin-bottom: 0 !important;
 }
 
+.ml-1 {
+    margin-left: 5px;
+}
+
+.mt-2 {
+    margin-top: 10px;
+}
+
+.my-1 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .pb-0 {
     padding-bottom: 0 !important;
+}
+
+.py-1 {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.pl-2 {
+    padding-left: 10px;
 }
 
 .pointer,
@@ -233,6 +267,14 @@ a.text-white {
 
 .align-items-center {
     align-items: center !important;
+}
+
+.flex-grow-1 {
+    flex-grow: 1;
+}
+
+.flex-shrink-1 {
+    flex-shrink: 1;
 }
 
 .flex-nowrap {
@@ -916,8 +958,8 @@ radio-inline:not(:last-child), .checkbox-inline:not(:last-child) {
     margin-right: 10px;
 }
 
-label {
-    font-weight: normal;
+label:not(.control-label) {
+    font-weight: 400;
 }
 
 /* Breadcrumb

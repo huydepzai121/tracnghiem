@@ -13,6 +13,8 @@ if (!defined('NV_IS_MOD_USER')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 if (defined('NV_IS_USER')) {
     nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
 }
@@ -118,14 +120,21 @@ if ($checkss == $data['checkss']) {
                             $checknum = nv_genpass(10);
                             $checknum = md5($checknum);
 
-                            $subject = $nv_Lang->getModule('lostactive_mailtitle');
-                            $_url = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=active&userid=' . $row['userid'] . '&checknum=' . $checknum, NV_MY_DOMAIN);
-                            $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-                            $message = $nv_Lang->getModule('lostactive_active_info', $greeting, $global_config['site_name'], $_url, $row['username'], $row['email'], $password_new, nv_date('H:i d/m/Y', $row['regdate'] + 86400));
-                            $ok = nv_sendmail([
-                                $global_config['site_name'],
-                                $global_config['site_email']
-                            ], $row['email'], $subject, $message);
+                            $send_data = [[
+                                'to' => $row['email'],
+                                'data' => [
+                                    'first_name' => $row['first_name'],
+                                    'last_name' => $row['last_name'],
+                                    'username' => $row['username'],
+                                    'email' => $row['email'],
+                                    'gender' => $row['gender'],
+                                    'lang' => NV_LANG_INTERFACE,
+                                    'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=active&userid=' . $row['userid'] . '&checknum=' . $checknum, NV_MY_DOMAIN),
+                                    'password' => $password_new,
+                                    'active_deadline' => $row['regdate'] + 86400
+                                ]
+                            ]];
+                            $ok = nv_sendmail_from_template([$module_name, Emails::LOST_ACTIVE], $send_data, NV_LANG_INTERFACE);
 
                             if ($ok) {
                                 $password = $crypt->hash_password($password_new, $global_config['hashprefix']);

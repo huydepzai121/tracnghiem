@@ -121,6 +121,77 @@ $install_lang['vinades_address'] = '6ème étage, bâtiment Song Da, rue Tran Ph
 $install_lang['nukeviet_description'] = 'Partager le succès, connectez passions';
 $install_lang['disable_site_content'] = 'Notre site est fermé temporairement pour la maintenance. Veuillez revenir plus tard. Merci!';
 
+// Ngôn ngữ dữ liệu cho phần mẫu email
+use NukeViet\Template\Email\Cat as EmailCat;
+use NukeViet\Template\Email\Tpl as EmailTpl;
+
+$install_lang['emailtemplates'] = [];
+$install_lang['emailtemplates']['cats'] = [];
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_SYSTEM] = 'Messages système';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_USER] = 'Messages utilisateur';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_AUTHOR] = 'Messages Admin';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_MODULE] = 'Messages du module';
+
+$install_lang['emailtemplates']['emails'] = [];
+
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTO_ERROR_REPORT] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Erreur de notification automatique par courrier électronique',
+    's' => 'Notification du site {$site_name}',
+    'c' => 'Le système a reçu des notifications. Veuillez étudier le fichier attaché pour les détails'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_EMAIL_CONFIG_TEST] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Envoyer un e-mail de test pour tester la configuration de l\'envoi d\'e-mails',
+    's' => 'Tester l\'e-mail',
+    'c' => 'Ceci est un courrier électronique de test pour vérifier la configuration du courrier. Supprimez-le simplement!'
+];
+
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_DELETE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notez que le compte administrateur a été supprimé',
+    's' => 'Notification du site {$site_name}',
+    'c' => 'L\'administrateur du site {$site_name} informe:<br />Votre compte d\'administration sur le site {$site_name} est supprimé au {$time}{if not empty($note)} en raison de: {$note}{/if}.<br />Toute proposition, question... veuillez envoyer un e-mail à <a href="mailto:{$email}">{$email}</a>{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_SUSPEND] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Avis de suspension de l\'administration du site',
+    's' => 'Notification du site {$site_name}',
+    'c' => 'L\'administrateur du site {$site_name} informe:<br />Votre compte d\'administration sur le site {$site_name} est suspendu au {$time} en raison: {$note}.<br />Toute proposition, question... veuillez envoyer un e-mail à <a href="mailto:{$email}">{$email}</a>{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_REACTIVE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Avis de réactivation de l\'administration du site',
+    's' => 'Notification du site {$site_name}',
+    'c' => 'L\'administrateur du site {$site_name} informe:<br />Votre compte d\'administration sur le site {$site_name} est rétabli au {$time}.<br />Ce compte avait été suspendu en raison: {$note}{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_ADD] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notez qu\'une nouvelle méthode d\'authentification en deux étapes a été ajoutée au compte administrateur',
+    's' => 'Configurer la vérification en 2 étapes à l\'aide d\'Oauth terminé',
+    'c' => '{$greeting_user}<br /><br />L\'administration du site {$site_name} tient à informer:<br />L\'authentification en deux étapes utilisant Oauth dans le panneau d\'administration a été installée avec succès. Vous pouvez utiliser le compte <strong>{$oauth_id}</strong> du fournisseur <strong>{$oauth_name}</strong> pour l\'authentification lorsque vous vous connectez à la zone d\'administration du site.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_TRUNCATE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notification indiquant que toutes les méthodes d\'authentification en deux étapes ont été supprimées du compte administrateur',
+    's' => 'La configuration de l\'authentification en deux étapes avec Oauth a été annulée',
+    'c' => '{$greeting_user}<br /><br />L\'administration du site {$site_name} tient à informer:<br />À votre demande, la validation en deux étapes à l\'aide d\'Oauth a été annulée avec succès. Désormais, vous ne pouvez plus utiliser le fournisseur de comptes <strong>{$oauth_id}</strong> pour vous authentifier dans la zone d\'administration du site.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_DEL] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Notez que l\'authentification en deux étapes a été supprimée du compte administrateur',
+    's' => 'La configuration de l\'authentification en deux étapes avec Oauth a été annulée',
+    'c' => '{$greeting_user}<br /><br />L\'administration du site {$site_name} tient à informer:<br />À votre demande, la validation en deux étapes à l\'aide d\Oauth a été annulée avec succès. Désormais, vous ne pouvez plus utiliser le compte <strong>{$oauth_id}</strong> du fournisseur <strong>{$oauth_name}</strong> pour vous authentifier dans la zone d\'administration du site.'
+];
+
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],
     'link' => NV_BASE_SITEURL . 'index.php?language=' . $lang_data . '&nv=about',

@@ -30,7 +30,7 @@
             <thead>
                 <tr>
                     <!-- BEGIN: col_weight -->
-                    <th class="text-center text-nowrap" style="width:1%;">{LANG.plugin_number}</th>
+                    <th class="text-center text-nowrap" style="width:10%;">{LANG.plugin_number}</th>
                     <!-- END: col_weight -->
                     <th>{LANG.plugin_area}</th>
                     <th class="hidden-xs">{LANG.plugin_file}</th>

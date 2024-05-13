@@ -16,17 +16,13 @@ if (!defined('NV_MAINFILE')) {
 }
 
 /**
- * pr()
- *
  * @param mixed $a
  */
 function pr($a)
 {
-    echo '<pre>';
-    print_r($a);
-    echo '</pre>';
-    exit();
+    exit('<pre><code>' . htmlspecialchars(print_r($a, true)) . '</code></pre>');
 }
+
 
 /**
  * nv_object2array()
@@ -1290,8 +1286,12 @@ function mailAddHtml($subject, $body, $gconfigs, $lang)
     }
 
     $mail_tpl = NV_ROOTDIR . '/' . NV_ASSETS_DIR . '/tpl/mail.tpl';
-    if (!empty($gconfigs['mail_tpl']) and file_exists(NV_ROOTDIR . '/' . $gconfigs['mail_tpl'])) {
-        $mail_tpl = NV_ROOTDIR . '/' . $gconfigs['mail_tpl'];
+    if (!empty($gconfigs['mail_tpl'])) {
+        if (file_exists(NV_ROOTDIR . '/' . $gconfigs['mail_tpl'])) {
+            $mail_tpl = NV_ROOTDIR . '/' . $gconfigs['mail_tpl'];
+        } elseif (file_exists($gconfigs['mail_tpl'])) {
+            $mail_tpl = $gconfigs['mail_tpl'];
+        }
     }
 
     $xtpl = new XTemplate($mail_tpl);
@@ -1356,13 +1356,14 @@ function mailAddHtml($subject, $body, $gconfigs, $lang)
  * $custom_headers:   Tiêu đề tùy chỉnh thêm vào phần header của mail (Dạng: Khóa => Giá trị)
  *
  * $lang:             Ngôn ngữ gửi mail, nếu rỗng sẽ là NV_LANG_DATA
+ * string $mail_tpl:  Tệp mẫu thư tùy chỉnh, nếu trống sẽ lấy theo cấu hình gửi mail
  */
-function nv_sendmail($from, $to, $subject, $message, $files = '', $AddEmbeddedImage = false, $testmode = false, $cc = [], $bcc = [], $mailhtml = true, $custom_headers = [], $lang = '')
+function nv_sendmail($from, $to, $subject, $message, $files = '', $AddEmbeddedImage = false, $testmode = false, $cc = [], $bcc = [], $mailhtml = true, $custom_headers = [], $lang = '', $mail_tpl = '')
 {
     global $global_config, $db, $crypt;
 
     $sm_parameters = [];
-    $sm_parameters['language'] = (empty($lang) or !in_array($lang, $global_config['setup_langs'], true)) ? NV_LANG_DATA : $lang;
+    $sm_parameters['language'] = (empty($lang) or !in_array($lang, $global_config['setup_langs'], true)) ? NV_LANG_INTERFACE : $lang;
 
     $gconfigs = $global_config;
     if ($lang != NV_LANG_DATA) {
@@ -1378,6 +1379,9 @@ function nv_sendmail($from, $to, $subject, $message, $files = '', $AddEmbeddedIm
             }
             $gconfigs[$row['config_name']] = $row['config_value'];
         }
+    }
+    if (!empty($mail_tpl)) {
+        $gconfigs['mail_tpl'] = $mail_tpl;
     }
 
     if ($gconfigs['mailer_mode'] == 'no') {
@@ -1631,6 +1635,43 @@ function nv_sendmail_async($from, $to, $subject, $message, $files = '', $AddEmbe
     $temp_file = NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . md5($global_config['sitekey'] . $file_name);
     file_put_contents($temp_file, $json_contents, LOCK_EX);
     post_async(NV_BASE_SITEURL . 'sload.php', ['__sendmail' => $file_name]);
+}
+
+/**
+ * Khởi tạo một luồng truy vấn không đồng bộ/chạy nền để gửi mail theo mẫu
+ * Nếu gửi mail không cần trả về kết quả thì nên sử dụng function này
+ *
+ * @param int|array     $emailid
+ * @param array         $data
+ * @param string        $lang dùng để lấy ra subject và body của email.
+ *                            Nếu không chỉ ra thì là ngôn ngữ giao diện hiện hành.
+ *                            Biến này không nên trống, nếu để trống có khả năng nội dung email và tên website có thể lệch nhau
+ * @param string        $attachments
+ */
+function nv_sendmail_template_async($emailid, $data = [], $lang = '', $attachments = '')
+{
+    global $global_config;
+
+    // Mặc định gửi email bằng ngôn ngữ giao diện hiện tại đang dùng. Nếu không sẽ chỉ gửi bằng ngôn ngữ mặc định của site.
+    if (empty($lang)) {
+        $lang = NV_LANG_INTERFACE;
+    }
+    // Mặc định gửi email trên module dữ liệu hiện hành
+    if (is_array($emailid) and !isset($emailid[2])) {
+        $emailid[2] = NV_LANG_DATA;
+    }
+
+    $json_contents = json_encode([
+        'emailid' => $emailid,
+        'data' => $data,
+        'attachments' => $attachments,
+        'lang' => $lang
+    ], JSON_UNESCAPED_UNICODE);
+
+    $file_name = nv_genpass(8);
+    $temp_file = NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . md5($global_config['sitekey'] . $file_name);
+    file_put_contents($temp_file, $json_contents, LOCK_EX);
+    post_async(NV_BASE_SITEURL . 'sload.php', ['__sendmail_template' => $file_name]);
 }
 
 /**
@@ -3697,4 +3738,192 @@ function nv_parse_phone($phone)
     }
 
     return $phones;
+}
+
+/**
+ * @param int|array $emailid
+ * @param string $lang ngôn ngữ nội dung và tiêu đề email
+ * @return bool|mixed
+ */
+function nv_get_email_template($emailid, $lang = '')
+{
+    global $db, $global_config;
+
+    if (empty($lang) or !in_array($lang, $global_config['setup_langs'], true)) {
+        $lang = NV_LANG_INTERFACE;
+    }
+
+    $sql = 'SELECT sys_pids, pids, send_name, send_email, send_cc, send_bcc, attachments, is_plaintext, is_disabled,
+    is_selftemplate, mailtpl, default_subject, default_content,
+    ' . $lang . '_subject lang_subject, ' . $lang . '_content lang_content FROM ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' WHERE ';
+    if (is_array($emailid)) {
+        $sql .= 'lang=:lang AND module_name=:module_name AND id=:id';
+    } else {
+        $sql .= 'emailid=:emailid';
+    }
+
+    $sth = $db->prepare($sql);
+    if (is_array($emailid)) {
+        $sth->bindValue(':lang', $emailid[2] ?? NV_LANG_DATA, PDO::PARAM_STR);
+        $sth->bindValue(':module_name', $emailid[0] ?? '', PDO::PARAM_STR);
+        $sth->bindValue(':id', $emailid[1] ?? 0, PDO::PARAM_INT);
+    } else {
+        $sth->bindParam(':emailid', $emailid, PDO::PARAM_INT);
+    }
+
+    $sth->execute();
+    $email_data = $sth->fetch();
+    if (empty($email_data)) {
+        // Không
+        return false;
+    }
+
+    $attachments = [];
+    $email_data['attachments'] = explode(',', $email_data['attachments']);
+    foreach ($email_data['attachments'] as $attachment) {
+        if (is_file(NV_UPLOADS_REAL_DIR . '/emailtemplates/' . $attachment)) {
+            $attachments[] = NV_UPLOADS_REAL_DIR . '/emailtemplates/' . $attachment;
+        }
+    }
+
+    // Xác định tệp mẫu thư tùy biến
+    $mailtpl = '';
+    if (!empty($email_data['mailtpl']) and preg_match('/^([a-zA-Z0-9\-\_]+)\:([a-zA-Z0-9\-\_]+)\.tpl$/i', $email_data['mailtpl'], $matches)) {
+        if ($matches[1] == 'assets') {
+            $mailtpl = NV_ROOTDIR . '/' . NV_ASSETS_DIR . '/tpl/' . $matches[2] . '.tpl';
+        } else {
+            $mailtpl = NV_ROOTDIR . '/themes/' . $matches[1] . '/system/' . $matches[2] . '.tpl';
+        }
+        if (!file_exists($mailtpl)) {
+            $mailtpl = '';
+        }
+    }
+
+    // Dữ liệu trả về
+    $data = [
+        'pids' => array_filter(array_unique(array_merge_recursive(explode(',', $email_data['sys_pids']), explode(',', $email_data['pids'])))),
+        'from' => [$email_data['send_name'], $email_data['send_email']],
+        'cc' => array_filter(explode(',', $email_data['send_cc'])),
+        'bcc' => array_filter(explode(',', $email_data['send_bcc'])),
+        'attachments' => $attachments,
+        'subject' => empty($email_data['lang_subject']) ? $email_data['default_subject'] : $email_data['lang_subject'],
+        'content' => empty($email_data['lang_content']) ? $email_data['default_content'] : $email_data['lang_content'],
+        'is_disabled' => $email_data['is_disabled'],
+        'is_plaintext' => $email_data['is_plaintext'],
+        'is_selftemplate' => $email_data['is_selftemplate'],
+        'mailtpl' => $mailtpl
+    ];
+
+    return $data;
+}
+
+/**
+ * @param int|array $emailid
+ * @param array     $data
+ * @param string    $lang ngôn ngữ để lấy subject và body của email,
+ *                        không chỉ ra thì lấy ngôn ngữ giao diện hiện hành.
+ *                        Trường hợp gửi email bất đồng bộ cần chú ý nếu không chỉ ra nó sẽ luôn gửi
+ *                        bằng ngôn ngữ mặc định của site
+ * @param string    $attachments
+ * @param boolean   $test_mode
+ * @return bool|bool[]
+ */
+function nv_sendmail_from_template($emailid, $data = [], $lang = '', $attachments = '', $test_mode = false)
+{
+    global $global_config, $db, $nv_Lang;
+
+    $email_data = nv_get_email_template($emailid, $lang);
+    if ($email_data === false) {
+        return false;
+    }
+    if ($email_data['is_disabled'] or empty($data)) {
+        return true;
+    }
+
+    $args = [
+        'mode' => 'FULL',
+        'setpids' => $email_data['pids']
+    ];
+    $gconfigs = [
+        'site_name' => $global_config['site_name'],
+        'site_email' => $global_config['site_email'],
+        'site_phone' => $global_config['site_phone']
+    ];
+    if ((empty($email_data['from'][0]) or empty($email_data['from'][1])) and !empty($lang) and $lang != NV_LANG_DATA and in_array($lang, $global_config['setup_langs'], true)) {
+        // Gửi email ngôn ngữ khác thì lấy lại tên site trong CSDL
+        $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
+        $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $lang . "' AND module='global' AND config_name IN (" . $in . ')');
+        while ($row = $result->fetch()) {
+            $gconfigs[$row['config_name']] = $row['config_value'];
+        }
+    }
+    if (empty($email_data['from'][0])) {
+        $email_data['from'][0] = $gconfigs['site_name'];
+    }
+    if (empty($email_data['from'][1])) {
+        $email_data['from'][1] = $gconfigs['site_email'];
+    }
+    if (!empty($attachments)) {
+        $email_data['attachments'] = array_merge_recursive(array_unique(array_filter(array_map('trim', explode(',', $attachments)))));
+    }
+    $result = [];
+    foreach ($data as $row) {
+        try {
+            !isset($row['data']) && $row['data'] = [];
+            $_args = array_merge($args, $row['data']);
+            $merge_fields = nv_apply_hook('', 'get_email_merge_fields', $_args, [], 1);
+
+            // Thêm một số biến global nếu chúng chưa chỉ ra trong $merge_fields
+            foreach ($gconfigs as $key => $value) {
+                if (!isset($merge_fields[$key])) {
+                    $merge_fields[$key] = [
+                        'name' => $nv_Lang->getGlobal($key),
+                        'data' => $value
+                    ];
+                }
+            }
+
+            $tpl = new \NukeViet\Template\NVSmarty();
+            foreach ($merge_fields as $field_key => $field_value) {
+                $tpl->assign($field_key, $field_value['data']);
+            }
+
+            // Dùng để xử lý cả biến $email_data trước khi gọi Smarty thực hiện
+            $_email_data = nv_apply_hook('', 'get_email_data_before_fetch', [$emailid, $email_data, $merge_fields, $row], $email_data);
+
+            $email_content = $tpl->fetch('string:' . $_email_data['content']);
+            $email_subject = $tpl->fetch('string:' . $_email_data['subject']);
+            if ($_email_data['is_plaintext']) {
+                $email_content = nv_nl2br(strip_tags($email_content));
+            } else {
+                $email_content = preg_replace('/(["|\'])[\s]*' . nv_preg_quote(NV_BASE_SITEURL . NV_UPLOADS_DIR . '/') . '/isu', '\\1' . NV_MY_DOMAIN . NV_BASE_SITEURL . NV_UPLOADS_DIR . '/', $email_content);
+            }
+
+            // Dùng để xử lý nội dung email trước khi gửi
+            $email_content = nv_apply_hook('', 'get_email_content_before_send', [$email_content, $_email_data, $row, $emailid], $email_content);
+            $email_lang = $lang;
+            if (is_array($email_content)) {
+                $email_lang = $email_content[1];
+                $email_content = $email_content[0];
+            }
+            if (!empty($row['from'])) {
+                if (is_array($row['from'])) {
+                    $_email_data['from'][0] = $row['from'][0];
+                    $_email_data['from'][1] = $row['from'][1];
+                } else {
+                    $_email_data['from'][1] = $row['from'];
+                }
+            }
+
+            $result[] = nv_sendmail($_email_data['from'], $row['to'], $email_subject, $email_content, implode(',', $_email_data['attachments']), false, $test_mode, $_email_data['cc'], $_email_data['bcc'], !$email_data['is_selftemplate'], [], $email_lang, $_email_data['mailtpl']);
+        } catch (Throwable $e) {
+            trigger_error(print_r($e, true));
+            $result[] = false;
+        }
+    }
+
+    if (!isset($result[1])) {
+        return $result[0];
+    }
+    return $result;
 }

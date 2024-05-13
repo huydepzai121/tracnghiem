@@ -186,6 +186,13 @@ function nv_aleditor($textareaname, $width = '100%', $height = '450px', $val = '
             .then(editor => {
                 window.nveditor = window.nveditor || [];
                 window.nveditor[editorId] = editor;
+                if (editor.sourceElement && editor.sourceElement instanceof HTMLTextAreaElement && editor.sourceElement.form) {
+                    editor.sourceElement.dataset.editorname = editorId;
+                    editor.sourceElement.form.addEventListener("submit", event => {
+                        // Xử lý khi submit form thông thường
+                        editor.sourceElement.value = editor.getData();
+                    });
+                }
             })
             .catch(error => {
                 console.error(error);
@@ -196,6 +203,13 @@ function nv_aleditor($textareaname, $width = '100%', $height = '450px', $val = '
         $return .= '<style>
             #outer_' . $editor_id . ' .ck-editor__editable_inline {
                 height: ' . $height . ';
+                overflow-y: auto;
+            }
+            #outer_' . $editor_id . ' .ck-source-editing-area {
+                height: ' . $height . ';
+            }
+            #outer_' . $editor_id . ' .ck-source-editing-area textarea {
+                height: 100%;
                 overflow-y: auto;
             }
         </style>';

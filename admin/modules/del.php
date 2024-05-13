@@ -95,10 +95,12 @@ if (!empty($modname) and preg_match($global_config['check_module'], $modname) an
         $sth->bindParam(':module', $modname, PDO::PARAM_STR);
         $sth->execute();
 
-        $check_exit_mod = false;
+        $sql = 'SELECT lang FROM ' . $db_config['prefix'] . '_setup_language WHERE setup=1';
+        $langs = $db->query($sql)->fetchAll(PDO::FETCH_COLUMN);
 
-        $result = $db->query('SELECT lang FROM ' . $db_config['prefix'] . '_setup_language where setup=1');
-        while ([$lang_i] = $result->fetch(3)) {
+        // Kiểm tra module trùng tên trên ngôn ngữ khác
+        $check_exit_mod = false;
+        foreach ($langs as $lang_i) {
             $sth = $db->prepare('SELECT COUNT(*) FROM ' . $db_config['prefix'] . '_' . $lang_i . '_modules WHERE title= :module');
             $sth->bindParam(':module', $modname, PDO::PARAM_STR);
             $sth->execute();
@@ -150,6 +152,9 @@ if (!empty($modname) and preg_match($global_config['check_module'], $modname) an
                 nv_save_file_config_global();
             }
         }
+
+        // Xóa các mẫu email
+        $db->query('DELETE FROM ' . $db_config['prefix'] . '_emailtemplates WHERE lang=' . $db->quote(NV_LANG_DATA) . ' AND module_name=' . $db->quote($modname));
 
         $nv_Cache->delAll();
     }

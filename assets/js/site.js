@@ -113,7 +113,7 @@ function checkSingle(a) {
 
 // locationReplace
 function locationReplace(url) {
-    var uri = window.location.href.substr(window.location.protocol.length + window.location.hostname.length + 2);
+    var uri = window.location.href.substring(window.location.protocol.length + window.location.hostname.length + 2);
     if (url != uri && history.pushState) {
         history.pushState(null, null, url)
     }
@@ -287,15 +287,29 @@ function reCaptcha2Recreate(obj) {
 
 function formXSSsanitize(form) {
     $(form).find("input, textarea").not(":submit, :reset, :image, :file, :disabled").not('[data-sanitize-ignore]').each(function() {
-        $(this).val(DOMPurify.sanitize($(this).val(), {}))
-    })
+        let value;
+        if (this.dataset.editorname && window.nveditor && window.nveditor[this.dataset.editorname]) {
+            value = window.nveditor[this.dataset.editorname].getData();
+        } else {
+            value = $(this).val();
+        }
+        $(this).val(DOMPurify.sanitize(value, {}));
+    });
 }
 
 function btnClickSubmit(event, form) {
     event.preventDefault();
+
+    $(form).find("textarea").each(function() {
+        if (this.dataset.editorname && window.nveditor && window.nveditor[this.dataset.editorname]) {
+            $(this).val(window.nveditor[this.dataset.editorname].getData());
+        }
+    });
+
     if (XSSsanitize) {
-        formXSSsanitize(form)
+        formXSSsanitize(form);
     }
+
     if ($(form).attr('data-precheck')) {
         var preCheck = $(form).data('precheck');
         if ('string' == typeof preCheck && "function" === typeof window[preCheck]) {
@@ -306,18 +320,18 @@ function btnClickSubmit(event, form) {
     }
     if ($(form).attr('data-recaptcha3')) {
         reCaptchaExecute(form, function() {
-            $(form).submit()
+            $(form).submit();
         })
     } else if ($(form).attr('data-recaptcha2')) {
         reCaptcha2Execute(form, function() {
-            $(form).submit()
+            $(form).submit();
         })
     } else if ($(form).attr('data-captcha')) {
         captchaExecute(form, function() {
-            $(form).submit()
+            $(form).submit();
         })
     } else {
-        $(form).submit()
+        $(form).submit();
     }
 }
 

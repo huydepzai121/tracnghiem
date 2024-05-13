@@ -372,6 +372,7 @@ define('NV_CRONJOBS_GLOBALTABLE', $db_config['prefix'] . '_cronjobs');
 define('NV_NOTIFICATION_GLOBALTABLE', $db_config['prefix'] . '_notification');
 define('NV_INFORM_GLOBALTABLE', $db_config['prefix'] . '_inform');
 define('NV_INFORM_STATUS_GLOBALTABLE', $db_config['prefix'] . '_inform_status');
+define('NV_EMAILTEMPLATES_GLOBALTABLE', $db_config['prefix'] . '_emailtemplates');
 
 define('NV_UPLOAD_GLOBALTABLE', $db_config['prefix'] . '_upload');
 define('NV_BANNERS_GLOBALTABLE', $db_config['prefix'] . '_banners');
@@ -504,9 +505,14 @@ if ($global_config['cronjobs_launcher'] == 'system') {
 }
 
 // Gửi mail từ luồng truy vấn không đồng bộ
-if (defined('NV_SYS_LOAD') and $nv_Request->isset_request('__sendmail', 'post')) {
-    require NV_ROOTDIR . '/includes/core/async_sendmail.php';
-    exit(0);
+if (defined('NV_SYS_LOAD')) {
+    if ($nv_Request->isset_request('__sendmail', 'post')) {
+        require NV_ROOTDIR . '/includes/core/async_sendmail.php';
+        exit(0);
+    } elseif ($nv_Request->isset_request('__sendmail_template', 'post')) {
+        require NV_ROOTDIR . '/includes/core/async_sendmail_template.php';
+        exit(0);
+    }
 }
 
 // Quản lý thẻ meta, header các máy chủ tìm kiếm

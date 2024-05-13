@@ -121,6 +121,77 @@ $install_lang['vinades_address'] = 'Tầng 6, tòa nhà Sông Đà, 131 Trần P
 $install_lang['nukeviet_description'] = 'Chia sẻ thành công, kết nối đam mê';
 $install_lang['disable_site_content'] = 'Vì lý do kỹ thuật website tạm ngưng hoạt động. Thành thật xin lỗi các bạn vì sự bất tiện này!';
 
+// Ngôn ngữ dữ liệu cho phần mẫu email
+use NukeViet\Template\Email\Cat as EmailCat;
+use NukeViet\Template\Email\Tpl as EmailTpl;
+
+$install_lang['emailtemplates'] = [];
+$install_lang['emailtemplates']['cats'] = [];
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_SYSTEM] = 'Email của hệ thống';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_USER] = 'Email về tài khoản';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_AUTHOR] = 'Email về quản trị';
+$install_lang['emailtemplates']['cats'][EmailCat::CAT_MODULE] = 'Email của các module';
+
+$install_lang['emailtemplates']['emails'] = [];
+
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTO_ERROR_REPORT] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Email tự động thông báo lỗi',
+    's' => 'Cảnh báo từ website {$site_name}',
+    'c' => 'Hệ thống đã nhận được một số thông báo. Bạn hãy mở file đính kèm để xem chi tiết'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_EMAIL_CONFIG_TEST] = [
+    'pids' => '5',
+    'catid' => EmailCat::CAT_SYSTEM,
+    't' => 'Email gửi thử nghiệm để kiểm tra cấu hình gửi mail',
+    's' => 'Email thử nghiệm',
+    'c' => 'Đây là email thử nghiệm để kiểm tra cấu hình gửi mail. Đơn giản bạn hãy xóa nó đi!'
+];
+
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_DEL] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo phương thức xác thực hai bước đã bị xóa khỏi tài khoản quản trị',
+    's' => 'Định cấu hình Xác thực hai bước bằng Oauth đã bị hủy',
+    'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo:<br />Theo yêu cầu của bạn, việc xác thực hai bước bằng Oauth đã hủy thành công. Bạn đã không thể sử dụng tài khoản <strong>{$oauth_id}</strong> của nhà cung cấp <strong>{$oauth_name}</strong> để xác thực đăng nhập vào quản trị hệ thống.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_DELETE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo tài khoản quản trị đã bị xóa',
+    's' => 'Thông báo từ website {$site_name}',
+    'c' => 'Ban quản trị website {$site_name} xin thông báo:<br />Tài khoản quản trị của bạn tại website {$site_name} đã bị xóa vào {$time}{if not empty($note)} vì lý do: {$note}{/if}.<br />Mọi đề nghị, thắc mắc... xin gửi email đến địa chỉ <a href="mailto:{$email}">{$email}</a>{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_SUSPEND] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo đình chỉ quản trị site',
+    's' => 'Thông báo từ website {$site_name}',
+    'c' => 'Ban quản trị website {$site_name} xin thông báo:<br />Tài khoản quản trị của bạn tại website {$site_name} đã bị đình chỉ hoạt động vào {$time} vì lý do: {$note}.<br />Mọi đề nghị, thắc mắc... xin gửi email đến địa chỉ <a href="mailto:{$email}">{$email}</a>{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_REACTIVE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo kích hoạt lại quản trị site',
+    's' => 'Thông báo từ website {$site_name}',
+    'c' => 'Ban quản trị website {$site_name} xin thông báo:<br />Tài khoản quản trị của bạn tại website {$site_name} đã hoạt động trở lại vào {$time}.<br />Trước đó tài khoản này đã bị đình chỉ hoạt động vì lý do: {$note}{if not empty($username)}<br/><br/>{$sig}<br/><br/>{$username}<br/>{$position}<br/>{$email}{/if}'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_ADD] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo phương thức xác thực hai bước mới được thêm vào tài khoản quản trị',
+    's' => 'Định cấu hình Xác thực hai bước bằng Oauth đã hoàn tất',
+    'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo:<br />Việc xác thực đăng nhập quản trị của bạn bằng Oauth đã được thiết lập thành công. Bạn có thể sử dụng tài khoản <strong>{$oauth_id}</strong> của nhà cung cấp <strong>{$oauth_name}</strong> để xác thực mỗi khi đăng nhập vào quản trị hệ thống.'
+];
+$install_lang['emailtemplates']['emails'][EmailTpl::E_AUTHOR_2STEP_TRUNCATE] = [
+    'pids' => '4',
+    'catid' => EmailCat::CAT_AUTHOR,
+    't' => 'Thông báo tất cả phương thức xác thực hai bước đã bị xóa khỏi tài khoản quản trị',
+    's' => 'Định cấu hình Xác thực hai bước bằng Oauth đã bị hủy',
+    'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo:<br />Theo yêu cầu của bạn, việc xác thực hai bước bằng Oauth đã hủy thành công. Bạn đã không thể sử dụng các tài khoản <strong>{$oauth_id}</strong> để xác thực đăng nhập vào quản trị hệ thống.'
+];
+
 $menu_rows_lev0['about'] = [
     'title' => $install_lang['modules']['about'],
     'link' => NV_BASE_SITEURL . 'index.php?language=' . $lang_data . '&nv=about',

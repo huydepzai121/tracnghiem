@@ -13,6 +13,8 @@ if (!defined('NV_IS_MOD_USER')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 if (!defined('NV_IS_USER') or !$global_config['allowuserlogin']) {
     nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
 }
@@ -334,13 +336,19 @@ if ((int) $row['safemode'] > 0) {
         if ($nv_Request->isset_request('resend', 'post')) {
             $ss_safesend = $nv_Request->get_int('safesend', 'session', 0);
             if ($ss_safesend < NV_CURRENTTIME) {
-                $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-                $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-                $message = $nv_Lang->getModule('safe_send_content', $greeting, $sitename, $row['safekey']);
-                @nv_sendmail_async([
-                    $global_config['site_name'],
-                    $global_config['site_email']
-                ], $row['email'], $nv_Lang->getModule('safe_send_subject'), $message);
+                $send_data = [[
+                    'to' => $row['email'],
+                    'data' => [
+                        'first_name' => $row['first_name'],
+                        'last_name' => $row['last_name'],
+                        'username' => $row['username'],
+                        'email' => $row['email'],
+                        'gender' => $row['gender'],
+                        'code' => $row['safekey'],
+                        'lang' => NV_LANG_INTERFACE
+                    ]
+                ]];
+                nv_sendmail_template_async([$module_name, Emails::SAFE_KEY], $send_data, NV_LANG_INTERFACE);
 
                 $ss_safesend = NV_CURRENTTIME + 600;
                 $nv_Request->set_Session('safesend', $ss_safesend);
@@ -553,13 +561,22 @@ if (in_array('openid', $types, true) and $nv_Request->isset_request('server', 'g
     $stmt->execute();
 
     // Gửi email thông báo
-    $url = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=editinfo/openid', NV_MY_DOMAIN);
-    $message = defined('ACCESS_EDITUS') ? $nv_Lang->getModule('security_alert_openid_add') : $nv_Lang->getModule('security_alert_openid_add1');
-    $message = sprintf($message, nv_ucfirst($server), $row['username'], $url);
-    nv_sendmail_async([
-        $global_config['site_name'],
-        $global_config['site_email']
-    ], $row['email'], $nv_Lang->getModule('security_alert'), $message);
+    $send_data = [[
+        'to' => $row['email'],
+        'data' => [
+            'first_name' => $row['first_name'],
+            'last_name' => $row['last_name'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'gender' => $row['gender'],
+            'lang' => NV_LANG_INTERFACE,
+            'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=editinfo/openid', NV_MY_DOMAIN),
+            'oauth_name' => nv_ucfirst($server)
+        ]
+    ]];
+
+    $tpl_id = defined('ACCESS_EDITUS') ? [$module_name, Emails::OAUTH_LEADER_ADD] : [$module_name, Emails::OAUTH_SELF_ADD];
+    nv_sendmail_template_async($tpl_id, $send_data, NV_LANG_INTERFACE);
 
     nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('openid_add'), $user_info['username'] . ' | ' . $client_info['ip'] . ' | ' . $opid, 0);
 
@@ -704,13 +721,21 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
     $stmt->bindParam(':md5username', $md5_username, PDO::PARAM_STR);
     $stmt->execute();
 
-    $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-    $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-    $message = $nv_Lang->getModule('edit_mail_content', $greeting, $sitename, $nv_Lang->getGlobal('username'), $nv_username);
-    @nv_sendmail_async([
-        $global_config['site_name'],
-        $global_config['site_email']
-    ], $row['email'], $nv_Lang->getModule('edit_mail_subject'), $message);
+    $send_data = [[
+        'to' => $row['email'],
+        'data' => [
+            'first_name' => $row['first_name'],
+            'last_name' => $row['last_name'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'gender' => $row['gender'],
+            'lang' => NV_LANG_INTERFACE,
+            'label' => $nv_Lang->getGlobal('username'),
+            'newvalue' => $nv_username,
+            'send_newvalue' => 1
+        ]
+    ]];
+    nv_sendmail_template_async([$module_name, Emails::SELF_EDIT], $send_data, NV_LANG_INTERFACE);
 
     $mess = $nv_Lang->getModule('editinfo_ok');
     if ($nv_Request->get_bool('forcedrelogin', 'post', false)) {
@@ -787,14 +812,20 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
             $nv_Request->set_Session('verikey', (NV_CURRENTTIME + 300) . '|' . $p . '|' . $verikey);
         }
 
-        $p = nv_date('H:i d/m/Y', $p);
-        $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-        $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-        $message = $nv_Lang->getModule('email_active_info', $greeting, $sitename, $verikey, $p);
-        @nv_sendmail_async([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $nv_email, $nv_Lang->getModule('email_active'), $message);
+        $send_data = [[
+            'to' => $nv_email,
+            'data' => [
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'],
+                'username' => $row['username'],
+                'email' => $nv_email,
+                'gender' => $row['gender'],
+                'lang' => NV_LANG_INTERFACE,
+                'code' => $verikey,
+                'deadline' => $p
+            ]
+        ]];
+        nv_sendmail_template_async([$module_name, Emails::VERIFY_EMAIL], $send_data, NV_LANG_INTERFACE);
 
         nv_jsonOutput([
             'status' => 'error',
@@ -839,19 +870,28 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
         $stmt->bindParam(':email', $nv_email, PDO::PARAM_STR);
         $stmt->execute();
 
-        $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-        $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-        $message = $nv_Lang->getModule('edit_mail_content', $greeting, $sitename, $nv_Lang->getGlobal('email'), $nv_email);
-
         // Gửi thư cho cả email mới và email cũ
-        @nv_sendmail_async([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $nv_email, $nv_Lang->getModule('edit_mail_subject'), $message);
-        @nv_sendmail_async([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $row['email'], $nv_Lang->getModule('edit_mail_subject'), $message);
+        $sendfields = [
+            'first_name' => $row['first_name'],
+            'last_name' => $row['last_name'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'gender' => $row['gender'],
+            'lang' => NV_LANG_INTERFACE,
+            'label' => $nv_Lang->getGlobal('email'),
+            'newvalue' => $nv_email,
+            'send_newvalue' => 1
+        ];
+        $send_data = [[
+            'to' => $row['email'],
+            'data' => $sendfields
+        ]];
+        $sendfields['email'] = $nv_email;
+        $send_data[] = [
+            'to' => $nv_email,
+            'data' => $sendfields
+        ];
+        nv_sendmail_template_async([$module_name, Emails::SELF_EDIT], $send_data, NV_LANG_INTERFACE);
 
         $mess = $nv_Lang->getModule('editinfo_ok');
         if ($nv_Request->get_bool('forcedrelogin', 'post', false)) {
@@ -921,17 +961,21 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
     oldPassSave($edit_userid, $row['password'], $row['pass_creation_time']);
     nv_apply_hook($module_name, 'user_change_password', [$row, $new_password]);
 
-    $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-    $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-    if ($global_config['send_pass']) {
-        $message = $nv_Lang->getModule('edit_mail_content', $greeting, $sitename, $nv_Lang->getGlobal('password'), $new_password);
-    } else {
-        $message = $nv_Lang->getModule('edit_mail_content_pw', $greeting, $sitename, $nv_Lang->getGlobal('password'));
-    }
-    @nv_sendmail_async([
-        $global_config['site_name'],
-        $global_config['site_email']
-    ], $row['email'], $nv_Lang->getModule('edit_mail_subject'), $message);
+    $send_data = [[
+        'to' => $row['email'],
+        'data' => [
+            'first_name' => $row['first_name'],
+            'last_name' => $row['last_name'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'gender' => $row['gender'],
+            'lang' => NV_LANG_INTERFACE,
+            'label' => $nv_Lang->getGlobal('password'),
+            'newvalue' => $new_password,
+            'send_newvalue' => $global_config['send_pass']
+        ]
+    ]];
+    nv_sendmail_template_async([$module_name, Emails::SELF_EDIT], $send_data, NV_LANG_INTERFACE);
 
     $mess = $nv_Lang->getModule('editinfo_ok');
     if ($nv_Request->get_bool('forcedrelogin', 'post', false)) {
@@ -983,7 +1027,7 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
     ]);
 } elseif ($checkss == $array_data['checkss'] and $array_data['type'] == 'openid') {
     // OpeniD Del
-    $openid_del = $nv_Request->get_typed_array('openid_del', 'post', 'string', '');
+    $openid_del = $nv_Request->get_typed_array('openid_del', 'post', 'title', '');
     $openid_del = array_filter($openid_del);
     if (empty($openid_del)) {
         nv_jsonOutput([
@@ -1010,13 +1054,22 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
 
     // Gửi email thông báo
     if (!empty($openid_mess)) {
-        $url = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=editinfo/openid', NV_MY_DOMAIN);
-        $message = defined('ACCESS_EDITUS') ? $nv_Lang->getModule('security_alert_openid_delete') : $nv_Lang->getModule('security_alert_openid_delete1');
-        $message = sprintf($message, implode(', ', array_unique($openid_mess)), $row['username'], $url);
-        nv_sendmail_async([
-            $global_config['site_name'],
-            $global_config['site_email']
-        ], $row['email'], $nv_Lang->getModule('security_alert'), $message);
+        $send_data = [[
+            'to' => $row['email'],
+            'data' => [
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'],
+                'username' => $row['username'],
+                'email' => $row['email'],
+                'gender' => $row['gender'],
+                'lang' => NV_LANG_INTERFACE,
+                'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=editinfo/openid', NV_MY_DOMAIN),
+                'oauth_name' => implode(', ', array_unique($openid_mess))
+            ]
+        ]];
+
+        $tpl_id = defined('ACCESS_EDITUS') ? [$module_name, Emails::OAUTH_LEADER_DEL] : [$module_name, Emails::OAUTH_SELF_DEL];
+        nv_sendmail_template_async($tpl_id, $send_data, NV_LANG_INTERFACE);
     }
 
     nv_jsonOutput([
@@ -1076,25 +1129,29 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
         foreach ($in_groups_add as $gid) {
             $approved = $groups_list['all'][$gid]['group_type'] == 1 ? 0 : 1;
             if (nv_groups_add_user($gid, $edit_userid, $approved, $module_data)) {
-                // Gửi thư thông báo kiểm duyệt
+                // Gửi thư thông báo kiểm duyệt đến các trưởng nhóm
                 if ($groups_list['all'][$gid]['group_type'] == 1) {
                     // Danh sách email trưởng nhóm
-                    $array_leader = [];
+                    $send_data = [];
+                    $url_group = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=groups/' . $gid, NV_MY_DOMAIN);
                     $result = $db->query('SELECT t2.email FROM ' . NV_MOD_TABLE . '_groups_users t1 INNER JOIN ' . NV_MOD_TABLE . ' t2 ON t1.userid=t2.userid WHERE t1.is_leader=1 AND t1.group_id=' . $gid);
                     while ([$email] = $result->fetch(3)) {
-                        $array_leader[] = $email;
+                        $send_data[] = [
+                            'to' => $email,
+                            'data' => [
+                                'first_name' => $user_info['first_name'],
+                                'last_name' => $user_info['last_name'],
+                                'username' => $user_info['username'],
+                                'email' => $user_info['email'],
+                                'gender' => $user_info['gender'],
+                                'lang' => NV_LANG_INTERFACE,
+                                'group_name' => $groups_list['all'][$gid]['title'],
+                                'link' => $url_group
+                            ]
+                        ];
                     }
-                    if (!empty($array_leader)) {
-                        $array_leader = array_unique($array_leader);
-                        foreach ($array_leader as $email) {
-                            $mail_from = [
-                                $global_config['site_name'],
-                                $global_config['site_email']
-                            ];
-                            $url_group = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=groups/' . $gid, NV_MY_DOMAIN);
-                            $message = $nv_Lang->getModule('group_join_queue_message', $groups_list['all'][$gid]['title'], $user_info['full_name'], $groups_list['all'][$gid]['title'], $url_group);
-                            @nv_sendmail_async($mail_from, $email, $nv_Lang->getModule('group_join_queue'), $message);
-                        }
+                    if (!empty($send_data)) {
+                        nv_sendmail_template_async([$module_name, Emails::GROUP_JOIN], $send_data, NV_LANG_INTERFACE);
                     }
                 } elseif (in_array($gid, $groups_list['share'], true)) {
                     $messages = [];
@@ -1227,13 +1284,19 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
 
         $ss_safesend = $nv_Request->get_int('safesend', 'session', 0);
         if ($ss_safesend < NV_CURRENTTIME) {
-            $sitename = '<a href="' . NV_MY_DOMAIN . NV_BASE_SITEURL . '">' . $global_config['site_name'] . '</a>';
-            $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-            $message = $nv_Lang->getModule('safe_send_content', $greeting, $sitename, $row['safekey']);
-            @nv_sendmail_async([
-                $global_config['site_name'],
-                $global_config['site_email']
-            ], $row['email'], $nv_Lang->getModule('safe_send_subject'), $message);
+            $send_data = [[
+                'to' => $row['email'],
+                'data' => [
+                    'first_name' => $row['first_name'],
+                    'last_name' => $row['last_name'],
+                    'username' => $row['username'],
+                    'email' => $row['email'],
+                    'gender' => $row['gender'],
+                    'code' => $row['safekey'],
+                    'lang' => NV_LANG_INTERFACE
+                ]
+            ]];
+            nv_sendmail_template_async([$module_name, Emails::SAFE_KEY], $send_data, NV_LANG_INTERFACE);
 
             $ss_safesend = NV_CURRENTTIME + 600;
             $nv_Request->set_Session('safesend', $ss_safesend);

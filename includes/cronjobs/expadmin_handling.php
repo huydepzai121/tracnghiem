@@ -58,28 +58,21 @@ function cron_expadmin_handling()
             $is_sendmail = [];
             if ($sth->execute()) {
                 nv_insert_logs($userlang, 'authors', $nv_Lang->getModule('suspend1'), $nv_Lang->getModule('lev_expired_suspend', $row_user['username']), 0);
-
-                $gconfigs = [
-                    'site_name' => $global_config['site_name'],
-                    'site_email' => $global_config['site_email']
-                ];
-                if ($userlang != NV_LANG_DATA) {
-                    $in = "'" . implode("', '", array_keys($gconfigs)) . "'";
-                    $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='" . $userlang . "' AND module='global' AND config_name IN (" . $in . ')');
-                    while ($row = $result->fetch()) {
-                        $gconfigs[$row['config_name']] = $row['config_value'];
-                    }
-                }
-                $is_sendmail = [
-                    'mail_subject' => $nv_Lang->getModule('suspend_sendmail_title', $gconfigs['site_name']),
-                    'mail_message' => $nv_Lang->getModule('suspend_sendmail_mess1', $gconfigs['site_name'], nv_date('d/m/Y H:i', NV_CURRENTTIME), $nv_Lang->getModule('admin_rights_expired'), $gconfigs['site_email'])
-                ];
+                $is_sendmail = [[
+                    'to' => $row_user['email'],
+                    'data' => [
+                        'lang' => $userlang,
+                        'time' => NV_CURRENTTIME,
+                        'note' => $nv_Lang->getModule('admin_rights_expired'),
+                        'email' => $global_config['site_email']
+                    ]
+                ]];
             }
 
             $nv_Lang->changeLang();
 
             if (!empty($is_sendmail)) {
-                nv_sendmail_async($gconfigs, $row_user['email'], $is_sendmail['mail_subject'], $is_sendmail['mail_message'], '', false, false, [], [], true, [], $userlang);
+                nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_AUTHOR_SUSPEND, $is_sendmail, $userlang);
             }
         }
     }

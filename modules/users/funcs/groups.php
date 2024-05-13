@@ -13,16 +13,18 @@ if (!defined('NV_IS_MOD_USER')) {
     exit('Stop!!!');
 }
 
+use NukeViet\Module\users\Shared\Emails;
+
 $page_title = $nv_Lang->getModule('group_manage');
 $page_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op;
 
 $contents = '';
 
 // Lay danh sach nhom
-$sql = 'SELECT g.*, d.* FROM ' . NV_MOD_TABLE . '_groups AS g 
-    LEFT JOIN ' . NV_MOD_TABLE . "_groups_detail d ON ( g.group_id = d.group_id AND d.lang='" . NV_LANG_DATA . "' ) 
-    LEFT JOIN " . NV_MOD_TABLE . '_groups_users u ON ( g.group_id = u.group_id ) 
-    WHERE (g.idsite = ' . $global_config['idsite'] . ' OR (g.idsite =0 AND g.group_id > 3 AND g.siteus = 1)) AND (u.userid = ' . $user_info['userid'] . ' AND u.is_leader = 1) 
+$sql = 'SELECT g.*, d.* FROM ' . NV_MOD_TABLE . '_groups AS g
+    LEFT JOIN ' . NV_MOD_TABLE . "_groups_detail d ON ( g.group_id = d.group_id AND d.lang='" . NV_LANG_DATA . "' )
+    LEFT JOIN " . NV_MOD_TABLE . '_groups_users u ON ( g.group_id = u.group_id )
+    WHERE (g.idsite = ' . $global_config['idsite'] . ' OR (g.idsite =0 AND g.group_id > 3 AND g.siteus = 1)) AND (u.userid = ' . $user_info['userid'] . ' AND u.is_leader = 1)
     ORDER BY g.idsite, g.weight';
 $result = $db->query($sql);
 $groupsList = [];
@@ -167,14 +169,19 @@ if ($nv_Request->isset_request('gid, getuserid', 'post, get')) {
 
                 nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('active_users'), 'userid: ' . $userid . ' - username: ' . $row['username'], $user_info['userid']);
 
-                $subject = $nv_Lang->getModule('adduser_register');
-                $_url = urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN);
-                $greeting = greeting_for_user_create($row['username'], $row['first_name'], $row['last_name'], $row['gender']);
-                $message = $nv_Lang->getModule('adduser_register_info', $greeting, $global_config['site_name'], $_url, $row['username'], $row['email']);
-                @nv_sendmail_async([
-                    $global_config['site_name'],
-                    $global_config['site_email']
-                ], $row['email'], $subject, $message);
+                $send_data = [[
+                    'to' => $row['email'],
+                    'data' => [
+                        'first_name' => $row['first_name'],
+                        'last_name' => $row['last_name'],
+                        'username' => $row['username'],
+                        'email' => $row['email'],
+                        'gender' => $row['gender'],
+                        'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN),
+                        'lang' => NV_LANG_INTERFACE
+                    ]
+                ]];
+                nv_sendmail_template_async([$module_name, Emails::ADDED_BY_LEADER], $send_data, NV_LANG_INTERFACE);
             } else {
                 $db->query('DELETE FROM ' . NV_MOD_TABLE . ' WHERE userid=' . $row['userid']);
             }
@@ -542,8 +549,8 @@ if (sizeof($array_op) == 3 and $array_op[0] == 'groups' and $array_op[1] and $ar
         $group_content = $nv_Request->get_string('group_content', 'post', '');
         $rowcontent['group_content'] = defined('NV_EDITOR') ? nv_nl2br($group_content, '') : nv_nl2br(nv_htmlspecialchars(strip_tags($group_content)), '<br />');
 
-        $stmt = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_groups_detail 
-            SET title = :title, description = :description, content = :content 
+        $stmt = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_groups_detail
+            SET title = :title, description = :description, content = :content
             WHERE group_id = ' . $group_id . " AND lang='" . NV_LANG_DATA . "'");
         $stmt->bindParam(':title', $rowcontent['group_title'], PDO::PARAM_STR);
         $stmt->bindParam(':description', $rowcontent['group_desc'], PDO::PARAM_STR);

@@ -75,6 +75,7 @@ $global_config['lang_geo'] = 0;
 $global_config['site_lang'] = 'en';
 $global_config['engine_allowed'] = [];
 $global_config['site_theme'] = 'default';
+$global_config['notification_active'] = 0;
 
 // Tài khoản chỉ được sử dụng Unicode, không có các ký tự đặc biệt
 $global_config['nv_unick_type'] = 4;

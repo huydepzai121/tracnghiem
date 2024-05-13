@@ -13,17 +13,19 @@ if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }
 
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (1, 'siteinfo', 'mod_siteinfo', 1, 1, 1, 1, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (2, 'authors', 'mod_authors', 2, 1, 1, 1, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (3, 'settings', 'mod_settings', 3, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (4, 'database', 'mod_database', 4, 1, 0, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (5, 'webtools', 'mod_webtools', 5, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (6, 'seotools', 'mod_seotools', 6, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (7, 'language', 'mod_language', 7, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (8, 'modules', 'mod_modules', 8, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (9, 'themes', 'mod_themes', 9, 1, 1, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (10, 'extensions', 'mod_extensions', 10, 1, 0, 0, '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES (11, 'upload', 'mod_upload', 11, 1, 1, 1, '')";
+$sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, module, lang_key, weight, act_1, act_2, act_3, checksum) VALUES
+(1, 'siteinfo', 'mod_siteinfo', 1, 1, 1, 1, ''),
+(2, 'authors', 'mod_authors', 2, 1, 1, 1, ''),
+(3, 'settings', 'mod_settings', 3, 1, 1, 0, ''),
+(4, 'database', 'mod_database', 4, 1, 0, 0, ''),
+(5, 'webtools', 'mod_webtools', 5, 1, 1, 0, ''),
+(6, 'seotools', 'mod_seotools', 6, 1, 1, 0, ''),
+(7, 'language', 'mod_language', 7, 1, 1, 0, ''),
+(8, 'modules', 'mod_modules', 8, 1, 1, 0, ''),
+(9, 'themes', 'mod_themes', 9, 1, 1, 0, ''),
+(10, 'extensions', 'mod_extensions', 10, 1, 0, 0, ''),
+(11, 'upload', 'mod_upload', 11, 1, 1, 1, ''),
+(12, 'emailtemplates', 'mod_emailtemplates', 12, 1, 1, 0, '')";
 
 $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_upload_dir (did, dirname, time, thumb_type, thumb_width, thumb_height, thumb_quality) VALUES ('-1', '', 0, 3, 100, 150, 90)";
 $sql_create_table[] = 'UPDATE ' . $db_config['prefix'] . "_upload_dir SET did = '0' WHERE did = '-1'";
@@ -255,5 +257,10 @@ $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions
 $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (22, 'module', 'inform', 1, 0, 'inform', 'inform', '4.6.00 1666092814', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
 $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (22, 'module', 'myapi', 1, 0, 'myapi', 'myapi', '4.6.00 1666092814', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
 
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_plugins (pid, plugin_file, plugin_area, plugin_module_name, plugin_module_file, weight) VALUES (1, 'qrcode.php', 'get_qr_code', '', '', 1)";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_plugins (pid, plugin_file, plugin_area, plugin_module_name, plugin_module_file, weight) VALUES (2, 'cdn_js_css_image.php', 'change_site_buffer', '', '', 1)";
+$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_plugins (pid, plugin_file, plugin_area, plugin_module_name, plugin_module_file, weight) VALUES
+(1, 'qrcode.php', 'get_qr_code', '', '', 1),
+(2, 'cdn_js_css_image.php', 'change_site_buffer', '', '', 1),
+(3, 'emf_code_user.php', 'get_email_merge_fields', 'users', 'users', 1),
+(4, 'emf_core_author.php', 'get_email_merge_fields', '', '', 2),
+(5, 'emf_all.php', 'get_email_merge_fields', '', '', 3)
+";

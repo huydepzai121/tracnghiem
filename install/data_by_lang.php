@@ -1190,3 +1190,63 @@ if (!empty($menu_rows_lev0)) {
         $sth->execute($execute);
     }
 }
+
+// Email templates
+if (!empty($module_data) and $module_data == 'language') {
+    /*
+     * Trường hợp cài đặt ngôn ngữ mới tại module language
+     */
+
+    // Cập nhật tên danh mục của hệ thống
+    foreach ($install_lang['emailtemplates']['cats'] as $_catid => $_cattitle) {
+        try {
+            $db->query('UPDATE ' . $db_config['prefix'] . '_emailtemplates_categories SET ' . $lang_data . '_title=' . $db->quote($_cattitle) . ' WHERE catid=' . $_catid);
+        } catch (Throwable $e) {
+            trigger_error(print_r($e, true));
+        }
+    }
+
+    // Cập nhật tên, tiêu đề và nội dung các mẫu email của hệ thống
+    foreach ($install_lang['emailtemplates']['emails'] as $_tplid => $_tpldata) {
+        $db->query('UPDATE ' . $db_config['prefix'] . '_emailtemplates SET ' . $lang_data . '_subject=' . $db->quote($_tpldata['s']) . ', ' . $lang_data . '_content=' . $db->quote($_tpldata['c']) . ' WHERE emailid=' . $_tplid);
+        try {
+            $db->query('UPDATE ' . $db_config['prefix'] . '_emailtemplates SET ' . $lang_data . '_title=' . $db->quote($_tpldata['t']) . ' WHERE emailid=' . $_tplid);
+        } catch (Throwable $e) {
+            trigger_error(print_r($e, true));
+        }
+    }
+} else {
+    /*
+     * Trường hợp cài site lần đầu
+     */
+
+    // Thêm mới danh mục
+    $sql_emailtpl = [];
+    $weight = 0;
+    foreach ($install_lang['emailtemplates']['cats'] as $_catid => $_cattitle) {
+        ++$weight;
+        $sql_emailtpl[] = '(' . $_catid . ', ' . NV_CURRENTTIME . ', ' . $weight . ', 1, ' . $db->quote($_cattitle) . ')';
+    }
+    if (!empty($sql_emailtpl)) {
+        $db->query('INSERT INTO ' . $db_config['prefix'] . '_emailtemplates_categories (
+            catid, time_add, weight, is_system, ' . $lang_data . '_title
+        ) VALUES ' . implode(', ', $sql_emailtpl));
+    }
+
+    /*
+     * Các mẫu email
+     */
+    $sql_emailtpl = [];
+    foreach ($install_lang['emailtemplates']['emails'] as $_tplid => $_tpldata) {
+        $sql_emailtpl[] = '(
+            ' . $_tplid . ", " . $_tplid . ", '" . $_tpldata['pids'] . "', " . $_tpldata['catid'] . ', ' . NV_CURRENTTIME . ", '', '', '', 1,
+            " . $db->quote($_tpldata['s']) . ', ' . $db->quote($_tpldata['c']) . ', ' . $db->quote($_tpldata['t']) . ", '', ''
+        )";
+    }
+    if (!empty($sql_emailtpl)) {
+        $db->query('INSERT INTO ' . $db_config['prefix'] . '_emailtemplates (
+            emailid, id, sys_pids, catid, time_add, send_cc, send_bcc, attachments, is_system, default_subject, default_content,
+            ' . $lang_data . '_title, ' . $lang_data . '_subject, ' . $lang_data . '_content
+        ) VALUES ' . implode(', ', $sql_emailtpl));
+    }
+}

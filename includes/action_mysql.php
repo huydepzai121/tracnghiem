@@ -46,16 +46,27 @@ function nv_delete_table_sys($lang)
     $sql_drop_table[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $lang . '_modthemes';
     $sql_drop_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_cronjobs DROP ' . $lang . '_cron_name';
 
+    // Xóa các trường theo ngôn ngữ email template
+    $sql_drop_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates
+      DROP ' . $lang . '_title,
+      DROP ' . $lang . '_subject,
+      DROP ' . $lang . '_content
+    ';
+    $sql_drop_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates_categories
+      DROP ' . $lang . '_title
+    ';
+
     return $sql_drop_table;
 }
 
 /**
  * @param string $lang
+ * @param array $init
  * @return string[]
  */
-function nv_create_table_sys($lang)
+function nv_create_table_sys($lang, $init = [])
 {
-    global $db_config, $global_config, $db;
+    global $db_config, $global_config, $db, $crypt;
 
     $xml = simplexml_load_file(NV_ROOTDIR . '/themes/' . $global_config['site_theme'] . '/config.ini');
     $layoutdefault = (string) $xml->layoutdefault;
@@ -222,14 +233,14 @@ function nv_create_table_sys($lang)
          ('" . $lang . "', 'global', 'antispam_warning', '0'),
          ('" . $lang . "', 'global', 'data_warning_content', ''),
          ('" . $lang . "', 'global', 'antispam_warning_content', ''),
-         ('" . $lang . "', 'global', 'mailer_mode', 'mail'),
+         ('" . $lang . "', 'global', 'mailer_mode', " . $db->quote($init['mailer_mode'] ?? 'mail') . "),
          ('" . $lang . "', 'global', 'smtp_host', 'smtp.gmail.com'),
          ('" . $lang . "', 'global', 'smtp_port', '465'),
-         ('" . $lang . "', 'global', 'smtp_username', 'user@gmail.com'),
-         ('" . $lang . "', 'global', 'smtp_password', 'user@gmail.com'),
+         ('" . $lang . "', 'global', 'smtp_username', " . $db->quote($init['smtp_username'] ?? 'user@gmail.com') . "),
+         ('" . $lang . "', 'global', 'smtp_password', " . $db->quote($crypt->encrypt($init['smtp_password'] ?? 'user@gmail.com')) . "),
          ('" . $lang . "', 'global', 'smtp_ssl', '1'),
-         ('" . $lang . "', 'global', 'verify_peer_ssl', '1'),
-         ('" . $lang . "', 'global', 'verify_peer_name_ssl', '1'),
+         ('" . $lang . "', 'global', 'verify_peer_ssl', " . intval($init['verify_peer_ssl'] ?? 1) . "),
+         ('" . $lang . "', 'global', 'verify_peer_name_ssl', " . intval($init['verify_peer_name_ssl'] ?? 1) . "),
          ('" . $lang . "', 'global', 'sender_name', ''),
          ('" . $lang . "', 'global', 'sender_email', ''),
          ('" . $lang . "', 'global', 'reply_name', ''),
@@ -248,6 +259,42 @@ function nv_create_table_sys($lang)
 
     $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . '_' . $lang . "_modthemes (func_id, layout, theme) VALUES ('0', '" . $layoutdefault . "', '" . $global_config['site_theme'] . "')";
     $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_cronjobs ADD ' . $lang . "_cron_name VARCHAR( 255 ) NOT NULL DEFAULT ''";
+
+    /*
+     * Tạo các trường theo ngôn ngữ email template
+     * Copy dữ liệu sang các trường
+     * Thêm khóa cho các trường
+     */
+    $array_columns = $db->columns_array($db_config['prefix'] . '_emailtemplates');
+    $default_lang = '';
+    foreach ($array_columns as $_colkey => $_coldata) {
+        if (preg_match('/^([a-z]{2})\_content$/', $_colkey, $m)) {
+            $default_lang = $m[1];
+            break;
+        }
+    }
+
+    $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates
+        ADD ' . $lang . "_title varchar(250) NOT NULL DEFAULT '',
+        ADD " . $lang . "_subject varchar(250) NOT NULL DEFAULT '',
+        ADD " . $lang . '_content mediumtext NOT NULL,
+        ADD INDEX ' . $lang . '_title (' . $lang . '_title)
+    ';
+    $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates_categories
+        ADD ' . $lang . '_title varchar(250) NOT NULL
+    ';
+
+    if (!empty($default_lang)) {
+        $sql_create_table[] = 'UPDATE ' . $db_config['prefix'] . '_emailtemplates SET
+            ' . $lang . '_title = ' . $default_lang . '_title
+        ';
+        $sql_create_table[] = 'UPDATE ' . $db_config['prefix'] . '_emailtemplates_categories SET
+            ' . $lang . '_title = ' . $default_lang . '_title
+        ';
+    }
+    $sql_create_table[] = 'ALTER TABLE ' . $db_config['prefix'] . '_emailtemplates_categories
+        ADD UNIQUE ' . $lang . '_title (' . $lang . '_title(191))
+    ';
 
     return $sql_create_table;
 }
