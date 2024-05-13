@@ -793,7 +793,7 @@ figure.image.image_resized > figcaption {
 }
 
 figure.image {
-    display: table;
+    display: table!important; /* Fix conflicts with Google Docs */
     clear: both;
     text-align: center;
     margin: 5px auto 10px auto;
