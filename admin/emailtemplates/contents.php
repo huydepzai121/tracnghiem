@@ -447,16 +447,8 @@ if ($nv_Request->get_title('saveform', 'post', '') == NV_CHECK_SESSION) {
 
                 // Thực hiện cập nhật cho các mẫu khác
                 if (!empty($update_for) and isset($update_for[$array['update_for']]) and $array['update_for'] != 4) {
-                    $sql = 'UPDATE ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' SET
-                        time_update = ' . NV_CURRENTTIME . ',
-                        default_subject = :default_subject,
-                        default_content = :default_content';
-                    foreach ($global_config['setup_langs'] as $lang) {
-                        $sql .= ', ' . $lang . '_title = :' . $lang . '_title,
-                        ' . $lang . '_subject = :' . $lang . '_subject,
-                        ' . $lang . '_content = :' . $lang . '_content';
-                    }
-                    $sql .= ' WHERE emailid != ' . $array['emailid'] . ' AND id=' . $array['id'] . ' AND ';
+                    $sql = "SELECT emailid, lang FROM " . NV_EMAILTEMPLATES_GLOBALTABLE . " WHERE emailid!=" . $array['emailid'] . " AND
+                    id=" . $array['id'] . " AND ";
                     if ($array['update_for'] == 1) {
                         // Tất cả
                         $sql .= 'module_file=' . $db->quote($array['module_file']) . " AND module_file!=''";
@@ -467,17 +459,55 @@ if ($nv_Request->get_title('saveform', 'post', '') == NV_CHECK_SESSION) {
                         // Cùng tên
                         $sql .= "module_file=" . $db->quote($array['module_file']) . " AND module_file!='' AND module_name=" . $db->quote($array['module_name']) . " AND module_name!=''";
                     }
-                    $sth = $db->prepare($sql);
-                    $sth->bindParam(':default_subject', $array['default_subject'], PDO::PARAM_STR);
-                    $sth->bindParam(':default_content', $default_content, PDO::PARAM_STR, strlen($default_content));
+                    $result = $db->query($sql);
 
-                    foreach ($global_config['setup_langs'] as $lang) {
-                        $sth->bindValue(':' . $lang . '_title', $array['title'][$lang] ?? '', PDO::PARAM_STR);
-                        $sth->bindValue(':' . $lang . '_subject', $array['subject'][$lang] ?? '', PDO::PARAM_STR);
-                        $sth->bindValue(':' . $lang . '_content', nv_editor_nl2br($array['content'][$lang] ?? ''), PDO::PARAM_STR);
+                    while ($row = $result->fetch()) {
+                        $sql = 'UPDATE ' . NV_EMAILTEMPLATES_GLOBALTABLE . ' SET
+                            time_update = ' . NV_CURRENTTIME . ',
+                            default_subject = :default_subject,
+                            default_content = :default_content';
+                        foreach ($global_config['setup_langs'] as $lang) {
+                            $sql .= ', ' . $lang . '_title = :' . $lang . '_title,
+                            ' . $lang . '_subject = :' . $lang . '_subject,
+                            ' . $lang . '_content = :' . $lang . '_content';
+                        }
+                        $sql .= ' WHERE emailid=' . $row['emailid'];
+                        $sth = $db->prepare($sql);
+
+                        // Chuyển mặc định của ngôn ngữ đích thành tương ứng ngôn ngữ nguồn nếu có. Hoặc là mặc định của nguồn
+                        $d_subject = !empty($array['subject'][$row['lang']]) ? $array['subject'][$row['lang']] : $array['default_subject'];
+                        $d_content = !empty($array['content'][$row['lang']]) ? nv_editor_nl2br($array['content'][$row['lang']]) : $default_content;
+
+                        $sth->bindValue(':default_subject', $d_subject, PDO::PARAM_STR);
+                        $sth->bindValue(':default_content', $d_content, PDO::PARAM_STR);
+
+                        foreach ($global_config['setup_langs'] as $lang) {
+                            $sth->bindValue(':' . $lang . '_title', $array['title'][$lang] ?? '', PDO::PARAM_STR);
+
+                            $subject = $content = '';
+                            if (!empty($array['subject'][$lang])) {
+                                $subject = $array['subject'][$lang];
+                            } elseif ($lang == $array['lang']) {
+                                $subject = $array['default_subject'];
+                            }
+                            if (!empty($array['content'][$lang])) {
+                                $content = nv_editor_nl2br($array['content'][$lang]);
+                            } elseif ($lang == $array['lang']) {
+                                $content = $default_content;
+                            }
+                            // Trên ngôn ngữ đích mặc định nếu theo ngôn ngữ giống với mặc định thì cho nó rỗng
+                            if ($lang == $row['lang']) {
+                                $subject == $d_subject && $subject = '';
+                                $content == $d_content && $content = '';
+                            }
+
+                            $sth->bindValue(':' . $lang . '_subject', $subject, PDO::PARAM_STR);
+                            $sth->bindValue(':' . $lang . '_content', $content, PDO::PARAM_STR);
+                        }
+
+                        $sth->execute();
                     }
-
-                    $sth->execute();
+                    $result->closeCursor();
                 }
 
                 nv_apply_hook('', 'emailtemplates_content_after_save', [$array]);
