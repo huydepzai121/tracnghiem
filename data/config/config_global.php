@@ -36,6 +36,7 @@ $global_config['admin_user_logout'] = 0;
 $global_config['admin_XSSsanitize'] = 1;
 $global_config['allow_null_origin'] = 0;
 $global_config['allow_sitelangs'] = ['vi'];
+$global_config['api_check_time'] = 5;
 $global_config['assets_cdn'] = 1;
 $global_config['authors_detail_main'] = 0;
 $global_config['auto_acao'] = 1;

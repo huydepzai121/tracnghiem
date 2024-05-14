@@ -5,7 +5,7 @@
     <span>{$LANG->get('design_by')} {if !empty($DATA.design_url)}<a href="{$DATA.design_url}" target="_blank" rel="dofollow">{/if}{$DATA.design_by}{if !empty($DATA.design_url)}</a>{/if}.&nbsp; </span>
 {/if}
 {if !empty($DATA.siteterms_url)}
-    <span>&nbsp;|&nbsp;&nbsp;<a href="$DATA.siteterms_url">{$LANG->get('siteterms')}</a></span>
+    <span>&nbsp;|&nbsp;&nbsp;<a href="{$DATA.siteterms_url}">{$LANG->get('siteterms')}</a></span>
 {/if}
 {if $smarty.const.NV_IS_SPADMIN}
     <span>&nbsp;|&nbsp;&nbsp;{$LANG->get('for_admin')}: [MEMORY_TIME_USAGE]</span>
