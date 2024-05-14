@@ -1586,7 +1586,7 @@ function _otherMethodSendmail($gconfigs, $sm_parameters)
     $sm_parameters['message'] = $optimizer->process(false);
     $sm_parameters['message'] = nv_unhtmlspecialchars($sm_parameters['message']);
 
-    return call_user_func($gconfigs['other_sendmail_method'], $sm_parameters);
+    return call_user_func($gconfigs['other_sendmail_method'], $sm_parameters, $gconfigs);
 }
 
 /**
