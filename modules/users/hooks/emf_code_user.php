@@ -22,7 +22,7 @@ $callback = function ($vars, $from_data, $receive_data) {
     $vars['setpids'] = array_map('intval', $vars['setpids']);
 
     if (in_array($vars['pid'], $vars['setpids'], true)) {
-        global $nv_Lang;
+        global $nv_Lang, $global_config;
 
         // Đọc ngôn ngữ tạm của module
         if (!empty($receive_data)) {
@@ -99,6 +99,9 @@ $callback = function ($vars, $from_data, $receive_data) {
         if ($vars['mode'] != 'PRE') {
             // Field dữ liệu cho các fields
             $lang = !empty($vars['lang']) ? $vars['lang'] : NV_LANG_INTERFACE;
+            if ($lang != NV_LANG_INTERFACE and in_array($lang, $global_config['setup_langs'], true)) {
+                $nv_Lang->loadFile(NV_ROOTDIR . '/includes/language/' . $lang . '/global.php', true);
+            }
 
             // Họ tên và câu chào
             if (isset($vars['username'], $vars['first_name'])) {
