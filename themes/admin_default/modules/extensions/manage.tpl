@@ -13,6 +13,7 @@
                             <input type="file" class="form-control w200 input-sm" name="extfile"/>
                             <input type="submit" name="submit" class="btn btn-primary btn-sm" value="{LANG.install_submit}"/>
                         </form>
+                        <div class="text-warning mt-2"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> {LANG.install_package_alert}</div>
                         <!-- END: upload -->
                         <!-- BEGIN: nozlib -->
                         <span class="text-danger"><strong>{GLANG.error_zlib_support}</strong></span>

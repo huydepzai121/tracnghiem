@@ -378,7 +378,10 @@ if (defined('NV_OPENID_ALLOWED') and $nv_Request->isset_request('server', 'get')
     }
 
     $attribs = $nv_Request->get_string('openid_attribs', 'session', '');
-    $attribs = !empty($attribs) ? unserialize($attribs) : [];
+    $attribs = !empty($attribs) ? json_decode($attribs, true) : [];
+    if (!is_array($attribs)) {
+        $attribs = [];
+    }
     $attribs = nv_apply_hook($module_name, 'custom_login_openid_attribs', [$server, $attribs], $attribs);
 
     if (empty($attribs) or $attribs['server'] != $server) {
@@ -684,7 +687,10 @@ if (defined('NV_OPENID_ALLOWED') and $nv_Request->isset_request('server', 'get')
         $md5_reg_email = md5($reg_email);
         $sess_verify = $nv_Request->get_string($md5_reg_email, 'session', '');
         if (!empty($sess_verify)) {
-            $sess_verify = unserialize($sess_verify);
+            $sess_verify = json_decode($sess_verify, true);
+            if (!is_array($sess_verify)) {
+                $sess_verify = [];
+            }
             !isset($sess_verify['code']) && $sess_verify['code'] = '';
         } else {
             $sess_verify = ['code' => '', 'time' => 0];
@@ -698,7 +704,7 @@ if (defined('NV_OPENID_ALLOWED') and $nv_Request->isset_request('server', 'get')
         }
 
         $verikey = nv_genpass(8);
-        $sess_verify = serialize(['code' => md5($verikey), 'time' => NV_CURRENTTIME]);
+        $sess_verify = json_encode(['code' => md5($verikey), 'time' => NV_CURRENTTIME]);
         $nv_Request->set_Session($md5_reg_email, $sess_verify);
 
         $send_data = [[
@@ -748,7 +754,10 @@ if (defined('NV_OPENID_ALLOWED') and $nv_Request->isset_request('server', 'get')
             $verify_code = $nv_Request->get_title('verify_code', 'post', '');
             $sess_verify = $nv_Request->get_string(md5($reg_email), 'session', '');
             if (!empty($sess_verify)) {
-                $sess_verify = unserialize($sess_verify);
+                $sess_verify = json_decode($sess_verify, true);
+                if (!is_array($sess_verify)) {
+                    $sess_verify = [];
+                }
                 !isset($sess_verify['code']) && $sess_verify['code'] = '';
             } else {
                 $sess_verify = ['code' => '', 'time' => 0];

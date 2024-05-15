@@ -122,6 +122,7 @@ $lang_module['extType_other'] = 'Khác';
 $lang_module['extType_sys'] = 'Hệ thống';
 $lang_module['extType_admin'] = 'Phần quản trị';
 $lang_module['install_package'] = 'Cài đặt gói ứng dụng';
+$lang_module['install_package_alert'] = 'Cảnh báo: Việc cài đặt gói ứng dụng từ file nén là không an toàn, chỉ nên thực hiện trong trường hợp phát triển hoặc file có nguồn gốc rõ ràng. Để đảm bảo an toàn hãy cài đặt ứng dụng từ NukeViet Store.';
 $lang_module['install_submit'] = 'Tải lên';
 $lang_module['install_error_filetype'] = 'Lỗi: File cài đặt phải có định dạng zip hoặc gz';
 $lang_module['install_error_nofile'] = 'Lỗi: Chưa chọn file tải lên';

@@ -101,7 +101,7 @@ if (!empty($error)) {
 
         $array_string = $array;
         unset($array_string['title'], $array_string['documentation'], $array_string['require']);
-        $xtpl->assign('STRING_DATA', nv_base64_encode(@serialize($array_string)));
+        $xtpl->assign('STRING_DATA', nv_base64_encode(json_encode($array_string)));
 
         $page_title = $nv_Lang->getModule('install_title', $array['title']);
 

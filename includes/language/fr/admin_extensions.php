@@ -122,6 +122,7 @@ $lang_module['extType_other'] = 'Autre';
 $lang_module['extType_sys'] = 'Système';
 $lang_module['extType_admin'] = 'Partie gestionnaire';
 $lang_module['install_package'] = 'Installation du paquage de l\'application';
+$lang_module['install_package_alert'] = 'Attention : L\'installation d\'un package d\'application à partir d\'un fichier compressé n\'est pas sûre, ne doit être effectuée qu\'en cas de développement ou si le fichier a une origine claire. Pour être sûr, installez l\'application depuis NukeViet Store.';
 $lang_module['install_submit'] = 'Mettre en ligne';
 $lang_module['install_error_filetype'] = 'Erreur: Fichier d\'installation doit avoir le type zip ou gz';
 $lang_module['install_error_nofile'] = 'Erreur: Fichier à mettre en ligne n\'est pas encore choisi';

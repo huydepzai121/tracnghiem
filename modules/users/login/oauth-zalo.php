@@ -46,7 +46,7 @@ if ($nv_Request->isset_request('code', 'get')) {
     } else {
         $attribs = ['result' => 'notlogin'];
     }
-    $nv_Request->set_Session('openid_attribs', serialize($attribs));
+    $nv_Request->set_Session('openid_attribs', json_encode($attribs));
 
     $op_redirect = (defined('NV_IS_USER')) ? 'editinfo/openid' : 'login';
     $nv_redirect_session = $nv_Request->get_title('nv_redirect_' . $module_data, 'session', '');

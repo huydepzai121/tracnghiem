@@ -122,6 +122,7 @@ $lang_module['extType_other'] = 'Other';
 $lang_module['extType_sys'] = 'System';
 $lang_module['extType_admin'] = 'Part administrator';
 $lang_module['install_package'] = 'Install the application package';
+$lang_module['install_package_alert'] = 'Warning: Installing an application package from a compressed file is not safe, should only be done in case of development or the file has a clear origin. To be safe, install the application from NukeViet Store.';
 $lang_module['install_submit'] = 'Upload';
 $lang_module['install_error_filetype'] = 'Error: The installation file is zip or gz file format';
 $lang_module['install_error_nofile'] = 'Error: Selected file upload';

@@ -27,11 +27,14 @@ if ($nv_Request->get_int('result', 'get', 0)) {
     }
 
     $session_files = $nv_Request->get_string('nv_admin_profile', 'session', '');
+    $session_files = json_decode($session_files, true);
+    if (!is_array($session_files)) {
+        $session_files = [];
+    }
     if (empty($session_files)) {
         nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
     }
 
-    $session_files = unserialize($session_files);
     $nv_Request->unset_request('nv_admin_profile', 'session');
     nv_admin_add_result($session_files);
     exit();
@@ -235,7 +238,7 @@ if ($nv_Request->get_int('save', 'post', 0)) {
             $db->query($sql);
         }
 
-        $session_files = serialize([
+        $session_files = json_encode([
             'admin_id' => $userid,
             'editor' => $editor,
             'lev' => $lev,
