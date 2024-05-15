@@ -206,6 +206,65 @@ function nv_store_cookies($cookies = [], $currCookies = [])
  */
 function nv_check_ext_config_filecontent($extConfig)
 {
-    return !(!isset($extConfig['extension']) or !isset($extConfig['author']) or !isset($extConfig['note']) or !isset($extConfig['extension']['id']) or !isset($extConfig['extension']['type']) or !isset($extConfig['extension']['name']) or !isset($extConfig['extension']['version']) or !isset($extConfig['author']['name']) or !isset($extConfig['author']['email']) or !isset($extConfig['note']['text']))
-    ;
+    return !(!isset($extConfig['extension']) or !isset($extConfig['author']) or !isset($extConfig['note']) or !isset($extConfig['extension']['id']) or !isset($extConfig['extension']['type']) or !isset($extConfig['extension']['name']) or !isset($extConfig['extension']['version']) or !isset($extConfig['author']['name']) or !isset($extConfig['author']['email']) or !isset($extConfig['note']['text']));
+}
+
+/**
+ * @param array $fileinfo
+ * @param array $arraySysOption
+ * @param array $info
+ * @return boolean
+ */
+function check_structure($fileinfo, $arraySysOption, $info)
+{
+    $file_path = trim($fileinfo['filename']);
+    $folder = explode('/', $file_path);
+    $lev_folder = sizeof($folder) - 1;
+    $is_folder = $fileinfo['folder'];
+
+    // File tại thư mục gốc chỉ chấp nhận config.ini
+    if ($lev_folder < 1) {
+        if ($file_path !== 'config.ini') {
+            return false;
+        }
+        return true;
+    }
+    /*
+     * Giao diện thì chỉ có 1 thư mục duy nhất bằng tên trong config.ini.
+     * Thư mục/tập tin bên trong nó không giới hạn cấu trúc lẫn phần mở rộng
+     */
+    if ($info['exttype'] == 'theme') {
+        if ($folder[0] !== $info['extname']) {
+            return false;
+        }
+        return true;
+    }
+
+    $root_folder = nv_strtolower($folder[0]);
+    $sub_folder = isset($folder[1]) ? nv_strtolower($folder[1]) : '';
+
+    /*
+     * Các loại khác thì kiểm tra thư mục gốc số 1 thuộc các thư mục được phép
+     * Và bắt buộc phải có thư mục cấp 2 nếu đó là file.
+     */
+    if ($root_folder != 'includes' and !in_array($root_folder, $arraySysOption['allowfolder']) or ($lev_folder < 2 and !$is_folder)) {
+        return false;
+    }
+
+    // Module thì trong thư mục module chỉ được phép chứa 1 thư mục có tên bằng tên ứng dụng
+    if ($info['exttype'] == 'module' and $root_folder == 'modules' and $lev_folder >= 2 and $sub_folder != $info['extname']) {
+        return false;
+    }
+
+    // Trong includes chỉ cho phép nằm trong 2 thư mục con đặc biệt
+    if ($root_folder == 'includes' and !empty($sub_folder) and !in_array($root_folder . '/' . $sub_folder, $arraySysOption['allowfolder'])) {
+        return false;
+    }
+
+    // Trong assets và upload file không được chứa phần mở rộng bị cấm
+    if (($root_folder == 'assets' or $root_folder == 'uploads') and in_array(nv_getextension($file_path), $arraySysOption['forbidExt'])) {
+        return false;
+    }
+
+    return true;
 }
