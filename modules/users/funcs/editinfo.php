@@ -501,8 +501,8 @@ if (in_array('openid', $types, true) and $nv_Request->isset_request('server', 'g
     }
 
     $attribs = $nv_Request->get_string('openid_attribs', 'session', '');
-    $attribs = !empty($attribs) ? unserialize($attribs) : [];
-    if (empty($attribs) or empty($attribs['id'])) {
+    $attribs = !empty($attribs) ? json_decode($attribs, true) : [];
+    if (empty($attribs) or !is_array($attribs) or empty($attribs['id'])) {
         opidr(7);
         exit();
     }

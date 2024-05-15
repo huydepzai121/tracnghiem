@@ -1206,7 +1206,10 @@ if ($step == 1) {
 
         if ($nv_Request->isset_request('ftp_server_array', 'session')) {
             $ftp_server_array = $nv_Request->get_string('ftp_server_array', 'session');
-            $ftp_server_array = unserialize($ftp_server_array);
+            $ftp_server_array = empty($ftp_server_array) ? [] : json_decode($ftp_server_array, true);
+            if (!is_array($ftp_server_array)) {
+                $ftp_server_array = [];
+            }
         }
 
         if (isset($ftp_server_array['ftp_check_login']) and (int) ($ftp_server_array['ftp_check_login']) == 1) {
@@ -1353,7 +1356,7 @@ function nv_save_file_config()
                     'ftp_check_login' => $global_config['ftp_check_login']
                 ];
 
-                $nv_Request->set_Session('ftp_server_array', serialize($ftp_server_array));
+                $nv_Request->set_Session('ftp_server_array', json_encode($ftp_server_array));
             }
 
             $content .= "\n";

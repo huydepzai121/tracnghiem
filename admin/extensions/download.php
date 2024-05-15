@@ -16,10 +16,8 @@ if (!defined('NV_IS_FILE_EXTENSIONS')) {
 $contents = '';
 
 $array = $nv_Request->get_string('data', 'post', '');
-$array = $array ? nv_base64_decode($array) : '';
-if ($array and is_serialized_string($array)) {
-    $array = @unserialize($array);
-} else {
+$array = empty($array) ? [] : json_decode(nv_base64_decode($array), true);
+if (!is_array($array)) {
     $array = [];
 }
 

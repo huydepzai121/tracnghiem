@@ -99,7 +99,7 @@ if (!empty($username)) {
     ];
 }
 
-$nv_Request->set_Session('openid_attribs', serialize($attribs));
+$nv_Request->set_Session('openid_attribs', json_encode($attribs));
 
 $op_redirect = (defined('NV_IS_USER')) ? 'editinfo/openid' : 'login';
 $nv_redirect = nv_get_redirect();
