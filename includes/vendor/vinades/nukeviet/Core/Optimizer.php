@@ -40,6 +40,14 @@ class Optimizer
     private $headerPreloadItems = [];
 
     /**
+     * @var \DOMDocument
+     */
+    private $dom;
+
+    private $regexMeta = "/([a-zA-Z\-\_]+)\s*=\s*[\"|']([^\"']+)/is";
+    private $regexLink = "/([a-zA-Z]+)\s*=\s*[\"|']([^\"']+)/is";
+
+    /**
      * __construct()
      *
      * @param mixed $content
@@ -97,6 +105,7 @@ class Optimizer
         } else {
             ($_isFullBuffer and $jquery) && $this->_jsMatches[] = '<script src="' . ASSETS_STATIC_URL . '/js/jquery/jquery.min.js"></script>';
         }
+        $this->trackLogRegex('jquery');
 
         // Thay thế tạm thời HTML-conductions [if...]...[endif], noscript, js-inline
         $this->_content = preg_replace_callback([
@@ -107,57 +116,11 @@ class Optimizer
 
         $this->_meta['http-equiv'] = $this->_meta['name'] = $this->_meta['other'] = [];
         $this->_meta['charset'] = '';
+        $this->trackLogRegex('Backup HTML-conductions');
 
-        $regex = "/<(meta)\s([^>]*)\s*>|<(title)>\s*([^<]*)\s*<\/title>|<(link)\s([^>]*)\s*>|<(style)([^>]*)>\s*([^\<]*)\s*<\/style>|<\s*\b(script)\b[^>]*>(.*?)<\s*\/\s*script\s*>/is";
-        $matches = $matches2 = [];
-        if (preg_match_all($regex, $this->_content, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $ele) {
-                // Xác định các meta-tags
-                if ($ele[1] == 'meta' and !empty($ele[2])) {
-                    preg_match_all("/([a-zA-Z\-\_]+)\s*=\s*[\"|']([^\"']+)/is", $ele[2], $matches2);
-                    if (!empty($matches2)) {
-                        $combine = array_combine($matches2[1], $matches2[2]);
-                        if (array_key_exists('http-equiv', $combine)) {
-                            $this->_meta['http-equiv'][$combine['http-equiv']] = $combine['content'];
-                        } elseif (array_key_exists('name', $combine)) {
-                            $this->_meta['name'][$combine['name']] = $combine['content'];
-                        } elseif (array_key_exists('charset', $combine)) {
-                            $this->_meta['charset'] = $combine['charset'];
-                        } else {
-                            $this->_meta['other'][] = [$matches2[1], $matches2[2]];
-                        }
-                    }
-                }
-                // Xác định tag title
-                elseif ($ele[3] == 'title' and !empty($ele[4])) {
-                    $this->_title = '<title>' . $ele[4] . '</title>';
-                }
-                // Xác định tag link
-                elseif ($ele[5] == 'link' and !empty($ele[6])) {
-                    preg_match_all("/([a-zA-Z]+)\s*=\s*[\"|']([^\"']+)/is", $ele[6], $matches2);
-                    $combine = array_combine($matches2[1], $matches2[2]);
-                    if (isset($combine['rel']) and preg_match('/stylesheet/is', $combine['rel'])) {
-                        $this->_cssLinks[] = $ele[0];
-                    } else {
-                        $this->_links[] = $ele[0];
-                    }
-                }
-                // Xác định css-inline
-                elseif ($ele[7] == 'style' and !empty($ele[9])) {
-                    if (empty($ele[8])) {
-                        $this->_style[] = $ele[9];
-                    } else {
-                        $this->_other_style[] = $ele[0];
-                    }
-                }
-                // Xác định mã js
-                else {
-                    $this->_jsMatches[] = $ele[0];
-                }
-            }
-
-            $this->_content = preg_replace($regex, '', $this->_content);
-        }
+        // Ưu tiên xử lý bằng regex, nếu buffer quá to dùng DOM
+        $this->regexParsing();
+        //$this->domParsing(); // Không an toàn để sử dụng
 
         // Đưa block HTML được đánh dấu bằng <!-- START FORFOOTER -->...<!-- END FORFOOTER --> xuống dưới trang
         $htmlRegex = "/<\!--\s*START\s+FORFOOTER\s*-->(.*?)<\!--\s*END\s+FORFOOTER\s*-->/is";
@@ -165,10 +128,12 @@ class Optimizer
             $this->_htmlforFooter = implode($this->eol, $htmlMatches[1]);
             $this->_content = preg_replace($htmlRegex, '', $this->_content);
         }
+        $this->trackLogRegex('FORFOOTER');
 
         // Trả về nội dung của các js-inline hoặc HTML-conductions [if...]...[endif], <noscript>...</noscript>
         if (!empty($this->_inlineContents)) {
             $this->_content = preg_replace(array_keys($this->_inlineContents), array_values($this->_inlineContents), $this->_content);
+            $this->trackLogRegex('Restore HTML-conductions');
         }
 
         $meta = [];
@@ -214,6 +179,7 @@ class Optimizer
                     }
                 }
             }
+            $this->trackLogRegex('Restore js');
         }
 
         if (!empty($this->_cssLinks)) {
@@ -233,6 +199,7 @@ class Optimizer
                     }
                 }
             }
+            $this->trackLogRegex('Restore css link');
         }
 
         $head = '';
@@ -261,6 +228,7 @@ class Optimizer
         if (str_contains($this->_content, '<head>')) {
             $head = '<head>' . $this->eol . $this->_title . $this->eol . $head;
             $this->_content = trim(preg_replace('/<head>/i', $head, $this->_content, 1));
+            $this->trackLogRegex('head');
         } else {
             $this->_content = $head . $this->_content;
         }
@@ -270,6 +238,7 @@ class Optimizer
                 $this->_content = preg_replace('/\s*<\/body>/', $this->eol . $this->_htmlforFooter . $this->eol . '</body>', $this->_content, 1);
             }
             $this->_content = preg_replace('/\s*<\/body>/', $this->eol . $_jsAfter . '</body>', $this->_content, 1);
+            $this->trackLogRegex('_htmlforFooter');
         } else {
             if (!empty($this->_htmlforFooter)) {
                 $this->_content .= $this->eol . $this->_htmlforFooter;
@@ -309,5 +278,160 @@ class Optimizer
         ++$this->_inlineContentsCount;
 
         return '{|inline_' . $num . '|}';
+    }
+
+    /**
+     * Log các lỗi xử lý regex tiện tra cứu
+     *
+     * @param string $position
+     */
+    private function trackLogRegex(string $position)
+    {
+        if (preg_last_error() != PREG_NO_ERROR) {
+            trigger_error('Error regex in Optimizer[' .  $position . ']: ' . preg_last_error_msg());
+        }
+    }
+
+    /**
+     * Xử lý buffer bằng regex
+     *
+     * @return boolean
+     */
+    private function regexParsing()
+    {
+        // Khi thêm, sửa rule ở đây cần sửa tương ứng ở phần DOM Parsing
+        $regex = "/<(meta)\s([^>]*)\s*>|<(title)>\s*([^<]*)\s*<\/title>|<(link)\s([^>]*)\s*>|<(style)([^>]*)>\s*([^\<]*)\s*<\/style>|<\s*\b(script)\b[^>]*>(.*?)<\s*\/\s*script\s*>/is";
+        $matches = $matches2 = [];
+        if (preg_match_all($regex, $this->_content, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $ele) {
+                if ($ele[1] == 'meta' and !empty($ele[2])) {
+                    // Xác định các meta-tags
+                    preg_match_all($this->regexMeta, $ele[2], $matches2);
+                    if (!empty($matches2)) {
+                        $combine = array_combine($matches2[1], $matches2[2]);
+                        if (array_key_exists('http-equiv', $combine)) {
+                            $this->_meta['http-equiv'][$combine['http-equiv']] = $combine['content'];
+                        } elseif (array_key_exists('name', $combine)) {
+                            $this->_meta['name'][$combine['name']] = $combine['content'];
+                        } elseif (array_key_exists('charset', $combine)) {
+                            $this->_meta['charset'] = $combine['charset'];
+                        } else {
+                            $this->_meta['other'][] = [$matches2[1], $matches2[2]];
+                        }
+                    }
+                } elseif ($ele[3] == 'title' and !empty($ele[4])) {
+                    // Xác định tag title
+                    $this->_title = '<title>' . $ele[4] . '</title>';
+                } elseif ($ele[5] == 'link' and !empty($ele[6])) {
+                    // Xác định tag link
+                    preg_match_all($this->regexLink, $ele[6], $matches2);
+                    $combine = array_combine($matches2[1], $matches2[2]);
+                    if (isset($combine['rel']) and preg_match('/stylesheet/is', $combine['rel'])) {
+                        $this->_cssLinks[] = $ele[0];
+                    } else {
+                        $this->_links[] = $ele[0];
+                    }
+                } elseif ($ele[7] == 'style' and !empty($ele[9])) {
+                    // Xác định css-inline
+                    if (empty($ele[8])) {
+                        $this->_style[] = $ele[9];
+                    } else {
+                        $this->_other_style[] = $ele[0];
+                    }
+                } else {
+                    // Xác định mã js
+                    $this->_jsMatches[] = $ele[0];
+                }
+            }
+
+            $this->_content = preg_replace($regex, '', $this->_content);
+        }
+        if (preg_last_error() == PREG_BACKTRACK_LIMIT_ERROR) {
+            trigger_error('Error regex in Optimizer[regexParsing]: ' . preg_last_error_msg());
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Xử lý buffer bằng DOM
+     */
+    private function domParsing()
+    {
+        if (!class_exists('\DOMDocument') or !class_exists('\DOMXPath')) {
+            return;
+        }
+        libxml_use_internal_errors(true);
+        $this->dom = new \DOMDocument('1.0', 'utf-8');
+        if (!$this->dom->loadHTML($this->_content)) {
+            return;
+        }
+        $xpath = new \DOMXPath($this->dom);
+
+        $entries = $xpath->query('//meta|//title|//link|//style|//script');
+        foreach ($entries as $entry) {
+            $method_name = 'domParsing' . ucfirst($entry->tagName);
+            if (method_exists($this, $method_name)) {
+                $this->$method_name($entry);
+                $entry->remove();
+            }
+        }
+
+        $this->_content = $this->dom->saveHTML();
+        $this->dom = null;
+    }
+
+    /**
+     * @param \DOMElement|\DOMNode $entry
+     */
+    private function domParsingTitle($entry)
+    {
+        if (!empty($entry->textContent)) {
+            $this->_title = '<title>' . $entry->textContent . '</title>';
+        }
+    }
+
+    /**
+     * @param \DOMElement|\DOMNode $entry
+     */
+    private function domParsingMeta($entry)
+    {
+        if (empty($entry->attributes) or $entry->attributes->length < 1) {
+            return;
+        }
+        $attributes = [];
+        foreach ($entry->attributes as $attr) {
+            if (!empty($attr->localName)) {
+                $attributes[$attr->localName] = $attr->textContent;
+            }
+        }
+    }
+
+    /**
+     * @param \DOMElement|\DOMNode $entry
+     */
+    private function domParsingLink($entry)
+    {
+    }
+
+    /**
+     * @param \DOMElement|\DOMNode $entry
+     */
+    private function domParsingStyle($entry)
+    {
+        if (!empty($entry->attributes) and $entry->attributes->length > 0) {
+            $this->_other_style[] = $this->dom->saveHTML($entry);
+        } elseif (!empty($entry->textContent)) {
+            $this->_style[] = $entry->textContent;
+        }
+    }
+
+    /**
+     * @param \DOMElement|\DOMNode $entry
+     */
+    private function domParsingScript($entry)
+    {
+        $this->_jsMatches[] = $this->dom->saveHTML($entry);
     }
 }

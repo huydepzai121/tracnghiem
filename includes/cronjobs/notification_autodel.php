@@ -23,7 +23,7 @@ function cron_notification_autodel()
     global $db, $global_config;
 
     if ($global_config['notification_autodel']) {
-        $db->query('DELETE FROM ' . NV_NOTIFICATION_GLOBALTABLE . ' WHERE add_time > ' . (NV_CURRENTTIME - (86400 * $global_config['notification_autodel'])));
+        $db->query('DELETE FROM ' . NV_NOTIFICATION_GLOBALTABLE . ' WHERE add_time<=' . (NV_CURRENTTIME - (86400 * $global_config['notification_autodel'])));
     }
 
     return true;
