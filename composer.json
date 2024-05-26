@@ -1,6 +1,6 @@
 {
     "name" : "nukeviet/nukeviet",
-    "version" : "4.4.01",
+    "version" : "4.6.00",
     "type" : "project",
     "description" : "NukeViet is the first opensource CMS in Vietnam.",
     "keywords" : [
@@ -24,5 +24,12 @@
         "forum" : "http://forum.nukeviet.vn",
         "wiki" : "http://wiki.nukeviet.vn",
         "source" : "https://github.com/nukeviet/nukeviet/releases"
+    },
+    "require-dev": {
+        "codeception/codeception": "^5.1",
+        "codeception/module-phpbrowser": "*",
+        "codeception/module-asserts": "*",
+        "codeception/module-webdriver": "^4.0",
+        "vlucas/phpdotenv": "^5.6"
     }
 }
