@@ -13,6 +13,10 @@
 /src/.php-cs-fixer.php
 /src/.vscode
 
+/composer.lock
+/vendor
+/.env
+
 /src/assets/css/*.opt.css
 /src/config.php
 /src/data/cache/*
