@@ -73,24 +73,42 @@ class Error
         E_DEPRECATED => 'Deprecated Notice',
         E_USER_DEPRECATED => 'User-deprecated Notice'
     ];
+
+    /**
+     * @var array Thông báo một số lỗi dễ nhận biết hơn
+     */
     private $track_fatal_error = [
-        [
-            'file' => 'vendor/vinades/nukeviet/Cache/Redis.php',
-            'pattern' => [
-                ['/[\'|"]Redis[\'|"] not found/i', 'PHP Redis Extension does not exists!']
-            ]
+        '/includes/vendor/vinades/nukeviet/Cache/Redis.php' => [
+            ['/[\'|"]Redis[\'|"] not found/i', 'PHP Redis Extension does not exists!']
         ],
-        [
-            'file' => 'vendor/vinades/nukeviet/Cache/Memcached.php',
-            'pattern' => [
-                ['/[\'|"]Memcached[\'|"] not found/i', 'PHP Memcached Extension does not exists!']
-            ]
+        '/includes/vendor/vinades/nukeviet/Cache/Memcached.php' => [
+            ['/[\'|"]Memcached[\'|"] not found/i', 'PHP Memcached Extension does not exists!']
         ]
     ];
-    private $error_excluded = ["/^ftp\_login\(\)/i", "/^gzinflate\(\)\: data error/i"];
-    public static $unreported_errors = [ // md5($this->errfile . $this->errline . $this->errno)
-        '28fbebcb00a83556d3ada1cc54e6f06e', // md5('/includes/ini.php' . '360' . '2')
-        'a6fbadb31af3e7035cf25831dd9865ab', // md5('/vendor/vinades/nukeviet/Files/Upload.php' . '1045' . '2')
+
+    /**
+     * @var array Các vấn đề lỗi log lại nhưng không cần hiển thị cảnh báo lên
+     */
+    private $error_excluded = [
+        "/^ftp\_login\(\)/i",
+        "/^gzinflate\(\)\: data error/i"
+    ];
+
+    /**
+     * @var array Các trường hợp lỗi cố định có chủ đích, không báo cũng như không log lại
+     */
+    private $unreported_errors = [
+        // Load config server không cần kiểm tra và bỏ qua lỗi
+        '/includes/ini.php' => [[
+            'message' => '/include\_once.*config\_ini.*No such file or directory/i'
+        ], [
+            'message' => '/include_once.*Failed opening.*config_ini\..*\.php/i'
+        ]],
+        // Cảnh báo DB không tồn tại khi cài đặt
+        '/includes/vendor/vinades/nukeviet/Core/Database.php' => [[
+            'message' => '/SQLSTATE.*HY000.*Unknown database/i',
+            'request' => '/\/install\/index\.php.*step\=5/i'
+        ]]
     ];
 
     /**
@@ -421,12 +439,18 @@ class Error
         !empty($errline) && $this->errline = $errline;
         $this->errid = md5(($this->errfile ?: '') . ($this->errline ?: '') . $this->errno);
 
-        if (!in_array($this->errid, self::$unreported_errors, true)) {
-            $this->log_control();
-
-            if ($this->errno == 256) {
-                $this->info_die();
+        if ($this->errfile and isset($this->unreported_errors[$this->errfile])) {
+            foreach ($this->unreported_errors[$this->errfile] as $regex) {
+                if (preg_match($regex['message'], $this->errstr) and (!isset($regex['request']) or preg_match($regex['request'], $this->cl['request'] ?? ''))) {
+                    return;
+                }
             }
+        }
+
+        $this->log_control();
+
+        if ($this->errno == 256) {
+            $this->info_die();
         }
     }
 
@@ -450,18 +474,14 @@ class Error
             $this->errline = $error['line'];
             $this->errid = md5(($this->errfile ?: '') . ($this->errline ?: '') . $this->errno);
 
-            foreach ($this->track_fatal_error as $track_fatal) {
-                if ($track_fatal['file'] == $file) {
-                    foreach ($track_fatal['pattern'] as $patterns_message) {
-                        if (preg_match($patterns_message[0], $error['message'])) {
-                            $finded_track = true;
-                            $this->errstr = $patterns_message[1];
-                            break;
-                        }
+            // Một số lỗi đặc biệt, hiển thị lên để dễ nhận biết
+            if (isset($this->track_fatal_error[$error['file']])) {
+                foreach ($this->track_fatal_error[$error['file']] as $patterns) {
+                    if (preg_match($patterns[0], $error['message'])) {
+                        $finded_track = true;
+                        $this->errstr = $patterns[1];
+                        break;
                     }
-                }
-                if ($finded_track) {
-                    break;
                 }
             }
 
