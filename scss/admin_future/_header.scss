@@ -1,0 +1,98 @@
+.header-outer {
+    background-color: $header-bg;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: $zindex-header;
+}
+
+.site-brand {
+    padding-top: calc(($header-height - $header-border-height - $logo-height)/2);
+    padding-bottom: calc(($header-height - $header-border-height - $logo-height)/2);
+    flex-basis: calc($left-sidebar-width + $left-sidebar-border-width);
+    width: calc($left-sidebar-width + $left-sidebar-border-width);
+
+    img {
+        max-height: $logo-height;
+    }
+}
+
+.site-header {
+    .left-sidebar-toggle {
+        color: $body-color;
+        width: 2rem;
+        height: 2rem;
+        position: relative;
+        background-color: $header-active-bg;
+        display: block;
+        transition: $nav-link-transition;
+
+        &:hover {
+            color: $header-link-hover-color;
+        }
+    }
+}
+
+.header-right {
+    .main-icons {
+        >ul>li {
+            >a {
+                transition: $nav-link-transition;
+                color: $body-color;
+                display: block;
+                height: calc($header-height - $header-border-height);
+                position: relative;
+                width: 3.125rem;
+            }
+
+            &:hover>a {
+                background-color: $header-active-bg;
+                color: lighten($body-color, 10);
+            }
+        }
+    }
+
+    .admin-info {
+        position: relative;
+
+        .admin-icon {
+            width: $header-avatar-size;
+            height: $header-avatar-size;
+            display: block;
+            overflow: hidden;
+            border-radius: 50%;
+            margin-top: calc(($header-height - $header-border-height - $header-avatar-size)/2);
+            margin-bottom: calc(($header-height - $header-border-height - $header-avatar-size)/2);
+            text-align: center;
+            position: relative;
+            font-size: $header-avatar-size;
+            transition: $nav-link-transition;
+            color: $body-color;
+
+            &:hover {
+                color: lighten($body-color, 10);
+            }
+
+            img {
+                object-position: center;
+                object-fit: cover;
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+        }
+
+        .dropdown-menu {
+            --bs-dropdown-min-width: #{$admin-info-width};
+
+            a {
+                color: $body-color;
+
+                &:hover {
+                    color: var(--bs-link-color);
+                }
+            }
+        }
+    }
+}

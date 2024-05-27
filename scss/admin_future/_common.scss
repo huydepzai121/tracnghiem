@@ -1,0 +1,16 @@
+.body {
+    background-color: $main-bg;
+}
+
+.main-content {
+    margin-left: calc($left-sidebar-width + $left-sidebar-border-width);
+    min-height: calc(100vh - $header-height - $footer-height);
+    margin-top: $header-height;
+}
+
+.icon-vertical-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

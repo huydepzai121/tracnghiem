@@ -1,0 +1,5 @@
+.site-footer {
+    margin-left: calc($left-sidebar-width + $left-sidebar-border-width);
+    height: $footer-height;
+    background-color: $footer-bg;
+}

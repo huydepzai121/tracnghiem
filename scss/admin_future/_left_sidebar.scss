@@ -1,0 +1,10 @@
+.left-sidebar {
+    width: $left-sidebar-width;
+    background-color: $left-sidebar-bg;
+    position: fixed;
+    left: 0;
+    top: $header-height;
+    height: calc(100vh - $header-height);
+    box-shadow: $box-shadow-sm;
+    z-index: $zindex-left-sidebar;
+}

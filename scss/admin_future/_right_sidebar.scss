@@ -1,0 +1,11 @@
+.right-sidebar {
+    width: $right-sidebar-width;
+    background-color: $right-sidebar-bg;
+    position: fixed;
+    right: 0;
+    top: $header-height;
+    height: calc(100vh - $header-height);
+    box-shadow: $box-shadow-sm;
+    display: none;
+    z-index: $zindex-right-sidebar;
+}
