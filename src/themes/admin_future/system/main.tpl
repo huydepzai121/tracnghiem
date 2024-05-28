@@ -21,7 +21,7 @@
                         </li>
                         {if not empty($GCONFIG.notification_active)}
                         <li class="dropdown-center site-noti" id="main-notifications">
-                            <a href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-offset="0,11"><i class="fas fa-bell icon-vertical-center"></i></a>
+                            <a title="{$LANG->getGlobal('site_info')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-offset="0,11"><i class="fas fa-bell icon-vertical-center"></i></a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <div class="noti-heading text-center border-bottom pb-2 fw-medium">
                                     {$LANG->getGlobal('inform_notifications')} <span class="badge rounded-pill text-bg-info">0</span>
@@ -37,8 +37,8 @@
                             </div>
                         </li>
                         {/if}
-                        <li class="menu-sys">
-                            <a href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-display="static"><i class="fas fa-th icon-vertical-center"></i></a>
+                        <li class="menu-sys" id="menu-sys">
+                            <a title="{$LANG->getGlobal('sys_mods')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-display="static"><i class="fas fa-th icon-vertical-center"></i></a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <div class="menu-sys-inner position-relative">
                                     <div class="menu-sys-items">
@@ -61,13 +61,15 @@
                                 </div>
                             </div>
                         </li>
+                        {if not empty($LANG_ADMIN)}
                         <li>
-                            <a href="#" class="fs-3" data-toggle="right-sidebar"><i class="fas fa-cog icon-vertical-center"></i></a>
+                            <a title="{$LANG->getGlobal('langsite')}" href="#" class="fs-3" data-toggle="right-sidebar"><i class="fas fa-cog icon-vertical-center"></i></a title="{$LANG->getGlobal('sys_mods')}">
                         </li>
+                        {/if}
                     </ul>
                 </nav>
                 <div class="admin-info">
-                    <a href="#" class="admin-icon" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-display="static">
+                    <a title="{$LANG->getGlobal('admin_account')}" href="#" class="admin-icon" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-display="static">
                         <span>
                             {if not empty($ADMIN_INFO.avata)}
                             <img alt="{$ADMIN_INFO.full_name}" src="{$ADMIN_INFO.avata}">
@@ -123,14 +125,138 @@
         </div>
     </div>
 </header>
-<nav class="left-sidebar border-end"></nav>
+<nav class="left-sidebar border-end" id="left-sidebar">
+    <div class="left-sidebar-wrapper">
+        <a href="#" class="left-sidebar-toggle">{$PAGE_TITLE}</a>
+        <div class="left-sidebar-spacer">
+            <div class="left-sidebar-scroll">
+                <div class="left-sidebar-content">
+                    <ul class="sidebar-elements">
+                        {if !empty($SELECT_OPTIONS)}
+                        <li class="parent open">
+                            <a href="#"><i class="fas fa-hand-pointer icon" title="{$LANG->get('please_select')}"></i><span>{$LANG->get('please_select')}</span><span class="toggle"><i class="fas"></i></span></a>
+                            <ul class="sub-menu">
+                                <li class="title">{$LANG->get('please_select')}</li>
+                                <li class="nav-items">
+                                    <div class="nv-left-sidebar-scroller">
+                                        <div class="content">
+                                            <ul>
+                                                {foreach from=$SELECT_OPTIONS key=seloptlink item=selopttitle}
+                                                <li><a href="{$seloptlink}"><span>{$selopttitle}</span></a></li>
+                                                {/foreach}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        <li>
+                        {/if}
+                        {if !empty($MOD_CURRENT)}
+                        <li class="divider">{$LANG->get('interface_current_menu')}</li>
+                        <li class="{if !empty($MOD_CURRENT['subs'])}parent {/if}active{if empty($CONFIG_THEME['collapsed_leftsidebar'])} open{/if}">
+                            <a href="{$MOD_CURRENT.link}"><i class="{$MOD_CURRENT.icon} icon" title="{$MOD_CURRENT.title}"></i><span>{$MOD_CURRENT.title}</span>{if !empty($MOD_CURRENT['subs'])}<span class="toggle"><i class="fas"></i></span>{/if}</a>
+                            {if !empty($MOD_CURRENT['subs'])}
+                            <ul class="sub-menu">
+                                <li class="title">{$MOD_CURRENT.title}</li>
+                                <li class="nav-items">
+                                    <div class="nv-left-sidebar-scroller">
+                                        <div class="content">
+                                            <ul>
+                                                <li class="f-link{if $MOD_CURRENT['active']} active{/if}"><a href="{$MOD_CURRENT.link}">{$LANG->get('Home')}</a></li>
+                                                {foreach from=$MOD_CURRENT['subs'] item=crrsub}
+                                                {if not empty($crrsub['subs'])}
+                                                <li class="parent{if $crrsub['active']} active{/if}{if $crrsub['open']} open{/if}">
+                                                    <a href="{$crrsub.link}"><span>{$crrsub.title}</span><span class="toggle"><i class="fas"></i></span></a>
+                                                    <ul class="sub-menu">
+                                                        {foreach from=$crrsub['subs'] item=crrsublv2}
+                                                        <li{if $crrsublv2['active']} class="active"{/if}><a href="{$crrsublv2.link}"><span>{$crrsublv2.title}</span></a></li>
+                                                        {/foreach}
+                                                    </ul>
+                                                </li>
+                                                {else}
+                                                <li{if $crrsub['active']} class="active"{/if}><a href="{$crrsub.link}"><span>{$crrsub.title}</span></a></li>
+                                                {/if}
+                                                {/foreach}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            {/if}
+                        </li>
+                        {/if}
+                        {if !empty($MOD_MENU)}
+                        <li class="divider">{$LANG->get('interface_other_menu')}</li>
+                        {foreach from=$MOD_MENU item=rowmenu}
+                        <li{if !empty($rowmenu['subs'])} class="parent"{/if}>
+                            <a href="{$rowmenu.link}"><i class="{$rowmenu.icon} icon" title="{$rowmenu.title}"></i><span>{$rowmenu.title}</span>{if !empty($rowmenu['subs'])}<span class="toggle"><i class="fas"></i></span>{/if}</a>
+                            {if !empty($rowmenu['subs'])}
+                            <ul class="sub-menu">
+                                <li class="title">{$rowmenu.title}</li>
+                                <li class="nav-items">
+                                    <div class="nv-left-sidebar-scroller">
+                                        <div class="content">
+                                            <ul>
+                                                <li class="f-link"><a href="{$rowmenu.link}">{$LANG->get('Home')}</a></li>
+                                                {foreach from=$rowmenu['subs'] item=smenutitle key=smenukey}
+                                                {if is_array($smenutitle)}
+                                                <li class="parent">
+                                                    <a href="{$NV_BASE_ADMINURL}index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$rowmenu.name}&amp;{$NV_OP_VARIABLE}={$smenukey}"><span>{$smenutitle.title}</span><span class="toggle"><i class="fas"></i></span></a>
+                                                    <ul class="sub-menu">
+                                                        {foreach from=$smenutitle.submenu item=sublv2 key=keysublv2}
+                                                        <li><a href="{$NV_BASE_ADMINURL}index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$rowmenu.name}&amp;{$NV_OP_VARIABLE}={$keysublv2}"><span>{$sublv2}</span></a></li>
+                                                        {/foreach}
+                                                    </ul>
+                                                </li>
+                                                {else}
+                                                <li><a href="{$NV_BASE_ADMINURL}index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$rowmenu.name}&amp;{$NV_OP_VARIABLE}={$smenukey}">{$smenutitle}</a></li>
+                                                {/if}
+                                                {/foreach}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            {/if}
+                        </li>
+                        {/foreach}
+                        {/if}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
 <div class="body">
     <section class="main-content px-4">
         [THEME_ERROR_INFO]
         {$MODULE_CONTENT}
     </section>
 </div>
-<aside class="right-sidebar border-start">RIGHT</aside>
+{if not empty($LANG_ADMIN)}
+<aside class="right-sidebar border-start" id="right-sidebar">
+    <div class="right-sidebar-inner">
+        <div class="px-3">
+            <div class="mb-4">
+                <div class="fw-medium border-bottom pb-2 mb-2">{$LANG->getGlobal('langinterface')}</div>
+                {foreach from=$LANG_ADMIN key=lang item=langname}
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="radio" id="langinterface-{$lang}" value="{$lang}" name="gsitelanginterface"{if $lang eq $smarty.const.NV_LANG_INTERFACE} checked="checked"{/if}>
+                    <label class="form-check-label" for="langinterface-{$lang}">{$langname}</label>
+                </div>
+                {/foreach}
+            </div>
+            <div class="fw-medium border-bottom pb-2 mb-3">{$LANG->getGlobal('langdata')}</div>
+            {foreach from=$LANG_ADMIN key=lang item=langname}
+            <div class="form-check mb-1">
+                <input class="form-check-input" type="radio" id="langdata-{$lang}" value="{$lang}" name="gsitelangdata"{if $lang eq $smarty.const.NV_LANG_DATA} checked="checked"{/if}>
+                <label class="form-check-label" for="langdata-{$lang}">{$langname}</label>
+            </div>
+            {/foreach}
+        </div>
+    </div>
+</aside>
+{/if}
 <footer class="site-footer border-top px-4 d-flex align-items-center justify-content-between">
     <div class="site-copyright">
         {if $smarty.const.NV_IS_SPADMIN and $ADMIN_INFO.level eq 1}

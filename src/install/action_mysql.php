@@ -35,7 +35,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_api_role (
   status TINYINT(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (role_id),
   UNIQUE KEY role_md5title (role_md5title)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Role api'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_api_role_credential (
   id INT(11) NOT NULL AUTO_INCREMENT,
@@ -49,7 +49,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_api_role_creden
   status TINYINT(1) UNSIGNED NOT NULL DEFAULT '1',
   PRIMARY KEY (id),
   UNIQUE KEY userid_role_id (userid, role_id)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Quyền truy cập API Role'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_api_role_logs (
   id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -59,7 +59,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_api_role_logs (
   log_time INT(11) NOT NULL DEFAULT '0',
   log_ip CHAR(50) NOT NULL DEFAULT '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Lịch sử gọi API'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_api_user (
   id INT(11) NOT NULL AUTO_INCREMENT,
@@ -74,8 +74,8 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_api_user (
   PRIMARY KEY (id),
   UNIQUE KEY userid_method (userid, method),
   UNIQUE KEY ident (ident),
-    UNIQUE KEY secret (secret)
-) ENGINE=MyISAM";
+  UNIQUE KEY secret (secret)
+) ENGINE=InnoDB COMMENT 'User API theo từng phương thức xác thực'";
 
 $sql_create_table[] = 'CREATE TABLE ' . NV_AUTHORS_GLOBALTABLE . " (
   admin_id int(11) unsigned NOT NULL,
@@ -100,7 +100,7 @@ $sql_create_table[] = 'CREATE TABLE ' . NV_AUTHORS_GLOBALTABLE . " (
   last_ip varchar(45) DEFAULT '',
   last_agent varchar(255) DEFAULT '',
   PRIMARY KEY (admin_id)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Quản trị site'";
 
 $sql_create_table[] = 'CREATE TABLE ' . NV_AUTHORS_GLOBALTABLE . "_config (
   id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -111,7 +111,7 @@ $sql_create_table[] = 'CREATE TABLE ' . NV_AUTHORS_GLOBALTABLE . "_config (
   notice varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (id),
   UNIQUE KEY keyname (keyname)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Cấu hình tường lửa từng tài khoản quản trị'";
 
 $sql_create_table[] = 'CREATE TABLE ' . NV_AUTHORS_GLOBALTABLE . "_module (
   mid mediumint(8) NOT NULL AUTO_INCREMENT,
@@ -124,7 +124,7 @@ $sql_create_table[] = 'CREATE TABLE ' . NV_AUTHORS_GLOBALTABLE . "_module (
   checksum varchar(32) DEFAULT '',
   PRIMARY KEY (mid),
   UNIQUE KEY module (module)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Bật tắt module trong quản trị theo cấp quản trị'";
 
 $sql_create_table[] = 'CREATE TABLE ' . NV_AUTHORS_GLOBALTABLE . "_oauth (
   id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -137,7 +137,23 @@ $sql_create_table[] = 'CREATE TABLE ' . NV_AUTHORS_GLOBALTABLE . "_oauth (
   PRIMARY KEY (id),
   UNIQUE KEY admin_id (admin_id, oauth_server, oauth_uid),
   KEY oauth_email (oauth_email)
-) ENGINE=MyISAM COMMENT 'Bảng lưu xác thực 2 bước từ oauth của admin'";
+) ENGINE=InnoDB COMMENT 'Bảng lưu xác thực 2 bước từ oauth của admin'";
+
+$sql_create_table[] = "CREATE TABLE " . NV_AUTHORS_GLOBALTABLE . "_vars (
+  id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  admin_id int(11) unsigned NOT NULL COMMENT 'ID của quản trị',
+  lang varchar(3) NOT NULL DEFAULT 'all' COMMENT 'Ngôn ngữ hoặc tất cả',
+  theme varchar(100) NOT NULL DEFAULT '' COMMENT 'Giao diện',
+  config_name varchar(60) NOT NULL DEFAULT '' COMMENT 'Khóa cấu hình',
+  config_value text NULL DEFAULT NULL COMMENT 'Nội dung cấu hình',
+  weight smallint(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Sắp xếp',
+  PRIMARY KEY (id),
+  KEY admin_id (admin_id),
+  KEY lang (lang),
+  KEY theme (theme),
+  KEY config_name (config_name),
+  KEY weight (weight)
+) ENGINE=InnoDB COMMENT 'Các config khác của quản trị'";
 
 $sql_create_table[] = 'CREATE TABLE ' . NV_CONFIG_GLOBALTABLE . " (
   lang varchar(3) NOT NULL DEFAULT 'sys',
@@ -145,7 +161,7 @@ $sql_create_table[] = 'CREATE TABLE ' . NV_CONFIG_GLOBALTABLE . " (
   config_name varchar(30) NOT NULL DEFAULT '',
   config_value text,
   UNIQUE KEY lang (lang,module,config_name)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Cấu hình hệ thống'";
 
 $sql_create_table[] = 'CREATE TABLE ' . NV_CRONJOBS_GLOBALTABLE . " (
   id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -162,7 +178,7 @@ $sql_create_table[] = 'CREATE TABLE ' . NV_CRONJOBS_GLOBALTABLE . " (
   last_result tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   KEY is_sys (is_sys)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Tiến trình tự động'";
 
 $sql_create_table[] = 'CREATE TABLE ' . NV_LANGUAGE_GLOBALTABLE . " (
   id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -172,7 +188,7 @@ $sql_create_table[] = 'CREATE TABLE ' . NV_LANGUAGE_GLOBALTABLE . " (
   weight SMALLINT(4) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   UNIQUE KEY filelang (idfile,lang_key,langtype)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Key lang ngôn ngữ giao diện'";
 
 $sql_create_table[] = 'CREATE TABLE ' . NV_LANGUAGE_GLOBALTABLE . "_file (
   idfile mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -181,7 +197,7 @@ $sql_create_table[] = 'CREATE TABLE ' . NV_LANGUAGE_GLOBALTABLE . "_file (
   langtype varchar(50) NOT NULL DEFAULT 'lang_module',
   PRIMARY KEY (idfile),
   UNIQUE KEY module (module,admin_file)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Các file ngôn ngữ giao diện'";
 
 $sql_create_table[] = 'CREATE TABLE ' . NV_SESSIONS_GLOBALTABLE . " (
   session_id varchar(50) DEFAULT NULL,
@@ -201,14 +217,14 @@ $sql_create_table[] = 'CREATE TABLE ' . NV_COOKIES_GLOBALTABLE . " (
   secure tinyint(1) NOT NULL DEFAULT '0',
   UNIQUE KEY cookiename (name, domain, path),
   KEY name (name)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Cookie truy cập kho store'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_setup_language (
   lang char(2) NOT NULL,
   setup tinyint(1) NOT NULL DEFAULT '0',
   weight smallint(4) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (lang)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Ngôn ngữ data'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_setup_extensions (
   id int(11) NOT NULL DEFAULT '0',
@@ -225,7 +241,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_setup_extension
   UNIQUE KEY title (type, title),
   KEY id (id),
   KEY type (type)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Các ứng dụng cài vào'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_extension_files (
   idfile mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -235,7 +251,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_extension_files
   lastmodified int(11) unsigned NOT NULL DEFAULT '0',
   duplicate smallint(4) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (idfile)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'File của các ứng dụng'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_ips (
   id mediumint(8) NOT NULL AUTO_INCREMENT,
@@ -248,7 +264,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_ips (
   notice varchar(255) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY ip (ip, type)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Thiết lập tường lửa IP truy cập site'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_logs (
   id int(11) NOT NULL AUTO_INCREMENT,
@@ -260,7 +276,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_logs (
   userid mediumint(8) unsigned NOT NULL,
   log_time int(11) NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Nhật kí hệ thống'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_upload_dir (
   did mediumint(8) NOT NULL AUTO_INCREMENT,
@@ -273,7 +289,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_upload_dir (
   thumb_quality tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (did),
   UNIQUE KEY name (dirname)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Thư mục upload'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_upload_file (
   name varchar(245) NOT NULL,
@@ -292,7 +308,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_upload_file (
   UNIQUE KEY did (did,title),
   KEY userid (userid),
   KEY type (type)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'File upload'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_plugins (
   pid mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -305,7 +321,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_plugins (
   weight tinyint(4) NOT NULL COMMENT 'Thứ tự trong cùng một hook, càng to càng ưu tiên',
   PRIMARY KEY (pid),
   UNIQUE KEY plugin (plugin_lang, plugin_file, plugin_area, plugin_module_name, hook_module)
-) ENGINE=MyISAM AUTO_INCREMENT=1001";
+) ENGINE=InnoDB AUTO_INCREMENT=1001 COMMENT 'Các hooks'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_counter (
    c_type varchar(100) NOT NULL,
@@ -314,7 +330,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_counter (
    c_count int(11) unsigned NOT NULL DEFAULT '0',
    " . NV_LANG_DATA . "_count int(11) unsigned NOT NULL DEFAULT '0',
    UNIQUE KEY c_type (c_type,c_val)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Thống kê truy cập'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_notification (
   id int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -334,7 +350,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_notification (
   KEY send_to (send_to),
   KEY admin_view_allowed (admin_view_allowed),
   KEY logic_mode (logic_mode)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Thông báo trong quản trị'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_inform (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -348,7 +364,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_inform (
   add_time INT(11) UNSIGNED NOT NULL DEFAULT '0',
   exp_time INT(11) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Thông báo khu vực người dùng'";
 
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_inform_status (
   pid INT(11) UNSIGNED NOT NULL,
@@ -358,7 +374,7 @@ $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_inform_status (
   favorite_time INT(11) UNSIGNED NOT NULL DEFAULT '0',
   hidden_time INT(11) UNSIGNED NOT NULL DEFAULT '0',
   UNIQUE KEY pid_userid (pid, userid)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB COMMENT 'Trạng thái đọc thông báo của người dùng'";
 
 // CSDL module email templates
 $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . "_emailtemplates (

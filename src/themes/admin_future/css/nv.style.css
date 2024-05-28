@@ -25278,13 +25278,13 @@ readers do not read off random characters that represent icons */
 }
 .header-right .menu-sys .dropdown-menu {
   --bs-dropdown-min-width: 50rem;
-  padding: 1rem;
 }
 .header-right .menu-sys .dropdown-menu[data-bs-popper] {
   top: calc(100% + 0.5rem + 1px);
 }
 .header-right .menu-sys-inner {
   max-height: calc(100vh - (0.5rem + 2 * var(--bs-border-width) + 0.125rem + 3.75rem + 0.5rem + 2rem));
+  padding: 1rem;
 }
 .header-right .menu-sys-items a {
   color: #666;
@@ -25300,6 +25300,7 @@ readers do not read off random characters that represent icons */
 .header-right .site-noti .noti-body .noti-lists {
   height: 18.75rem;
 }
+
 .site-footer {
   margin-left: calc(14rem + 1px);
   height: 3.75rem;
@@ -25322,6 +25323,126 @@ readers do not read off random characters that represent icons */
   z-index: 960;
   transition: transform 0.2s ease-in-out;
 }
+.left-sidebar .sidebar-elements {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.left-sidebar .sidebar-elements .divider {
+  padding: 1.25rem 1.25rem 0;
+  color: #adb5bd;
+  line-height: 1.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8462rem;
+}
+.left-sidebar .sidebar-elements > li > a {
+  display: block;
+  padding: 0 1.875rem 0 1.25rem;
+  color: #666;
+  line-height: 2.375rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+.left-sidebar .sidebar-elements > li > a:hover {
+  background-color: #f9f9f9;
+}
+.left-sidebar .sidebar-elements > li > a .icon {
+  line-height: 1.125rem;
+  font-size: 1rem;
+  min-width: 1.1875rem;
+  margin-right: 0.5rem;
+  text-align: center;
+  vertical-align: middle;
+}
+.left-sidebar .sidebar-elements > li.active > a {
+  font-weight: 500;
+}
+.left-sidebar .sidebar-elements li.parent > a > .toggle {
+  position: absolute;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.375rem;
+  right: 0.625rem;
+  top: 0;
+  color: #ced4da;
+  cursor: pointer;
+  padding-left: 1.25rem;
+}
+.left-sidebar .sidebar-elements li.parent > a > .toggle .fas:before {
+  content: "\f0d7";
+}
+.left-sidebar .sidebar-elements li.parent.open > a > .toggle .fas:before {
+  content: "\f0d8";
+}
+.left-sidebar .sidebar-elements > li ul {
+  display: none;
+  background-color: #f4f4f4;
+  padding: 0.625rem 0;
+  list-style: none;
+  line-height: 1.25rem;
+}
+.left-sidebar .sidebar-elements > li ul .title {
+  display: none;
+}
+.left-sidebar .sidebar-elements > li ul li > ul {
+  padding: 0.3125rem 0;
+}
+.left-sidebar .sidebar-elements > li > ul {
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+}
+.left-sidebar .sidebar-elements > li > ul li.f-link {
+  display: none;
+}
+.left-sidebar .sidebar-elements > li > ul .nav-items .content > ul {
+  display: block;
+}
+.left-sidebar .sidebar-elements > li ul li > a {
+  padding: 0.5rem 0.9375rem 0.5rem 3.0625rem;
+  color: #666;
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+.left-sidebar .sidebar-elements > li ul li > a:hover {
+  background-color: #e5e5e5;
+}
+.left-sidebar .sidebar-elements > li ul li > ul > li > a {
+  padding-left: 4.375rem;
+  position: relative;
+}
+.left-sidebar .sidebar-elements li.open > ul {
+  display: block;
+}
+.left-sidebar .left-sidebar-toggle {
+  display: none;
+  background-color: #fff;
+  padding: 1rem 0.625rem;
+  color: #495057;
+  font-weight: 300;
+  font-size: 1.077rem;
+}
+.left-sidebar .left-sidebar-toggle:before {
+  content: "\f0d7";
+  float: right;
+  font-family: "Font Awesome 6 Free";
+  font-size: 1.384rem;
+  line-height: 1.375rem;
+  color: #ced4da;
+  font-weight: 900;
+}
+.left-sidebar .left-sidebar-scroll {
+  position: relative;
+  height: calc(100vh - 3.75rem);
+  width: 100%;
+  overflow: hidden;
+}
 
 .collapsed-left-sidebar .left-sidebar {
   transform: translateX(-10.25rem);
@@ -25338,6 +25459,13 @@ readers do not read off random characters that represent icons */
   z-index: 980;
   transform: translateX(14.75rem);
   transition: transform 0.2s ease-in-out;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.right-sidebar .right-sidebar-inner {
+  position: relative;
+  width: 100%;
+  max-height: calc(100vh - 3.75rem - 2rem);
 }
 
 .open-right-sidebar .right-sidebar {

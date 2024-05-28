@@ -9,6 +9,14 @@
     z-index: $zindex-right-sidebar;
     transform: translateX(calc($right-sidebar-width + .75rem));
     transition: transform .2s ease-in-out;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    .right-sidebar-inner {
+        position: relative;
+        width: 100%;
+        max-height: calc(100vh - $header-height - 2rem);
+    }
 }
 
 .open-right-sidebar {

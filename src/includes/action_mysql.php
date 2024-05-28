@@ -95,7 +95,7 @@ function nv_create_table_sys($lang, $init = [])
          rss tinyint(4) NOT NULL DEFAULT '1',
          sitemap tinyint(4) NOT NULL DEFAULT '1',
          PRIMARY KEY (title)
-    ) ENGINE=MyISAM";
+    ) ENGINE=InnoDB COMMENT 'Module ngoài site theo ngôn ngữ'";
 
     $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . "_blocks_groups (
          bid mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -118,14 +118,14 @@ function nv_create_table_sys($lang, $init = [])
          KEY theme (theme),
          KEY module (module),
          KEY position (position)
-    ) ENGINE=MyISAM";
+    ) ENGINE=InnoDB COMMENT 'Danh sách block theo ngôn ngữ, giao diện'";
 
     $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . "_blocks_weight (
          bid mediumint(8) NOT NULL DEFAULT '0',
          func_id mediumint(8) NOT NULL DEFAULT '0',
          weight mediumint(8) NOT NULL DEFAULT '0',
          UNIQUE KEY bid (bid,func_id)
-    ) ENGINE=MyISAM";
+    ) ENGINE=InnoDB COMMENT 'Vị trí đặt các block'";
 
     $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . "_modfuncs (
          func_id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -142,7 +142,7 @@ function nv_create_table_sys($lang, $init = [])
          PRIMARY KEY (func_id),
          UNIQUE KEY func_name (func_name,in_module),
          UNIQUE KEY alias (alias,in_module)
-    ) ENGINE=MyISAM";
+    ) ENGINE=InnoDB COMMENT 'Func của module'";
 
     $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . "_searchkeys (
          id varchar(32) NOT NULL DEFAULT '',
@@ -152,7 +152,7 @@ function nv_create_table_sys($lang, $init = [])
          KEY (id),
          KEY skey (skey),
          KEY search_engine (search_engine)
-    ) ENGINE=MyISAM";
+    ) ENGINE=InnoDB COMMENT 'Từ khóa tìm kiếm'";
 
     $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . "_referer_stats (
          host varchar(250) NOT NULL,
@@ -172,14 +172,14 @@ function nv_create_table_sys($lang, $init = [])
          last_update int(11) NOT NULL DEFAULT '0',
          UNIQUE KEY host (host),
          KEY total (total)
-    ) ENGINE=MyISAM";
+    ) ENGINE=InnoDB COMMENT 'Thống kê đường dẫn đến site'";
 
     $sql_create_table[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . '_modthemes (
          func_id mediumint(8) DEFAULT NULL,
          layout varchar(100) DEFAULT NULL,
          theme varchar(100) DEFAULT NULL,
          UNIQUE KEY func_id (func_id,layout,theme)
-     ) ENGINE=MyISAM';
+     ) ENGINE=InnoDB COMMENT "Layout của giao diện theo từng khu vực"';
 
     $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . '_' . $lang . "_modules (
         title, module_file, module_data, module_upload, module_theme, custom_title, admin_title, set_time, main_file, admin_file,

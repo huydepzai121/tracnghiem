@@ -398,6 +398,7 @@ $lang_global['time'] = 'Thời gian';
 $lang_global['note'] = 'Ghi chú';
 $lang_global['ip'] = 'Địa chỉ IP';
 $lang_global['browser'] = 'Trình duyệt';
+$lang_global['sys_mods'] = 'Các module của hệ thống';
 $lang_global['country_AD'] = 'Andorra';
 $lang_global['country_AE'] = 'Ả Rập Thống nhất';
 $lang_global['country_AF'] = 'Afghanistan';

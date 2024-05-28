@@ -56,4 +56,4 @@
     <link rel="stylesheet" href="{$smarty.const.ASSETS_STATIC_URL}/js/perfect-scrollbar/style.css">
     <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/perfect-scrollbar/min.js"></script>
 </head>
-<body>
+<body{if not empty($CLOSE_LSIDEBAR)} class="collapsed-left-sidebar"{/if}>

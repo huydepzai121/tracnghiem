@@ -15,8 +15,30 @@ if (!defined('NV_IS_FILE_SITEINFO')) {
 
 $page_title = $nv_Lang->getGlobal('mod_siteinfo');
 
+// Thiết lập đóng mở menu trái của giao diện
 if ($nv_Request->isset_request('collapsed_left_sidebar', 'post')) {
+    if (!defined('NV_IS_AJAX')) {
+        nv_htmlOutput('NO');
+    }
+
     $value = (int) $nv_Request->get_bool('collapsed_left_sidebar', 'post', false);
+
+    $sql = "SELECT * FROM " . NV_AUTHORS_GLOBALTABLE . "_vars WHERE admin_id=" . $admin_info['admin_id'] . "
+    AND theme=" . $db->quote($admin_info['admin_theme']) . " AND config_name='collapsed_left_sidebar'";
+    $row = $db->query($sql)->fetch();
+
+    if (empty($row)) {
+        $sql = "INSERT INTO " . NV_AUTHORS_GLOBALTABLE . "_vars (
+            admin_id, theme, config_name, config_value
+        ) VALUES (
+            " . $admin_info['admin_id'] . ", " . $db->quote($admin_info['admin_theme']) . ",
+            'collapsed_left_sidebar', " . $db->quote($value) . "
+        )";
+    } else {
+        $sql = "UPDATE " . NV_AUTHORS_GLOBALTABLE . "_vars SET config_value=" . $db->quote($value) . " WHERE id=" . $row['id'];
+    }
+    $db->query($sql);
+    nv_htmlOutput('OK');
 }
 
 //Noi dung chinh cua trang

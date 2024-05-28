@@ -166,7 +166,6 @@
     .menu-sys {
         .dropdown-menu {
             --bs-dropdown-min-width: #{$sysmenu-width};
-            padding: $sysmenu-padding;
 
             &[data-bs-popper] {
                 top: calc(100% + $popover-arrow-height + $header-border-height);
@@ -176,6 +175,7 @@
 
     .menu-sys-inner {
         max-height: calc(100vh - ($sysmenu-spacer + 2 * $dropdown-border-width + $dropdown-spacer + $header-height + $popover-arrow-height + 2 * $sysmenu-padding));
+        padding: $sysmenu-padding;
     }
 
     .menu-sys-items a {
@@ -193,18 +193,10 @@
             width: $notification-width;
         }
 
-        .noti-heading {
-
-        }
-
         .noti-body {
             .noti-lists {
                 height: $notification-height;
             }
-        }
-
-        .noti-footer {
-
         }
     }
 }
