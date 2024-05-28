@@ -2,4 +2,11 @@
     margin-left: calc($left-sidebar-width + $left-sidebar-border-width);
     height: $footer-height;
     background-color: $footer-bg;
+    transition: margin-left .2s ease-in-out;
+}
+
+.collapsed-left-sidebar {
+    .site-footer {
+        margin-left: calc($left-sidebar-width-sm + $left-sidebar-border-width);
+    }
 }

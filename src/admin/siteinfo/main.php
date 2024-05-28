@@ -15,6 +15,10 @@ if (!defined('NV_IS_FILE_SITEINFO')) {
 
 $page_title = $nv_Lang->getGlobal('mod_siteinfo');
 
+if ($nv_Request->isset_request('collapsed_left_sidebar', 'post')) {
+    $value = (int) $nv_Request->get_bool('collapsed_left_sidebar', 'post', false);
+}
+
 //Noi dung chinh cua trang
 $info = $pending_info = [];
 

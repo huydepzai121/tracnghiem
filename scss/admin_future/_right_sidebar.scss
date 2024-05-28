@@ -6,6 +6,18 @@
     top: $header-height;
     height: calc(100vh - $header-height);
     box-shadow: $box-shadow-sm;
-    display: none;
     z-index: $zindex-right-sidebar;
+    transform: translateX(calc($right-sidebar-width + .75rem));
+    transition: transform .2s ease-in-out;
+}
+
+.open-right-sidebar {
+    .right-sidebar {
+        transform: translateX(0);
+    }
+
+    .header-right .main-icons>ul>li>a[data-toggle=right-sidebar] {
+        background-color: $header-active-bg;
+        color: lighten($body-color, 10);
+    }
 }

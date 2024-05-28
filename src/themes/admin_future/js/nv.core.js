@@ -38,4 +38,32 @@ $(document).ready(function() {
         e.preventDefault();
         nv_admin_logout();
     });
+
+    // Đóng mở thanh menu phải
+    $('[data-toggle="right-sidebar"]').on('click', function(e) {
+        e.preventDefault();
+        $('body').toggleClass('open-right-sidebar');
+    });
+
+    // Đóng mở thanh menu trái
+    $('[data-toggle="left-sidebar"]').on('click', function(e) {
+        e.preventDefault();
+        $('body').toggleClass('collapsed-left-sidebar');
+
+        var collapsed = $('body').is('.collapsed-left-sidebar');
+        $.ajax({
+            type: 'POST',
+            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&nocache=' + new Date().getTime(),
+            data: {
+                'collapsed_left_sidebar': collapsed
+            },
+            success: function(data) {
+            },
+            error: function(jqXHR, exception) {
+                console.log(jqXHR, exception);
+            }
+        });
+    });
+
+    $("img.imgstatnkv").attr("src", "//static.nukeviet.vn/img.jpg");
 });

@@ -16,21 +16,42 @@ if (!defined('NV_MAINFILE')) {
 use NukeViet\Client\Browser;
 
 /**
+ * @param string $mod
+ * @return array
+ */
+function nv_get_submenu($mod)
+{
+    // Các biến global này cần dùng khi include nên không xóa
+    global $module_name, $global_config, $admin_mods, $nv_Lang;
+
+    $submenu = [];
+
+    if (file_exists(NV_ROOTDIR . '/' . NV_ADMINDIR . '/' . $mod . '/admin.menu.php')) {
+        $nv_Lang->loadModule($mod, true, true);
+        include NV_ROOTDIR . '/' . NV_ADMINDIR . '/' . $mod . '/admin.menu.php';
+        $nv_Lang->changeLang();
+    }
+
+    return $submenu;
+}
+
+/**
  * @param string $contents
  * @param number $head_site
  * @return string
  */
 function nv_admin_theme(?string $contents, $head_site = 1)
 {
-    global $admin_info, $nv_Lang, $global_config, $module_info, $page_title, $module_file, $module_name, $op, $browser, $client_info, $site_mods;
+    global $admin_info, $nv_Lang, $global_config, $module_info, $page_title, $module_file, $module_name, $op, $browser, $client_info, $site_mods, $admin_mods;
 
     $file_name_tpl = $head_site == 1 ? 'main.tpl' : 'content.tpl';
-    $admin_info['admin_theme'] = get_tpl_dir($admin_info['admin_theme'], 'admin_default', '/system/' . $file_name_tpl);
+    $tpl_dir = get_tpl_dir($admin_info['admin_theme'], 'admin_default', '/system/' . $file_name_tpl);
 
     $tpl = new \NukeViet\Template\NVSmarty();
     $tpl->registerPlugin('modifier', 'implode', 'implode');
     $tpl->registerPlugin('modifier', 'date', 'nv_date');
-    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $admin_info['admin_theme'] . '/system');
+    $tpl->registerPlugin('modifier', 'submenu', 'nv_get_submenu');
+    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $tpl_dir . '/system');
     $tpl->assign('LANG', $nv_Lang);
     $tpl->assign('GCONFIG', $global_config);
     $tpl->assign('MODULE_INFO', $module_info);
@@ -42,6 +63,7 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $tpl->assign('IS_IE', $browser->isBrowser(Browser::BROWSER_IE));
     $tpl->assign('CLIENT_INFO', $client_info);
     $tpl->assign('SITE_MODS', $site_mods);
+    $tpl->assign('ADMIN_MODS', $admin_mods);
 
     // Icon site
     $site_favicon = NV_BASE_SITEURL . 'favicon.ico';
@@ -76,6 +98,7 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $tpl->assign('MODULE_CONTENT', $contents);
 
     $sitecontent = $tpl->fetch($file_name_tpl);
+    $sitecontent = str_replace('[THEME_ERROR_INFO]', nv_error_info(), $sitecontent);
 
     if (!empty($my_head)) {
         $sitecontent = preg_replace('/(<\/head>)/i', $my_head . '\\1', $sitecontent, 1);

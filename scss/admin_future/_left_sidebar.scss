@@ -7,4 +7,11 @@
     height: calc(100vh - $header-height);
     box-shadow: $box-shadow-sm;
     z-index: $zindex-left-sidebar;
+    transition: transform .2s ease-in-out;
+}
+
+.collapsed-left-sidebar {
+    .left-sidebar {
+        transform: translateX(calc(($left-sidebar-width - $left-sidebar-width-sm) * -1));
+    }
 }

@@ -13,6 +13,8 @@ define('NV_TEST_ROOTDIR', rtrim(str_replace('\\', '/', realpath(__DIR__ . '/../.
 define('NV_TEST_DIR', NV_TEST_ROOTDIR . '/tests/codeception');
 define('NV_ROOTDIR', NV_TEST_ROOTDIR . '/src');
 
+date_default_timezone_set('Asia/Ho_Chi_Minh');
+
 require NV_TEST_ROOTDIR . '/vendor/autoload.php';
 
 // Đọc các biến môi trường để test

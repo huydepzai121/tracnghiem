@@ -53,5 +53,7 @@
     <link rel="stylesheet" href="{$smarty.const.ASSETS_STATIC_URL}/js/show-pass-btn/bootstrap3-show-pass.css">
     <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/show-pass-btn/bootstrap3-show-pass.js"></script>
     {/if}
+    <link rel="stylesheet" href="{$smarty.const.ASSETS_STATIC_URL}/js/perfect-scrollbar/style.css">
+    <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/perfect-scrollbar/min.js"></script>
 </head>
 <body>

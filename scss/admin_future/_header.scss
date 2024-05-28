@@ -7,14 +7,40 @@
     z-index: $zindex-header;
 }
 
+// Logo site
 .site-brand {
     padding-top: calc(($header-height - $header-border-height - $logo-height)/2);
     padding-bottom: calc(($header-height - $header-border-height - $logo-height)/2);
     flex-basis: calc($left-sidebar-width + $left-sidebar-border-width);
     width: calc($left-sidebar-width + $left-sidebar-border-width);
+    transition: width .2s ease-in-out, flex-basis .2s ease-in-out;
+    overflow-x: hidden;
 
     img {
         max-height: $logo-height;
+    }
+
+    .logo-sm {
+        display: none;
+    }
+
+    .logo {
+        display: block;
+    }
+}
+
+.collapsed-left-sidebar {
+    .site-brand {
+        flex-basis: calc($left-sidebar-width-sm + $left-sidebar-border-width);
+        width: calc($left-sidebar-width-sm + $left-sidebar-border-width);
+    }
+
+    .logo-sm {
+        display:block;
+    }
+
+    .logo {
+        display: none;
     }
 }
 
@@ -35,8 +61,41 @@
 }
 
 .header-right {
+    [data-bs-toggle=dropdown] {
+        z-index: $zindex-header-dropdown-toggle;
+
+        &.show {
+            &::before, &::after {
+                position: absolute;
+                display: block;
+                content: "";
+                border-color: transparent;
+                border-style: solid;
+                border-width: 0 calc($popover-arrow-width* .5) $popover-arrow-height;
+                transform: translateX(-50%);
+                left: 50%;
+            }
+
+            &::before {
+                border-bottom-color: $popover-border-color;
+                bottom: calc(($popover-arrow-height + $header-border-height + .125rem) * -1);
+            }
+
+            &::after {
+                border-bottom-color: $popover-bg;
+                bottom: calc(($popover-border-width + $header-border-height + $popover-arrow-height + .125rem) * -1);
+            }
+        }
+    }
+
     .main-icons {
         >ul>li {
+            margin-right: 1px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+
             >a {
                 transition: $nav-link-transition;
                 color: $body-color;
@@ -46,7 +105,7 @@
                 width: 3.125rem;
             }
 
-            &:hover>a {
+            &:hover>a,>a.show {
                 background-color: $header-active-bg;
                 color: lighten($body-color, 10);
             }
@@ -60,8 +119,6 @@
             width: $header-avatar-size;
             height: $header-avatar-size;
             display: block;
-            overflow: hidden;
-            border-radius: 50%;
             margin-top: calc(($header-height - $header-border-height - $header-avatar-size)/2);
             margin-bottom: calc(($header-height - $header-border-height - $header-avatar-size)/2);
             text-align: center;
@@ -69,6 +126,12 @@
             font-size: $header-avatar-size;
             transition: $nav-link-transition;
             color: $body-color;
+
+            span {
+                overflow: hidden;
+                border-radius: 50%;
+                display: block;
+            }
 
             &:hover {
                 color: lighten($body-color, 10);
@@ -93,6 +156,55 @@
                     color: var(--bs-link-color);
                 }
             }
+
+            &::before, &::after {
+                right: 1.5rem;
+            }
+        }
+    }
+
+    .menu-sys {
+        .dropdown-menu {
+            --bs-dropdown-min-width: #{$sysmenu-width};
+            padding: $sysmenu-padding;
+
+            &[data-bs-popper] {
+                top: calc(100% + $popover-arrow-height + $header-border-height);
+            }
+        }
+    }
+
+    .menu-sys-inner {
+        max-height: calc(100vh - ($sysmenu-spacer + 2 * $dropdown-border-width + $dropdown-spacer + $header-height + $popover-arrow-height + 2 * $sysmenu-padding));
+    }
+
+    .menu-sys-items a {
+        color: $body-color;
+        transition: $nav-link-transition;
+
+        &:hover {
+            color: $blue;
+        }
+    }
+
+    .site-noti {
+        .dropdown-menu {
+            --bs-dropdown-min-width: #{$notification-width};
+            width: $notification-width;
+        }
+
+        .noti-heading {
+
+        }
+
+        .noti-body {
+            .noti-lists {
+                height: $notification-height;
+            }
+        }
+
+        .noti-footer {
+
         }
     }
 }

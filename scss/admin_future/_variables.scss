@@ -35,6 +35,7 @@ $border-radius-sm: .125rem; // 2px
 
 // Z-Index
 $zindex-header: 940;
+$zindex-header-dropdown-toggle: 1001;
 $zindex-left-sidebar: 960;
 $zindex-right-sidebar: 980;
 
@@ -51,6 +52,7 @@ $admin-info-width: 16rem;
 
 // Menu trái
 $left-sidebar-width: 14rem; // 224px
+$left-sidebar-width-sm: 3.75rem; // 60px
 $left-sidebar-border-width: $border-width;
 $left-sidebar-bg: $white;
 
@@ -58,6 +60,15 @@ $left-sidebar-bg: $white;
 $right-sidebar-width: 14rem; // 224px
 $right-sidebar-border-width: $border-width;
 $right-sidebar-bg: $white;
+
+// Menu sys
+$sysmenu-width: 50rem;
+$sysmenu-padding: 1rem;
+$sysmenu-spacer: .5rem;
+
+// Thông báo
+$notification-width: 18.75rem; // 300px
+$notification-height: 18.75rem; // 300px
 
 // Footer
 $footer-bg: $gray-100;
