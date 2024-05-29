@@ -87,6 +87,8 @@ $lang_global['login_name'] = 'Tên đăng nhập';
 $lang_global['login_name_type_username'] = 'Bí danh';
 $lang_global['login_name_type_email'] = 'Email';
 $lang_global['login_name_type_email_username'] = 'Bí danh hoặc Email';
+$lang_global['interface_current_menu'] = 'Đang thao tác';
+$lang_global['interface_other_menu'] = 'Các module khác';
 
 $lang_global['merge_field_author_delete_time'] = 'Thời gian xóa';
 $lang_global['merge_field_author_delete_reason'] = 'Lý do xóa';

@@ -1,3 +1,5 @@
+@use "sass:map";
+
 .header-outer {
     background-color: $header-bg;
     position: fixed;
@@ -5,6 +7,10 @@
     left: 0;
     width: 100%;
     z-index: $zindex-header;
+
+    @media (max-width: #{$theme-breakpoint}) {
+        box-shadow: $box-shadow-sm;
+    }
 }
 
 // Logo site
@@ -26,6 +32,19 @@
 
     .logo {
         display: block;
+    }
+
+    @media (max-width: #{$theme-breakpoint}) {
+        .logo-sm {
+            display: block;
+        }
+
+        .logo {
+            display: none;
+        }
+
+        flex-basis: calc($left-sidebar-width-sm + $left-sidebar-border-width);
+        width: calc($left-sidebar-width-sm + $left-sidebar-border-width);
     }
 }
 
@@ -56,6 +75,12 @@
 
         &:hover {
             color: $header-link-hover-color;
+        }
+    }
+
+    @media (max-width: #{$theme-breakpoint}) {
+        .header-left {
+            display: none;
         }
     }
 }
@@ -102,7 +127,12 @@
                 display: block;
                 height: calc($header-height - $header-border-height);
                 position: relative;
-                width: 3.125rem;
+
+                @each $key, $value in $header-menu-icon-width {
+                    @media (min-width: #{map.get($grid-breakpoints, $key)}) {
+                        width: $value;
+                    }
+                }
             }
 
             &:hover>a,>a.show {
@@ -165,7 +195,11 @@
 
     .menu-sys {
         .dropdown-menu {
-            --bs-dropdown-min-width: #{$sysmenu-width};
+            @each $key, $value in $sysmenu-width {
+                @media (min-width: #{map.get($grid-breakpoints, $key)}) {
+                    --bs-dropdown-min-width: #{$value};
+                }
+            }
 
             &[data-bs-popper] {
                 top: calc(100% + $popover-arrow-height + $header-border-height);

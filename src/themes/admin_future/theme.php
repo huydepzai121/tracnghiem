@@ -22,7 +22,7 @@ use NukeViet\Client\Browser;
  */
 function nv_admin_theme(?string $contents, $head_site = 1)
 {
-    global $admin_info, $nv_Lang, $global_config, $module_info, $page_title, $module_file, $module_name, $op, $browser, $client_info, $site_mods, $admin_mods, $db, $array_lang_admin, $select_options, $admin_menu_mods, $submenu, $set_active_op;
+    global $admin_info, $nv_Lang, $global_config, $module_info, $page_title, $module_file, $module_name, $op, $browser, $client_info, $site_mods, $admin_mods, $db, $array_lang_admin, $select_options, $admin_menu_mods, $submenu, $set_active_op, $array_url_instruction, $array_mod_title;
 
     $file_name_tpl = $head_site == 1 ? 'main.tpl' : 'content.tpl';
     $tpl_dir = get_tpl_dir($admin_info['admin_theme'], 'admin_default', '/system/' . $file_name_tpl);
@@ -41,6 +41,7 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $tpl->assign('GCONFIG', $global_config);
     $tpl->assign('MODULE_INFO', $module_info);
     $tpl->assign('PAGE_TITLE', $page_title ?: $nv_Lang->getGlobal('admin_page'));
+    $tpl->assign('BREADCRUMBS', $array_mod_title);
     $tpl->assign('MODULE_FILE', $module_file);
     $tpl->assign('MODULE_NAME', $module_name);
     $tpl->assign('OP', $op);
@@ -52,6 +53,7 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $tpl->assign('CLOSE_LSIDEBAR', $close_lsidebar);
     $tpl->assign('LANG_ADMIN', $array_lang_admin);
     $tpl->assign('SELECT_OPTIONS', $select_options);
+    $tpl->assign('HELP_URLS', $array_url_instruction);
 
     // Menu của các module
     $array_mod_menu = $array_mod_current = [];

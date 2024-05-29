@@ -7,11 +7,21 @@
     min-height: calc(100vh - $header-height - $footer-height);
     margin-top: $header-height;
     transition: margin-left .2s ease-in-out;
+
+    @media (max-width: #{$theme-breakpoint}) {
+        margin-top: 0;
+        margin-left: 0;
+        min-height: calc(100vh - $header-height - $footer-height - $left-sidebar-toggle-height);
+    }
 }
 
 .collapsed-left-sidebar {
     .main-content {
         margin-left: calc($left-sidebar-width-sm + $left-sidebar-border-width);
+
+        @media (max-width: #{$theme-breakpoint}) {
+            margin-left: 0;
+        }
     }
 }
 

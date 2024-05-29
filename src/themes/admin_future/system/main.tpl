@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <header class="header-outer border-bottom">
     <div class="header-inner d-flex">
-        <div class="site-brand text-center">
+        <div class="site-brand text-center ms-2 ms-md-0">
             <a class="logo" href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}">
                 <img src="{$smarty.const.NV_BASE_SITEURL}themes/{$ADMIN_INFO.admin_theme}/images/logo.png" alt="{$GCONFIG.site_name}">
             </a>
@@ -9,11 +9,11 @@
                 <img src="{$smarty.const.NV_BASE_SITEURL}themes/{$ADMIN_INFO.admin_theme}/images/logo-sm.png" alt="{$GCONFIG.site_name}">
             </a>
         </div>
-        <div class="site-header flex-grow-1 flex-shrink-1 d-flex align-items-center justify-content-between px-4">
+        <div class="site-header flex-grow-1 flex-shrink-1 d-flex align-items-center justify-content-between px-2 px-sm-4">
             <div class="header-left">
                 <a href="#" class="left-sidebar-toggle fs-4" data-toggle="left-sidebar"><i class="fas fa-bars icon-vertical-center"></i></a>
             </div>
-            <div class="header-right d-flex position-relative">
+            <div class="header-right d-flex position-relative ms-auto">
                 <nav class="main-icons">
                     <ul class="d-flex list-unstyled my-0 ms-0 me-3">
                         <li>
@@ -127,7 +127,21 @@
 </header>
 <nav class="left-sidebar border-end" id="left-sidebar">
     <div class="left-sidebar-wrapper">
-        <a href="#" class="left-sidebar-toggle">{$PAGE_TITLE}</a>
+        <div class="left-sidebar-in-sm border-bottom">
+            <div class="d-flex mx-2 mx-sm-4 align-items-center fs-3">
+                <div class="me-auto text-truncate fw-medium">
+                    {$PAGE_TITLE}
+                </div>
+                <div class="ms-3">
+                    <a href="#" data-toggle="left-sidebar-sm"><i class="fa-solid fa-bars"></i></a>
+                </div>
+                {if not empty($BREADCRUMBS) or isset($HELP_URLS[$OP]) or (isset($SITE_MODS[$MODULE_NAME]) and not empty($SITE_MODS[$MODULE_NAME].main_file))}
+                <div class="ms-3">
+                    <a href="#" data-toggle="breadcrumb"><i class="fa-solid fa-square-caret-down"></i></a>
+                </div>
+                {/if}
+            </div>
+        </div>
         <div class="left-sidebar-spacer">
             <div class="left-sidebar-scroll">
                 <div class="left-sidebar-content">
@@ -228,9 +242,45 @@
     </div>
 </nav>
 <div class="body">
-    <section class="main-content px-4">
-        [THEME_ERROR_INFO]
-        {$MODULE_CONTENT}
+    <section class="main-content">
+        <div class="breadcrumb-wrap px-4 d-flex align-items-center justify-content-between">
+            {if empty($BREADCRUMBS)}
+            <h1 class="h3 page-title mb-0 text-truncate" title="{$PAGE_TITLE}">{$PAGE_TITLE}</h1>
+            {else}
+            <nav aria-label="breadcrumb" class="site-breadcrumb pe-1" id="breadcrumb">
+                <ol class="breadcrumb flex-nowrap mb-0">
+                    {foreach from=$BREADCRUMBS item=brcrb}
+                    <li class="breadcrumb-item fw-medium{if not empty($brcrb.active)}" aria-current="page"{else}"{/if}>
+                        {if not empty($brcrb.link)}
+                        <a href="{$brcrb.link}">{$brcrb.title}</a>
+                        {else}
+                        {$brcrb.title}
+                        {/if}
+                    </li>
+                    {/foreach}
+                    <li class="breadcrumb-dropdown d-none ps-2">
+                        <a href="#" data-toggle="popover" data-bs-content="&nbsp;" data-bs-custom-class="breadcrumb-popover" data-bs-html="true"><i class="fa-solid fa-circle-chevron-down"></i></a>
+                    </li>
+                </ol>
+            </nav>
+            {/if}
+            <div class="go-clients d-flex align-items-center" id="go-clients">
+                {if isset($HELP_URLS[$OP])}
+                <div class="ms-3">
+                    <a href="{$HELP_URLS[$OP]}" title="{$LANG->getGlobal('go_instrucion')}" target="_blank" data-bs-toggle="tooltip"><i class="fa-solid fa-book fa-lg"></i></a>
+                </div>
+                {/if}
+                {if isset($SITE_MODS[$MODULE_NAME]) and not empty($SITE_MODS[$MODULE_NAME].main_file)}
+                <div class="ms-3">
+                    <a href="{$smarty.const.NV_BASE_SITEURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}" title="{$LANG->getGlobal('go_clientmod')}" target="_blank" data-bs-toggle="tooltip"><i class="fa-solid fa-globe fa-lg"></i></a>
+                </div>
+                {/if}
+            </div>
+        </div>
+        <div class="p-4">
+            [THEME_ERROR_INFO]
+            {$MODULE_CONTENT}
+        </div>
     </section>
 </div>
 {if not empty($LANG_ADMIN)}

@@ -1,3 +1,5 @@
+@use "sass:map";
+
 .left-sidebar {
     width: $left-sidebar-width;
     background-color: $left-sidebar-bg;
@@ -8,6 +10,14 @@
     box-shadow: $box-shadow-sm;
     z-index: $zindex-left-sidebar;
     transition: transform .2s ease-in-out;
+
+    @media (max-width: #{$theme-breakpoint}) {
+        position: static;
+        margin-top: $header-height;
+        --bs-border-width: 0;
+        width: 100%;
+        height: auto;
+    }
 
     .sidebar-elements {
         margin: 0;
@@ -34,7 +44,6 @@
                 overflow: hidden;
                 white-space: nowrap;
                 position: relative;
-                transition: $nav-link-transition;
 
                 &:hover {
                     background-color: $gray-100;
@@ -110,6 +119,16 @@
             }
         }
 
+        li {
+            >a {
+                transition: $nav-link-transition;
+            }
+
+            &.active>a {
+                color: $blue;
+            }
+        }
+
         // Cấp 2 và 3 nói chung
         >li ul li>a {
             padding: .5rem .9375rem .5rem 3.0625rem;
@@ -136,22 +155,26 @@
         }
     }
 
-    .left-sidebar-toggle {
+    .left-sidebar-in-sm {
         display: none;
         background-color: $white;
-        padding: 1rem .625rem;
-        color: $gray-700;
-        font-weight: $font-weight-light;
-        font-size: 1.077rem;
+        --bs-border-width: #{$border-width};
 
-        &:before {
-            content: "#{$fa-var-caret-down}";
-            float: right;
-            font-family: $fa-style-family;
-            font-size: 1.384rem;
-            line-height: 1.375rem;
-            color: $gray-400;
-            font-weight: $fa-style;
+        a {
+            color: $body-color;
+            transition: $nav-link-transition;
+
+            &:hover {
+                color: $blue;
+            }
+        }
+
+        >div {
+            height: calc($left-sidebar-toggle-height - $border-width);
+        }
+
+        @media (max-width: #{$theme-breakpoint}) {
+            display: block;
         }
     }
 
@@ -160,11 +183,120 @@
         height: calc(100vh - $header-height);
         width: 100%;
         overflow: hidden;
+
+        @media (max-width: #{$theme-breakpoint}) {
+            height: auto;
+            overflow: visible;
+        }
+    }
+
+    @media (max-width: #{$theme-breakpoint}) {
+        .left-sidebar-spacer {
+            display: none;
+
+            &.open {
+                display: block;
+            }
+        }
     }
 }
 
 .collapsed-left-sidebar {
     .left-sidebar {
         transform: translateX(calc(($left-sidebar-width - $left-sidebar-width-sm) * -1));
+
+        @media (max-width: #{$theme-breakpoint}) {
+            transform: translateX(0);
+        }
+
+        .nv-left-sidebar-scroller {
+            position: relative;
+        }
+
+        // Kiểu menu trái đơn giản chỉ tồn tại khi màn hình lớn
+        @media (min-width: #{map.get($grid-breakpoints, "md")}) {
+            .sidebar-elements {
+                .divider {
+                    padding: 2.5rem 0 0;
+                    height: 0;
+                    overflow: hidden;
+                    text-indent: -9999px;
+
+                    :first-child {
+                        display: none;
+                    }
+                }
+
+                > li {
+                    > a {
+                        text-overflow: clip;
+
+                        span {
+                            display: none;
+                        }
+                    }
+
+                    > ul {
+                        li.f-link {
+                            display: block;
+                        }
+                    }
+
+                    ul.visible {
+                        position: fixed;
+                        table-layout: fixed;
+                        left: $left-sidebar-width;
+                        top: 0;
+                        height: 100%;
+                        z-index: 1;
+                        width: $left-sidebar-sub-width;
+                        border-right: $border-width $border-style $border-color;
+
+                        .title {
+                            font-size: $h3-font-size;
+                            display: block;
+                            padding: 1.5625rem 1.5625rem 0 1.5625rem;
+                        }
+
+                        .nav-items {
+                            display: table-row;
+                            height: 100%;
+
+                            .nv-left-sidebar-scroller {
+                                display: table-cell;
+                                height: 100%;
+                                overflow: hidden;
+
+                                > .content {
+                                    position: absolute;
+                                    top: 0;
+                                    bottom: 0;
+                                    width: 100%;
+                                    height: 100%;
+
+                                     > ul > li > a {
+                                        padding-left: 1.5625rem;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Menu đơn giản thì open nó ở desktop nó cũng không open ở mobile
+                li.open>ul {
+                    display: none;
+
+                    &.visible {
+                        display: table;
+                    }
+                }
+            }
+
+            .left-sidebar-wrapper {
+                width: $left-sidebar-width-sm;
+                margin-left: calc($left-sidebar-width - $left-sidebar-width-sm - $left-sidebar-border-width);
+            }
+        }
     }
 }
