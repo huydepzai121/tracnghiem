@@ -1,0 +1,20 @@
+.site-footer {
+    margin-left: calc($left-sidebar-width + $left-sidebar-border-width);
+    height: $footer-height;
+    background-color: $footer-bg;
+    transition: margin-left .2s ease-in-out;
+
+    @media (max-width: #{$theme-breakpoint}) {
+        margin-left: 0;
+    }
+}
+
+.collapsed-left-sidebar {
+    .site-footer {
+        margin-left: calc($left-sidebar-width-sm + $left-sidebar-border-width);
+
+        @media (max-width: #{$theme-breakpoint}) {
+            margin-left: 0;
+        }
+    }
+}

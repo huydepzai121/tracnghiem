@@ -1,0 +1,31 @@
+.right-sidebar {
+    width: $right-sidebar-width;
+    background-color: $right-sidebar-bg;
+    position: fixed;
+    right: 0;
+    top: $header-height;
+    height: calc(100vh - $header-height);
+    box-shadow: $box-shadow-sm;
+    z-index: $zindex-right-sidebar;
+    transform: translateX(calc($right-sidebar-width + .75rem));
+    transition: transform .2s ease-in-out;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    .right-sidebar-inner {
+        position: relative;
+        width: 100%;
+        max-height: calc(100vh - $header-height - 2rem);
+    }
+}
+
+.open-right-sidebar {
+    .right-sidebar {
+        transform: translateX(0);
+    }
+
+    .header-right .main-icons>ul>li>a[data-toggle=right-sidebar] {
+        background-color: $header-active-bg;
+        color: lighten($body-color, 10);
+    }
+}

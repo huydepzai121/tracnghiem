@@ -87,6 +87,8 @@ $lang_global['login_name'] = 'Login name';
 $lang_global['login_name_type_username'] = 'Username';
 $lang_global['login_name_type_email'] = 'Email';
 $lang_global['login_name_type_email_username'] = 'Username or Email';
+$lang_global['interface_current_menu'] = 'Current module';
+$lang_global['interface_other_menu'] = 'Other modules';
 
 $lang_global['merge_field_author_delete_time'] = 'Deletion time';
 $lang_global['merge_field_author_delete_reason'] = 'Reason for deletion';

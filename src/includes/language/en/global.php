@@ -398,6 +398,7 @@ $lang_global['time'] = 'Time';
 $lang_global['note'] = 'Note';
 $lang_global['ip'] = 'IP address';
 $lang_global['browser'] = 'Browser';
+$lang_global['sys_mods'] = 'System modules';
 $lang_global['country_AD'] = 'Andorra';
 $lang_global['country_AE'] = 'United Arab Emirates';
 $lang_global['country_AF'] = 'Afghanistan';

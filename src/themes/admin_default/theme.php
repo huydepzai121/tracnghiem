@@ -72,11 +72,8 @@ function nv_admin_theme($contents, $head_site = 1)
 {
     global $global_config, $nv_Lang, $admin_mods, $site_mods, $admin_menu_mods, $module_name, $module_file, $module_info, $admin_info, $page_title, $submenu, $select_options, $op, $set_active_op, $array_lang_admin, $my_head, $my_footer, $array_mod_title, $array_url_instruction, $op, $client_info, $browser;
 
-    $dir_template = '';
-
     $file_name_tpl = $head_site == 1 ? 'main.tpl' : 'content.tpl';
     $admin_info['admin_theme'] = get_tpl_dir($admin_info['admin_theme'], 'admin_default', '/system/' . $file_name_tpl);
-    $dir_template = NV_ROOTDIR . '/themes/' . $admin_info['admin_theme'] . '/system';
 
     $global_config['site_name'] = empty($global_config['site_name']) ? NV_SERVER_NAME : $global_config['site_name'];
     !isset($global_config['admin_XSSsanitize']) && $global_config['admin_XSSsanitize'] = 1;
@@ -94,7 +91,7 @@ function nv_admin_theme($contents, $head_site = 1)
         $whitelisted_attr[] = 'frameborder';
         $whitelisted_attr[] = 'allowfullscreen';
     }
-    $xtpl = new XTemplate($file_name_tpl, $dir_template);
+    $xtpl = new XTemplate($file_name_tpl, NV_ROOTDIR . '/themes/' . $admin_info['admin_theme'] . '/system');
     $xtpl->assign('NV_SITE_COPYRIGHT', $global_config['site_name'] . ' [' . $global_config['site_email'] . '] ');
     $xtpl->assign('NV_SITE_NAME', $global_config['site_name']);
     $xtpl->assign('NV_SITE_TITLE', $global_config['site_name'] . NV_TITLEBAR_DEFIS . $nv_Lang->getGlobal('admin_page') . NV_TITLEBAR_DEFIS . $module_info['custom_title']);

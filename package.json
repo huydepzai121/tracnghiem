@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "bootstrap": "5.3.3",
+    "@fortawesome/fontawesome-free": "6.5.1"
+  },
+  "devDependencies": {
+    "sass": "^1.71.0"
+  },
+  "scripts": {
+    "admin-build": "sass --style expanded --source-map --source-map-urls=relative scss/admin_future/admin_future.scss:src/themes/admin_future/css/nv.style.css",
+    "admin-dev": "sass --watch --style expanded --source-map --source-map-urls=relative scss/admin_future/admin_future.scss:src/themes/admin_future/css/nv.style.css"
+  }
+}

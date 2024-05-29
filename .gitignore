@@ -37,7 +37,10 @@
 /src/assets/logo_*
 /src/install/default.php
 
+# Theme develop
 /src/composer.lock
+/node_modules
+/package-lock.json
 
 #vendor test ignore 
 /src/includes/vendor/**/demo/
