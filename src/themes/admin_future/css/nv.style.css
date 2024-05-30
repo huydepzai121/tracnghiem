@@ -25127,7 +25127,7 @@ readers do not read off random characters that represent icons */
 }
 
 .main-content {
-  margin-left: calc(14rem + 1px);
+  margin-left: 14rem;
   min-height: calc(100vh - 3.75rem - 3.75rem);
   margin-top: 3.75rem;
   transition: margin-left 0.2s ease-in-out;
@@ -25141,7 +25141,7 @@ readers do not read off random characters that represent icons */
 }
 
 .collapsed-left-sidebar .main-content {
-  margin-left: calc(3.75rem + 1px);
+  margin-left: 3.75rem;
 }
 @media (max-width: 767.98px) {
   .collapsed-left-sidebar .main-content {
@@ -25173,8 +25173,8 @@ readers do not read off random characters that represent icons */
 .site-brand {
   padding-top: calc((3.75rem - 1px - 3.125rem) / 2);
   padding-bottom: calc((3.75rem - 1px - 3.125rem) / 2);
-  flex-basis: calc(14rem + 1px);
-  width: calc(14rem + 1px);
+  flex-basis: 14rem;
+  width: 14rem;
   transition: width 0.2s ease-in-out, flex-basis 0.2s ease-in-out;
   overflow-x: hidden;
 }
@@ -25189,8 +25189,8 @@ readers do not read off random characters that represent icons */
 }
 @media (max-width: 767.98px) {
   .site-brand {
-    flex-basis: calc(3.75rem + 1px);
-    width: calc(3.75rem + 1px);
+    flex-basis: 3.75rem;
+    width: 3.75rem;
   }
   .site-brand .logo-sm {
     display: block;
@@ -25201,8 +25201,8 @@ readers do not read off random characters that represent icons */
 }
 
 .collapsed-left-sidebar .site-brand {
-  flex-basis: calc(3.75rem + 1px);
-  width: calc(3.75rem + 1px);
+  flex-basis: 3.75rem;
+  width: 3.75rem;
 }
 .collapsed-left-sidebar .logo-sm {
   display: block;
@@ -25273,9 +25273,12 @@ readers do not read off random characters that represent icons */
     width: 3.125rem;
   }
 }
-.header-right .main-icons > ul > li:hover > a, .header-right .main-icons > ul > li > a.show {
+.header-right .main-icons > ul > li:hover > a {
   background-color: #e5e5e5;
   color: gray;
+}
+.header-right .main-icons > ul > li > a.show {
+  color: #4285f4;
 }
 .header-right .admin-info {
   position: relative;
@@ -25345,6 +25348,7 @@ readers do not read off random characters that represent icons */
 .header-right .menu-sys-inner {
   max-height: calc(100vh - (0.5rem + 2 * var(--bs-border-width) + 0.125rem + 3.75rem + 0.5rem + 2rem));
   padding: 1rem;
+  overflow: hidden;
 }
 .header-right .menu-sys-items a {
   color: #666;
@@ -25357,12 +25361,29 @@ readers do not read off random characters that represent icons */
   --bs-dropdown-min-width: 18.75rem;
   width: 18.75rem;
 }
+.header-right .site-noti .indicator {
+  background-color: #4285f4;
+  border-radius: 50%;
+  display: block;
+  height: 0.375rem;
+  width: 0.375rem;
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(0.75rem, -0.75rem);
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0;
+}
+.header-right .site-noti .indicator.show {
+  opacity: 1;
+}
 .header-right .site-noti .noti-body .noti-lists {
   height: 18.75rem;
+  overflow: hidden;
 }
 
 .site-footer {
-  margin-left: calc(14rem + 1px);
+  margin-left: 14rem;
   height: 3.75rem;
   background-color: #f9f9f9;
   transition: margin-left 0.2s ease-in-out;
@@ -25374,7 +25395,7 @@ readers do not read off random characters that represent icons */
 }
 
 .collapsed-left-sidebar .site-footer {
-  margin-left: calc(3.75rem + 1px);
+  margin-left: 3.75rem;
 }
 @media (max-width: 767.98px) {
   .collapsed-left-sidebar .site-footer {
@@ -25609,11 +25630,17 @@ readers do not read off random characters that represent icons */
   .collapsed-left-sidebar .left-sidebar .sidebar-elements > li ul.visible .nav-items .nv-left-sidebar-scroller > .content > ul > li > a {
     padding-left: 1.5625rem;
   }
+  .collapsed-left-sidebar .left-sidebar .sidebar-elements > li ul.visible .nav-items .nv-left-sidebar-scroller > .content > ul > li > ul > li > a {
+    padding-left: 2.8125rem;
+  }
   .collapsed-left-sidebar .left-sidebar .sidebar-elements li.open > ul {
     display: none;
   }
   .collapsed-left-sidebar .left-sidebar .sidebar-elements li.open > ul.visible {
     display: table;
+  }
+  .collapsed-left-sidebar .left-sidebar .sidebar-elements li.open > ul li.open > ul {
+    display: block;
   }
   .collapsed-left-sidebar .left-sidebar .left-sidebar-wrapper {
     width: 3.75rem;
@@ -25637,6 +25664,7 @@ readers do not read off random characters that represent icons */
 }
 .right-sidebar .right-sidebar-inner {
   position: relative;
+  overflow: hidden;
   width: 100%;
   max-height: calc(100vh - 3.75rem - 2rem);
 }
@@ -25645,8 +25673,7 @@ readers do not read off random characters that represent icons */
   transform: translateX(0);
 }
 .open-right-sidebar .header-right .main-icons > ul > li > a[data-toggle=right-sidebar] {
-  background-color: #e5e5e5;
-  color: gray;
+  color: #4285f4;
 }
 
 .breadcrumb-wrap {
@@ -25698,6 +25725,41 @@ readers do not read off random characters that represent icons */
 }
 .breadcrumb-popover .list-group-item:last-child {
   border-bottom: 0;
+}
+
+.site-notis .notification .user-name {
+  color: #4285f4;
+}
+.site-notis .notification .date {
+  font-size: 0.6923rem;
+  color: #666;
+}
+.site-notis .notification a {
+  color: #666;
+}
+.site-notis .notification a:hover {
+  color: #fff;
+  background-color: #4285f4;
+}
+.site-notis .notification a:hover .user-name {
+  color: #fff;
+}
+.site-notis .notification a:hover .date {
+  color: #fff;
+}
+.site-notis .notification .image {
+  flex-basis: 2.375rem;
+  width: 2.375rem;
+  height: 2.375rem;
+}
+.site-notis .notification .image i {
+  font-size: 2.375rem;
+}
+.site-notis .notification .image img {
+  object-position: center;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 
 /*# sourceMappingURL=nv.style.css.map */

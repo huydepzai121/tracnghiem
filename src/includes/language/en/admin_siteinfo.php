@@ -161,6 +161,7 @@ $lang_module['notification'] = 'Notification';
 $lang_module['notification_empty'] = '<p align="center">No Notification!</p>';
 $lang_module['notification_module_auto_deactive'] = 'Module <strong />%s  has stopped operation due to error';
 $lang_module['notification_cronjobs_auto_deactive'] = 'Cronjobs <strong />%s  has stopped operation due to error';
-$lang_module['notification_hide'] = 'Hide this notification';
+$lang_module['notification_make_read'] = 'Mark as read';
+$lang_module['notification_make_unread'] = 'Mark as unread';
 $lang_module['notification_email_failure'] = 'Email failed. Subject <strong>%s</strong>, received email <strong>%s</strong>';
 $lang_module['server_config_file_changed'] = 'Server config file (%s) changed';

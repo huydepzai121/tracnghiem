@@ -356,6 +356,7 @@ $lang_global['all'] = 'All';
 $lang_global['unviewed'] = 'Unviewed';
 $lang_global['favorite'] = 'Favorite';
 $lang_global['viewall'] = 'View all';
+$lang_global['mark_read_all'] = 'Mark all as read';
 $lang_global['refresh'] = 'Refresh';
 $lang_global['inform_notifications'] = 'Notifications';
 $lang_global['content_ssl'] = 'This page is not encrypted for secure communication. User names, passwords, and any other information will be sent in clear text.';

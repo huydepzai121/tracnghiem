@@ -1,0 +1,46 @@
+.site-notis {
+    .notification {
+        .user-name {
+            color: $primary;
+        }
+
+        .date {
+            font-size: $notification-date-font-size;
+            color: $secondary;
+        }
+
+        a {
+            color: $body-color;
+
+            &:hover {
+                color: $white;
+                background-color: $primary;
+
+                .user-name {
+                    color: $white;
+                }
+
+                .date {
+                    color: $white;
+                }
+            }
+        }
+
+        .image {
+            flex-basis: $notification-image-size;
+            width: $notification-image-size;
+            height: $notification-image-size;
+
+            i {
+                font-size: $notification-image-size;
+            }
+
+            img {
+                object-position: center;
+                object-fit: cover;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+}

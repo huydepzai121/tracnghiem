@@ -3,7 +3,7 @@
 }
 
 .main-content {
-    margin-left: calc($left-sidebar-width + $left-sidebar-border-width);
+    margin-left: calc($left-sidebar-width);
     min-height: calc(100vh - $header-height - $footer-height);
     margin-top: $header-height;
     transition: margin-left .2s ease-in-out;
@@ -17,7 +17,7 @@
 
 .collapsed-left-sidebar {
     .main-content {
-        margin-left: calc($left-sidebar-width-sm + $left-sidebar-border-width);
+        margin-left: calc($left-sidebar-width-sm);
 
         @media (max-width: #{$theme-breakpoint}) {
             margin-left: 0;

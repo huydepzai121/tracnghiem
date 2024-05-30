@@ -57,7 +57,7 @@ if ($nv_Request->isset_request('notification_reset', 'post')) {
     WHERE view=0 AND (area = 1 OR area = 2) AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND language=' . $db->quote(NV_LANG_DATA) .
     ' AND ' . $sql_lev_admin;
     $db->query($sql);
-    nv_htmlOutput('');
+    nv_htmlOutput('OK');
 }
 
 // Lấy tổng số thông báo chưa xem
@@ -97,34 +97,75 @@ if ($nv_Request->isset_request('delete', 'post')) {
     if ($id) {
         $sql = 'DELETE FROM ' . NV_NOTIFICATION_GLOBALTABLE . '
         WHERE id=' . $id . ' AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND (area = 1 OR area = 2) AND language=\'' . NV_LANG_DATA . '\' AND ' . $sql_lev_admin;
-        $db->query($sql);
-        nv_htmlOutput('OK');
+        if ($db->exec($sql)) {
+            nv_htmlOutput('OK');
+        }
+    }
+
+    nv_htmlOutput('ERROR');
+}
+
+// Đánh dấu đã đọc/chưa đọc một thông báo
+if ($nv_Request->isset_request('toggle', 'post')) {
+    $id = $nv_Request->get_int('id', 'post', 0);
+    $direct_view = $nv_Request->get_int('direct_view', 'post', -1);
+    if ($direct_view == 1 or $direct_view == 0) {
+        $view = $direct_view;
+    } else {
+        $direct_view = -1;
+        $view = 'IF(view=0, 1, 0)';
+    }
+
+    if ($id) {
+        $sql = 'UPDATE ' . NV_NOTIFICATION_GLOBALTABLE . ' SET view=' . $view . '
+        WHERE id=' . $id . ' AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND (area = 1 OR area = 2) AND language=\'' . NV_LANG_DATA . '\' AND ' . $sql_lev_admin;
+        if ($db->exec($sql) or $direct_view != -1) {
+            $sql = "SELECT view FROM " . NV_NOTIFICATION_GLOBALTABLE . " WHERE id=" . $id;
+            nv_htmlOutput(intval($db->query($sql)->fetchColumn()));
+        }
     }
 
     nv_htmlOutput('ERROR');
 }
 
 $page = $nv_Request->get_int('page', 'get', 1);
+$last_id = $nv_Request->get_int('last_id', 'get', 0);
 $is_ajax = $nv_Request->isset_request('ajax', 'post,get');
 $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op;
-$per_page = $is_ajax ? 10 : 20;
+
+$where = 'language = "' . NV_LANG_DATA . '" AND (area = 1 OR area = 2) AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND ' . $sql_lev_admin;
+
+// Ajax lấy số thông báo bằng cách lấy dần từ id cuối, không phân trang
+if (!$is_ajax) {
+    $last_id = 0;
+    $per_page = 20;
+} else {
+    $page = 1;
+    $per_page = 10;
+}
+if ($last_id > 0) {
+    $where .= ' AND id>' . $last_id;
+}
+
 $array_data = [];
 
 $db->sqlreset()
     ->select('COUNT(*)')
     ->from(NV_NOTIFICATION_GLOBALTABLE)
-    ->where('language = "' . NV_LANG_DATA . '" AND (area = 1 OR area = 2) AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND ' . $sql_lev_admin);
+    ->where($where);
 
 $all_pages = $db->query($db->sql())
     ->fetchColumn();
 
 $db->select('*')
     ->order('id DESC')
-    ->limit($per_page)
-    ->offset(($page - 1) * $per_page);
+    ->limit($per_page);
+
+if (!$last_id) {
+    $db->offset(($page - 1) * $per_page);
+}
 
 $result = $db->query($db->sql());
-$num_rows = $result->rowCount();
 
 while ($data = $result->fetch()) {
     if (isset($admin_mods[$data['module']]) or isset($site_mods[$data['module']])) {
@@ -191,10 +232,21 @@ while ($data = $result->fetch()) {
 
 $xtpl = new XTemplate('notification.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/siteinfo');
 $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 
 if (!empty($array_data)) {
     foreach ($array_data as $data) {
+        $data['toggle_title'] = empty($data['view']) ? $nv_Lang->getModule('notification_make_read') : $nv_Lang->getModule('notification_make_unread');
+
         $xtpl->assign('DATA', $data);
+
+        if (empty($data['view'])) {
+            $xtpl->parse('main.loop.set_read');
+        } else {
+            $xtpl->parse('main.loop.set_unread');
+            $xtpl->parse('main.loop.read');
+        }
+
         $xtpl->parse('main.loop');
     }
 
@@ -211,7 +263,7 @@ if (!empty($array_data)) {
         $contents = $xtpl->text('main');
     }
 } elseif ($is_ajax) {
-    $contents = $page == 1 ? $nv_Lang->getModule('notification_empty') : '';
+    $contents = $last_id <= 0 ? $nv_Lang->getModule('notification_empty') : '';
 } else {
     if ($page != 1) {
         nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op);

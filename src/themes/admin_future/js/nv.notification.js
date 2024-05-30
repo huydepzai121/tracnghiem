@@ -31,22 +31,22 @@ $(document).ready(function() {
                 'notification_get': 1
             },
             success: function(data) {
-                console.log(data);
-                return;
-
-
-                var indicator = $('#main-notifications>.icon-notifications .indicator');
-                if (data.new > 0) {
-                    indicator.removeClass('d-none');
+                if (data.data_from_file > 0) {
+                    $('.indicator', ctn).addClass('show');
+                    $('.badge', ctn).text(data.total ?? data.data_from_file);
                 } else {
-                    indicator.addClass('d-none');
+                    $('.indicator', ctn).removeClass('show');
+                    $('.badge', ctn).text('0');
                 }
-                $('#main-notifications>.main-notifications>li>.title .badge').html(data.total);
-                timer = setTimeout("nv_get_notification()", 30000);
+                timer = setTimeout(() => {
+                    nv_get_notification();
+                }, 30000);
             },
             error: function(jqXHR, exception) {
                 console.log(jqXHR, exception);
-                timer = setTimeout("nv_get_notification()", 30000);
+                timer = setTimeout(() => {
+                    nv_get_notification();
+                }, 30000);
             }
         });
     }
@@ -63,6 +63,7 @@ $(document).ready(function() {
 
     // Cuộn xuống để xem nhiều thông báo hơn nữa
     ($('.noti-lists', ctn)[0]).addEventListener('ps-y-reach-end', function() {
+        return;
         page++;
         $('#main-notifications .loader').show();
         $.get(script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&ajax=1&page=' + page + '&nocache=' + new Date().getTime(), function(result) {
@@ -83,13 +84,12 @@ $(document).ready(function() {
         }
         notification_reset();
         $('.noti-lists-inner', ctn).html('');
-        //$('#main-notifications .loader').show();
+        $('.loader', ctn).removeClass('d-none');
         page = 1;
         $.get(script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&ajax=1&nocache=' + new Date().getTime(), function(result) {
             $('.noti-lists-inner', ctn).html(result);
-            //$('#main-notifications .nv-notification-scroller .content span.date').timeago();
-
-            //$('#main-notifications .loader').hide();
+            $('.date', ctn).timeago();
+            $('.loader', ctn).addClass('d-none');
             ps = new PerfectScrollbar($('.noti-lists', ctn)[0], {
                 wheelPropagation: false
             });
@@ -100,8 +100,15 @@ $(document).ready(function() {
      * Khi nhấp vô thông báo trên header
      * Đánh dấu thông báo đó là đã đọc
      */
-    $('#main-notifications .nv-notification-scroller .content').delegate('ul>li', 'click', function(e) {
-        if ($(this).hasClass('notification-unread')) {
+    $(ctn).delegate('.noti-item', 'click', function(e) {
+        var $this = $(this), ctn = $this.parent();
+        if (ctn.is('.notification-unread')) {
+            e.preventDefault();
+            if ($('.loader', ctn).is(':visible')) {
+                return;
+            }
+            $('.loader', ctn).removeClass('d-none');
+            return;
             $.ajax({
                 type: 'POST',
                 url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&nocache=' + new Date().getTime(),

@@ -20,5 +20,7 @@ nv_add_hook($module_name, 'get_module_admin_theme', $priority, function ($vars) 
     $module_info = $vars[2];
     $op = $vars[3];
 
+    $module_theme = 'admin_default';
+
     return $module_theme;
 });

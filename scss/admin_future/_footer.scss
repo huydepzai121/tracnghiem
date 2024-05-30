@@ -1,5 +1,5 @@
 .site-footer {
-    margin-left: calc($left-sidebar-width + $left-sidebar-border-width);
+    margin-left: calc($left-sidebar-width);
     height: $footer-height;
     background-color: $footer-bg;
     transition: margin-left .2s ease-in-out;
@@ -11,7 +11,7 @@
 
 .collapsed-left-sidebar {
     .site-footer {
-        margin-left: calc($left-sidebar-width-sm + $left-sidebar-border-width);
+        margin-left: calc($left-sidebar-width-sm);
 
         @media (max-width: #{$theme-breakpoint}) {
             margin-left: 0;

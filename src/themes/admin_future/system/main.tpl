@@ -21,17 +21,19 @@
                         </li>
                         {if not empty($GCONFIG.notification_active)}
                         <li class="dropdown-center site-noti" id="main-notifications">
-                            <a title="{$LANG->getGlobal('site_info')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-offset="0,11"><i class="fas fa-bell icon-vertical-center"></i></a>
+                            <a title="{$LANG->getGlobal('site_info')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-offset="0,11"><i class="fas fa-bell icon-vertical-center"></i><span class="indicator"></span></a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <div class="noti-heading text-center border-bottom pb-2 fw-medium">
-                                    {$LANG->getGlobal('inform_notifications')} <span class="badge rounded-pill text-bg-info">0</span>
+                                    {$LANG->getGlobal('inform_notifications')} <span class="badge rounded-pill text-bg-info">1,999</span>
                                 </div>
-                                <div class="noti-body p-1">
+                                <div class="noti-body site-notis position-relative">
                                     <div class="position-relative noti-lists">
-                                        <div class="noti-lists-inner"></div>
+                                        <div class="noti-lists-inner">
+                                        </div>
                                     </div>
+                                    <div class="loader position-absolute bottom-0 start-50 translate-middle-x d-none"><i class="fa-solid fa-spinner fa-spin-pulse"></i></div>
                                 </div>
-                                <div class="noti-footer text-center border-top pt-2">
+                                <div class="noti-footer text-center border-top pt-2 fw-medium">
                                     <a href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}=siteinfo&amp;{$smarty.const.NV_OP_VARIABLE}=notification">{$LANG->getGlobal('view_all')}</a>
                                 </div>
                             </div>
@@ -148,7 +150,7 @@
                     <ul class="sidebar-elements">
                         {if !empty($SELECT_OPTIONS)}
                         <li class="parent open">
-                            <a href="#"><i class="fas fa-hand-pointer icon" title="{$LANG->get('please_select')}"></i><span>{$LANG->get('please_select')}</span><span class="toggle"><i class="fas"></i></span></a>
+                            <a href="#"><i class="fas fa-hand-pointer icon" title="{$LANG->get('please_select')}" data-bs-trigger="hover" data-bs-placement="right"></i><span>{$LANG->get('please_select')}</span><span class="toggle"><i class="fas"></i></span></a>
                             <ul class="sub-menu">
                                 <li class="title">{$LANG->get('please_select')}</li>
                                 <li class="nav-items">
@@ -156,7 +158,7 @@
                                         <div class="content">
                                             <ul>
                                                 {foreach from=$SELECT_OPTIONS key=seloptlink item=selopttitle}
-                                                <li><a href="{$seloptlink}"><span>{$selopttitle}</span></a></li>
+                                                <li><a href="{$seloptlink}" title="{$selopttitle}"><span>{$selopttitle}</span></a></li>
                                                 {/foreach}
                                             </ul>
                                         </div>
@@ -168,7 +170,7 @@
                         {if !empty($MOD_CURRENT)}
                         <li class="divider">{$LANG->get('interface_current_menu')}</li>
                         <li class="{if !empty($MOD_CURRENT['subs'])}parent {/if}active{if empty($CONFIG_THEME['collapsed_leftsidebar'])} open{/if}">
-                            <a href="{$MOD_CURRENT.link}"><i class="{$MOD_CURRENT.icon} icon" title="{$MOD_CURRENT.title}"></i><span>{$MOD_CURRENT.title}</span>{if !empty($MOD_CURRENT['subs'])}<span class="toggle"><i class="fas"></i></span>{/if}</a>
+                            <a href="{$MOD_CURRENT.link}" title="{$MOD_CURRENT.title}"><i class="{$MOD_CURRENT.icon} icon" title="{$MOD_CURRENT.title}" data-bs-trigger="hover" data-bs-placement="right"></i><span>{$MOD_CURRENT.title}</span>{if !empty($MOD_CURRENT['subs'])}<span class="toggle"><i class="fas"></i></span>{/if}</a>
                             {if !empty($MOD_CURRENT['subs'])}
                             <ul class="sub-menu">
                                 <li class="title">{$MOD_CURRENT.title}</li>
@@ -176,19 +178,19 @@
                                     <div class="nv-left-sidebar-scroller">
                                         <div class="content">
                                             <ul>
-                                                <li class="f-link{if $MOD_CURRENT['active']} active{/if}"><a href="{$MOD_CURRENT.link}">{$LANG->get('Home')}</a></li>
+                                                <li class="f-link{if $MOD_CURRENT['active']} active{/if}" title="{$LANG->get('Home')}"><a href="{$MOD_CURRENT.link}">{$LANG->get('Home')}</a></li>
                                                 {foreach from=$MOD_CURRENT['subs'] item=crrsub}
                                                 {if not empty($crrsub['subs'])}
                                                 <li class="parent{if $crrsub['active']} active{/if}{if $crrsub['open']} open{/if}">
-                                                    <a href="{$crrsub.link}"><span>{$crrsub.title}</span><span class="toggle"><i class="fas"></i></span></a>
+                                                    <a href="{$crrsub.link}" title="{$crrsub.title}"><span>{$crrsub.title}</span><span class="toggle"><i class="fas"></i></span></a>
                                                     <ul class="sub-menu">
                                                         {foreach from=$crrsub['subs'] item=crrsublv2}
-                                                        <li{if $crrsublv2['active']} class="active"{/if}><a href="{$crrsublv2.link}"><span>{$crrsublv2.title}</span></a></li>
+                                                        <li{if $crrsublv2['active']} class="active"{/if}><a href="{$crrsublv2.link}" title="{$crrsublv2.title}"><span>{$crrsublv2.title}</span></a></li>
                                                         {/foreach}
                                                     </ul>
                                                 </li>
                                                 {else}
-                                                <li{if $crrsub['active']} class="active"{/if}><a href="{$crrsub.link}"><span>{$crrsub.title}</span></a></li>
+                                                <li{if $crrsub['active']} class="active"{/if}><a href="{$crrsub.link}" title="{$crrsub.title}"><span>{$crrsub.title}</span></a></li>
                                                 {/if}
                                                 {/foreach}
                                             </ul>
@@ -203,7 +205,7 @@
                         <li class="divider">{$LANG->get('interface_other_menu')}</li>
                         {foreach from=$MOD_MENU item=rowmenu}
                         <li{if !empty($rowmenu['subs'])} class="parent"{/if}>
-                            <a href="{$rowmenu.link}"><i class="{$rowmenu.icon} icon" title="{$rowmenu.title}"></i><span>{$rowmenu.title}</span>{if !empty($rowmenu['subs'])}<span class="toggle"><i class="fas"></i></span>{/if}</a>
+                            <a href="{$rowmenu.link}" title="{$rowmenu.title}"><i class="{$rowmenu.icon} icon" title="{$rowmenu.title}" data-bs-trigger="hover" data-bs-placement="right"></i><span>{$rowmenu.title}</span>{if !empty($rowmenu['subs'])}<span class="toggle"><i class="fas"></i></span>{/if}</a>
                             {if !empty($rowmenu['subs'])}
                             <ul class="sub-menu">
                                 <li class="title">{$rowmenu.title}</li>
@@ -215,15 +217,15 @@
                                                 {foreach from=$rowmenu['subs'] item=smenutitle key=smenukey}
                                                 {if is_array($smenutitle)}
                                                 <li class="parent">
-                                                    <a href="{$NV_BASE_ADMINURL}index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$rowmenu.name}&amp;{$NV_OP_VARIABLE}={$smenukey}"><span>{$smenutitle.title}</span><span class="toggle"><i class="fas"></i></span></a>
+                                                    <a href="{$NV_BASE_ADMINURL}index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$rowmenu.name}&amp;{$NV_OP_VARIABLE}={$smenukey}" title="{$smenutitle.title}"><span>{$smenutitle.title}</span><span class="toggle"><i class="fas"></i></span></a>
                                                     <ul class="sub-menu">
                                                         {foreach from=$smenutitle.submenu item=sublv2 key=keysublv2}
-                                                        <li><a href="{$NV_BASE_ADMINURL}index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$rowmenu.name}&amp;{$NV_OP_VARIABLE}={$keysublv2}"><span>{$sublv2}</span></a></li>
+                                                        <li><a href="{$NV_BASE_ADMINURL}index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$rowmenu.name}&amp;{$NV_OP_VARIABLE}={$keysublv2}" title="{$sublv2}"><span>{$sublv2}</span></a></li>
                                                         {/foreach}
                                                     </ul>
                                                 </li>
                                                 {else}
-                                                <li><a href="{$NV_BASE_ADMINURL}index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$rowmenu.name}&amp;{$NV_OP_VARIABLE}={$smenukey}">{$smenutitle}</a></li>
+                                                <li><a href="{$NV_BASE_ADMINURL}index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$rowmenu.name}&amp;{$NV_OP_VARIABLE}={$smenukey}" title="{$smenutitle}">{$smenutitle}</a></li>
                                                 {/if}
                                                 {/foreach}
                                             </ul>

@@ -46,6 +46,15 @@
  - Site Modal
  ========================================================================== */
 
+:root {
+    --nv-color-primary: #0074a2;
+    --nv-color-header: #101010;
+    --nv-color-danger: #d9534f;
+    --nv-color-dark: #000;
+    --nv-bg-color-info: #d9edf7;
+    --nv-bg-color-info-hover: #b5ddf1;
+}
+
 /* Global */
 
 html,
@@ -64,7 +73,7 @@ select {
 }
 
 a {
-    color: #0074a2;
+    color: var(--nv-color-primary);
     text-decoration: none;
     -webkit-transition-property: border, background, color;
     -moz-transition-property: border, background, color;
@@ -308,7 +317,7 @@ h6 {
 
 #header {
     height: 52px;
-    background: #101010;
+    background: var(--nv-color-header);
 }
 
 #header div.logo {
@@ -872,6 +881,7 @@ input[type='radio'] {
     width: 16px;
     min-width: 16px;
     -webkit-appearance: none;
+    appearance: none;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     color: #555;
@@ -978,7 +988,7 @@ label:not(.control-label) {
 }
 
 .breadcrumb > li:first-child {
-    color: #0074a2 !important;
+    color: var(--nv-color-primary) !important;
 }
 
 /* ==========================================================================
@@ -1109,24 +1119,69 @@ label:not(.control-label) {
 
 #notification_load .notify_item {
     border-top: 1px solid #424141;
+    position: relative;
 }
 
-#notification_load .notify_item .ntf-hide {
+#notification_load .notify_item .tools,
+#notification-lists .notify_item .tools {
     display: none;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
 }
 
-#notification_load .notify_item a {
+#notification_load .notify_item:hover .tools,
+#notification-lists .notify_item:hover .tools {
+    display: flex;
+}
+
+#notification_load .notify_item .tools a,
+#notification-lists .notify_item .tools a {
+    background-color: #eee;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    margin-left: 10px;
+    border-radius: 50%;
+    position: relative;
+}
+
+#notification_load .notify_item .tools a i,
+#notification-lists .notify_item .tools a i {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--nv-color-primary);
+}
+
+#notification_load .notify_item .tools a.ntf-delete i,
+#notification-lists .notify_item .tools a.ntf-delete i {
+    color: var(--nv-color-danger);
+}
+
+#notification_load .notify_item .body-noti {
     display: block;
     width: 100%;
     padding: 10px !important;
     line-height: 20px;
+    background-color: #555;
 }
 
-#notification_load .notify_item a:hover {
-    text-decoration: none;
+#notification_load .notify_item:hover .body-noti {
+    background-color: #5a5a5a;
 }
 
-#notification_load .notify_item a img {
+#notification_load .notify_item .body-noti.noti-read {
+    background-color: #333;
+}
+
+#notification_load .notify_item:hover .body-noti.noti-read {
+    background-color: #3a3a3a;
+}
+
+#notification_load .notify_item .body-noti img {
     max-width: 40px;
     margin: 0 5px 5px 0;
 }
@@ -1189,6 +1244,7 @@ button.close {
     background: 0 0;
     border: 0;
     -webkit-appearance: none;
+    appearance: none;
 }
 
 .close {

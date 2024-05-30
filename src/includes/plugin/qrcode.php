@@ -18,6 +18,7 @@ nv_add_hook($module_name, 'get_qr_code', $priority, function ($vars) {
     if ($nv_Request->get_string('second', 'get') == 'qr') {
         $url = $nv_Request->get_string('u', 'get', '');
         if (!empty($url)) {
+            $url = nv_substr($url, 0, 400);
             // instantiate the barcode class
             $barcode = new Com\Tecnick\Barcode\Barcode();
             // generate a barcode
