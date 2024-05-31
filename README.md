@@ -11,6 +11,88 @@ NukeViet fully supports multi-languages for internationalization and localizatio
 
 Detailed information about Nukeviet at Wikipedia Encyclopedia: http://vi.wikipedia.org/wiki/NukeViet
 
+## Getting Started
+
+### For users
+
+**Requirements:**  
+- OS: Unix (Linux, Ubuntu, Fedora ...) or Windows
+- PHP: From PHP 7.4 to PHP 8.3
+- MySQL: MySQL 5.5 or newer
+
+**Installation:**
+
+- Download the source code to your computer and unzip it.
+- Upload all files and subdirectories in the `src` directory to the to the desired location on your web server:
+    - If you want to integrate NukeViet into the root of your domain (e.g. http://example.com/), upload all contents of the unzipped `src` directory into the root directory of your web server.
+    - If you want to have your NukeViet installation in its own subdirectory on your website (e.g. http://example.com/subdir/), create the subdir directory on your server and upload the contents of the unzipped `src` directory to the directory via FTP.
+- Access the website by internet browser to install:
+    - If you installed NukeViet in the root directory, you should visit: http://example.com/
+    - If you installed NukeViet in its own subdirectory called subdir, for example, you should visit: http://example.com/subdir/
+
+**Next step:**
+
+Please see the [user manual](https://wiki.nukeviet.vn/nukeviet4) for more information.
+
+### For developers
+
+If you only need to develop modules, themes, blocks, plugins. You just need to read the Getting Started For Users above. If you are planning on core development or testing, please follow this guide:
+
+**Requirements:**  
+- Node.JS v18.17+
+- NPM v10.5+
+- Git
+- Webserver is similar to the requirements for the user. However, PHP version 8.0 or higher is required.
+- Composer v2.6+
+
+**Installation:**
+
+Get the source code:
+
+```bash
+git clone https://github.com/nukeviet/nukeviet.git
+cd nukeviet
+git checkout nukeviet4.6
+```
+
+Install the necessary libraries:
+
+```bash
+npm install
+composer install
+```
+
+Prepare Selenium server:
+
+```bash
+npm install selenium-standalone -g
+selenium-standalone install
+```
+
+Launch this command in a separate terminal and keep it running:
+
+```bash
+selenium-standalone start
+```
+
+Prepare the web server with the webroot pointing to the `src` directory. Copy the .env.example file to .env, then open it and fill in all the necessary information.
+
+If you want to run the full test suite, use the command.
+
+```bash
+php vendor/bin/codecept run
+```
+
+If you want to quickly test the PHP unit tests, use the command. With unit tests, it is required that you have successfully set up the website beforehand.
+
+```bash
+php vendor/bin/codecept run Unit
+```
+
+**Next step:**
+
+Please see the [technical manual](https://wiki.nukeviet.vn/technical_manual4) for more information.
+
 ## Licensing
 NukeViet is released under GNU/GPL version 2 or any later version.
 

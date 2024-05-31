@@ -311,11 +311,11 @@
 </aside>
 {/if}
 <footer class="site-footer border-top px-4 d-flex align-items-center justify-content-between">
-    <div class="site-copyright">
+    <div class="site-copyright text-truncate me-3">
         {if $smarty.const.NV_IS_SPADMIN and $ADMIN_INFO.level eq 1}
-        <div class="memory-time-usage text-truncate">[MEMORY_TIME_USAGE]</div>
+        <div class="memory-time-usage" title="[MEMORY_TIME_USAGE]">[MEMORY_TIME_USAGE]</div>
         {/if}
-        <div class="text-truncate fw-medium">{$LANG->getGlobal('copyright', $GCONFIG.site_name)}</div>
+        <div class="fw-medium" title="{$LANG->getGlobal('copyright', $GCONFIG.site_name)}">{$LANG->getGlobal('copyright', $GCONFIG.site_name)}</div>
     </div>
     <div class="img-stat">
         <a title="NUKEVIET CMS" href="https://nukeviet.vn" target="_blank"><img alt="NUKEVIET CMS" src="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ASSETS_DIR}/images/banner_nukeviet_88x15.jpg" width="88" height="15" class="imgstatnkv"></a>
