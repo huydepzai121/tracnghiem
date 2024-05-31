@@ -90,7 +90,7 @@ $(document).ready(function() {
     /**
      * Điều khiển menu trái
      */
-    var lBar = $('#left-sidebar'), nvLBarSubsScroller = {}, nvLBarScroller;
+    var lBar = $('#left-sidebar'), nvLBarSubsScroller = {}, nvLBarScroller, lBarTips = [];
     var nvLBarScroll = $('.left-sidebar-scroll', lBar);
 
     // Menu trái thu gọn hay không?
@@ -118,6 +118,27 @@ $(document).ready(function() {
         $.each(nvLBarSubsScroller, function(k) {
             nvLBarSubsScroller[k].update();
         });
+    }
+
+    // Xóa tooltip ở menu thu gọn
+    function setLbarTip() {
+        if (lBarTips.length > 0) {
+            return;
+        }
+        $('.icon', lBar).each(function(k) {
+            lBarTips[k] = new bootstrap.Tooltip(this);
+        });
+    }
+
+    // Set tooltip ở menu thu gọn
+    function removeLbarTip() {
+        if (lBarTips.length <= 0) {
+            return;
+        }
+        for (var i = 0; i < lBarTips.length; i++) {
+            lBarTips[i].dispose();
+        }
+        lBarTips = [];
     }
 
     // Điều khiển mở menu cấp 2,3 ở dạng thu gọn
@@ -195,12 +216,22 @@ $(document).ready(function() {
         });
     }
 
+    // Tip menu trái ở chế độ thu gọn
+    if (isCollapsibleLeftSidebar() && !$.isSm()) {
+        setLbarTip();
+    }
+
     var lBarTimer;
     $(window).resize(function() {
         if (lBarTimer) {
             clearTimeout(lBarTimer);
         }
         lBarTimer = setTimeout(() => {
+            if (isCollapsibleLeftSidebar() && !$.isSm()) {
+                setLbarTip();
+            } else {
+                removeLbarTip();
+            }
             if ($.isSm()) {
                 if (nvLBarScroller) {
                     nvLBarScroller.destroy();
@@ -263,7 +294,11 @@ $(document).ready(function() {
             // Mở rộng
             $('ul.sub-menu.visible', lBar).removeClass('visible');
             // Xóa bỏ các thanh cuộn ở menu con
-            destroyLBarSubsScroller()
+            destroyLBarSubsScroller();
+            removeLbarTip();
+        } else {
+            // Thu gọn
+            setLbarTip();
         }
         $('body').toggleClass('collapsed-left-sidebar');
         $.ajax({

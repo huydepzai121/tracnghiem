@@ -16,17 +16,6 @@
     cursor: pointer;
 }
 
-.tooltip {
-    font: 11px Tahoma, Arial, Verdana, sans-serif;
-    cursor: pointer;
-    display: none;
-}
-
-.tooltiptitle {
-    font: 800 12px Tahoma, Arial, Verdana, sans-serif;
-    margin-bottom: 10px;
-}
-
 .author {
     vertical-align: top;
     width: 100px;
@@ -81,6 +70,11 @@
 /* Notification lists */
 #notification-lists .notify_item {
     border-bottom: 1px solid #ddd;
+    position: relative;
+}
+
+#notification-lists .notify_item .tools a {
+    background-color: #ddd;
 }
 
 #notification-lists .notify_item > a {
@@ -98,12 +92,12 @@
     margin-right: 10px;
 }
 
-#notification-lists .notify_item .ntf-hide {
-    color: #ddd;
+#notification-lists .notify_item .body-noti:not(.noti-read) {
+    background-color: var(--nv-bg-color-info);
 }
 
-#notification-lists .notify_item:hover .ntf-hide {
-    color: inherit;
+#notification-lists .notify_item .body-noti:not(.noti-read):hover {
+    background-color: var(--nv-bg-color-info-hover);
 }
 
 .notification-pages {

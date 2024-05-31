@@ -84,6 +84,7 @@
                         <div id="notification_more">
                             <div class="text-center">
                                 <a href="{NV_GO_ALL_NOTIFICATION}">{LANG.view_all}</a>
+                                <a href="#" data-toggle="markallnoti">{LANG.mark_read_all}</a>
                             </div>
                         </div>
                     </div>

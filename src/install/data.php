@@ -264,5 +264,6 @@ $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_plugins (pid, pl
 (3, 'emf_code_user.php', 'get_email_merge_fields', 'users', 'users', 1),
 (4, 'emf_core_author.php', 'get_email_merge_fields', '', '', 2),
 (5, 'emf_all.php', 'get_email_merge_fields', '', '', 3),
+(998, 'get_module_admin_theme.php', 'get_module_admin_theme', '', '', 1),
 (999, 'get_global_admin_theme.php', 'get_global_admin_theme', '', '', 1)
 ";
