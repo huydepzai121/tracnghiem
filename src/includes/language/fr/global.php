@@ -359,6 +359,7 @@ $lang_global['viewall'] = 'Voir tout';
 $lang_global['mark_read_all'] = 'Tout marquer comme lu';
 $lang_global['refresh'] = 'Rafraîchir';
 $lang_global['inform_notifications'] = 'Notifications';
+$lang_global['inform_unread'] = 'Notification non lue';
 $lang_global['content_ssl'] = 'Cette page n\'est pas cryptée pour une communication sécurisée. Les noms d\'utilisateur, mots de passe et toute autre information seront envoyés en texte clair.';
 $lang_global['warning_ssl'] = 'Avertissement';
 $lang_global['error_code_1'] = 'Adresse donnée n\'est pas bonne, veuillez la vérifier.';

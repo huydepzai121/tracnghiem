@@ -60,53 +60,58 @@ if ($nv_Request->isset_request('notification_reset', 'post')) {
     nv_htmlOutput('OK');
 }
 
+/**
+ * Lấy số thông báo chưa đọc
+ */
+function get_unread_notification()
+{
+    global $db, $allowed_mods, $sql_lev_admin;
+
+    $sql = 'SELECT COUNT(id) FROM ' . NV_NOTIFICATION_GLOBALTABLE . ' WHERE language="' . NV_LANG_DATA . '"
+    AND (area = 1 OR area = 2) AND view=0 AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND ' . $sql_lev_admin;
+    $count = (int) $db->query($sql)->fetchColumn();
+
+    return [
+        'count' => $count,
+        'count_formatted' => number_format($count)
+    ];
+}
+
 // Lấy tổng số thông báo chưa xem
 if ($nv_Request->isset_request('notification_get', 'post')) {
     if (!defined('NV_IS_AJAX')) {
         exit('Wrong URL');
     }
-
-    $last_time_call = $nv_Request->get_int('timestamp', 'post', 0);
-    $last_time = 0;
-    $count = 0;
-    $return = [];
-
-    $sql = 'SELECT add_time FROM ' . NV_NOTIFICATION_GLOBALTABLE . ' WHERE language="' . NV_LANG_DATA . '"
-    AND (area = 1 OR area = 2) AND view=0 AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND ' . $sql_lev_admin . '
-    ORDER BY id DESC';
-    $result = $db->query($sql);
-    $count = $result->rowCount();
-    if ($result) {
-        $last_time = $result->fetchColumn();
-    }
-
-    if ($last_time > $last_time_call) {
-        $return = [
-            'data_from_file' => $count,
-            'timestamp' => $last_time
-        ];
-    }
-
-    nv_jsonOutput($return);
+    nv_jsonOutput(get_unread_notification());
 }
 
 // Xóa một thông báo
 if ($nv_Request->isset_request('delete', 'post')) {
+    $respon = [
+        'error' => 1,
+        'data' => []
+    ];
     $id = $nv_Request->get_int('id', 'post', 0);
 
     if ($id) {
         $sql = 'DELETE FROM ' . NV_NOTIFICATION_GLOBALTABLE . '
         WHERE id=' . $id . ' AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND (area = 1 OR area = 2) AND language=\'' . NV_LANG_DATA . '\' AND ' . $sql_lev_admin;
         if ($db->exec($sql)) {
-            nv_htmlOutput('OK');
+            $respon['error'] = 0;
         }
     }
-
-    nv_htmlOutput('ERROR');
+    $respon['data'] = get_unread_notification();
+    nv_jsonOutput($respon);
 }
 
 // Đánh dấu đã đọc/chưa đọc một thông báo
 if ($nv_Request->isset_request('toggle', 'post')) {
+    $respon = [
+        'error' => 1,
+        'data' => [],
+        'view' => null
+    ];
+
     $id = $nv_Request->get_int('id', 'post', 0);
     $direct_view = $nv_Request->get_int('direct_view', 'post', -1);
     if ($direct_view == 1 or $direct_view == 0) {
@@ -121,11 +126,13 @@ if ($nv_Request->isset_request('toggle', 'post')) {
         WHERE id=' . $id . ' AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND (area = 1 OR area = 2) AND language=\'' . NV_LANG_DATA . '\' AND ' . $sql_lev_admin;
         if ($db->exec($sql) or $direct_view != -1) {
             $sql = "SELECT view FROM " . NV_NOTIFICATION_GLOBALTABLE . " WHERE id=" . $id;
-            nv_htmlOutput(intval($db->query($sql)->fetchColumn()));
+            $respon['error'] = 0;
+            $respon['view'] = intval($db->query($sql)->fetchColumn());
         }
     }
 
-    nv_htmlOutput('ERROR');
+    $respon['data'] = get_unread_notification();
+    nv_jsonOutput($respon);
 }
 
 $page = $nv_Request->get_int('page', 'get', 1);
@@ -144,7 +151,7 @@ if (!$is_ajax) {
     $per_page = 10;
 }
 if ($last_id > 0) {
-    $where .= ' AND id>' . $last_id;
+    $where .= ' AND id<' . $last_id;
 }
 
 $array_data = [];
@@ -198,20 +205,17 @@ while ($data = $result->fetch()) {
         if (isset($site_mods[$data['module']]) and file_exists(NV_ROOTDIR . '/modules/' . $site_mods[$data['module']]['module_file'] . '/notification.php')) {
             // Hien thi thong bao tu cac module site
             if ($data['send_from'] > 0) {
-                $user_info = $db->query('SELECT username, first_name, last_name, photo FROM ' . NV_USERS_GLOBALTABLE . ' WHERE userid = ' . $data['send_from'])->fetch();
-                if ($user_info) {
-                    $data['send_from'] = nv_show_name_user($user_info['first_name'], $user_info['last_name'], $user_info['username']);
+                $user = $db->query('SELECT username, first_name, last_name, photo FROM ' . NV_USERS_GLOBALTABLE . ' WHERE userid = ' . $data['send_from'])->fetch();
+                if ($user) {
+                    $data['send_from'] = nv_show_name_user($user['first_name'], $user['last_name'], $user['username']);
                 } else {
                     $data['send_from'] = $nv_Lang->getGlobal('level5');
                 }
 
-                if (!empty($user_info['photo'])) {
-                    $data['photo'] = NV_STATIC_URL . $user_info['photo'];
-                } else {
-                    $data['photo'] = NV_STATIC_URL . 'themes/default/images/users/no_avatar.png';
+                if (!empty($user['photo'])) {
+                    $data['photo'] = NV_STATIC_URL . $user['photo'];
                 }
             } else {
-                $data['photo'] = NV_STATIC_URL . 'themes/default/images/users/no_avatar.png';
                 $data['send_from'] = $nv_Lang->getGlobal('level5');
             }
 
@@ -219,6 +223,8 @@ while ($data = $result->fetch()) {
             $nv_Lang->loadModule($site_mods[$data['module']]['module_file'], false, true);
 
             include NV_ROOTDIR . '/modules/' . $site_mods[$data['module']]['module_file'] . '/notification.php';
+        } else {
+            $data['send_from'] = $nv_Lang->getGlobal('system');
         }
 
         $data['add_time_iso'] = nv_date("Y-m-d\TH:i:sO", $data['add_time']);
@@ -230,6 +236,20 @@ while ($data = $result->fetch()) {
     }
 }
 
+// FIXME Dev xong giao diện admin_future thì xử lý lại
+if ($is_ajax and $nv_Request->get_title('template', 'get', '') == 'admin_future') {
+    $tpl = new NukeViet\Template\NVSmarty();
+    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
+    $tpl->assign('LANG', $nv_Lang);
+    $tpl->assign('DATA', $array_data);
+    $tpl->assign('LAST_ID', $last_id);
+
+    $contents = $tpl->fetch('notification_ajax.tpl');
+    nv_jsonOutput([
+        'html' => nv_url_rewrite(trim($contents))
+    ]);
+}
+
 $xtpl = new XTemplate('notification.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/siteinfo');
 $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
@@ -237,6 +257,9 @@ $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 if (!empty($array_data)) {
     foreach ($array_data as $data) {
         $data['toggle_title'] = empty($data['view']) ? $nv_Lang->getModule('notification_make_read') : $nv_Lang->getModule('notification_make_unread');
+        if (empty($data['photo'])) {
+            $data['photo'] = NV_STATIC_URL . 'themes/default/images/users/no_avatar.png';
+        }
 
         $xtpl->assign('DATA', $data);
 
@@ -273,6 +296,12 @@ if (!empty($array_data)) {
     $contents = $xtpl->text('empty');
 }
 
+if ($is_ajax) {
+    nv_jsonOutput([
+        'html' => nv_url_rewrite(trim($contents))
+    ]);
+}
+
 include NV_ROOTDIR . '/includes/header.php';
-echo $is_ajax ? $contents : nv_admin_theme($contents);
+echo nv_admin_theme($contents);
 include NV_ROOTDIR . '/includes/footer.php';

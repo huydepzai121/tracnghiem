@@ -20,11 +20,11 @@
                             <a title="{$LANG->getGlobal('go_clientsector')}" href="{$smarty.const.NV_BASE_SITEURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={if empty($SITE_MODS)}{$smarty.const.NV_LANG_DATA}{else}{$GCONFIG.site_lang}{/if}" class="fs-3"><i class="fas fa-home icon-vertical-center"></i></a>
                         </li>
                         {if not empty($GCONFIG.notification_active)}
-                        <li class="dropdown-center site-noti" id="main-notifications">
+                        <li class="dropdown-center site-noti" id="main-notifications" data-enable="true">
                             <a title="{$LANG->getGlobal('site_info')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-offset="0,11"><i class="fas fa-bell icon-vertical-center"></i><span class="indicator"></span></a>
-                            <div class="dropdown-menu dropdown-menu-end">
+                            <div class="dropdown-menu dropdown-menu-end pb-0">
                                 <div class="noti-heading text-center border-bottom pb-2 fw-medium">
-                                    {$LANG->getGlobal('inform_notifications')} <span class="badge rounded-pill text-bg-info">1,999</span>
+                                    {$LANG->getGlobal('inform_unread')} <span class="badge rounded-pill text-bg-info" data-count="0">..</span>
                                 </div>
                                 <div class="noti-body site-notis position-relative">
                                     <div class="position-relative noti-lists">
@@ -33,8 +33,9 @@
                                     </div>
                                     <div class="loader position-absolute bottom-0 start-50 translate-middle-x d-none"><i class="fa-solid fa-spinner fa-spin-pulse"></i></div>
                                 </div>
-                                <div class="noti-footer text-center border-top pt-2 fw-medium">
-                                    <a href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}=siteinfo&amp;{$smarty.const.NV_OP_VARIABLE}=notification">{$LANG->getGlobal('view_all')}</a>
+                                <div class="noti-footer border-top d-flex flex-nowrap">
+                                    <a class="w-50 fw-medium border-end text-center text-truncate p-2" href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}=siteinfo&amp;{$smarty.const.NV_OP_VARIABLE}=notification">{$LANG->getGlobal('view_all')}</a>
+                                    <a class="w-50 fw-medium text-center text-truncate p-2 markall" href="#">{$LANG->getGlobal('mark_read_all')}</a>
                                 </div>
                             </div>
                         </li>

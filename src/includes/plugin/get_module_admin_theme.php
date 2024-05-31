@@ -20,7 +20,10 @@ nv_add_hook($module_name, 'get_module_admin_theme', $priority, function ($vars) 
     $module_info = $vars[2];
     $op = $vars[3];
 
-    $module_theme = 'admin_default';
+    $new_theme = 'admin_future';
+    if ($module_name == 'siteinfo' and $op == 'notification' and ($_GET['ajax'] ?? 0) == 1 and ($_GET['template'] ?? '') == $new_theme) {
+        return $new_theme;
+    }
 
-    return $module_theme;
+    return 'admin_default';
 });

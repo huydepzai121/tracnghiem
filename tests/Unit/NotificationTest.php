@@ -56,7 +56,7 @@ class NotificationTest extends \Codeception\Test\Unit
             ], 8],
         ];
         foreach ($notis_news as $noti) {
-            $check = nv_insert_notification('news', 'post_queue', $noti[0], $noti[1]);
+            $check = nv_insert_notification('news', 'post_queue', $noti[0], $noti[1], 0, 1);
             $this->assertGreaterThan(0, $check);
         }
     }

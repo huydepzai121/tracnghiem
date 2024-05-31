@@ -256,5 +256,26 @@
                 overflow: hidden;
             }
         }
+
+        .noti-footer {
+            a {
+                background-color: $gray-100;
+                transition: $nav-link-transition;
+                color: $body-color;
+
+                &:hover {
+                    background-color: darken($gray-100, 10);
+                    color: darken($body-color, 10);
+                }
+
+                &:first-child {
+                    border-bottom-left-radius: calc($border-radius - $border-width);
+                }
+
+                &:last-child {
+                    border-bottom-right-radius: calc($border-radius - $border-width);
+                }
+            }
+        }
     }
 }

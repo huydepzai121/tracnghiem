@@ -1,5 +1,29 @@
 .site-notis {
     .notification {
+        .tools {
+            position: absolute;
+            right: 1rem;
+            top: calc(1rem + $notification-image-size / 2 - .75rem);
+
+            a {
+                width: 1.5rem;
+                height: 1.5rem;
+                background-color: $white;
+                box-shadow: $box-shadow-sm;
+                font-size: .625rem;
+                display: none;
+                line-height: calc(1.5rem + 2px);
+            }
+        }
+
+        &.notification-unread {
+            --bs-border-color: #{darken($info-bg-subtle, 10)};
+
+            .noti-item {
+                background-color: $notification-unread-bg;
+            }
+        }
+
         .user-name {
             color: $primary;
         }
@@ -9,10 +33,12 @@
             color: $secondary;
         }
 
-        a {
+        .noti-item {
             color: $body-color;
+        }
 
-            &:hover {
+        &:hover {
+            .noti-item {
                 color: $white;
                 background-color: $primary;
 
@@ -22,6 +48,12 @@
 
                 .date {
                     color: $white;
+                }
+            }
+
+            .tools {
+                a {
+                    display: block;
                 }
             }
         }
