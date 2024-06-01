@@ -1,7 +1,7 @@
 @use "sass:map";
 
 .header-outer {
-    background-color: $header-bg;
+    background-color: var(--nv-header-bg-color);
     position: fixed;
     top: 0;
     left: 0;
@@ -65,16 +65,16 @@
 
 .site-header {
     .left-sidebar-toggle {
-        color: $body-color;
+        color: var(--bs-body-color);
         width: 2rem;
         height: 2rem;
         position: relative;
-        background-color: $header-active-bg;
+        background-color: var(--nv-header-active-bg-color);
         display: block;
         transition: $nav-link-transition;
 
         &:hover {
-            color: $header-link-hover-color;
+            color: var(--nv-header-link-hover-color);
         }
     }
 
@@ -123,7 +123,7 @@
 
             >a {
                 transition: $nav-link-transition;
-                color: $body-color;
+                color: var(--bs-body-color);
                 display: block;
                 height: calc($header-height - $header-border-height);
                 position: relative;
@@ -136,8 +136,8 @@
             }
 
             &:hover>a {
-                background-color: $header-active-bg;
-                color: lighten($body-color, 10);
+                background-color: var(--nv-header-active-bg-color);
+                color: var(--nv-header-link-hover-color);
             }
 
             >a.show {
@@ -159,7 +159,7 @@
             position: relative;
             font-size: $header-avatar-size;
             transition: $nav-link-transition;
-            color: $body-color;
+            color: var(--bs-body-color);
 
             span {
                 overflow: hidden;
@@ -168,7 +168,7 @@
             }
 
             &:hover {
-                color: lighten($body-color, 10);
+                color: var(--nv-header-link-hover-color);
             }
 
             img {
@@ -184,7 +184,7 @@
             --bs-dropdown-min-width: #{$admin-info-width};
 
             a {
-                color: $body-color;
+                color: var(--bs-body-color);
 
                 &:hover {
                     color: var(--bs-link-color);
@@ -218,7 +218,7 @@
     }
 
     .menu-sys-items a {
-        color: $body-color;
+        color: var(--bs-body-color);
         transition: $nav-link-transition;
 
         &:hover {
@@ -259,13 +259,13 @@
 
         .noti-footer {
             a {
-                background-color: $gray-100;
+                background-color: var(--nv-notification-btn-bg);
                 transition: $nav-link-transition;
-                color: $body-color;
+                color: var(--bs-body-color);
 
                 &:hover {
-                    background-color: darken($gray-100, 10);
-                    color: darken($body-color, 10);
+                    background-color: var(--nv-notification-btn-bg-hover);
+                    color: var(--bs-secondary-color);
                 }
 
                 &:first-child {

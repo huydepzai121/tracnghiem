@@ -7,7 +7,107 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
+window.psToast = null;
+
+// Hàm mở toast lên
+function nvToast(text, level, halign, valign) {
+    var toasts = $('#site-toasts');
+    var id = nv_randomPassword(8);
+
+    const tLevel = {
+        'secondary': 'text-bg-secondary',
+        'error': 'text-bg-danger',
+        'danger': 'text-bg-danger',
+        'primary': 'text-bg-primary',
+        'success': 'text-bg-success',
+        'info': 'text-bg-info',
+        'warning': 'text-bg-warning',
+        'light': 'text-bg-light',
+        'dark': 'text-bg-dark',
+    };
+    const hAlign = {
+        's': ' toast-start',
+        'c': ' toast-center',
+    };
+    const vAlign = {
+        't': ' toast-top',
+        'm': ' toast-middle',
+        'c': ' toast-middle',
+    };
+    level = tLevel[level] || ' ';
+    halign = hAlign[halign] || '';
+    valign = vAlign[valign] || '';
+    var align = halign + valign;
+    var allAlign = 'toast-top toast-start toast-center toast-middle';
+
+    $('.toast-items', toasts).append(`
+    <div data-id="` + id + `" id="toast-` + id + `" class="toast align-items-center ` + level + ` border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">` + text + `</div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="` + nv_close + `"></button>
+        </div>
+    </div>`);
+    if (align != '') {
+        toasts.removeClass(allAlign).addClass(align);
+    }
+    toasts.removeClass('d-none');
+    $('.toast-lists', toasts)[0].scrollTop = $('.toast-lists', toasts)[0].scrollHeight;
+
+    if (!psToast) {
+        psToast = new PerfectScrollbar($('.toast-lists', toasts)[0], {
+            wheelPropagation: false
+        });
+    } else {
+        psToast.update();
+    }
+
+    // Show toast
+    var toaster = $('#toast-' + id);
+    (new bootstrap.Toast(toaster[0])).show();
+
+    // Xử lý khi mỗi toast ẩn
+    toaster.on('hidden.bs.toast', () => {
+        toaster.remove();
+        if ($('.toast-items>.toast', toasts).length < 1) {
+            if (psToast) {
+                psToast.destroy();
+                psToast = null;
+            }
+            toasts.addClass('d-none').removeClass(allAlign);
+        }
+    });
+}
+
 $(document).ready(function() {
+    // Hàm lưu config tùy chỉnh của giao diện
+    function storeThemeConfig(configName, configValue, callbackSuccess, callbackError) {
+        if (typeof callbackSuccess == 'undefined') {
+            callbackSuccess = (data) => {
+                if (data.error) {
+                    nvToast(data.message, 'danger');
+                }
+            };
+        }
+        if (typeof callbackError == 'undefined') {
+            callbackError = (xhr, text, error) => {
+                console.log(xhr, text, error);
+                nvToast(text, 'danger');
+            };
+        }
+        $.ajax({
+            type: 'POST',
+            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&nocache=' + new Date().getTime(),
+            data: {
+                store_theme_config: $('body').data('checksess'),
+                config_name: configName,
+                config_value: configValue
+            },
+            dataType: 'json',
+            error: callbackError,
+            success: callbackSuccess
+        });
+    }
+
     // Đếm ngược phiên đăng nhập của quản trị
     if ($('#countdown').length) {
         var countdown = $('#countdown'),
@@ -51,6 +151,9 @@ $(document).ready(function() {
                 return;
             }
             if ($(e.target).is('.right-sidebar') || $(e.target).closest('.right-sidebar').length) {
+                return;
+            }
+            if ($(e.target).is('#site-toasts') || $(e.target).closest('#site-toasts').length) {
                 return;
             }
             if ($('body').is('.open-right-sidebar')) {
@@ -301,16 +404,7 @@ $(document).ready(function() {
             setLbarTip();
         }
         $('body').toggleClass('collapsed-left-sidebar');
-        $.ajax({
-            type: 'POST',
-            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&nocache=' + new Date().getTime(),
-            data: {
-                'collapsed_left_sidebar': collapsed ? 0 : 1
-            },
-            error: function(jqXHR, exception) {
-                console.log(jqXHR, exception);
-            }
-        });
+        storeThemeConfig('collapsed_left_sidebar', collapsed ? 0 : 1);
     });
 
     // Đóng mở thanh menu trái ở dạng mobile
@@ -322,11 +416,68 @@ $(document).ready(function() {
         });
     });
 
+    // Chỉnh chế độ màu
+    var mColor = $('#site-color-mode');
+    $('a', mColor).on('click', function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        if ($this.is('.active') || mColor.data('busy')) {
+            console.log('bussy or active');
+            return;
+        }
+        var icon = $('i', $this);
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        mColor.data('busy', 1);
+
+        storeThemeConfig('color_mode', $this.data('mode'), () => {
+            location.reload();
+            mColor.data('busy', 0);
+            $('a', mColor).removeClass('active');
+            $this.addClass('active');
+            icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+        }, (xhr, text, err) => {
+            console.log(xhr, text, err);
+            icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+            mColor.data('busy', 0);
+            nvToast(text, 'danger');
+        });
+    });
+
+    // Chỉnh hướng lrt, rtl
+    $('[name="g_themedir"]').on('change', function() {
+        var dir = $(this).val();
+        var ctn = $('#site-text-direction');
+        var $this = $(this).next();
+        var icon = $('i', $this);
+        if (ctn.data('busy') || icon.is('.fa-spinner')) {
+            console.log('bussy or active');
+            return;
+        }
+
+        $('[name="g_themedir"]').prop('disabled', true);
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        ctn.data('busy', 1);
+
+        storeThemeConfig('dir', dir, () => {
+            location.reload();
+        }, (xhr, text, err) => {
+            console.log(xhr, text, err);
+            nvToast(text, 'danger');
+            $('[name="g_themedir"][value="' + $('html').attr('dir') + '"]').prop('checked', true);
+            $('[name="g_themedir"]').prop('disabled', false);
+            icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+            ctn.data('busy', 0);
+        });
+    });
+
     // Tooltip
     ([...document.querySelectorAll('[data-bs-toggle="tooltip"]')].map(tipEle => new bootstrap.Tooltip(tipEle)));
 
     // Popover
     ([...document.querySelectorAll('[data-bs-toggle="popover"]')].map(popEle => new bootstrap.Popover(popEle)));
+
+    // Default toasts
+    ([...document.querySelectorAll('.toast')].map(toastEl => new bootstrap.Toast(toastEl)));
 
     $("img.imgstatnkv").attr("src", "//static.nukeviet.vn/img.jpg");
 });

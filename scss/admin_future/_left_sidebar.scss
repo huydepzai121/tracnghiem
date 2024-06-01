@@ -2,7 +2,7 @@
 
 .left-sidebar {
     width: $left-sidebar-width;
-    background-color: $left-sidebar-bg;
+    background-color: var(--nv-left-sidebar-bg);
     position: fixed;
     left: 0;
     top: $header-height;
@@ -26,7 +26,7 @@
 
         .divider {
             padding: 1.25rem 1.25rem 0;
-            color: $gray-500;
+            color: var(--nv-left-sidebar-divider-color);
             line-height: 1.875rem;
             font-weight: $font-weight-semibold;
             text-transform: uppercase;
@@ -38,7 +38,7 @@
             >a {
                 display: block;
                 padding: 0 1.875rem 0 1.25rem;
-                color: $body-color;
+                color: var(--bs-body-color);
                 line-height: $left-sidebar-lev1-height;
                 text-overflow: ellipsis;
                 overflow: hidden;
@@ -46,7 +46,7 @@
                 position: relative;
 
                 &:hover {
-                    background-color: $gray-100;
+                    background-color: var(--nv-left-sidebar-link-hover-color);
                 }
 
                 .icon {
@@ -74,7 +74,7 @@
                 line-height: $left-sidebar-lev1-height;
                 right: .625rem;
                 top: 0;
-                color: $gray-400;
+                color: var(--nv-left-sidebar-toggle-color);
                 cursor: pointer;
                 padding-left: 1.25rem;
 
@@ -91,7 +91,7 @@
         // Menu cấp 2
         >li ul {
             display: none;
-            background-color: lighten($gray-200, 6);
+            background-color: var(--nv-left-sidebar-child-bg);
             padding: .625rem 0;
             list-style: none;
             line-height: 1.25rem;
@@ -107,8 +107,8 @@
         }
 
         >li>ul {
-            border-top: $border-width solid $gray-200;
-            border-bottom: $border-width solid $gray-200;
+            border-top: $border-width solid var(--nv-left-sidebar-child-border-color);
+            border-bottom: $border-width solid var(--nv-left-sidebar-child-border-color);
 
             li.f-link {
                 display: none;
@@ -125,14 +125,14 @@
             }
 
             &.active>a {
-                color: $primary;
+                color: var(--bs-primary);
             }
         }
 
         // Cấp 2 và 3 nói chung
         >li ul li>a {
             padding: .5rem .9375rem .5rem 3.0625rem;
-            color: $body-color;
+            color: var(--bs-body-color);
             display: block;
             text-overflow: ellipsis;
             overflow: hidden;
@@ -140,7 +140,7 @@
             position: relative;
 
             &:hover {
-                background-color: $gray-200;
+                background-color: var(--nv-left-sidebar-link-child-hover-color);
             }
         }
 
@@ -157,15 +157,15 @@
 
     .left-sidebar-in-sm {
         display: none;
-        background-color: $white;
+        background-color: var(--nv-left-sidebar-bg);
         --bs-border-width: #{$border-width};
 
         a {
-            color: $body-color;
+            color: var(--bs-body-color);
             transition: $nav-link-transition;
 
             &:hover {
-                color: $primary;
+                color: var(--bs-primary);
             }
         }
 
@@ -250,7 +250,7 @@
                         height: 100%;
                         z-index: 1;
                         width: $left-sidebar-sub-width;
-                        border-right: $border-width $border-style $border-color;
+                        border-right: $border-width $border-style var(--bs-border-color);
 
                         .title {
                             font-size: $h3-font-size;

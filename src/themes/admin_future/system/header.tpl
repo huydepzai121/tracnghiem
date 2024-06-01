@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{$smarty.const.NV_LANG_INTERFACE}">
+<html lang="{$smarty.const.NV_LANG_INTERFACE}" data-bs-theme="{$TCONFIG.color_mode}" dir="{$TCONFIG.dir}">
 <head>
     <title>{$GCONFIG.site_name}{$smarty.const.NV_TITLEBAR_DEFIS}{$LANG->getGlobal('admin_page')}{$smarty.const.NV_TITLEBAR_DEFIS}{$MODULE_INFO.custom_title}</title>
     <meta name="description" content="{$GCONFIG.site_description ?: {$PAGE_TITLE}}">
@@ -13,7 +13,7 @@
     <![endif]-->
 
     <link rel="shortcut icon" href="{$FAVICON}">
-    <link rel="stylesheet" href="{$smarty.const.NV_BASE_SITEURL}themes/{$ADMIN_INFO.admin_theme}/css/nv.style.css">
+    <link rel="stylesheet" href="{$smarty.const.NV_BASE_SITEURL}themes/{$ADMIN_INFO.admin_theme}/css/nv.style{if $TCONFIG.dir eq 'rtl'}.rtl{/if}.css">
     {if not empty($CSS_MODULE)}
     <link rel="stylesheet" href="{$CSS_MODULE}" type="text/css">
     {/if}
@@ -56,4 +56,4 @@
     <link rel="stylesheet" href="{$smarty.const.ASSETS_STATIC_URL}/js/perfect-scrollbar/style.css">
     <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/perfect-scrollbar/min.js"></script>
 </head>
-<body{if not empty($CLOSE_LSIDEBAR)} class="collapsed-left-sidebar"{/if}>
+<body{if not empty($TCONFIG.collapsed_left_sidebar)} class="collapsed-left-sidebar"{/if} data-checksess="{$smarty.const.NV_CHECK_SESSION}">

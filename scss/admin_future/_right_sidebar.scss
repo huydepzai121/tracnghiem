@@ -1,6 +1,6 @@
 .right-sidebar {
     width: $right-sidebar-width;
-    background-color: $right-sidebar-bg;
+    background-color: var(--nv-right-sidebar-bg);
     position: fixed;
     right: 0;
     top: $header-height;
@@ -18,6 +18,20 @@
         width: 100%;
         max-height: calc(100vh - $header-height - 2rem);
     }
+
+    .color-mode {
+        a {
+            &:not(:hover) {
+                color: var(--bs-body-color);
+            }
+
+            &.active {
+                i {
+                    color: var(--bs-primary);
+                }
+            }
+        }
+    }
 }
 
 .open-right-sidebar {
@@ -26,6 +40,6 @@
     }
 
     .header-right .main-icons>ul>li>a[data-toggle=right-sidebar] {
-        color: $primary;
+        color: var(--bs-primary);
     }
 }
