@@ -15,7 +15,7 @@ if (!defined('NV_MAINFILE')) {
 
 use NukeViet\Client\Browser;
 
-// Thiết lập đóng mở menu trái của giao diện
+// Thiết lập config riêng của giao diện
 if (!empty($nv_Request) and $nv_Request->isset_request('store_theme_config', 'post')) {
     $respon = [
         'error' => 1,

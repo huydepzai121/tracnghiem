@@ -26016,4 +26016,14 @@ html:not([data-bs-theme=dark]) .btn-default {
 .site-toasts .toast-lists .toast-items > .toast:not(:last-child) {
   margin-bottom: 1rem;
 }
+
+#developer-error {
+  width: 2rem;
+  height: 2rem;
+  right: 1rem;
+  z-index: 950;
+  line-height: 2rem;
+  bottom: 1rem;
+  opacity: 0.85;
+}
 /*# sourceMappingURL=nv.style.rtl.css.map */

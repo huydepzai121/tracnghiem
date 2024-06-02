@@ -279,7 +279,6 @@
             </div>
         </div>
         <div class="p-4">
-            [THEME_ERROR_INFO]
             {$MODULE_CONTENT}
         </div>
     </section>

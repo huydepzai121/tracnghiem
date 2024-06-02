@@ -1,3 +1,4 @@
+    [THEME_ERROR_INFO]
     <div id="site-toasts" class="site-toasts d-none">
         <div class="position-relative toast-lists p-3">
             <div class="toast-items" aria-live="polite" aria-atomic="true">
