@@ -1,8 +1,8 @@
 /**
- * NUKEVIET Content Management System
- * @version 5.x
+ * NukeViet Content Management System
+ * @version 4.x
  * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2021 VINADES.,JSC. All rights reserved
+ * @copyright (C) 2009-2024 VINADES.,JSC. All rights reserved
  * @license GNU/GPL version 2 or any later version
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
@@ -37,8 +37,8 @@ $(document).ready(function() {
                     $('.badge', ctn).text('0').data('count', 0);
                 }
             },
-            error: function(jqXHR, exception) {
-                console.log(jqXHR, exception);
+            error: function(xhr, text, err) {
+                console.log(xhr, text, err);
             }
         });
     }
@@ -81,9 +81,10 @@ $(document).ready(function() {
                 }
                 $('.date', ctn).timeago();
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function(xhr, text, err) {
                 $('.loader', ctn).addClass('d-none');
-                console.log(jqXHR, textStatus, errorThrown);
+                console.log(xhr, text, err);
+                nvToast(text, 'error');
             }
         });
     }
@@ -163,10 +164,10 @@ $(document).ready(function() {
                     $('.indicator', ctn).removeClass('show');
                 }
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function(xhr, text, err) {
                 icon.removeClass('fa-spinner fa-spin-pulse').addClass(cIcon);
-                alert('Request Error!!!');
-                console.log(jqXHR, textStatus, errorThrown);
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
             }
         });
     });
@@ -207,10 +208,10 @@ $(document).ready(function() {
                     getNotis(1);
                 }
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function(xhr, text, err) {
                 icon.removeClass('fa-spinner fa-spin-pulse').addClass('fa-trash');
-                alert('Request Error!!!');
-                console.log(jqXHR, textStatus, errorThrown);
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
             }
         });
     });
@@ -262,10 +263,10 @@ $(document).ready(function() {
                     }
                     window.location = $this.attr('href');
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
+                error: function(xhr, text, err) {
                     $('.loader', ctn).addClass('d-none');
-                    alert('Request Error!!!');
-                    console.log(jqXHR, textStatus, errorThrown);
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
                 }
             });
         }

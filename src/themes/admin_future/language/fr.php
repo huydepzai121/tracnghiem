@@ -18,3 +18,12 @@ $lang_translator['createdate'] = '20/07/2023, 07:15';
 $lang_translator['copyright'] = '@Copyright (C) 2010 VINADES.,JSC. All rights reserved';
 $lang_translator['info'] = '';
 $lang_translator['langtype'] = 'lang_module';
+
+$lang_global['theme_settings'] = 'Personnaliser la palette de couleurs et la langue...';
+$lang_global['color_mode'] = 'Schéma de couleur';
+$lang_global['color_mode_light'] = 'Lumière';
+$lang_global['color_mode_dark'] = 'Sombre';
+$lang_global['color_mode_auto'] = 'Automatique';
+$lang_global['text_direction'] = 'Direction';
+$lang_global['text_direction_ltr'] = 'LTR';
+$lang_global['text_direction_rtl'] = 'RTL';

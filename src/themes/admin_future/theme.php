@@ -67,7 +67,7 @@ function nv_admin_theme(?string $contents, $head_site = 1)
 
     $sql = "SELECT config_name, config_value FROM " . NV_AUTHORS_GLOBALTABLE . "_vars WHERE admin_id=" . $admin_info['admin_id'] . " AND theme=" . $db->quote($admin_info['admin_theme']);
     $theme_config = $db->query($sql)->fetchAll(PDO::FETCH_KEY_PAIR);
-    !isset($theme_config['color_mode']) && $theme_config['color_mode'] = 'light';
+    !isset($theme_config['color_mode']) && $theme_config['color_mode'] = 'auto';
     !isset($theme_config['dir']) && $theme_config['dir'] = 'ltr';
 
     $nv_Lang->loadFile(NV_ROOTDIR . '/themes/' . $tpl_dir . '/language/' . NV_LANG_INTERFACE . '.php');

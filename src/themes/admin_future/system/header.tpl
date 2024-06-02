@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{$smarty.const.NV_LANG_INTERFACE}" data-bs-theme="{$TCONFIG.color_mode}" dir="{$TCONFIG.dir}">
+<html lang="{$smarty.const.NV_LANG_INTERFACE}" data-theme="{$TCONFIG.color_mode}" data-bs-theme="{$TCONFIG.color_mode}" dir="{$TCONFIG.dir}">
 <head>
     <title>{$GCONFIG.site_name}{$smarty.const.NV_TITLEBAR_DEFIS}{$LANG->getGlobal('admin_page')}{$smarty.const.NV_TITLEBAR_DEFIS}{$MODULE_INFO.custom_title}</title>
     <meta name="description" content="{$GCONFIG.site_description ?: {$PAGE_TITLE}}">
@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="{$CSS_MODULE}" type="text/css">
     {/if}
 
+    <script data-show="inline" type="text/javascript" src="{$smarty.const.NV_BASE_SITEURL}themes/{$ADMIN_INFO.admin_theme}/js/nv.init.js"></script>
     <script type="text/javascript">
     var nv_base_siteurl = '{$smarty.const.NV_BASE_SITEURL}',
         nv_assets_dir = '{$smarty.const.NV_ASSETS_DIR}',

@@ -7,6 +7,8 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
+'use strict';
+
 window.psToast = null;
 
 // Hàm mở toast lên
@@ -430,11 +432,13 @@ $(document).ready(function() {
         mColor.data('busy', 1);
 
         storeThemeConfig('color_mode', $this.data('mode'), () => {
-            location.reload();
             mColor.data('busy', 0);
             $('a', mColor).removeClass('active');
             $this.addClass('active');
             icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+
+            $('html').data('theme', $this.data('mode')).attr('data-theme', $this.data('mode'));
+            nvSetThemeMode($this.data('mode'));
         }, (xhr, text, err) => {
             console.log(xhr, text, err);
             icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
