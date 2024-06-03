@@ -22,3 +22,7 @@ html:not([data-bs-theme="dark"]) {
         --bs-btn-disabled-border-color: #{$gray-400};
     }
 }
+
+.btn-space {
+    margin: .5rem;
+}

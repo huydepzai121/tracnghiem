@@ -12,7 +12,7 @@
 window.psToast = null;
 
 // Hàm mở toast lên
-function nvToast(text, level, halign, valign) {
+const nvToast = (text, level, halign, valign) => {
     var toasts = $('#site-toasts');
     var id = nv_randomPassword(8);
 
@@ -77,6 +77,130 @@ function nvToast(text, level, halign, valign) {
             }
             toasts.addClass('d-none').removeClass(allAlign);
         }
+    });
+}
+
+// Độ rộng thanh cuộn
+const nvGetScrollbarWidth = () => {
+    const outer = document.createElement('div');
+    outer.style.visibility = 'hidden';
+    outer.style.overflow = 'scroll';
+    outer.style.msOverflowStyle = 'scrollbar';
+    outer.style.position = 'fixed';
+    document.body.appendChild(outer);
+
+    const inner = document.createElement('div');
+    outer.appendChild(inner);
+
+    const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
+
+    outer.parentNode.removeChild(outer);
+
+    return scrollbarWidth;
+}
+
+// Thay thế cho alert
+const nvAlert = (message, callback) => {
+    if (typeof callback == 'undefined') {
+        callback = () => {};
+    }
+    nvConfirm(message, callback, () => {}, false);
+}
+
+// Thay chế cho confirm
+const nvConfirm = (message, cbConfirm, cbCancel, cancelBtn) => {
+    const body = document.getElementsByTagName('body')[0];
+
+    if (body.classList.contains('alert-open')) {
+        return;
+    }
+    if (typeof cancelBtn == 'undefined') {
+        cancelBtn = true;
+    }
+    if (typeof cbConfirm == 'undefined') {
+        cbConfirm = () => {};
+    }
+    if (typeof cbCancel == 'undefined') {
+        cbCancel = () => {};
+    }
+
+    const id = 'alert-' + nv_randomPassword(8);
+    const isModal = body.classList.contains('modal-open');
+
+    // Đối tượng box
+    const box = document.createElement('div');
+    box.classList.add('modal', 'alert-box', 'fade');
+    box.id = id;
+    box.setAttribute('aria-labelledby', id + '-body');
+    box.innerHTML = `<div class="modal-dialog alert-box-dialog modal-dialog-scrollable">
+        <div class="modal-content alert-box-content">
+            <div class="modal-body alert-box-body" id="` + id + `-body">
+                ` + message + `
+            </div>
+            <div class="modal-footer alert-box-footer" id="` + id + `-footer">
+                <button type="button" class="btn btn-primary" id="` + id + `-confirm"><i class="fa-solid fa-check"></i> ` + nv_confirm + `</button>
+                ` + (cancelBtn ? `<button type="button" class="btn btn-secondary" id="` + id + `-close"><i class="fa-solid fa-xmark"></i> ` + nv_close + `</button>` : '') + `
+            </div>
+        </div>
+    </div>`;
+
+    // Đối tượng backdrop
+    const backdrop = document.createElement('div');
+    backdrop.classList.add('alert-backdrop', 'fade');
+
+    body.append(box, backdrop);
+    box.style.display = 'block';
+
+    const cOverflow = body.style.overflow;
+    const cPaddingRight = body.style.paddingRight;
+
+    setTimeout(() => {
+        box.classList.add('show');
+        backdrop.classList.add('show');
+
+        if (!isModal) {
+            body.style.overflow = 'hidden';
+            body.style.paddingRight = nvGetScrollbarWidth() + 'px';
+        }
+        body.classList.add('alert-open');
+    }, 10);
+
+    // Xử lý nút ấn
+    const close = (event) => {
+        ([...box.querySelectorAll('button')].map(ele => ele.setAttribute('disabled', 'disabled')));
+        body.classList.remove('alert-open');
+        if (!isModal) {
+            if (cOverflow) {
+                body.style.overflow = cOverflow;
+            } else {
+                body.style.removeProperty('overflow');
+            }
+            if (cPaddingRight) {
+                body.style.paddingRight = paddingRight;
+            } else {
+                body.style.removeProperty('padding-right');
+            }
+        }
+        box.classList.remove('show');
+        backdrop.classList.remove('show');
+        setTimeout(() => {
+            box.style.display = 'none';
+            body.removeChild(box);
+            body.removeChild(backdrop);
+            if (event == 'confirm') {
+                cbConfirm();
+            } else if (event == 'cancel') {
+                cbCancel();
+            }
+        }, 150);
+    }
+    if (cancelBtn) {
+        document.getElementById(id + '-close').addEventListener('click', () => {
+            close('cancel');
+        });
+    }
+    document.getElementById(id + '-confirm').addEventListener('click', () => {
+        close('confirm');
     });
 }
 
@@ -472,6 +596,21 @@ $(document).ready(function() {
             icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
             ctn.data('busy', 0);
         });
+    });
+
+    // Xử lý khi click trong điều kiện alertbox đang mở
+    $(document).on('click', function(e) {
+        if (!$('body').is('.alert-open') || $(e.target).is('.alert-box-content') || $(e.target).closest('.alert-box-content').length) {
+            return;
+        }
+        const al = document.getElementsByClassName('alert-box')[0];
+        if (al.classList.contains('modal-static')) {
+            return;
+        }
+        al.classList.add('modal-static');
+        setTimeout(() => {
+            al.classList.remove('modal-static');
+        }, 150);
     });
 
     // Tooltip

@@ -15,6 +15,130 @@ if (!defined('NV_IS_FILE_SITEINFO')) {
 
 $page_title = $nv_Lang->getGlobal('mod_siteinfo');
 
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/main.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+
+// Gói cập nhật
+$package_update = 0;
+if (defined('NV_IS_GODADMIN') and file_exists(NV_ROOTDIR . '/install/update_data.php')) {
+    $package_update = 1;
+}
+$tpl->assign('PACKAGE_UPDATE', $package_update);
+
+// Cấu hình giao diện
+$sql = "SELECT config_name, config_value FROM " . NV_AUTHORS_GLOBALTABLE . "_vars WHERE admin_id=" . $admin_info['admin_id'] . "
+AND theme=" . $db->quote($admin_info['admin_theme']) . " AND (lang='all' OR lang=" . $db->quote(NV_LANG_DATA) . ")";
+$theme_config = $db->query($sql)->fetchAll(PDO::FETCH_KEY_PAIR);
+$theme_config['widgets'] = empty($theme_config['widgets']) ? [] : json_decode($theme_config['widgets'], true);
+if (!is_array($theme_config['widgets'])) {
+    $theme_config['widgets'] = [];
+}
+if (empty($theme_config['widgets'])) {
+    // Thứ tự mặc định của các widget trong hệ thống
+    $theme_config['widgets'] = [
+        'usr_statistics_hour',
+        'adm_siteinfo_statistics',
+        'adm_siteinfo_pendings',
+    ];
+}
+
+// Lấy các widgets
+$html_widgets  = $array_widgets = [];
+$nv_widget_trigger = 0;
+$mbackup = $module_name;
+$mibackup = $module_info;
+$mfbackup = $module_file;
+$mubackup = $module_upload;
+$mdbackup = $module_data;
+$get_widget = 1;
+
+foreach ($admin_mods as $module_name => $module_info) {
+    $module_file = $module_upload = $module_data = $module_name;
+
+    $widgets = nv_scandir(NV_ROOTDIR . '/' . NV_ADMINDIR . '/' . $module_name . '/widgets', '/^(.*)\.php$/i');
+    if (empty($widgets)) {
+        continue;
+    }
+
+    foreach ($widgets as $widget) {
+        $widget_info = [];
+        $content = '';
+        $nv_Lang->loadModule($module_name, true, true);
+
+        require NV_ROOTDIR . '/' . NV_ADMINDIR . '/' . $module_name . '/widgets/' . $widget;
+
+        if (empty($widget_info['id']) or !preg_match('/^[a-zA-Z0-9\_]+$/i', $widget_info['id']) or !isset($widget_info['func']) or !is_callable($widget_info['func'])) {
+            continue;
+        }
+
+        $widget_id = 'adm_' . $module_name . '_' . $widget_info['id'];
+        $array_widgets[$widget_id] = [
+            'admin' => 1,
+            'module_name' => $module_name,
+            'file_name' => $widget,
+            'data' => $widget_info
+        ];
+        unset($widget_info);
+
+        if ($get_widget and in_array($widget_id, $theme_config['widgets'])) {
+            $html_widgets[$widget_id] = $array_widgets[$widget_id]['data']['func']();
+        }
+    }
+}
+foreach ($site_mods as $module_name => $module_info) {
+    $module_file = $module_info['module_file'];
+    $module_upload = $module_info['module_upload'];
+    $module_data = $module_info['module_data'];
+
+    $widgets = nv_scandir(NV_ROOTDIR . '/modules/' . $module_name . '/widgets', '/^(.*)\.php$/i');
+    if (empty($widgets)) {
+        continue;
+    }
+
+    foreach ($widgets as $widget) {
+        $widget_info = [];
+        $nv_Lang->loadModule($module_name, false, true);
+
+        require NV_ROOTDIR . '/modules/' . $module_name . '/widgets/' . $widget;
+
+        if (empty($widget_info['id']) or !preg_match('/^[a-zA-Z0-9\_]+$/i', $widget_info['id']) or !isset($widget_info['func']) or !is_callable($widget_info['func'])) {
+            continue;
+        }
+
+        $widget_id = 'usr_' . $module_name . '_' . $widget_info['id'];
+        $array_widgets[$widget_id] = [
+            'admin' => 0,
+            'module_name' => $module_name,
+            'file_name' => $widget,
+            'data' => $widget_info
+        ];
+        unset($widget_info);
+
+        if ($get_widget and in_array($widget_id, $theme_config['widgets'])) {
+            $html_widgets[$widget_id] = $array_widgets[$widget_id]['data']['func']();
+        }
+    }
+}
+
+$module_name = $mbackup;
+$module_info = $mibackup;
+$module_file = $mfbackup;
+$module_upload = $mubackup;
+$module_data = $mdbackup;
+unset($mbackup, $mibackup, $mfbackup, $mubackup, $mdbackup);
+$nv_Lang->changeLang();
+
+$tpl->assign('TCONFIG', $theme_config);
+$tpl->assign('WIDGETS', $html_widgets);
+
+$contents = $tpl->fetch('main.tpl');
+
+include NV_ROOTDIR . '/includes/header.php';
+echo nv_admin_theme($contents);
+include NV_ROOTDIR . '/includes/footer.php';
+
 //Noi dung chinh cua trang
 $info = $pending_info = [];
 
@@ -45,13 +169,6 @@ foreach ($site_mods as $mod => $value) {
 
 $xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
 $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-
-// Kiem tra file nang cap tren he thong
-if (defined('NV_IS_GODADMIN') and file_exists(NV_ROOTDIR . '/install/update_data.php')) {
-    $xtpl->assign('URL_DELETE_PACKAGE', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=webtools&amp;' . NV_OP_VARIABLE . '=deleteupdate&amp;checksess=' . NV_CHECK_SESSION);
-    $xtpl->assign('URL_UPDATE', NV_BASE_SITEURL . 'install/update.php');
-    $xtpl->parse('main.updateinfo');
-}
 
 // Thong tin thong ke tu cac module
 if (!empty($info) or !empty($pending_info)) {

@@ -4436,11 +4436,11 @@ textarea.form-control-lg {
   --bs-card-title-spacer-y: 0.5rem;
   --bs-card-title-color: ;
   --bs-card-subtitle-color: ;
-  --bs-card-border-width: var(--bs-border-width);
+  --bs-card-border-width: 0;
   --bs-card-border-color: var(--bs-border-color-translucent);
   --bs-card-border-radius: var(--bs-border-radius);
-  --bs-card-box-shadow: ;
-  --bs-card-inner-border-radius: calc(var(--bs-border-radius) - (var(--bs-border-width)));
+  --bs-card-box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.075);
+  --bs-card-inner-border-radius: calc(var(--bs-border-radius) - 0);
   --bs-card-cap-padding-y: 0.5rem;
   --bs-card-cap-padding-x: 1rem;
   --bs-card-cap-bg: rgba(var(--bs-body-color-rgb), 0.03);
@@ -25268,7 +25268,7 @@ readers do not read off random characters that represent icons */
   --nv-header-bg-color: #343a40;
   --nv-header-active-bg-color: #212529;
   --nv-header-link-hover-color: #adb5bd;
-  --nv-body-bg: #212529;
+  --nv-body-bg: #2a2e32;
   --nv-breadcrumb-bg: #343a40;
   --nv-left-sidebar-bg: #343a40;
   --nv-left-sidebar-divider-color: #666;
@@ -26008,6 +26008,10 @@ html:not([data-bs-theme=dark]) .btn-default {
   --bs-btn-disabled-border-color: #ced4da;
 }
 
+.btn-space {
+  margin: 0.5rem;
+}
+
 .site-toasts {
   position: fixed;
   z-index: 1090;
@@ -26051,6 +26055,23 @@ html:not([data-bs-theme=dark]) .btn-default {
   line-height: 2rem;
   bottom: 1rem;
   opacity: 0.85;
+}
+
+.alert-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1056;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+.alert-backdrop.show {
+  opacity: 0.5;
+}
+
+.alert-box.modal {
+  --bs-modal-zindex: 1057;
 }
 
 /*# sourceMappingURL=nv.style.css.map */

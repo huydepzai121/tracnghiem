@@ -2,7 +2,8 @@ $blue: #4285f4;
 $green: #27ad57;
 $red: #ee3232;
 $cyan: #17a2b8;
-$white:#fff;
+$white: #fff;
+$black: #000;
 
 $gray-100: #f9f9f9;
 $gray-200: #e5e5e5;
@@ -27,11 +28,11 @@ $h5-font-size: $font-size-base * 1.125; // 18px
 $h6-font-size: $font-size-base; // 16px
 
 $border-width: 1px;
-$theme-breakpoint: 767.98px;
-$main-bg: #eee;
 $body-color: $gray-600;
-$min-contrast-ratio: 3;
 $link-decoration: none;
+$main-bg: #eee;
+$min-contrast-ratio: 3;
+$theme-breakpoint: 767.98px;
 
 // Shadow một số và tắt một số
 $enable-shadows: true;
@@ -46,6 +47,7 @@ $zindex-header: 980;
 $zindex-header-dropdown-toggle: 1001;
 $zindex-left-sidebar: 940;
 $zindex-right-sidebar: 960;
+$zindex-developer-error: 950;
 
 // Phần header
 $header-height: 3.75rem; // 60px
@@ -113,3 +115,7 @@ $breadcrumb-bg: $white;
 
 // Toasts
 $toast-spacing: 1rem;
+
+// Card
+$card-box-shadow: 0 0.0625rem 0.125rem rgba($black, .075);
+$card-border-width: 0;

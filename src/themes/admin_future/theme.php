@@ -65,7 +65,8 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $file_name_tpl = $head_site == 1 ? 'main.tpl' : 'content.tpl';
     $tpl_dir = get_tpl_dir($admin_info['admin_theme'], 'admin_default', '/system/' . $file_name_tpl);
 
-    $sql = "SELECT config_name, config_value FROM " . NV_AUTHORS_GLOBALTABLE . "_vars WHERE admin_id=" . $admin_info['admin_id'] . " AND theme=" . $db->quote($admin_info['admin_theme']);
+    $sql = "SELECT config_name, config_value FROM " . NV_AUTHORS_GLOBALTABLE . "_vars WHERE admin_id=" . $admin_info['admin_id'] . "
+    AND theme=" . $db->quote($admin_info['admin_theme']) . " AND (lang='all' OR lang=" . $db->quote(NV_LANG_DATA) . ")";
     $theme_config = $db->query($sql)->fetchAll(PDO::FETCH_KEY_PAIR);
     !isset($theme_config['color_mode']) && $theme_config['color_mode'] = 'auto';
     !isset($theme_config['dir']) && $theme_config['dir'] = 'ltr';
@@ -161,9 +162,12 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $theme_tpl = get_tpl_dir([$admin_info['admin_theme'], 'admin_default'], '', '/css/' . $module_file . '.css');
     $css_module = '';
     if (!empty($theme_tpl)) {
-        $css_module = NV_STATIC_URL . 'themes/' . $theme_tpl . '/css/' . $module_file . '.css';
+        $css_module = $theme_tpl . '/css/' . $module_file . ($theme_config['dir'] == 'rtl' ? '.rtl' : '') . '.css';
+        if ($theme_config['dir'] == 'rtl' and !theme_file_exists($css_module)) {
+            $css_module = $theme_tpl . '/css/' . $module_file . '.css';
+        }
     }
-    $tpl->assign('CSS_MODULE', $css_module);
+    $tpl->assign('CSS_MODULE', NV_STATIC_URL . 'themes/' . $css_module);
 
     // JS riêng của module
     $theme_tpl = get_tpl_dir([$admin_info['admin_theme'], 'admin_default'], '', '/js/' . $module_file . '.js');
