@@ -6,5 +6,43 @@
  * @license GNU/GPL version 2 or any later version
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
+.widget {
+  height: 100%;
+}
+
+.widget-edit {
+  min-height: 1.75rem;
+  height: 100%;
+}
+.widget-edit > .tools.tool-bottom {
+  right: -0.625rem;
+  transform: translate(0, -50%);
+}
+.widget-edit > .tools a.ic {
+  width: 1.25rem;
+  height: 1.25rem;
+  box-shadow: var(--bs-box-shadow);
+}
+.widget-edit > .tools.tool-top {
+  top: 0.125rem;
+}
+.widget-edit .dropdown-menu {
+  --bs-dropdown-min-width: 11rem;
+}
+.widget-edit .dropdown-menu .widget-col-select {
+  width: 3.75rem;
+}
+
+.widget-edit-drop {
+  border-width: 0.0625rem;
+  border-style: solid;
+  border-color: transparent;
+}
+.widget-edit-drop.active {
+  border-color: var(--bs-danger-border-subtle);
+}
+.widget-edit-drop.hover {
+  border-color: var(--bs-danger);
+}
 
 /*# sourceMappingURL=siteinfo.css.map */

@@ -165,3 +165,16 @@ $lang_module['notification_make_read'] = 'Đánh dấu đã đọc';
 $lang_module['notification_make_unread'] = 'Đánh dấu chưa đọc';
 $lang_module['notification_email_failure'] = 'Gửi email thất bại. Tiêu đề <strong>%s</strong>, email nhận <strong>%s</strong>';
 $lang_module['server_config_file_changed'] = 'Tập tin cấu hình cho máy chủ web (%s) đã thay đổi';
+
+$lang_module['edit_grid'] = 'Chỉnh sửa giao diện';
+$lang_module['ok_grid'] = 'Hoàn tất chỉnh sửa';
+$lang_module['add_widget_bottom'] = 'Thêm khối mới ở cuối';
+$lang_module['add_widget_top'] = 'Thêm khối mới ở đầu';
+$lang_module['choose_widget'] = 'Chọn hoặc đổi tiện ích';
+$lang_module['delete_widget'] = 'Xóa khối này';
+$lang_module['addchild_widget_top'] = 'Thêm khối con vào đầu';
+$lang_module['addchild_widget_bottom'] = 'Thêm khối con vào cuối';
+$lang_module['sizeby_screen'] = 'Kích thước theo màn hình';
+$lang_module['widget_resize'] = 'Chỉnh kích thước';
+$lang_module['widget_choose'] = 'Chọn tiện ích';
+$lang_module['widget_no'] = 'Không còn tiện ích khả dụng nào';

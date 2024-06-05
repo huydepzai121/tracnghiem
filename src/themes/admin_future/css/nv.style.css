@@ -3475,11 +3475,11 @@ textarea.form-control-lg {
   --bs-dropdown-font-size: 0.8125rem;
   --bs-dropdown-color: var(--bs-body-color);
   --bs-dropdown-bg: var(--bs-body-bg);
-  --bs-dropdown-border-color: var(--bs-border-color-translucent);
+  --bs-dropdown-border-color: var(--bs-body-bg);
   --bs-dropdown-border-radius: var(--bs-border-radius);
   --bs-dropdown-border-width: var(--bs-border-width);
   --bs-dropdown-inner-border-radius: calc(var(--bs-border-radius) - var(--bs-border-width));
-  --bs-dropdown-divider-bg: var(--bs-border-color-translucent);
+  --bs-dropdown-divider-bg: var(--bs-body-bg);
   --bs-dropdown-divider-margin-y: 0.5rem;
   --bs-dropdown-box-shadow: var(--bs-box-shadow);
   --bs-dropdown-link-color: var(--bs-body-color);
@@ -3745,11 +3745,11 @@ textarea.form-control-lg {
 .dropdown-menu-dark {
   --bs-dropdown-color: #d5d5d5;
   --bs-dropdown-bg: #343a40;
-  --bs-dropdown-border-color: var(--bs-border-color-translucent);
+  --bs-dropdown-border-color: var(--bs-body-bg);
   --bs-dropdown-box-shadow: ;
   --bs-dropdown-link-color: #d5d5d5;
   --bs-dropdown-link-hover-color: #fff;
-  --bs-dropdown-divider-bg: var(--bs-border-color-translucent);
+  --bs-dropdown-divider-bg: var(--bs-body-bg);
   --bs-dropdown-link-hover-bg: rgba(255, 255, 255, 0.15);
   --bs-dropdown-link-active-color: #fff;
   --bs-dropdown-link-active-bg: #4285f4;
@@ -5921,7 +5921,7 @@ textarea.form-control-lg {
   --bs-popover-font-size: 0.7109375rem;
   --bs-popover-bg: var(--bs-body-bg);
   --bs-popover-border-width: var(--bs-border-width);
-  --bs-popover-border-color: var(--bs-border-color-translucent);
+  --bs-popover-border-color: var(--bs-body-bg);
   --bs-popover-border-radius: var(--bs-border-radius-lg);
   --bs-popover-inner-border-radius: calc(var(--bs-border-radius-lg) - var(--bs-border-width));
   --bs-popover-box-shadow: var(--bs-box-shadow);
@@ -25330,7 +25330,7 @@ readers do not read off random characters that represent icons */
   }
 }
 
-.icon-vertical-center {
+.ico-vc {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -25424,7 +25424,7 @@ readers do not read off random characters that represent icons */
   left: 50%;
 }
 .header-right [data-bs-toggle=dropdown].show::before {
-  border-bottom-color: var(--bs-border-color-translucent);
+  border-bottom-color: var(--bs-body-bg);
   bottom: calc((0.5rem + 1px + 0.125rem) * -1);
 }
 .header-right [data-bs-toggle=dropdown].show::after {

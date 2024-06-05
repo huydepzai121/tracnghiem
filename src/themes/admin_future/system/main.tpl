@@ -11,17 +11,17 @@
         </div>
         <div class="site-header flex-grow-1 flex-shrink-1 d-flex align-items-center justify-content-between px-2 px-sm-4">
             <div class="header-left">
-                <a href="#" class="left-sidebar-toggle fs-4" data-toggle="left-sidebar"><i class="fas fa-bars icon-vertical-center"></i></a>
+                <a href="#" class="left-sidebar-toggle fs-4" data-toggle="left-sidebar"><i class="fas fa-bars ico-vc"></i></a>
             </div>
             <div class="header-right d-flex position-relative ms-auto">
                 <nav class="main-icons">
                     <ul class="d-flex list-unstyled my-0 ms-0 me-3">
                         <li>
-                            <a title="{$LANG->getGlobal('go_clientsector')}" href="{$smarty.const.NV_BASE_SITEURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={if empty($SITE_MODS)}{$smarty.const.NV_LANG_DATA}{else}{$GCONFIG.site_lang}{/if}" class="fs-3"><i class="fas fa-home icon-vertical-center"></i></a>
+                            <a title="{$LANG->getGlobal('go_clientsector')}" href="{$smarty.const.NV_BASE_SITEURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={if empty($SITE_MODS)}{$smarty.const.NV_LANG_DATA}{else}{$GCONFIG.site_lang}{/if}" class="fs-3"><i class="fas fa-home ico-vc"></i></a>
                         </li>
                         {if not empty($GCONFIG.notification_active)}
                         <li class="dropdown-center site-noti" id="main-notifications" data-enable="true">
-                            <a title="{$LANG->getGlobal('site_info')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-offset="0,11"><i class="fas fa-bell icon-vertical-center"></i><span class="indicator"></span></a>
+                            <a title="{$LANG->getGlobal('site_info')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-offset="0,11"><i class="fas fa-bell ico-vc"></i><span class="indicator"></span></a>
                             <div class="dropdown-menu dropdown-menu-end pb-0">
                                 <div class="noti-heading text-center border-bottom pb-2 fw-medium">
                                     {$LANG->getGlobal('inform_unread')} <span class="badge rounded-pill text-bg-info" data-count="0">..</span>
@@ -41,7 +41,7 @@
                         </li>
                         {/if}
                         <li class="menu-sys" id="menu-sys">
-                            <a title="{$LANG->getGlobal('sys_mods')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-display="static"><i class="fas fa-th icon-vertical-center"></i></a>
+                            <a title="{$LANG->getGlobal('sys_mods')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-display="static"><i class="fas fa-th ico-vc"></i></a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <div class="menu-sys-inner position-relative">
                                     <div class="menu-sys-items">
@@ -65,7 +65,7 @@
                             </div>
                         </li>
                         <li>
-                            <a title="{$LANG->getGlobal('theme_settings')}" href="#" class="fs-3" data-toggle="right-sidebar"><i class="fas fa-cog icon-vertical-center"></i></a title="{$LANG->getGlobal('sys_mods')}">
+                            <a title="{$LANG->getGlobal('theme_settings')}" href="#" class="fs-3" data-toggle="right-sidebar"><i class="fas fa-cog ico-vc"></i></a title="{$LANG->getGlobal('sys_mods')}">
                         </li>
                     </ul>
                 </nav>
@@ -77,7 +77,7 @@
                             {elseif not empty($ADMIN_INFO.photo)}
                             <img alt="{$ADMIN_INFO.full_name}" src="{$smarty.const.NV_BASE_SITEURL}{$ADMIN_INFO.photo}">
                             {else}
-                            <i class="fa-solid fa-circle-user icon-vertical-center"></i>
+                            <i class="fa-solid fa-circle-user ico-vc"></i>
                             {/if}
                         </span>
                     </a>

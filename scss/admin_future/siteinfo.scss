@@ -13,3 +13,53 @@
 @import "variables-dark";
 @import "../../node_modules/bootstrap/scss/functions";
 @import "../../node_modules/bootstrap/scss/variables";
+
+$card-tools-icon-size: 1.25rem; // 20px
+
+.widget {
+    height: 100%;
+}
+
+.widget-edit {
+    min-height: calc($card-tools-icon-size + .5rem);
+    height: 100%;
+
+    >.tools {
+        &.tool-bottom {
+            right: calc(-1 * $card-tools-icon-size / 2);
+            transform: translate(0, -50%);
+        }
+
+        a.ic {
+            width: $card-tools-icon-size;
+            height: $card-tools-icon-size;
+            box-shadow: var(--bs-box-shadow);
+        }
+
+        &.tool-top {
+            top: .125rem;
+        }
+    }
+
+    .dropdown-menu {
+        --bs-dropdown-min-width: 11rem;
+
+        .widget-col-select {
+            width: 3.75rem;
+        }
+    }
+}
+
+.widget-edit-drop {
+    border-width: .0625rem;
+    border-style: solid;
+    border-color: transparent;
+
+    &.active {
+        border-color: var(--bs-danger-border-subtle);
+    }
+
+    &.hover {
+        border-color: var(--bs-danger);
+    }
+}

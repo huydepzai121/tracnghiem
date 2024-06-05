@@ -28,31 +28,27 @@ if (defined('NV_IS_GODADMIN') and file_exists(NV_ROOTDIR . '/install/update_data
 $tpl->assign('PACKAGE_UPDATE', $package_update);
 
 // Cấu hình giao diện
-$sql = "SELECT config_name, config_value FROM " . NV_AUTHORS_GLOBALTABLE . "_vars WHERE admin_id=" . $admin_info['admin_id'] . "
-AND theme=" . $db->quote($admin_info['admin_theme']) . " AND (lang='all' OR lang=" . $db->quote(NV_LANG_DATA) . ")";
-$theme_config = $db->query($sql)->fetchAll(PDO::FETCH_KEY_PAIR);
-$theme_config['widgets'] = empty($theme_config['widgets']) ? [] : json_decode($theme_config['widgets'], true);
-if (!is_array($theme_config['widgets'])) {
-    $theme_config['widgets'] = [];
-}
-if (empty($theme_config['widgets'])) {
-    // Thứ tự mặc định của các widget trong hệ thống
-    $theme_config['widgets'] = [
-        'usr_statistics_hour',
-        'adm_siteinfo_statistics',
-        'adm_siteinfo_pendings',
-    ];
+$theme_config = get_theme_config();
+
+$select_options = [];
+$is_edit = (int) $nv_Request->get_bool('edit', 'get', false);
+
+if ($is_edit) {
+    $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
+    $select_options[$url] = $nv_Lang->getModule('ok_grid');
+} else {
+    $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;edit=1';
+    $select_options[$url] = $nv_Lang->getModule('edit_grid');
 }
 
 // Lấy các widgets
 $html_widgets  = $array_widgets = [];
-$nv_widget_trigger = 0;
 $mbackup = $module_name;
 $mibackup = $module_info;
 $mfbackup = $module_file;
 $mubackup = $module_upload;
 $mdbackup = $module_data;
-$get_widget = 1;
+$get_widget = $nv_Request->isset_request('load_list_widgets', 'post') ? 0 : 1;
 
 foreach ($admin_mods as $module_name => $module_info) {
     $module_file = $module_upload = $module_data = $module_name;
@@ -130,8 +126,28 @@ $module_data = $mdbackup;
 unset($mbackup, $mibackup, $mfbackup, $mubackup, $mdbackup);
 $nv_Lang->changeLang();
 
+if (!$get_widget) {
+    // Chỉ lấy những tiện ích chưa tích hợp
+    $array_widgets = array_diff_key($array_widgets, array_flip($theme_config['widgets']));
+    $tpl->assign('WIDGETS', $array_widgets);
+
+    $contents = $tpl->fetch('main_widgets.tpl');
+    include NV_ROOTDIR . '/includes/header.php';
+    echo $contents;
+    include NV_ROOTDIR . '/includes/footer.php';
+}
+
 $tpl->assign('TCONFIG', $theme_config);
 $tpl->assign('WIDGETS', $html_widgets);
+$tpl->assign('IS_EDIT', $is_edit);
+$tpl->assign('THEME_GRIDS', [
+    'xs' => '&lt;576px',
+    'sm' => '≥576px',
+    'md' => '≥768px',
+    'lg' => '≥992px',
+    'xl' => '≥1200px',
+    'xxl' => '≥1400px'
+]);
 
 $contents = $tpl->fetch('main.tpl');
 

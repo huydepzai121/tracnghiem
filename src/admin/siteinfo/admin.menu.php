@@ -13,7 +13,7 @@ if (!defined('NV_ADMIN')) {
     exit('Stop!!!');
 }
 
-$allow_func = ['main', 'notification'];
+$allow_func = ['main', 'notification', 'widget'];
 if (defined('NV_IS_GODADMIN')) {
     $submenu['system_info'] = $nv_Lang->getModule('site_configs_info');
 
