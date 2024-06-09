@@ -165,3 +165,17 @@ $lang_module['notification_make_read'] = 'Mark as read';
 $lang_module['notification_make_unread'] = 'Mark as unread';
 $lang_module['notification_email_failure'] = 'Email failed. Subject <strong>%s</strong>, received email <strong>%s</strong>';
 $lang_module['server_config_file_changed'] = 'Server config file (%s) changed';
+
+$lang_module['edit_grid'] = 'Edit grid';
+$lang_module['ok_grid'] = 'Finish edit';
+$lang_module['add_widget_bottom'] = 'Add new widget at the bottom';
+$lang_module['add_widget_top'] = 'Add new widget at the top';
+$lang_module['choose_widget'] = 'Set or change widget';
+$lang_module['delete_widget'] = 'Delete this widget';
+$lang_module['addchild_widget_top'] = 'Add child widget at the top';
+$lang_module['addchild_widget_bottom'] = 'Add child widget at the bottom';
+$lang_module['sizeby_screen'] = 'Size according to screen';
+$lang_module['widget_resize'] = 'Size adjustment';
+$lang_module['widget_choose'] = 'Select widget';
+$lang_module['widget_no'] = 'There are no more available widget';
+$lang_module['widget_swap_success'] = 'Changed position successfully';

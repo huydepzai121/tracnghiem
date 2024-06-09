@@ -347,4 +347,7 @@
         <a title="NUKEVIET CMS" href="https://nukeviet.vn" target="_blank"><img alt="NUKEVIET CMS" src="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ASSETS_DIR}/images/banner_nukeviet_88x15.jpg" width="88" height="15" class="imgstatnkv"></a>
     </div>
 </footer>
+<div id="admin-session-timeout" class="nv-offcanvas text-bg-warning p-3">
+    {$LANG->getGlobal('timeoutsess_nouser')}, <a data-toggle="cancel" href="#">{$LANG->getGlobal('timeoutsess_click')}</a>. {$LANG->getGlobal('timeoutsess_timeout')}: <span data-toggle="sec"> 60 </span> {$LANG->getGlobal('sec')}
+</div>
 {include file='footer.tpl'}

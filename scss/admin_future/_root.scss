@@ -23,6 +23,8 @@
     --nv-notification-btn-bg: #{$notification-btn-bg};
     --nv-notification-btn-bg-hover: #{$notification-btn-bg-hover};
     --nv-notification-unread-border-color: #{$notification-unread-border-color};
+
+    --nv-chart-grid-border-opacity: 1;
 }
 
 [data-bs-theme="dark"] {
@@ -49,4 +51,6 @@
     --nv-notification-btn-bg: #{$notification-btn-bg-dark};
     --nv-notification-btn-bg-hover: #{$notification-btn-bg-hover-dark};
     --nv-notification-unread-border-color: #{$notification-unread-border-color-dark};
+
+    --nv-chart-grid-border-opacity: .2;
 }

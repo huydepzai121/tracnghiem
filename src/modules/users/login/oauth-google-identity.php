@@ -170,7 +170,8 @@ $contents .= '<div style="height:100vh;display:flex;justify-content:center;align
     data-login_uri="' . nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=oauth&server=google-identity', true) . '"
     data-nonce=""
     data-close_on_tap_outside="false"
-    data-itp_support="true">
+    data-itp_support="true"
+    data-use_fedcm_for_prompt="true">
 </div>
 
 <div class="g_id_signin"

@@ -2,7 +2,7 @@ $header-bg-dark: $gray-800;
 $header-active-bg-dark: $gray-900;
 $header-link-hover-color-dark: $gray-500;
 
-$main-bg-dark: tint($gray-900, 4%);
+$main-bg-dark: shade($gray-900, 20%);
 
 $breadcrumb-bg-dark: $gray-800;
 

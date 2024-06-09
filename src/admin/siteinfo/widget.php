@@ -205,4 +205,60 @@ if ($nv_Request->get_title('setwidget', 'post', '') === NV_CHECK_SESSION) {
     nv_jsonOutput($respon);
 }
 
+// Chọn widget cho khối
+if ($nv_Request->get_title('swapwidget', 'post', '') === NV_CHECK_SESSION) {
+    $respon = [
+        'error' => 1,
+        'message' => 'Error!!!'
+    ];
+
+    $widget_id1 = $nv_Request->get_title('widget_id1', 'post', -1);
+    $widget_parentid1 = $nv_Request->get_title('widget_parentid1', 'post', -1);
+    $widget_id2 = $nv_Request->get_title('widget_id2', 'post', -1);
+    $widget_parentid2 = $nv_Request->get_title('widget_parentid2', 'post', -1);
+
+    if ($widget_parentid1 < 0) {
+        if (!isset($theme_config['grid_widgets'][$widget_id1])) {
+            $respon['message'] = 'Widget not exists!!!';
+            nv_jsonOutput($respon);
+        }
+        $id1 = $theme_config['grid_widgets'][$widget_id1]['widget_id'];
+    } else {
+        if (!isset($theme_config['grid_widgets'][$widget_parentid1], $theme_config['grid_widgets'][$widget_parentid1]['subs'], $theme_config['grid_widgets'][$widget_parentid1]['subs'][$widget_id1])) {
+            $respon['message'] = 'Widget not exists!!!';
+            nv_jsonOutput($respon);
+        }
+        $id1 = $theme_config['grid_widgets'][$widget_parentid1]['subs'][$widget_id1]['widget_id'];
+    }
+    if ($widget_parentid2 < 0) {
+        if (!isset($theme_config['grid_widgets'][$widget_id2])) {
+            $respon['message'] = 'Widget not exists!!!';
+            nv_jsonOutput($respon);
+        }
+        $id2 = $theme_config['grid_widgets'][$widget_id2]['widget_id'];
+    } else {
+        if (!isset($theme_config['grid_widgets'][$widget_parentid2], $theme_config['grid_widgets'][$widget_parentid2]['subs'], $theme_config['grid_widgets'][$widget_parentid2]['subs'][$widget_id2])) {
+            $respon['message'] = 'Widget not exists!!!';
+            nv_jsonOutput($respon);
+        }
+        $id2 = $theme_config['grid_widgets'][$widget_parentid2]['subs'][$widget_id2]['widget_id'];
+    }
+
+    if ($widget_parentid1 < 0) {
+        $theme_config['grid_widgets'][$widget_id1]['widget_id'] = $id2;
+    } else {
+        $theme_config['grid_widgets'][$widget_parentid1]['subs'][$widget_id1]['widget_id'] = $id2;
+    }
+    if ($widget_parentid2 < 0) {
+        $theme_config['grid_widgets'][$widget_id2]['widget_id'] = $id1;
+    } else {
+        $theme_config['grid_widgets'][$widget_parentid2]['subs'][$widget_id2]['widget_id'] = $id1;
+    }
+
+    save_theme_config(['grid_widgets', 'widgets'], [$theme_config['grid_widgets'], get_list_widgets($theme_config['grid_widgets'])]);
+    $respon['error'] = 0;
+    $respon['message'] = $nv_Lang->getModule('widget_swap_success');
+    nv_jsonOutput($respon);
+}
+
 nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);

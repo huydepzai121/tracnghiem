@@ -271,9 +271,6 @@ $(document).ready(function() {
             success: function(data) {
                 icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
                 widgetCtn.data('busy', 0);
-
-                console.log(data);
-
                 if (data.error) {
                     nvToast(data.message, 'error');
                     return;
@@ -329,6 +326,30 @@ $(document).ready(function() {
                         // Bug khi widget-edit-drop giảm height thì lần sau nó không bắt hover nên destroy rồi tạo lại
                         initDroppable();
                     }, 50);
+
+                    $.ajax({
+                        type: 'POST',
+                        url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=widget&nocache=' + new Date().getTime(),
+                        data: {
+                            'swapwidget': $('body').data('checksess'),
+                            'widget_id1': target.data('id'),
+                            'widget_parentid1': target.data('parent-id'),
+                            'widget_id2': widgetDrag.data('id'),
+                            'widget_parentid2': widgetDrag.data('parent-id')
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.error) {
+                                nvToast(data.message, 'error');
+                                return;
+                            }
+                            nvToast(data.message, 'success');
+                        },
+                        error: function(xhr, text, err) {
+                            nvToast(text, 'error');
+                            console.log(xhr, text, err);
+                        }
+                    });
                 },
                 classes: {
                     'ui-droppable-active': 'active',

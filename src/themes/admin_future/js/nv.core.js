@@ -204,6 +204,72 @@ const nvConfirm = (message, cbConfirm, cbCancel, cancelBtn) => {
     });
 }
 
+// Site modal
+const siteMdEle = document.getElementById('site-modal');
+const siteMd = bootstrap.Modal.getOrCreateInstance('#site-modal');
+var siteMdCb = null;
+
+siteMdEle.addEventListener('hidden.bs.modal', () => {
+    $('.modal-body', siteMdEle).html('<div class="text-center"><i class="fa-solid fa-2x fa-spinner fa-spin-pulse"></i></div>');
+    if (siteMdCb !== null) {
+        siteMdEle.removeEventListener('shown.bs.modal', siteMdCb);
+        siteMdCb = null;
+    }
+});
+
+function modalShow(title, body, callback) {
+    if (siteMdEle.classList.contains('show')) {
+        return;
+    }
+    if (!title) {
+        title = '&nbsp;';
+    }
+    $('.modal-title', siteMdEle).html(title);
+    $('.modal-body', siteMdEle).html(body);
+
+    if (typeof callback === "function") {
+        siteMdEle.addEventListener('shown.bs.modal', callback);
+        siteMdCb = callback;
+    } else {
+        siteMdCb = null;
+    }
+
+    siteMd.show();
+}
+
+function locationReplace(url) {
+    var uri = window.location.href.substring(window.location.protocol.length + window.location.hostname.length + 2);
+    if (url != uri && history.pushState) {
+        history.pushState(null, null, url)
+    }
+}
+
+function formXSSsanitize(form) {
+    $(form).find("input, textarea").not(":submit, :reset, :image, :file, :disabled").not('[data-sanitize-ignore]').each(function() {
+        $(this).val(DOMPurify.sanitize($(this).val(), {ALLOWED_TAGS: nv_whitelisted_tags, ADD_ATTR: nv_whitelisted_attr}));
+    });
+}
+
+// checkAll
+function checkAll(a, th) {
+    th.is(":checked") ? ($("[data-toggle=checkAll], [data-toggle=checkSingle]", a).not(":disabled").each(function() {
+        $(this).prop("checked", !0)
+    }), $(".checkBtn", a).length && $(".checkBtn", a).prop("disabled", !1)) : ($("[data-toggle=checkAll], [data-toggle=checkSingle]", a).not(":disabled").each(function() {
+        $(this).prop("checked", !1)
+    }), $(".checkBtn", a).length && $(".checkBtn", a).prop("disabled", !0))
+}
+
+// checkSingle
+function checkSingle(a) {
+    var checked = 0,
+        unchecked = 0;
+    $("[data-toggle=checkSingle]", a).not(":disabled").each(function() {
+        $(this).is(":checked") ? checked++ : unchecked++
+    });
+    0 != checked && 0 == unchecked ? $("[data-toggle=checkAll]", a).prop("checked", !0) : $("[data-toggle=checkAll]", a).prop("checked", !1);
+    $(".checkBtn", a).length && (checked ? $(".checkBtn", a).prop("disabled", !1) : $(".checkBtn", a).prop("disabled", !0))
+}
+
 $(document).ready(function() {
     // Hàm lưu config tùy chỉnh của giao diện
     function storeThemeConfig(configName, configValue, callbackSuccess, callbackError) {
@@ -548,7 +614,6 @@ $(document).ready(function() {
         e.preventDefault();
         var $this = $(this);
         if ($this.is('.active') || mColor.data('busy')) {
-            console.log('bussy or active');
             return;
         }
         var icon = $('i', $this);
@@ -578,7 +643,6 @@ $(document).ready(function() {
         var $this = $(this).next();
         var icon = $('i', $this);
         if (ctn.data('busy') || icon.is('.fa-spinner')) {
-            console.log('bussy or active');
             return;
         }
 
@@ -613,6 +677,228 @@ $(document).ready(function() {
         }, 150);
     });
 
+    // Xử lý hết phiên đăng nhập của admin
+    var adTimer, adInterval, adOffcanvas = $('#admin-session-timeout'), sysNoti = $('#main-notifications');
+
+    const timeoutsessrun = () => {
+        clearInterval(adTimer);
+        var Timeout = 60;
+        $('[data-toggle="sec"]', adOffcanvas).text(Timeout);
+        adOffcanvas.addClass('show');
+        var msBegin = new Date().getTime();
+
+        // Dừng ajax thông báo
+        if (sysNoti.length) {
+            sysNoti.data('enable', false);
+        }
+
+        adInterval = setInterval(() => {
+            var msCurrent = new Date().getTime();
+            var ms = Timeout - Math.round((msCurrent - msBegin) / 1000);
+            if (ms >= 0) {
+                $('[data-toggle="sec"]', adOffcanvas).text(ms);
+                return;
+            }
+
+            clearInterval(adInterval);
+            adOffcanvas.removeClass('show');
+            $.getJSON(nv_base_siteurl + "index.php", {
+                second: "time_login",
+                nocache: (new Date).getTime()
+            }).done(function(json) {
+                if (json.showtimeoutsess == 1) {
+                    $.get(nv_base_siteurl + "index.php?second=admin_logout&js=1&system=1&nocache=" + (new Date).getTime(), function() {
+                        window.location.reload();
+                    });
+                } else {
+                    // Chạy lại
+                    if (sysNoti.length) {
+                        sysNoti.data('enable', false);
+                    }
+                    adTimer = setTimeout(() => {
+                        timeoutsessrun();
+                    }, json.check_pass_time);
+                }
+            });
+        }, 1000);
+    }
+
+    const timeoutsesscancel = () => {
+        clearInterval(adInterval);
+        $.ajax({
+            url: nv_base_siteurl + 'index.php?second=statimg',
+            cache: false
+        }).done(function() {
+            adOffcanvas.removeClass('show');
+
+            // Chạy lại ajax thông báo
+            if (sysNoti.length) {
+                sysNoti.data('enable', true);
+            }
+            adTimer = setTimeout(() => {
+                timeoutsessrun();
+            }, nv_check_pass_mstime);
+        });
+    }
+
+    adTimer = setTimeout(() => {
+        timeoutsessrun();
+    }, nv_check_pass_mstime);
+    $('[data-toggle="cancel"]', adOffcanvas).on('click', function(e) {
+        e.preventDefault();
+        timeoutsesscancel();
+    });
+
+    // Add rel="noopener noreferrer nofollow" to all external links
+    $('a[href^="http"]').not('a[href*="' + location.hostname + '"]').not('[rel*=dofollow]').attr({
+        target: "_blank",
+        rel: "noopener noreferrer nofollow"
+    });
+
+    // Prevent empty link click
+    $('a[href="#"]').on('click', function(e) {
+        e.preventDefault();
+    });
+
+    // Change Localtion
+    $("a[data-location]").on("click", function() {
+        locationReplace($(this).data("location"));
+    });
+
+    // XSSsanitize
+    $('body').on('click', '[type=submit]:not([name],.ck-button-save)', function(e) {
+        var form = $(this).parents('form');
+        if (XSSsanitize && !$('[name=submit]', form).length) {
+            // Khi không xử lý XSS thì trình submit mặc định sẽ thực hiện
+            e.preventDefault();
+
+            // Đưa CKEditor 5 trình soạn thảo vào textarea trước khi submit
+            $(form).find("textarea").each(function() {
+                if (this.dataset.editorname && window.nveditor && window.nveditor[this.dataset.editorname]) {
+                    $(this).val(window.nveditor[this.dataset.editorname].getData());
+                }
+            });
+
+            formXSSsanitize(form);
+            $(form).submit();
+        }
+    });
+
+    // checkAll
+    $('body').on('click', '[data-toggle=checkAll]', function() {
+        checkAll($(this).parents('form'), $(this));
+    });
+
+    // checkSingle
+    $('body').on('click', '[data-toggle=checkSingle]', function() {
+        checkSingle($(this).parents('form'));
+    });
+
+    // Select File
+    $('body').delegate('[data-toggle=selectfile]', 'click', function(e) {
+        e.preventDefault();
+        var area = $(this).data('target'),
+            alt = $(this).data('alt'),
+            path = $(this).data('path') ? $(this).data('path') : '',
+            currentpath = $(this).data('currentpath') ? $(this).data('currentpath') : path,
+            type = $(this).data('type') ? $(this).data('type') : 'image',
+            currentfile = $('#' + area).val(),
+            winname = $(this).data('winname') ? $(this).data('winname') : 'NVImg',
+            url = script_name + "?" + nv_lang_variable + "=" + nv_lang_data + "&" + nv_name_variable + "=upload&popup=1";
+        if (area) {
+            url += "&area=" + area + "&path=" + path + "&type=" + type + "&currentpath=" + currentpath;
+            if (currentfile) {
+                url += "&currentfile=" + rawurlencode(currentfile)
+            }
+            if (alt) {
+                url += "&alt=" + alt
+            }
+            nv_open_browse(url, winname, 850, 420, "resizable=no,scrollbars=no,toolbar=no,location=no,status=no");
+        }
+    });
+
+    // Ajax submit
+    // Condition: The returned result must be in JSON format with the following elements:
+    // status ('OK/error', required), mess (Error content), input (input name),
+    // redirect (redirect URL if status is OK), refresh (Reload page if status is OK)
+    $('body').on('submit', '.ajax-submit', function(e) {
+        e.preventDefault();
+        $('.has-error', this).removeClass('has-error');
+        if (typeof(CKEDITOR) !== 'undefined') {
+            for (instance in CKEDITOR.instances) {
+                CKEDITOR.instances[instance].updateElement();
+                CKEDITOR.instances[instance].setReadOnly(true)
+            }
+        }
+
+        var that = $(this),
+            data = that.serialize(),
+            callback = that.data('callback');
+        $('input, textarea, select, button', that).prop('disabled', true);
+        $.ajax({
+            url: that.attr('action'),
+            type: 'POST',
+            data: data,
+            cache: false,
+            dataType: "json"
+        }).done(function(a) {
+            if (a.status == 'error') {
+                $('input, textarea, select, button', that).prop('disabled', false);
+                alert(a.mess);
+                if (a.input) {
+                    if ($('[name^=' + a.input + ']', that).length) {
+                        $('[name^=' + a.input + ']', that).parent().addClass('has-error');
+                        $('[name^=' + a.input + ']', that).focus()
+                    }
+                }
+            } else if (a.status == 'OK') {
+                if ('function' === typeof callback) {
+                    callback()
+                } else if ('string' == typeof callback && "function" === typeof window[callback]) {
+                    window[callback]()
+                }
+                if (a.redirect) {
+                    window.location.href = a.redirect
+                } else if (a.refresh) {
+                    window.location.reload()
+                } else {
+                    setTimeout(() => {
+                        $('input, textarea, select, button', that).prop('disabled', false);
+                        if (typeof(CKEDITOR) !== 'undefined') {
+                            for (instance in CKEDITOR.instances) {
+                                CKEDITOR.instances[instance].setReadOnly(false)
+                            }
+                        }
+                    }, 1000)
+                }
+            }
+        })
+    });
+
+    // Chỉ cho gõ ký tự dạng số ở input có class number
+    $('body').on('input', '.number', function() {
+        $(this).val($(this).val().replace(/[^0-9]/gi, ''))
+    });
+
+    // Chỉ cho gõ các ký tự [a-zA-Z0-9_] ở input có class alphanumeric
+    $('body').on('input', '.alphanumeric', function() {
+        $(this).val($(this).val().replace(/[^a-zA-Z0-9\_]/gi, ''))
+    });
+
+    // Không cho xuống dòng
+    $('body').on('input', '.nonewline', function() {
+        var val = $(this).val().replace(/\n$/gi, '');
+        $(this).val(val.replace(/\s*\n\s*/gi, ' '))
+    });
+
+    // uncheck khi click vào radio nếu radio đang ở trạng thái checked
+    $('body').on("click mousedown", 'input[type=radio].uncheckRadio, .uncheckRadio input[type=radio]', function() {
+        var c;
+        return function(i) {
+            c = "click" == i.type ? !c || (this.checked = !1) : this.checked
+        }
+    }());
+
     // Tooltip
     ([...document.querySelectorAll('[data-bs-toggle="tooltip"]')].map(tipEle => new bootstrap.Tooltip(tipEle)));
 
@@ -621,6 +907,11 @@ $(document).ready(function() {
 
     // Default toasts
     ([...document.querySelectorAll('.toast')].map(toastEl => new bootstrap.Toast(toastEl)));
+
+    // Default toasts
+    ([...document.querySelectorAll('[data-nv-toggle="scroll"]')].map(scrollEl => new PerfectScrollbar(scrollEl, {
+        wheelPropagation: true
+    })));
 
     $("img.imgstatnkv").attr("src", "//static.nukeviet.vn/img.jpg");
 });

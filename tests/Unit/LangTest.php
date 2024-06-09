@@ -108,6 +108,61 @@ class LangTest extends \Codeception\Test\Unit
     }
 
     /**
+     * Kiểm tra ngôn ngữ hệ thống bị thừa so với Tiếng Việt
+     * Kiểm tra ngôn ngữ hệ thống chưa dịch so với Tiếng Việt
+     */
+    public function testLangSystemRedundantOrNotTranslated()
+    {
+        $langs = array_diff(nv_scandir(NV_ROOTDIR . '/includes/language', '/^[a-z]{2}$/'), ['vi']);
+        $files = nv_scandir(NV_ROOTDIR . '/includes/language/vi', '/^(.*)\.php$/');
+
+        foreach ($langs as $lang) {
+            foreach ($files as $file) {
+                $check_file = NV_ROOTDIR . '/includes/language/' . $lang . '/' . $file;
+                $this->assertFileExists($check_file, 'File not exists: includes/language/' . $lang . '/' . $file);
+
+                if (!file_exists($check_file) or $file == 'functions.php') {
+                    continue;
+                }
+
+                // Lấy ngôn ngữ gốc VI kiểm tra
+                $lang_translator = $lang_module = $lang_global = $lang_block = [];
+                require NV_ROOTDIR . '/includes/language/vi/' . $file;
+                $compareLang1 = [
+                    'm' => $lang_module,
+                    'g' => $lang_global,
+                    'b' => $lang_block
+                ];
+
+                // Lấy ngôn ngữ này kiểm tra
+                $lang_translator = $lang_module = $lang_global = $lang_block = [];
+                require NV_ROOTDIR . '/includes/language/' . $lang . '/' . $file;
+                $compareLang2 = [
+                    'm' => $lang_module,
+                    'g' => $lang_global,
+                    'b' => $lang_block
+                ];
+
+                $redundant_m = array_diff_key($compareLang2['m'], $compareLang1['m']);
+                $redundant_g = array_diff_key($compareLang2['g'], $compareLang1['g']);
+                $redundant_b = array_diff_key($compareLang2['b'], $compareLang1['b']);
+
+                $notTranslated_m = array_diff_key($compareLang1['m'], $compareLang2['m']);
+                $notTranslated_g = array_diff_key($compareLang1['g'], $compareLang2['g']);
+                $notTranslated_b = array_diff_key($compareLang1['b'], $compareLang2['b']);
+
+                $this->assertCount(0, $redundant_m, 'Redundant lang module ' . $lang . ' in file ' . $file . ':' . PHP_EOL . implode(PHP_EOL, array_keys($redundant_m)));
+                $this->assertCount(0, $redundant_g, 'Redundant lang global ' . $lang . ' in file ' . $file . ':' . PHP_EOL . implode(PHP_EOL, array_keys($redundant_g)));
+                $this->assertCount(0, $redundant_b, 'Redundant lang block ' . $lang . ' in file ' . $file . ':' . PHP_EOL . implode(PHP_EOL, array_keys($redundant_b)));
+
+                $this->assertCount(0, $notTranslated_m, 'Not Translated lang module ' . $lang . ' in file ' . $file . ':' . PHP_EOL . implode(PHP_EOL, array_keys($notTranslated_m)));
+                $this->assertCount(0, $notTranslated_g, 'Not Translated lang global ' . $lang . ' in file ' . $file . ':' . PHP_EOL . implode(PHP_EOL, array_keys($notTranslated_g)));
+                $this->assertCount(0, $notTranslated_b, 'Not Translated lang block ' . $lang . ' in file ' . $file . ':' . PHP_EOL . implode(PHP_EOL, array_keys($notTranslated_b)));
+            }
+        }
+    }
+
+    /**
      * Kiểm tra ngôn ngữ module bị thừa so với Tiếng Việt
      * Kiểm tra ngôn ngữ module chưa dịch so với Tiếng Việt
      */

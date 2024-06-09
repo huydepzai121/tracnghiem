@@ -34,9 +34,7 @@
                     {/if}
                     {if isset($WIDGETS[$subwidget.widget_id])}
                     <div class="card widget">
-                        <div class="card-body">
-                            {$WIDGETS[$subwidget.widget_id]}
-                        </div>
+                        {$WIDGETS[$subwidget.widget_id]}
                     </div>
                     {/if}
                     {if $IS_EDIT}
@@ -70,9 +68,7 @@
             {else}
             {if isset($WIDGETS[$widget.widget_id])}
             <div class="card widget">
-                <div class="card-body">
-                    {$WIDGETS[$widget.widget_id]}
-                </div>
+                {$WIDGETS[$widget.widget_id]}
             </div>
             {/if}
             {/if}

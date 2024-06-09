@@ -45,4 +45,25 @@
   border-color: var(--bs-danger);
 }
 
+.widget-scroller {
+  height: 100%;
+  max-height: 18.125rem;
+  position: relative;
+  overflow: hidden;
+  border-bottom-left-radius: calc(var(--bs-border-radius) + 0.0625rem);
+  border-bottom-right-radius: calc(var(--bs-border-radius) + 0.0625rem);
+}
+
+.widget-chart-290 {
+  height: 290px;
+}
+
+.widget-chart-wait .colholder {
+  width: 0.75rem;
+}
+
+.h100 {
+  height: 100%;
+}
+
 /*# sourceMappingURL=siteinfo.css.map */

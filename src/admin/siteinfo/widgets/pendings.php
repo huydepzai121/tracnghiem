@@ -18,6 +18,14 @@ $widget_info = [
     'name' => $nv_Lang->getModule('pendingInfo'),
     'note' => '',
     'func' => function () {
-        return "HTML pendings";
+        global $pending_info, $global_config, $module_file, $nv_Lang;
+
+        $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/widget_pendings.tpl');
+        $tpl = new \NukeViet\Template\NVSmarty();
+        $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+        $tpl->assign('LANG', $nv_Lang);
+        $tpl->assign('PENDINGS', $pending_info);
+
+        return $tpl->fetch('widget_pendings.tpl');
     }
 ];
