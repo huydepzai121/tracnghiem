@@ -70,6 +70,7 @@ $lang_module['log_del_no_items'] = 'You may choose';
 $lang_module['log_note'] = 'Notes';
 $lang_module['moduleInfo'] = 'Modules Informations';
 $lang_module['pendingInfo'] = 'Pending job from the module';
+$lang_module['no_job'] = 'There are no more jobs';
 $lang_module['moduleName'] = 'Module';
 $lang_module['moduleContent'] = 'Content';
 $lang_module['moduleValue'] = 'Value';

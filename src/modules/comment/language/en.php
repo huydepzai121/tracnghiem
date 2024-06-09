@@ -107,6 +107,7 @@ $lang_module['allowed_comm'] = 'Who post comment';
 $lang_module['allowed_comm_item'] = 'Follow aricle configure';
 $lang_module['adminscomm_note'] = 'The "Admin can manage comments" only applies to admin Management module, you need to add a management module before decentralization';
 $lang_module['siteinfo_queue_comments'] = 'Total commments need approval';
+$lang_module['siteinfo_total_comments'] = 'Total comments';
 $lang_module['notification_comment_queue'] = 'Comment moderation posts by %s<br /><em>%s</em>';
 $lang_module['allowattachcomm'] = 'Allow Attach';
 $lang_module['alloweditorcomm'] = 'Allow editor';

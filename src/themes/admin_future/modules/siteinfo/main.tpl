@@ -26,7 +26,7 @@
             <div class="widget-edit{if empty($widget.subs)} widget-edit-drop{/if} position-relative bg-warning-subtle p-1{if not empty($widget.subs)} pt-4 pb-0{/if}" id="widget_{$widget_id}" data-id="{$widget_id}" data-parent-id="-1">
             {/if}
             {if not empty($widget.subs)}
-            <div class="row">
+            <div class="row h100">
                 {foreach from=$widget.subs key=widget_subid item=subwidget}
                 <div class="{foreach from=$subwidget.sizes key=breakpoint item=colsize}col-{$breakpoint}-{$colsize} {/foreach} mb-4" data-append-class="mb-4">
                     {if $IS_EDIT}

@@ -109,6 +109,7 @@ $lang_module['allowed_comm'] = 'Ai được phép đăng bình luận';
 $lang_module['allowed_comm_item'] = 'Theo cấu hình bài viết';
 $lang_module['adminscomm_note'] = 'Chức năng "Admin quản lý bình luận" chỉ áp dụng cho admin Quản lý module, Bạn cần thêm người Quản lý module trước khi phân quyền';
 $lang_module['siteinfo_queue_comments'] = 'Số bình luận chờ duyệt';
+$lang_module['siteinfo_total_comments'] = 'Tổng số bình luận';
 $lang_module['notification_comment_queue'] = 'Kiểm duyệt bình luận gửi bởi %s<br /><em>%s</em>';
 $lang_module['attach_choose'] = 'Chọn';
 $lang_module['attach_view'] = 'Truy cập';

@@ -32,51 +32,6 @@
     transform: translate(-50%, -50%);
 }
 
-// Phần cho widget
-.table-card {
-    margin-left: calc(-1 * var(--bs-card-spacer-x));
-    margin-right: calc(-1 * var(--bs-card-spacer-x));
-
-    .table {
-        margin-bottom: 0;
-    }
-}
-
-.table-card-widget {
-    .table {
-        border-bottom-left-radius: var(--bs-border-radius);
-        border-bottom-right-radius: var(--bs-border-radius);
-
-        tbody {
-            border-bottom-left-radius: var(--bs-border-radius);
-            border-bottom-right-radius: var(--bs-border-radius);
-
-            tr {
-                td:first-child {
-                    padding-left: var(--bs-card-spacer-x);
-                }
-
-                td:last-child {
-                    padding-right: var(--bs-card-spacer-x);
-                }
-            }
-
-            tr:last-child {
-                border-bottom-left-radius: var(--bs-border-radius);
-                border-bottom-right-radius: var(--bs-border-radius);
-
-                td:first-child {
-                    border-bottom-left-radius: var(--bs-border-radius);
-                }
-
-                td:last-child {
-                    border-bottom-right-radius: var(--bs-border-radius);
-                }
-            }
-        }
-    }
-}
-
 // Offcanvas admin session
 .nv-offcanvas {
     position: fixed;

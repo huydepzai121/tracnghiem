@@ -107,52 +107,110 @@ function get_theme_config()
 
     if (!isset($theme_config['grid_widgets'])) {
         $theme_config['grid_widgets'] = [
-            // Item số 3
-            0 => [
-                'widget_id' => 'adm_siteinfo_statistics',
-                'sizes' => [
-                    'xs' => 12, // <576px
-                    'sm' => 12, // ≥576px
-                    'md' => 12, // ≥768px
-                    'lg' => 6, // ≥992px
-                    'xl' => 6, // ≥1200px
-                    'xxl' => 6 // ≥1400px
-                ]
-            ],
-            // Item số 4
-            1 => [
-                'widget_id' => 'adm_siteinfo_pendings',
-                'sizes' => [
-                    'xs' => 12, // <576px
-                    'sm' => 12, // ≥576px
-                    'md' => 12, // ≥768px
-                    'lg' => 6, // ≥992px
-                    'xl' => 6, // ≥1200px
-                    'xxl' => 6 // ≥1400px
-                ]
-            ],
             // Item số 1
-            2 => [
-                'widget_id' => 'usr_statistics_hour',
+            0 => [
+                'widget_id' => '',
                 'sizes' => [
                     'xs' => 12, // <576px
                     'sm' => 12, // ≥576px
                     'md' => 12, // ≥768px
-                    'lg' => 8, // ≥992px
-                    'xl' => 8, // ≥1200px
-                    'xxl' => 8 // ≥1400px
+                    'lg' => 12, // ≥992px
+                    'xl' => 6, // ≥1200px
+                    'xxl' => 6 // ≥1400px
+                ],
+                'subs' => [
+                    0 => [
+                        'widget_id' => 'usr_news_arttotal',
+                        'sizes' => [
+                            'xs' => 12,
+                            'sm' => 6,
+                            'md' => 6,
+                            'lg' => 6,
+                            'xl' => 6,
+                            'xxl' => 6
+                        ]
+                    ],
+                    1 => [
+                        'widget_id' => 'usr_users_usrtotal',
+                        'sizes' => [
+                            'xs' => 12,
+                            'sm' => 6,
+                            'md' => 6,
+                            'lg' => 6,
+                            'xl' => 6,
+                            'xxl' => 6
+                        ]
+                    ],
+                    2 => [
+                        'widget_id' => 'usr_contact_cmttotal',
+                        'sizes' => [
+                            'xs' => 12,
+                            'sm' => 6,
+                            'md' => 6,
+                            'lg' => 6,
+                            'xl' => 6,
+                            'xxl' => 6
+                        ]
+                    ],
+                    3 => [
+                        'widget_id' => 'usr_comment_cmttotal',
+                        'sizes' => [
+                            'xs' => 12,
+                            'sm' => 6,
+                            'md' => 6,
+                            'lg' => 6,
+                            'xl' => 6,
+                            'xxl' => 6
+                        ]
+                    ]
                 ]
             ],
             // Item số 2
+            1 => [
+                'widget_id' => 'adm_siteinfo_statistics',
+                'sizes' => [
+                    'xs' => 12,
+                    'sm' => 12,
+                    'md' => 12,
+                    'lg' => 6,
+                    'xl' => 3,
+                    'xxl' => 3
+                ]
+            ],
+            // Item số 3
+            2 => [
+                'widget_id' => 'adm_siteinfo_pendings',
+                'sizes' => [
+                    'xs' => 12,
+                    'sm' => 12,
+                    'md' => 12,
+                    'lg' => 6,
+                    'xl' => 3,
+                    'xxl' => 3
+                ]
+            ],
+            // Item số 4
             3 => [
+                'widget_id' => 'usr_statistics_hour',
+                'sizes' => [
+                    'xs' => 12,
+                    'sm' => 12,
+                    'md' => 12,
+                    'lg' => 8,
+                    'xl' => 8,
+                    'xxl' => 8
+                ]
+            ],
+            // Item số 5
+            4 => [
                 'widget_id' => 'adm_siteinfo_version',
                 'sizes' => [
-                    'xs' => 12, // <576px
-                    'sm' => 12, // ≥576px
-                    'md' => 12, // ≥768px
-                    'lg' => 4, // ≥992px
-                    'xl' => 4, // ≥1200px
-                    'xxl' => 4 // ≥1400px
+                    'xs' => 12,
+                    'sm' => 12,
+                    'md' => 12,
+                    'lg' => 4,
+                    'xl' => 4,
+                    'xxl' => 4
                 ]
             ]
         ];
@@ -166,6 +224,10 @@ function get_theme_config()
     if (!isset($theme_config['widgets'])) {
         // Các widget mặc định
         $theme_config['widgets'] = [
+            'usr_news_arttotal',
+            'usr_users_usrtotal',
+            'usr_contact_cmttotal',
+            'usr_comment_cmttotal',
             'usr_statistics_hour',
             'adm_siteinfo_version',
             'adm_siteinfo_statistics',

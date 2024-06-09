@@ -15,9 +15,23 @@
 @import "../../node_modules/bootstrap/scss/variables";
 
 $card-tools-icon-size: 1.25rem; // 20px
+$widget-couter-icon-size: 3rem;
 
 .widget {
     height: 100%;
+
+    .couter-icon {
+        width: $widget-couter-icon-size;
+        height: $widget-couter-icon-size;
+
+        span {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
 }
 
 .widget-edit {

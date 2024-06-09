@@ -106,6 +106,7 @@ $lang_module['admin_obt_level'] = 'Right to receive feedback';
 $lang_module['admin_exec_level'] = 'Right to execute';
 $lang_module['delall'] = 'Delete all';
 $lang_module['siteinfo_new'] = 'Unread contact';
+$lang_module['siteinfo_all'] = 'All contact';
 $lang_module['no_row_contact'] = 'Any Contact';
 $lang_module['url_for_iframe'] = 'Url for iframe';
 $lang_module['supporter'] = 'Supporter';

@@ -106,6 +106,7 @@ $lang_module['admin_obt_level'] = 'Recevoir des commentaires par e-mail';
 $lang_module['admin_exec_level'] = 'Droit d\'exécution';
 $lang_module['delall'] = 'Supprimer Tout';
 $lang_module['siteinfo_new'] = 'Messages pas encore lus';
+$lang_module['siteinfo_all'] = 'Tous les contacts';
 $lang_module['no_row_contact'] = 'Aucun contact';
 $lang_module['url_for_iframe'] = 'Lien pour iframe';
 $lang_module['supporter'] = 'Le personnel de soutien';

@@ -109,6 +109,7 @@ $lang_module['allowed_comm'] = 'Ceux qui ont le droit d\'écrire les commentaire
 $lang_module['allowed_comm_item'] = 'Selon la configuration des commentaires';
 $lang_module['adminscomm_note'] = 'Le "Admin peut gérer les commentaires" applique uniquement au module de gestion admin, vous devez ajouter un module de gestion avant la décentralisation';
 $lang_module['siteinfo_queue_comments'] = 'Le nombre de commentaire en liste d\'attente d\'être vérifié';
+$lang_module['siteinfo_total_comments'] = 'Total des commentaires';
 $lang_module['notification_comment_queue'] = 'Commentaire messages de modération par %s<br /><em>%s</em>';
 $lang_module['attach_choose'] = 'Sélectionnez';
 $lang_module['attach_view'] = 'Accès';

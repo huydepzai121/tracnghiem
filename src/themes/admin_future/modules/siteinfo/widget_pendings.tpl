@@ -1,30 +1,30 @@
-<div class="card-body d-flex flex-column{if not empty($PENDINGS)} pb-0{/if}">
-    <h5 class="card-title">{$LANG->getModule('pendingInfo')}</h5>
+<div class="flex-grow-1 flex-shrink-1 d-flex flex-column">
+    <div class="p-3 border-bottom border-light-subtle">
+        <h5 class="mb-0">{$LANG->getModule('pendingInfo')}</h5>
+    </div>
     {if empty($PENDINGS)}
-    <div class="alert alert-info mb-0" role="alert">{$LANG->getModule('pendingInfo')}</div>
+    <div class="m-3 alert alert-info mb-0" role="alert">{$LANG->getModule('no_job')}</div>
     {else}
-    <div class="flex-grow-1 flex-shrink-1 table-card table-card-widget">
+    <div class="flex-grow-1 flex-shrink-1">
         <div class="widget-scroller" data-nv-toggle="scroll">
-            <div class="table-responsive">
-                <table class="table">
-                    <tbody>
-                        {foreach from=$PENDINGS item=modinfo}
-                        {foreach from=$modinfo.field item=pd}
-                        <tr>
-                            <td style="width: 30%;">{$modinfo.caption}</td>
-                            <td style="width: 45%;">
-                                {if not empty($pd.link)}
-                                <a href="{$pd.link}" title="{$pd.key}">{$pd.key}</a>
-                                {else}
-                                {$pd.key}
-                                {/if}
-                            </td>
-                            <td style="width: 25%;" class="text-end">{$pd.value}</td>
-                        </tr>
-                        {/foreach}
-                        {/foreach}
-                    </tbody>
-                </table>
+            <div>
+                {foreach from=$PENDINGS item=modinfo}
+                <div class="bg-body-tertiary px-3 py-2 fw-medium mb-2">
+                    <i class="fa-solid fa-plus fa-sm"></i> {$modinfo.caption}
+                </div>
+                {foreach from=$modinfo.field item=pd}
+                <div class="px-3 mb-2 d-flex align-items-center justify-content-between">
+                    <div class="me-2 text-truncate">
+                        {if not empty($pd.link)}
+                        <i class="fa-solid fa-minus fa-sm"></i> <a href="{$pd.link}" title="{$pd.key}">{$pd.key}</a>
+                        {else}
+                        <i class="fa-solid fa-minus fa-sm"></i> {$pd.key}
+                        {/if}
+                    </div>
+                    <span class="fw-bold">{$pd.value}</span>
+                </div>
+                {/foreach}
+                {/foreach}
             </div>
         </div>
     </div>
