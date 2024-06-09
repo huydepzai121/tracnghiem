@@ -1,17 +1,15 @@
 <div class="card-body pb-0">
     <h5 class="card-title">{$LANG->getModule('version')}</h5>
-    <div class="table-card table-card-widget">
-        <table class="table">
-            <tbody>
-                {foreach from=$FIELDS item=field}
-                <tr>
-                    <td>{$field.key}</td>
-                    <td>{$field.value}</td>
-                </tr>
-                {/foreach}
-            </tbody>
-        </table>
-    </div>
+    <table class="table">
+        <tbody>
+            {foreach from=$FIELDS item=field}
+            <tr>
+                <td class="ps-0">{$field.key}</td>
+                <td class="pe-0">{$field.value}</td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
     {if not empty($INFO)}
     <p class="pt-2 mb-2 text-danger">
         {$INFO}

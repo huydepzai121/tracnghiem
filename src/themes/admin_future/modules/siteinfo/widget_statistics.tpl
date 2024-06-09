@@ -3,7 +3,7 @@
         <h5 class="mb-0">{$LANG->getModule('moduleInfo')}</h5>
     </div>
     {if empty($STATS)}
-    <div class="m-3 alert alert-info mb-0" role="alert">{$LANG->getModule('no_job')}</div>
+    <div class="m-3 alert alert-info" role="alert">{$LANG->getModule('no_job')}</div>
     {else}
     <div class="flex-grow-1 flex-shrink-1">
         <div class="widget-scroller" data-nv-toggle="scroll">
