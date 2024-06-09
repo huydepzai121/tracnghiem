@@ -1,7 +1,7 @@
 .site-footer {
     margin-left: calc($left-sidebar-width);
     height: $footer-height;
-    background-color: $footer-bg;
+    background-color: var(--nv-footer-bg);
     transition: margin-left .2s ease-in-out;
 
     @media (max-width: #{$theme-breakpoint}) {

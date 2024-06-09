@@ -14,110 +14,25 @@ if (!defined('NV_MAINFILE')) {
 }
 
 /**
- * nv_error_info()
+ * Hàm lấy thông báo lỗi
  *
  * @return string|void
  */
 function nv_error_info()
 {
-    global $nv_Lang, $global_config, $error_info;
+    global $nv_Lang, $global_config, $error_info, $admin_info;
 
-    if (!defined('NV_IS_ADMIN')) {
+    if (!defined('NV_IS_ADMIN') or empty($error_info)) {
         return '';
     }
-    if (empty($error_info)) {
-        return '';
-    }
-
-    $errortype = [
-        E_ERROR => [
-            $nv_Lang->getGlobal('error_error'),
-            'bad.png'
-        ],
-        E_WARNING => [
-            $nv_Lang->getGlobal('error_warning'),
-            'warning.png'
-        ],
-        E_PARSE => [
-            $nv_Lang->getGlobal('error_error'),
-            'bad.png'
-        ],
-        E_NOTICE => [
-            $nv_Lang->getGlobal('error_notice'),
-            'comment.png'
-        ],
-        E_CORE_ERROR => [
-            $nv_Lang->getGlobal('error_error'),
-            'bad.png'
-        ],
-        E_CORE_WARNING => [
-            $nv_Lang->getGlobal('error_warning'),
-            'warning.png'
-        ],
-        E_COMPILE_ERROR => [
-            $nv_Lang->getGlobal('error_error'),
-            'bad.png'
-        ],
-        E_COMPILE_WARNING => [
-            $nv_Lang->getGlobal('error_warning'),
-            'warning.png'
-        ],
-        E_USER_ERROR => [
-            $nv_Lang->getGlobal('error_error'),
-            'bad.png'
-        ],
-        E_USER_WARNING => [
-            $nv_Lang->getGlobal('error_warning'),
-            'warning.png'
-        ],
-        E_USER_NOTICE => [
-            $nv_Lang->getGlobal('error_notice'),
-            'comment.png'
-        ],
-        E_STRICT => [
-            $nv_Lang->getGlobal('error_notice'),
-            'comment.png'
-        ],
-        E_RECOVERABLE_ERROR => [
-            $nv_Lang->getGlobal('error_error'),
-            'bad.png'
-        ],
-        E_DEPRECATED => [
-            $nv_Lang->getGlobal('error_notice'),
-            'comment.png'
-        ],
-        E_USER_DEPRECATED => [
-            $nv_Lang->getGlobal('error_warning'),
-            'warning.png'
-        ]
-    ];
 
     if (defined('NV_ADMIN')) {
-        $tpl_dir = get_tpl_dir($global_config['admin_theme'], 'admin_default', '/system/error_info.tpl');
+        $php_dir = get_tpl_dir([$admin_info['admin_theme'], $global_config['admin_theme']], 'default', '/theme_error_info.php');
     } else {
-        $tpl_dir = get_tpl_dir($global_config['site_theme'], 'default', '/system/error_info.tpl');
+        $php_dir = get_tpl_dir($global_config['site_theme'], 'default', '/theme_error_info.php');
     }
-    $tpl_path = NV_ROOTDIR . '/themes/' . $tpl_dir . '/system';
-    $image_path = NV_STATIC_URL . 'themes/' . $tpl_dir . '/images/icons/';
-
-    $xtpl = new XTemplate('error_info.tpl', $tpl_path);
-    $xtpl->assign('TPL_E_CAPTION', $nv_Lang->getGlobal('error_info_caption'));
-
-    $a = 0;
-    foreach ($error_info as $key => $value) {
-        $xtpl->assign('TPL_E_CLASS', ($a % 2) ? ' class="second"' : '');
-        $xtpl->assign('TPL_E_ALT', $errortype[$value['errno']][0]);
-        $xtpl->assign('TPL_E_SRC', $image_path . $errortype[$value['errno']][1]);
-        $xtpl->assign('TPL_E_ERRNO', $errortype[$value['errno']][0]);
-        $xtpl->assign('TPL_E_MESS', $value['info']);
-        $xtpl->set_autoreset();
-        $xtpl->parse('error_info.error_item');
-        ++$a;
-    }
-
-    $xtpl->parse('error_info');
-
-    return $xtpl->text('error_info');
+    require NV_ROOTDIR . '/themes/' . $php_dir . '/theme_error_info.php';
+    return nv_error_info_theme($php_dir);
 }
 
 /**

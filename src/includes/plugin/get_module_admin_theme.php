@@ -21,6 +21,9 @@ nv_add_hook($module_name, 'get_module_admin_theme', $priority, function ($vars) 
     $op = $vars[3];
 
     $new_theme = 'admin_future';
+    if ($module_name == 'siteinfo' and in_array($op, ['main', 'widget'])) {
+        return $new_theme;
+    }
     if ($module_name == 'siteinfo' and $op == 'notification' and ($_GET['ajax'] ?? 0) == 1 and ($_GET['template'] ?? '') == $new_theme) {
         return $new_theme;
     }

@@ -414,6 +414,7 @@ $lang_module['addtotopics'] = 'Add topic';
 $lang_module['topic_update_success'] = 'Update successful';
 $lang_module['topic_num_news'] = 'Topic';
 $lang_module['siteinfo_publtime'] = 'Active posts';
+$lang_module['siteinfo_totalpost'] = 'Total posts';
 $lang_module['siteinfo_users_send'] = 'Member posts';
 $lang_module['siteinfo_pending'] = 'Pending posts';
 $lang_module['siteinfo_expired'] = 'Expired posts';

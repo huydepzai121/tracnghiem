@@ -1,7 +1,7 @@
 .breadcrumb-wrap {
     height: $breadcrumb-height;
-    background-color: $breadcrumb-bg;
-    border-bottom: $border-width $border-style $border-color;
+    background-color: var(--nv-breadcrumb-bg);
+    border-bottom: $border-width $border-style var(--bs-border-color);
     transition: height .2s ease-in-out, border-bottom .2s ease-in-out;
     overflow: hidden;
 
@@ -15,7 +15,7 @@
     .open-breadcrumb {
         .breadcrumb-wrap {
             height: $breadcrumb-height;
-            border-bottom: $border-width $border-style $border-color;
+            border-bottom: $border-width $border-style var(--bs-border-color);
         }
     }
 }

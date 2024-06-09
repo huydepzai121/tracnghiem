@@ -7,9 +7,17 @@
         <link rel="stylesheet" type="text/css" href="{NV_BASE_SITEURL}install/css/style.css" />
         <link rel="stylesheet" type="text/css" href="{NV_BASE_SITEURL}install/css/table.css" />
         <script type="text/javascript">
-        var nv_base_siteurl = '{NV_BASE_SITEURL}';
         var update_package_deleted = '{LANG.update_package_deleted}';
         var update_package_not_deleted = '{LANG.update_package_not_deleted}';
+        var nv_base_siteurl = '{NV_BASE_SITEURL}',
+            nv_admindir = '{NV_ADMINDIR}',
+            nv_assets_dir = '{NV_ASSETS_DIR}',
+            nv_lang_data = '{NV_LANG_DATA}',
+            nv_lang_interface = '{NV_LANG_INTERFACE}',
+            nv_name_variable = '{NV_NAME_VARIABLE}',
+            nv_fc_variable = '{NV_OP_VARIABLE}',
+            nv_lang_variable = '{NV_LANG_VARIABLE}',
+            nv_my_abbr = '{NV_CURRENTTIME}';
         </script>
         <script type="text/javascript" src="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/global.js"></script>
@@ -53,7 +61,7 @@
         </div>
         <div id="footer">
             <p>
-                &copy; 2010 - 2021 {LANG.developed} <strong><a title="VINADES.,JSC" href="http://vinades.vn">VINADES.,JSC</a></strong>
+                &copy; 2010 - 2024 {LANG.developed} <strong><a title="VINADES.,JSC" href="https://vinades.vn/">VINADES.,JSC</a></strong>
             </p>
             <p>
                 {LANG.publish} <strong>GNU/GPL v2.0</strong>

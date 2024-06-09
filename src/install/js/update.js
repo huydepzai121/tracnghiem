@@ -7,30 +7,39 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-if (typeof ud_url_return == 'undefined') {
-    var ud_url_return = '';
-}
-
 $(document).ready(function() {
-    // Delete update package
+    // Xóa gói cập nhật
     $('.delete_update_backage').click(function(e) {
         e.preventDefault();
-        if (confirm(nv_is_del_confirm[0])) {
-            $('#infodetectedupg').append('<div id="dpackagew"><img src="' + nv_base_siteurl + 'assets/images/load_bar.gif" alt="Waiting..."/></div>');
-            $.get($(this).attr('href'), function(e) {
-                $('#dpackagew').remove()
-                if (e == 'OK') {
-                    window.location = ud_url_return;
-                } else {
-                    alert(e);
-                }
-            });
+        if (!confirm(nv_is_del_confirm[0])) {
+            return;
         }
-        return !1;
+        var $this = $(this);
+        $('#infodetectedupg').append('<div id="dpackagew"><img src="' + nv_base_siteurl + nv_assets_dir + '/images/load_bar.gif" alt="Waiting..."/></div>');
+        $.ajax({
+            type: 'POST',
+            url: nv_base_siteurl + nv_admindir + '/index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=webtools&' + nv_fc_variable + '=deleteupdate&nocache=' + new Date().getTime(),
+            data: {
+                'checksess': $this.data('checksess')
+            },
+            dataType: 'json',
+            success: function(data) {
+                $('#dpackagew').remove();
+                if (data.success) {
+                    window.location = nv_base_siteurl + nv_admindir + '/index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo';
+                    return;
+                }
+                alert(data.error.join("\n"));
+            },
+            error: function(xhr, text, err) {
+                console.log(xhr, text, err);
+                alert(text);
+            }
+        });
     });
 
     $('.update_dump').click(function() {
-        $('#infodetectedupg').append('<div id="dpackagew"><img src="' + nv_base_siteurl + 'assets/images/load_bar.gif" alt="Waiting..."/></div>');
+        $('#infodetectedupg').append('<div id="dpackagew"><img src="' + nv_base_siteurl + nv_assets_dir + '/images/load_bar.gif" alt="Waiting..."/></div>');
         $.get($(this).attr('href'), function(e) {
             $('#dpackagew').remove();
             $('#infodetectedupg').append('<br />' + e);
@@ -38,36 +47,49 @@ $(document).ready(function() {
         return !1;
     });
 
-    // Finish update
-    $('.delete_update_backage_end').click(function() {
-        if (completeUpdate == 0) {
-            if (confirm(nv_is_del_confirm[0])) {
-                $('#infodetectedupg').append('<div id="dpackagew"><img src="' + nv_base_siteurl + 'assets/images/load_bar.gif" alt="Waiting..."/></div>');
-                $.get($(this).attr('href'), function(e) {
-                    $('#dpackagew').remove()
-                    if (e == 'OK') {
-                        completeUpdate = 1;
-                        $('#endupdate').append(
-                            '<div class="infook">' +
-                            update_package_deleted + '<br />' +
-                            '<a href="' + URL_GOHOME + '" title="' + gohome + '">' + gohome + '</a> - ' +
-                            '<a href="' + URL_GOADMIN + '" title="' + update_goadmin + '">' + update_goadmin + '</a>' +
-                            '</div>'
-                        );
-                    } else {
-                        alert(e);
-                        $('#endupdate').append(
-                            '<div class="infoerror">' +
-                            update_package_not_deleted + '<br />' +
-                            '<a href="' + URL_GOHOME + '" title="' + gohome + '">' + gohome + '</a> - ' +
-                            '<a href="' + URL_GOADMIN + '" title="' + update_goadmin + '">' + update_goadmin + '</a>' +
-                            '</div>'
-                        );
-                    }
-                });
-            }
+    // Kết thúc và xóa gói cập nhật
+    $('.delete_update_backage_end').click(function(e) {
+        e.preventDefault();
+
+        if (completeUpdate != 0 || !confirm(nv_is_del_confirm[0])) {
+            return;
         }
-        return !1;
+        var $this = $(this);
+        $('#infodetectedupg').append('<div id="dpackagew"><img src="' + nv_base_siteurl + nv_assets_dir + '/images/load_bar.gif" alt="Waiting..."/></div>');
+        $.ajax({
+            type: 'POST',
+            url: nv_base_siteurl + nv_admindir + '/index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=webtools&' + nv_fc_variable + '=deleteupdate&nocache=' + new Date().getTime(),
+            data: {
+                'checksess': $this.data('checksess')
+            },
+            dataType: 'json',
+            success: function(data) {
+                $('#dpackagew').remove();
+                if (data.success) {
+                    completeUpdate = 1;
+                    $('#endupdate').append(
+                        '<div class="infook">' +
+                        update_package_deleted + '<br />' +
+                        '<a href="' + URL_GOHOME + '" title="' + gohome + '">' + gohome + '</a> - ' +
+                        '<a href="' + URL_GOADMIN + '" title="' + update_goadmin + '">' + update_goadmin + '</a>' +
+                        '</div>'
+                    );
+                    return;
+                }
+                alert(data.error.join("\n"));
+                $('#endupdate').append(
+                    '<div class="infoerror">' +
+                    update_package_not_deleted + '<br />' +
+                    '<a href="' + URL_GOHOME + '" title="' + gohome + '">' + gohome + '</a> - ' +
+                    '<a href="' + URL_GOADMIN + '" title="' + update_goadmin + '">' + update_goadmin + '</a>' +
+                    '</div>'
+                );
+            },
+            error: function(xhr, text, err) {
+                console.log(xhr, text, err);
+                alert(text);
+            }
+        });
     });
 });
 
@@ -151,7 +173,7 @@ NVU.SetComplete = function() {
     $('#control_t').append('<li><span class="next_step"><a href="' + NVU.NextStepUrl + '">' + next_step + '</a></span></li>');
 }
 NVU.ShowLoad = function(m) {
-    $('#nv-loading').html('<img src="' + nv_base_siteurl + 'assets/images/load_bar.gif" alt=""/><br />' + update_task_load + ' <strong>' + m + '</strong><br />' + update_task_load_message + '.');
+    $('#nv-loading').html('<img src="' + nv_base_siteurl + nv_assets_dir + '/images/load_bar.gif" alt=""/><br />' + update_task_load + ' <strong>' + m + '</strong><br />' + update_task_load_message + '.');
     $('#nv-loading').show();
 }
 NVU.HideLoad = function() {
@@ -175,7 +197,7 @@ NVMF.NavigateConfirm = 'update_nav_confirm';
 NVMF.OkMessage = '';
 NVMF.Start = function() {
     NVMF.IsStart = 1;
-    $('#nv-message').html('<img src="' + nv_base_siteurl + 'assets/images/load_bar.gif" alt="Loading..."/><br />' + update_load_waiting);
+    $('#nv-message').html('<img src="' + nv_base_siteurl + nv_assets_dir + '/images/load_bar.gif" alt="Loading..."/><br />' + update_load_waiting);
     if (NVMF.ftp_nosupport) {
         $('#ftp_nosupport').slideUp(400);
     }

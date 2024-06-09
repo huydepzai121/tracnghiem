@@ -15,164 +15,172 @@ if (!defined('NV_IS_FILE_SITEINFO')) {
 
 $page_title = $nv_Lang->getGlobal('mod_siteinfo');
 
-// Thiết lập đóng mở menu trái của giao diện
-if ($nv_Request->isset_request('collapsed_left_sidebar', 'post')) {
-    if (!defined('NV_IS_AJAX')) {
-        nv_htmlOutput('NO');
-    }
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/main.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
 
-    $value = (int) $nv_Request->get_bool('collapsed_left_sidebar', 'post', false);
-
-    $sql = "SELECT * FROM " . NV_AUTHORS_GLOBALTABLE . "_vars WHERE admin_id=" . $admin_info['admin_id'] . "
-    AND theme=" . $db->quote($admin_info['admin_theme']) . " AND config_name='collapsed_left_sidebar'";
-    $row = $db->query($sql)->fetch();
-
-    if (empty($row)) {
-        $sql = "INSERT INTO " . NV_AUTHORS_GLOBALTABLE . "_vars (
-            admin_id, theme, config_name, config_value
-        ) VALUES (
-            " . $admin_info['admin_id'] . ", " . $db->quote($admin_info['admin_theme']) . ",
-            'collapsed_left_sidebar', " . $db->quote($value) . "
-        )";
-    } else {
-        $sql = "UPDATE " . NV_AUTHORS_GLOBALTABLE . "_vars SET config_value=" . $db->quote($value) . " WHERE id=" . $row['id'];
-    }
-    $db->query($sql);
-    nv_htmlOutput('OK');
-}
-
-//Noi dung chinh cua trang
-$info = $pending_info = [];
-
-foreach ($site_mods as $mod => $value) {
-    if (file_exists(NV_ROOTDIR . '/modules/' . $value['module_file'] . '/siteinfo.php')) {
-        $siteinfo = $pendinginfo = [];
-        $mod_data = $value['module_data'];
-
-        // Đọc tạm ngôn ngữ của module
-        $nv_Lang->loadModule($value['module_file'], false, true);
-
-        include NV_ROOTDIR . '/modules/' . $value['module_file'] . '/siteinfo.php';
-
-        // Xóa ngôn ngữ đã đọc tạm
-        $nv_Lang->changeLang();
-
-        if (!empty($siteinfo)) {
-            $info[$mod]['caption'] = $value['custom_title'];
-            $info[$mod]['field'] = $siteinfo;
-        }
-
-        if (!empty($pendinginfo)) {
-            $pending_info[$mod]['caption'] = $value['custom_title'];
-            $pending_info[$mod]['field'] = $pendinginfo;
-        }
-    }
-}
-
-$xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-
-// Kiem tra file nang cap tren he thong
+// Gói cập nhật
+$package_update = 0;
 if (defined('NV_IS_GODADMIN') and file_exists(NV_ROOTDIR . '/install/update_data.php')) {
-    $xtpl->assign('URL_DELETE_PACKAGE', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=webtools&amp;' . NV_OP_VARIABLE . '=deleteupdate&amp;checksess=' . NV_CHECK_SESSION);
-    $xtpl->assign('URL_UPDATE', NV_BASE_SITEURL . 'install/update.php');
-    $xtpl->parse('main.updateinfo');
+    $package_update = 1;
+}
+$tpl->assign('PACKAGE_UPDATE', $package_update);
+
+// Cấu hình giao diện
+$theme_config = get_theme_config();
+
+$select_options = [];
+$is_edit = (int) $nv_Request->get_bool('edit', 'get', false);
+
+if ($is_edit) {
+    $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
+    $select_options[$url] = $nv_Lang->getModule('ok_grid');
+} else {
+    $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;edit=1';
+    $select_options[$url] = $nv_Lang->getModule('edit_grid');
 }
 
-// Thong tin thong ke tu cac module
-if (!empty($info) or !empty($pending_info)) {
-    if (!empty($info)) {
-        $i = 0;
-        foreach ($info as $if) {
-            foreach ($if['field'] as $field) {
-                $xtpl->assign('KEY', $field['key']);
-                $xtpl->assign('VALUE', $field['value']);
-                $xtpl->assign('MODULE', $if['caption']);
+$get_widget = $nv_Request->isset_request('load_list_widgets', 'post') ? 0 : 1;
 
-                if (!empty($field['link'])) {
-                    $xtpl->assign('LINK', $field['link']);
-                    $xtpl->parse('main.info.loop.link');
-                } else {
-                    $xtpl->parse('main.info.loop.text');
-                }
+// Thông tin thống kê và thông tin chờ xử lý từ các module
+$stat_info = $pending_info = [];
 
-                $xtpl->parse('main.info.loop');
+if ($get_widget) {
+    foreach ($site_mods as $mod => $value) {
+        if (file_exists(NV_ROOTDIR . '/modules/' . $value['module_file'] . '/siteinfo.php')) {
+            $siteinfo = $pendinginfo = [];
+            $mod_data = $value['module_data'];
+
+            // Đọc tạm ngôn ngữ của module
+            $nv_Lang->loadModule($value['module_file'], false, true);
+
+            include NV_ROOTDIR . '/modules/' . $value['module_file'] . '/siteinfo.php';
+
+            // Xóa ngôn ngữ đã đọc tạm
+            $nv_Lang->changeLang();
+
+            if (!empty($siteinfo)) {
+                $stat_info[$mod]['caption'] = $value['custom_title'];
+                $stat_info[$mod]['field'] = $siteinfo;
+            }
+
+            if (!empty($pendinginfo)) {
+                $pending_info[$mod]['caption'] = $value['custom_title'];
+                $pending_info[$mod]['field'] = $pendinginfo;
             }
         }
-
-        $xtpl->parse('main.info');
     }
-
-    // Thong tin dang can duoc xu ly tu cac module
-    if (!empty($pending_info)) {
-        $i = 0;
-        foreach ($pending_info as $if) {
-            foreach ($if['field'] as $field) {
-                $xtpl->assign('KEY', $field['key']);
-                $xtpl->assign('VALUE', $field['value']);
-                $xtpl->assign('MODULE', $if['caption']);
-
-                if (!empty($field['link'])) {
-                    $xtpl->assign('LINK', $field['link']);
-                    $xtpl->parse('main.pendinginfo.loop.link');
-                } else {
-                    $xtpl->parse('main.pendinginfo.loop.text');
-                }
-
-                $xtpl->parse('main.pendinginfo.loop');
-            }
-        }
-
-        $xtpl->parse('main.pendinginfo');
-    }
-} elseif (!defined('NV_IS_SPADMIN') and !empty($site_mods)) {
-    $arr_mod = array_keys($site_mods);
-    $module_name = $arr_mod[0];
-
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
 }
 
-// Thong tin phien ban NukeViet
-if (defined('NV_IS_GODADMIN')) {
-    $field = [];
-    $field[] = ['key' => $nv_Lang->getModule('version_user'), 'value' => $global_config['version']];
-    if (file_exists(NV_ROOTDIR . '/' . NV_CACHEDIR . '/nukeviet.version.' . NV_LANG_INTERFACE . '.xml')) {
-        $new_version = simplexml_load_file(NV_ROOTDIR . '/' . NV_CACHEDIR . '/nukeviet.version.' . NV_LANG_INTERFACE . '.xml');
-    } else {
-        $new_version = [];
+// Lấy các widgets
+$html_widgets  = $array_widgets = [];
+$mbackup = $module_name;
+$mibackup = $module_info;
+$mfbackup = $module_file;
+$mubackup = $module_upload;
+$mdbackup = $module_data;
+
+foreach ($admin_mods as $module_name => $module_info) {
+    $module_file = $module_upload = $module_data = $module_name;
+
+    $widgets = nv_scandir(NV_ROOTDIR . '/' . NV_ADMINDIR . '/' . $module_name . '/widgets', '/^(.*)\.php$/i');
+    if (empty($widgets)) {
+        continue;
     }
 
-    $info = '';
-    if (!empty($new_version)) {
-        $field[] = [
-            'key' => $nv_Lang->getModule('version_news'),
-            'value' => $nv_Lang->getModule('newVersion_detail', (string) $new_version->version, nv_date('d/m/Y H:i', strtotime($new_version->date)))
+    foreach ($widgets as $widget) {
+        $widget_info = [];
+        $content = '';
+        $nv_Lang->loadModule($module_name, true, true);
+
+        require NV_ROOTDIR . '/' . NV_ADMINDIR . '/' . $module_name . '/widgets/' . $widget;
+
+        if (empty($widget_info['id']) or !preg_match('/^[a-zA-Z0-9\_]+$/i', $widget_info['id']) or !isset($widget_info['func']) or !is_callable($widget_info['func'])) {
+            continue;
+        }
+
+        $widget_id = 'adm_' . $module_name . '_' . $widget_info['id'];
+        $array_widgets[$widget_id] = [
+            'admin' => 1,
+            'module_name' => $module_name,
+            'file_name' => $widget,
+            'data' => $widget_info
         ];
+        unset($widget_info);
 
-        if (nv_version_compare($global_config['version'], $new_version->version) < 0) {
-            $info = $nv_Lang->getModule('newVersion_info', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=webtools&amp;' . NV_OP_VARIABLE . '=checkupdate');
+        if ($get_widget and in_array($widget_id, $theme_config['widgets'])) {
+            $html_widgets[$widget_id] = $array_widgets[$widget_id]['data']['func']();
         }
     }
+}
+foreach ($site_mods as $module_name => $module_info) {
+    $module_file = $module_info['module_file'];
+    $module_upload = $module_info['module_upload'];
+    $module_data = $module_info['module_data'];
 
-    $xtpl->assign('ULINK', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=webtools&amp;' . NV_OP_VARIABLE . '=checkupdate');
-    $xtpl->assign('CHECKVERSION', $nv_Lang->getModule('checkversion'));
-
-    foreach ($field as $key => $value) {
-        $xtpl->assign('KEY', $value['key']);
-        $xtpl->assign('VALUE', $value['value']);
-        $xtpl->parse('main.version.loop');
+    $widgets = nv_scandir(NV_ROOTDIR . '/modules/' . $module_name . '/widgets', '/^(.*)\.php$/i');
+    if (empty($widgets)) {
+        continue;
     }
 
-    if (!empty($info)) {
-        $xtpl->assign('INFO', $info);
-        $xtpl->parse('main.version.inf');
-    }
+    foreach ($widgets as $widget) {
+        $widget_info = [];
+        $nv_Lang->loadModule($module_name, false, true);
 
-    $xtpl->parse('main.version');
+        require NV_ROOTDIR . '/modules/' . $module_name . '/widgets/' . $widget;
+
+        if (empty($widget_info['id']) or !preg_match('/^[a-zA-Z0-9\_]+$/i', $widget_info['id']) or !isset($widget_info['func']) or !is_callable($widget_info['func'])) {
+            continue;
+        }
+
+        $widget_id = 'usr_' . $module_name . '_' . $widget_info['id'];
+        $array_widgets[$widget_id] = [
+            'admin' => 0,
+            'module_name' => $module_name,
+            'file_name' => $widget,
+            'data' => $widget_info
+        ];
+        unset($widget_info);
+
+        if ($get_widget and in_array($widget_id, $theme_config['widgets'])) {
+            $html_widgets[$widget_id] = $array_widgets[$widget_id]['data']['func']();
+        }
+    }
 }
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$module_name = $mbackup;
+$module_info = $mibackup;
+$module_file = $mfbackup;
+$module_upload = $mubackup;
+$module_data = $mdbackup;
+unset($mbackup, $mibackup, $mfbackup, $mubackup, $mdbackup);
+$nv_Lang->changeLang();
+
+if (!$get_widget) {
+    // Chỉ lấy những tiện ích chưa tích hợp
+    $array_widgets = array_diff_key($array_widgets, array_flip($theme_config['widgets']));
+    $tpl->assign('WIDGETS', $array_widgets);
+
+    $contents = $tpl->fetch('main_widgets.tpl');
+    include NV_ROOTDIR . '/includes/header.php';
+    echo $contents;
+    include NV_ROOTDIR . '/includes/footer.php';
+}
+
+$tpl->assign('TCONFIG', $theme_config);
+$tpl->assign('WIDGETS', $html_widgets);
+$tpl->assign('IS_EDIT', $is_edit);
+$tpl->assign('THEME_GRIDS', [
+    'xs' => '&lt;576px',
+    'sm' => '≥576px',
+    'md' => '≥768px',
+    'lg' => '≥992px',
+    'xl' => '≥1200px',
+    'xxl' => '≥1400px'
+]);
+
+$contents = $tpl->fetch('main.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

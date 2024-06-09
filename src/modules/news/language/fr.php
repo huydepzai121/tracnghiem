@@ -413,6 +413,7 @@ $lang_module['addtotopics'] = 'Ajout au sujet';
 $lang_module['topic_update_success'] = 'Mise à jour réussie !';
 $lang_module['topic_num_news'] = 'articles';
 $lang_module['siteinfo_publtime'] = 'Total des articles actifs';
+$lang_module['siteinfo_totalpost'] = 'Nombre total de publications';
 $lang_module['siteinfo_users_send'] = 'Articles envoyés par les utilisateurs';
 $lang_module['siteinfo_pending'] = 'Articles suspens';
 $lang_module['siteinfo_expired'] = 'Articles expirés';

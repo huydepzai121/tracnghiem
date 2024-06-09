@@ -61,6 +61,8 @@ var nv_aryDayName = "Chủ nhật;Thứ Hai;Thứ Ba;Thứ Tư;Thứ Năm;Thứ 
     nv_title = "Bạn chưa nhập tiêu đề.",
     nv_content = "Nội dung không được để trống.",
     nv_code = "Mã bảo mật không đúng.",
+    nv_close = "Đóng",
+    nv_confirm = "Xác nhận",
     // Message before unload
     nv_msgbeforeunload = "Dữ liệu chưa được lưu. Bạn sẽ bị mất dữ liệu nếu thoát khỏi trang này. Bạn có đồng ý thoát không?",
     // ErrorMessage

@@ -11,17 +11,17 @@
         </div>
         <div class="site-header flex-grow-1 flex-shrink-1 d-flex align-items-center justify-content-between px-2 px-sm-4">
             <div class="header-left">
-                <a href="#" class="left-sidebar-toggle fs-4" data-toggle="left-sidebar"><i class="fas fa-bars icon-vertical-center"></i></a>
+                <a href="#" class="left-sidebar-toggle fs-4" data-toggle="left-sidebar"><i class="fas fa-bars ico-vc"></i></a>
             </div>
             <div class="header-right d-flex position-relative ms-auto">
                 <nav class="main-icons">
                     <ul class="d-flex list-unstyled my-0 ms-0 me-3">
                         <li>
-                            <a title="{$LANG->getGlobal('go_clientsector')}" href="{$smarty.const.NV_BASE_SITEURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={if empty($SITE_MODS)}{$smarty.const.NV_LANG_DATA}{else}{$GCONFIG.site_lang}{/if}" class="fs-3"><i class="fas fa-home icon-vertical-center"></i></a>
+                            <a title="{$LANG->getGlobal('go_clientsector')}" href="{$smarty.const.NV_BASE_SITEURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={if empty($SITE_MODS)}{$smarty.const.NV_LANG_DATA}{else}{$GCONFIG.site_lang}{/if}" class="fs-3"><i class="fas fa-home ico-vc"></i></a>
                         </li>
                         {if not empty($GCONFIG.notification_active)}
                         <li class="dropdown-center site-noti" id="main-notifications" data-enable="true">
-                            <a title="{$LANG->getGlobal('site_info')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-offset="0,11"><i class="fas fa-bell icon-vertical-center"></i><span class="indicator"></span></a>
+                            <a title="{$LANG->getGlobal('site_info')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-offset="0,11"><i class="fas fa-bell ico-vc"></i><span class="indicator"></span></a>
                             <div class="dropdown-menu dropdown-menu-end pb-0">
                                 <div class="noti-heading text-center border-bottom pb-2 fw-medium">
                                     {$LANG->getGlobal('inform_unread')} <span class="badge rounded-pill text-bg-info" data-count="0">..</span>
@@ -41,7 +41,7 @@
                         </li>
                         {/if}
                         <li class="menu-sys" id="menu-sys">
-                            <a title="{$LANG->getGlobal('sys_mods')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-display="static"><i class="fas fa-th icon-vertical-center"></i></a>
+                            <a title="{$LANG->getGlobal('sys_mods')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-display="static"><i class="fas fa-th ico-vc"></i></a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <div class="menu-sys-inner position-relative">
                                     <div class="menu-sys-items">
@@ -64,11 +64,9 @@
                                 </div>
                             </div>
                         </li>
-                        {if not empty($LANG_ADMIN)}
                         <li>
-                            <a title="{$LANG->getGlobal('langsite')}" href="#" class="fs-3" data-toggle="right-sidebar"><i class="fas fa-cog icon-vertical-center"></i></a title="{$LANG->getGlobal('sys_mods')}">
+                            <a title="{$LANG->getGlobal('theme_settings')}" href="#" class="fs-3" data-toggle="right-sidebar"><i class="fas fa-cog ico-vc"></i></a title="{$LANG->getGlobal('sys_mods')}">
                         </li>
-                        {/if}
                     </ul>
                 </nav>
                 <div class="admin-info">
@@ -79,7 +77,7 @@
                             {elseif not empty($ADMIN_INFO.photo)}
                             <img alt="{$ADMIN_INFO.full_name}" src="{$smarty.const.NV_BASE_SITEURL}{$ADMIN_INFO.photo}">
                             {else}
-                            <i class="fa-solid fa-circle-user icon-vertical-center"></i>
+                            <i class="fa-solid fa-circle-user ico-vc"></i>
                             {/if}
                         </span>
                     </a>
@@ -281,15 +279,14 @@
             </div>
         </div>
         <div class="p-4">
-            [THEME_ERROR_INFO]
             {$MODULE_CONTENT}
         </div>
     </section>
 </div>
-{if not empty($LANG_ADMIN)}
 <aside class="right-sidebar border-start" id="right-sidebar">
     <div class="right-sidebar-inner">
         <div class="px-3">
+            {if not empty($LANG_ADMIN)}
             <div class="mb-4">
                 <div class="fw-medium border-bottom pb-2 mb-2">{$LANG->getGlobal('langinterface')}</div>
                 {foreach from=$LANG_ADMIN key=lang item=langname}
@@ -299,26 +296,58 @@
                 </div>
                 {/foreach}
             </div>
-            <div class="fw-medium border-bottom pb-2 mb-3">{$LANG->getGlobal('langdata')}</div>
-            {foreach from=$LANG_ADMIN key=lang item=langname}
-            <div class="form-check mb-1">
-                <input class="form-check-input" type="radio" id="langdata-{$lang}" value="{$lang}" name="gsitelangdata"{if $lang eq $smarty.const.NV_LANG_DATA} checked="checked"{/if}>
-                <label class="form-check-label" for="langdata-{$lang}">{$langname}</label>
+            <div class="mb-4">
+                <div class="fw-medium border-bottom pb-2 mb-3">{$LANG->getGlobal('langdata')}</div>
+                {foreach from=$LANG_ADMIN key=lang item=langname}
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="radio" id="langdata-{$lang}" value="{$lang}" name="gsitelangdata"{if $lang eq $smarty.const.NV_LANG_DATA} checked="checked"{/if}>
+                    <label class="form-check-label" for="langdata-{$lang}">{$langname}</label>
+                </div>
+                {/foreach}
             </div>
-            {/foreach}
+            {/if}
+            <div class="mb-4 color-mode" id="site-color-mode" data-busy="0">
+                <div class="fw-medium border-bottom pb-2 mb-3">{$LANG->getGlobal('color_mode')}</div>
+                <div class="mb-2">
+                    <a href="#" class="d-block{if $TCONFIG.color_mode eq 'light'} active{/if}" data-mode="light"><i class="fa-solid fa-sun fa-fw" data-icon="fa-sun"></i> {$LANG->getGlobal('color_mode_light')}</a>
+                </div>
+                <div class="mb-2">
+                    <a href="#" class="d-block{if $TCONFIG.color_mode eq 'dark'} active{/if}" data-mode="dark"><i class="fa-solid fa-moon fa-fw" data-icon="fa-moon"></i> {$LANG->getGlobal('color_mode_dark')}</a>
+                </div>
+                <div class="mb-2">
+                    <a href="#" class="d-block{if $TCONFIG.color_mode eq 'auto'} active{/if}" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-fw" data-icon="fa-circle-half-stroke"></i> {$LANG->getGlobal('color_mode_auto')}</a>
+                </div>
+            </div>
+            <div class="mb-4 color-mode" id="site-text-direction" data-busy="0">
+                <div class="fw-medium border-bottom pb-2 mb-3">{$LANG->getGlobal('text_direction')}</div>
+                <div class="mb-2">
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="radio" name="g_themedir" value="ltr" class="btn-check" id="theme-dir-ltr" autocomplete="off"{if $TCONFIG.dir eq 'ltr'} checked="checked"{/if}>
+                            <label class="btn btn-outline-primary d-block" for="theme-dir-ltr"><i class="fa-solid fa-align-left" data-icon="fa-align-left"></i> {$LANG->getGlobal('text_direction_ltr')}</label>
+                        </div>
+                        <div class="col-6">
+                            <input type="radio" name="g_themedir" value="rtl" class="btn-check" id="theme-dir-rtl" autocomplete="off"{if $TCONFIG.dir eq 'rtl'} checked="checked"{/if}>
+                            <label class="btn btn-outline-primary d-block" for="theme-dir-rtl"><i class="fa-solid fa-align-right" data-icon="fa-align-right"></i> {$LANG->getGlobal('text_direction_rtl')}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </aside>
-{/if}
 <footer class="site-footer border-top px-4 d-flex align-items-center justify-content-between">
     <div class="site-copyright text-truncate me-3">
         {if $smarty.const.NV_IS_SPADMIN and $ADMIN_INFO.level eq 1}
-        <div class="memory-time-usage" title="[MEMORY_TIME_USAGE]">[MEMORY_TIME_USAGE]</div>
+        <div class="memory-time-usage text-truncate" title="[MEMORY_TIME_USAGE]">[MEMORY_TIME_USAGE]</div>
         {/if}
-        <div class="fw-medium" title="{$LANG->getGlobal('copyright', $GCONFIG.site_name)}">{$LANG->getGlobal('copyright', $GCONFIG.site_name)}</div>
+        <div class="fw-medium text-truncate" title="{$LANG->getGlobal('copyright', $GCONFIG.site_name)}">{$LANG->getGlobal('copyright', $GCONFIG.site_name)}</div>
     </div>
     <div class="img-stat">
         <a title="NUKEVIET CMS" href="https://nukeviet.vn" target="_blank"><img alt="NUKEVIET CMS" src="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ASSETS_DIR}/images/banner_nukeviet_88x15.jpg" width="88" height="15" class="imgstatnkv"></a>
     </div>
 </footer>
+<div id="admin-session-timeout" class="nv-offcanvas text-bg-warning p-3">
+    {$LANG->getGlobal('timeoutsess_nouser')}, <a data-toggle="cancel" href="#">{$LANG->getGlobal('timeoutsess_click')}</a>. {$LANG->getGlobal('timeoutsess_timeout')}: <span data-toggle="sec"> 60 </span> {$LANG->getGlobal('sec')}
+</div>
 {include file='footer.tpl'}

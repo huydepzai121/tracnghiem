@@ -15,6 +15,44 @@ if (!defined('NV_MAINFILE')) {
 
 use NukeViet\Client\Browser;
 
+// Thiết lập config riêng của giao diện
+if (!empty($nv_Request) and $nv_Request->isset_request('store_theme_config', 'post')) {
+    $respon = [
+        'error' => 1,
+        'message' => 'Unknow error'
+    ];
+    if (!defined('NV_IS_AJAX')) {
+        $respon['message'] = 'Wrong ajax!!!';
+        nv_jsonOutput($respon);
+    }
+    if ($nv_Request->get_title('store_theme_config', 'post', '') !== NV_CHECK_SESSION) {
+        $respon['message'] = 'Wrong checksess!!!';
+        nv_jsonOutput($respon);
+    }
+
+    $config_name = $nv_Request->get_title('config_name', 'post', '');
+    $config_value = $nv_Request->get_title('config_value', 'post', '');
+
+    $sql = "SELECT * FROM " . NV_AUTHORS_GLOBALTABLE . "_vars WHERE admin_id=" . $admin_info['admin_id'] . "
+    AND theme=" . $db->quote($admin_info['admin_theme']) . " AND config_name=" . $db->quote($config_name);
+    $row = $db->query($sql)->fetch();
+
+    if (empty($row)) {
+        $sql = "INSERT INTO " . NV_AUTHORS_GLOBALTABLE . "_vars (
+            admin_id, theme, config_name, config_value
+        ) VALUES (
+            " . $admin_info['admin_id'] . ", " . $db->quote($admin_info['admin_theme']) . ",
+            " . $db->quote($config_name) . ", " . $db->quote($config_value) . "
+        )";
+    } else {
+        $sql = "UPDATE " . NV_AUTHORS_GLOBALTABLE . "_vars SET config_value=" . $db->quote($config_value) . " WHERE id=" . $row['id'];
+    }
+    $db->query($sql);
+
+    $respon['error'] = 0;
+    nv_jsonOutput($respon);
+}
+
 /**
  * @param string $contents
  * @param number $head_site
@@ -27,9 +65,13 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $file_name_tpl = $head_site == 1 ? 'main.tpl' : 'content.tpl';
     $tpl_dir = get_tpl_dir($admin_info['admin_theme'], 'admin_default', '/system/' . $file_name_tpl);
 
-    $sql = "SELECT config_value FROM " . NV_AUTHORS_GLOBALTABLE . "_vars WHERE admin_id=" . $admin_info['admin_id'] . "
-    AND theme=" . $db->quote($admin_info['admin_theme']) . " AND config_name='collapsed_left_sidebar'";
-    $close_lsidebar = $db->query($sql)->fetchColumn();
+    $sql = "SELECT config_name, config_value FROM " . NV_AUTHORS_GLOBALTABLE . "_vars WHERE admin_id=" . $admin_info['admin_id'] . "
+    AND theme=" . $db->quote($admin_info['admin_theme']) . " AND (lang='all' OR lang=" . $db->quote(NV_LANG_DATA) . ")";
+    $theme_config = $db->query($sql)->fetchAll(PDO::FETCH_KEY_PAIR);
+    !isset($theme_config['color_mode']) && $theme_config['color_mode'] = 'auto';
+    !isset($theme_config['dir']) && $theme_config['dir'] = 'ltr';
+
+    $nv_Lang->loadFile(NV_ROOTDIR . '/themes/' . $tpl_dir . '/language/' . NV_LANG_INTERFACE . '.php');
 
     $tpl = new \NukeViet\Template\NVSmarty();
     $tpl->registerPlugin('modifier', 'implode', 'implode');
@@ -50,7 +92,7 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $tpl->assign('CLIENT_INFO', $client_info);
     $tpl->assign('SITE_MODS', $site_mods);
     $tpl->assign('ADMIN_MODS', $admin_mods);
-    $tpl->assign('CLOSE_LSIDEBAR', $close_lsidebar);
+    $tpl->assign('TCONFIG', $theme_config);
     $tpl->assign('LANG_ADMIN', $array_lang_admin);
     $tpl->assign('SELECT_OPTIONS', $select_options);
     $tpl->assign('HELP_URLS', $array_url_instruction);
@@ -120,9 +162,12 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $theme_tpl = get_tpl_dir([$admin_info['admin_theme'], 'admin_default'], '', '/css/' . $module_file . '.css');
     $css_module = '';
     if (!empty($theme_tpl)) {
-        $css_module = NV_STATIC_URL . 'themes/' . $theme_tpl . '/css/' . $module_file . '.css';
+        $css_module = $theme_tpl . '/css/' . $module_file . ($theme_config['dir'] == 'rtl' ? '.rtl' : '') . '.css';
+        if ($theme_config['dir'] == 'rtl' and !theme_file_exists($css_module)) {
+            $css_module = $theme_tpl . '/css/' . $module_file . '.css';
+        }
     }
-    $tpl->assign('CSS_MODULE', $css_module);
+    $tpl->assign('CSS_MODULE', NV_STATIC_URL . 'themes/' . $css_module);
 
     // JS riêng của module
     $theme_tpl = get_tpl_dir([$admin_info['admin_theme'], 'admin_default'], '', '/js/' . $module_file . '.js');

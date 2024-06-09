@@ -61,6 +61,8 @@ var nv_aryDayName = "Sunday Monday Tuesday Wednesday Thursday Friday Saturday".s
     nv_title = "Title not valid.",
     nv_content = "The content is not empty.",
     nv_code = "Capcha not valid.",
+    nv_close = "Close",
+    nv_confirm = "Confirm",
     // Message before unload
     nv_msgbeforeunload = "The data is unsaved. You will lose all data if you leave this page. Do you want to leave?",
     // ErrorMessage

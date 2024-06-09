@@ -26,10 +26,10 @@
                 {if not empty($row.photo)}
                 <img class="d-block" src="$row.photo" alt="{$row.send_from}">
                 {else}
-                <span class="d-block position-relative w-100 h-100"><i class="fa-solid fa-circle-user icon-vertical-center"></i></span>
+                <span class="d-block position-relative w-100 h-100"><i class="fa-solid fa-circle-user ico-vc"></i></span>
                 {/if}
                 {else}
-                <span class="d-block position-relative w-100 h-100"><i class="fa-solid fa-gear icon-vertical-center"></i></span>
+                <span class="d-block position-relative w-100 h-100"><i class="fa-solid fa-gear ico-vc"></i></span>
                 {/if}
             </div>
             <div class="notification-info">

@@ -106,6 +106,7 @@ $lang_module['admin_obt_level'] = 'Được nhận';
 $lang_module['admin_exec_level'] = 'Được thực thi';
 $lang_module['delall'] = 'Xóa tất cả';
 $lang_module['siteinfo_new'] = 'Liên hệ chưa đọc';
+$lang_module['siteinfo_all'] = 'Liên hệ gửi đến';
 $lang_module['no_row_contact'] = 'Không có liên hệ nào gửi đến bạn';
 $lang_module['url_for_iframe'] = 'Liên kết dùng chèn cho iframe';
 $lang_module['supporter'] = 'Nhân viên hỗ trợ';

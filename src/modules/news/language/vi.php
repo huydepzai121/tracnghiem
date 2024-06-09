@@ -413,6 +413,7 @@ $lang_module['addtotopics'] = 'Thêm vào Theo dòng sự kiện';
 $lang_module['topic_update_success'] = 'Cập nhật thành công!';
 $lang_module['topic_num_news'] = ' bài viết';
 $lang_module['siteinfo_publtime'] = 'Tổng số bài viết hiệu lực';
+$lang_module['siteinfo_totalpost'] = 'Tổng số bài viết';
 $lang_module['siteinfo_users_send'] = 'Số bài viết người dùng gửi tới';
 $lang_module['siteinfo_pending'] = 'Số bài viết chờ đăng';
 $lang_module['siteinfo_expired'] = 'Số bài viết đã hết hạn';
