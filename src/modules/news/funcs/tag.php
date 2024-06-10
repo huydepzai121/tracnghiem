@@ -25,12 +25,12 @@ if (isset($array_op[1])) {
     }
 }
 
-$stmt = $db_slave->prepare('SELECT tid, numnews, title, image, description, keywords FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags WHERE alias= :alias');
+$stmt = $db_slave->prepare('SELECT tid, numnews, title, alias, image, description, keywords FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags WHERE alias= :alias');
 $stmt->bindParam(':alias', $alias, PDO::PARAM_STR);
 $stmt->execute();
 $row = $stmt->fetch(3);
 if (!empty($row)) {
-    [$tid, $numnews, $page_title, $image_tag, $description, $key_words] = $row;
+    [$tid, $numnews, $page_title, $alias, $image_tag, $description, $key_words] = $row;
     if (empty($page_title)) {
         $page_title = nv_ucfirst($key_words);
 
