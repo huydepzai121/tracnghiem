@@ -517,40 +517,43 @@ $news_contents['autoplay'] = (int) $nv_Request->get_bool($module_file . '_autopl
 // Tạo mục lục cho bài viết dựa theo h2 và h3
 $news_contents['navigation'] = [];
 if (!empty($news_contents['auto_nav']) and !empty($news_contents['bodyhtml'])) {
-    $bodyhtml = '<?xml encoding="UTF-8">' . $news_contents['bodyhtml'];
-    libxml_use_internal_errors(true);
-    $dom = new DOMDocument();
-    $dom->loadHTML($bodyhtml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-    $xpath = new DOMXPath($dom);
+    unset($matches);
+    preg_match_all('/\<[\s]*(h2|h3)([^\>]*)\>(.*?)\<[\s]*\/[\s]*(h2|h3)[\s]*\>/is', $news_contents['bodyhtml'], $matches, PREG_SET_ORDER);
+
     $idname = 'art-menu-';
     $i = 0;
     $y = 0;
-    foreach ($xpath->query('//h2 | //h3') as $node) {
-        if (!empty($node->textContent)) {
-            $location = nv_url_rewrite($page_url, true);
-            $location = NV_MY_DOMAIN . $location . ((str_contains($location, '?') ? '&' : '?') . 'ml=');
-            if ($node->tagName == 'h2') {
-                ++$y;
-                ++$i;
-                $attrid = $idname . $i;
-                $node->setAttribute('data-id', $attrid);
-                $news_contents['navigation'][$y]['item'] = [$node->textContent, $attrid, $location . $attrid];
-                $node->prepend('<div class="btns"><button type="button" class="gonav" title="' . $nv_Lang->getModule('go_menu') . '"><em class="fa fa-chevron-up fa-fw"></em></button><button type="button" class="copylink" data-clipboard-text="' . $location . $attrid . '"><em class="fa fa-files-o fa-fw" title="' . $nv_Lang->getModule('copy_link') . '"></em></button></div>');
-            } elseif ($y) {
-                ++$i;
-                $attrid = $idname . $i;
-                $node->setAttribute('data-id', $attrid);
-                !isset($news_contents['navigation'][$y]['subitems']) && $news_contents['navigation'][$y]['subitems'] = [];
-                $news_contents['navigation'][$y]['subitems'][] = [$node->textContent, $attrid, $location . $attrid];
-                $node->prepend('<div class="btns"><button type="button" class="gonav" title="' . $nv_Lang->getModule('go_menu') . '"><em class="fa fa-chevron-up fa-fw"></em></button><button type="button" class="copylink" data-clipboard-text="' . $location . $attrid . '"><em class="fa fa-files-o fa-fw" title="' . $nv_Lang->getModule('copy_link') . '"></em></button></div>');
-            }
+    foreach ($matches as $match) {
+        $text = trim(preg_replace('/\s[\s]+/is', ' ', strip_tags(nv_br2nl($match[3], ' '))));
+        $tag = strtolower($match[1]);
+        if (empty($text)) {
+            continue;
         }
-    }
-    if ($i) {
-        $dom->formatOutput = true;
-        $news_contents['bodyhtml'] = $dom->saveHTML();
-        $news_contents['bodyhtml'] = html_entity_decode($news_contents['bodyhtml']);
-        $news_contents['bodyhtml'] = preg_replace('/\<\?xml([^\>]*)\>/', '', $news_contents['bodyhtml']);
+
+        $location = nv_url_rewrite($page_url, true);
+        $location = NV_MY_DOMAIN . $location . ((str_contains($location, '?') ? '&' : '?') . 'ml=');
+
+        if ($tag == 'h2') {
+            ++$y;
+            ++$i;
+            $attrid = $idname . $i;
+
+            $html = '<div class="btns"><button type="button" class="gonav" title="' . $nv_Lang->getModule('go_menu') . '"><i class="fa fa-chevron-up fa-fw"></i></button><button type="button" class="copylink" data-clipboard-text="' . $location . $attrid . '"><i class="fa fa-files-o fa-fw" title="' . $nv_Lang->getModule('copy_link') . '"></i></button></div>';
+            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $html . $match[3] . '</' . $tag . '>';
+
+            $news_contents['navigation'][$y]['item'] = [$text, $attrid, $location . $attrid];
+            $news_contents['bodyhtml'] = str_replace($match[0], $html, $news_contents['bodyhtml']);
+        } elseif ($y) {
+            ++$i;
+            $attrid = $idname . $i;
+
+            $html = '<div class="btns"><button type="button" class="gonav" title="' . $nv_Lang->getModule('go_menu') . '"><i class="fa fa-chevron-up fa-fw"></i></button><button type="button" class="copylink" data-clipboard-text="' . $location . $attrid . '"><i class="fa fa-files-o fa-fw" title="' . $nv_Lang->getModule('copy_link') . '"></i></button></div>';
+            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $html . $match[3] . '</' . $tag . '>';
+
+            !isset($news_contents['navigation'][$y]['subitems']) && $news_contents['navigation'][$y]['subitems'] = [];
+            $news_contents['navigation'][$y]['subitems'][] = [$text, $attrid, $location . $attrid];
+            $news_contents['bodyhtml'] = str_replace($match[0], $html, $news_contents['bodyhtml']);
+        }
     }
 }
 
