@@ -276,9 +276,9 @@ function contact_main_theme($array_content, $is_specific, $departments, $cats, $
 /**
  * contact_form_theme()
  *
- * @param array  $array_content
- * @param arrat  $departments
- * @param array  $cats
+ * @param array $array_content
+ * @param array $departments
+ * @param array $cats
  * @param string $base_url
  * @param string $checkss
  * @return string
