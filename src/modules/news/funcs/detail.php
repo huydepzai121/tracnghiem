@@ -523,15 +523,15 @@ if (!empty($news_contents['auto_nav']) and !empty($news_contents['bodyhtml'])) {
     $idname = 'art-menu-';
     $i = 0;
     $y = 0;
+    $location = nv_url_rewrite($page_url, true);
+    $location = NV_MY_DOMAIN . $location . ((str_contains($location, '?') ? '&' : '?') . 'ml=');
+
     foreach ($matches as $match) {
         $text = trim(preg_replace('/\s[\s]+/is', ' ', strip_tags(nv_br2nl($match[3], ' '))));
         $tag = strtolower($match[1]);
         if (empty($text)) {
             continue;
         }
-
-        $location = nv_url_rewrite($page_url, true);
-        $location = NV_MY_DOMAIN . $location . ((str_contains($location, '?') ? '&' : '?') . 'ml=');
 
         if ($tag == 'h2') {
             ++$y;
