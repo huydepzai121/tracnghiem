@@ -24,5 +24,6 @@ $module_version = [
     'note' => '',
     'uploads_dir' => [
         $module_upload
-    ]
+    ],
+    'icon' => 'fa-brands fa-nfc-symbol'
 ];

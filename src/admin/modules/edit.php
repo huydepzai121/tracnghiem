@@ -13,6 +13,44 @@ if (!defined('NV_IS_FILE_MODULES')) {
     exit('Stop!!!');
 }
 
+require NV_ROOTDIR . '/includes/fontawesome.php';
+
+// Lấy icon
+if ($nv_Request->get_title('ajax_icon', 'post', '') === NV_CHECK_SESSION) {
+    $respon = [
+        'results' => [],
+        'pagination' => [
+            'more' => false
+        ]
+    ];
+
+    $q = str_replace('-', '', strtolower(change_alias($nv_Request->get_title('q', 'post', ''))));
+    $page = $nv_Request->get_absint('page', 'post', 1);
+
+    $icons = [];
+    if (strlen($q) >= 1) {
+        foreach ($fontawesome_icons as $icon) {
+            if (strpos($icon['search'], $q) === false) {
+                continue;
+            }
+            $icons[] = $icon;
+        }
+    }
+    $per_page = 10;
+    $offset = ($page - 1) * $per_page;
+    $more = false;
+    if (isset($icons[$offset])) {
+        $respon['results'] = array_slice($icons, $offset, $per_page);
+        $next_offset = $offset + $per_page;
+        if (isset($icons[$next_offset])) {
+            $more = true;
+        }
+    }
+
+    $respon['pagination']['more'] = $more;
+    nv_jsonOutput($respon);
+}
+
 $data = [];
 $mod = $nv_Request->get_title('mod', 'get');
 
@@ -27,6 +65,17 @@ $row = $sth->fetch();
 if (empty($row)) {
     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
 }
+
+$page_title = $nv_Lang->getModule('edit', $mod);
+$checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
+
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/edit.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('CHECKSS', $checkss);
 
 $theme_site_array = $theme_mobile_array = [];
 $theme_array = scandir(NV_ROOTDIR . '/themes');
@@ -72,10 +121,28 @@ while ([$theme] = $result->fetch(3)) {
 }
 
 $groups_list = nv_groups_list();
+$feature_rss = file_exists(NV_ROOTDIR . '/modules/' . $row['module_file'] . '/funcs/rss.php');
+$feature_sitemap = sizeof(nv_scandir(NV_ROOTDIR . '/modules/' . $row['module_file'] . '/funcs', '/^sitemap(.*?)\.php$/')) > 0;
 
-$checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
+if (empty($row['custom_title'])) {
+    $row['custom_title'] = $row['title'];
+}
+$row['groups_view'] = empty($row['groups_view']) ? [] : explode(',', $row['groups_view']);
+
+// Xử lý khi lưu
 if ($checkss == $nv_Request->get_string('checkss', 'post')) {
+    $respon = [
+        'status' => 'error',
+        'mess' => '',
+    ];
+
     $custom_title = $nv_Request->get_title('custom_title', 'post', '', 1);
+    if (empty($custom_title)) {
+        $respon['input'] = 'custom_title';
+        $respon['mess'] = $nv_Lang->getGlobal('required_invalid');
+        nv_jsonOutput($respon);
+    }
+
     $site_title = $nv_Request->get_title('site_title', 'post', '');
     $admin_title = $nv_Request->get_title('admin_title', 'post', '', 1);
     $theme = $nv_Request->get_title('theme', 'post', '', 1);
@@ -87,15 +154,17 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     $act = $nv_Request->get_int('act', 'post', 0);
     $rss = $nv_Request->get_int('rss', 'post', 0);
     $sitemap = $nv_Request->get_int('sitemap', 'post', 0);
+    $icon = $nv_Request->get_title('icon', 'post', '');
 
     if (!empty($theme) and !in_array($theme, $theme_list, true)) {
         $theme = '';
     }
-
     if (!empty($mobile) and !in_array($mobile, $theme_mobile_list, true) and !isset($theme_mobile_default[$mobile])) {
         $mobile = '';
     }
-
+    if (!isset($fontawesome_packs[$icon])) {
+        $icon = '';
+    }
     if (!empty($keywords)) {
         $keywords = explode(',', $keywords);
         $keywords = array_map('trim', $keywords);
@@ -112,231 +181,143 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
         $groups_view = '6';
     }
 
-    if ($custom_title != '') {
-        $array_layoutdefault = [];
+    $array_layoutdefault = $error = [];
+    foreach ($array_theme as $_theme) {
+        $xml = simplexml_load_file(NV_ROOTDIR . '/themes/' . $_theme . '/config.ini');
+        $layoutdefault = (string) $xml->layoutdefault;
 
-        foreach ($array_theme as $_theme) {
-            $xml = simplexml_load_file(NV_ROOTDIR . '/themes/' . $_theme . '/config.ini');
-            $layoutdefault = (string) $xml->layoutdefault;
-
-            if (!empty($layoutdefault) and file_exists(NV_ROOTDIR . '/themes/' . $_theme . '/layout/layout.' . $layoutdefault . '.tpl')) {
-                $array_layoutdefault[$_theme] = $layoutdefault;
-            } else {
-                $data['error'][] = $_theme;
-            }
-        }
-
-        if (empty($data['error'])) {
-            foreach ($array_layoutdefault as $selectthemes => $layoutdefault) {
-                $array_func_id = [];
-                $sth = $db->prepare('SELECT func_id FROM ' . NV_PREFIXLANG . '_modthemes WHERE theme= :theme');
-                $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
-                $sth->execute();
-                while ([$func_id] = $sth->fetch(3)) {
-                    $array_func_id[] = $func_id;
-                }
-
-                $sth = $db->prepare('SELECT func_id FROM ' . NV_MODFUNCS_TABLE . ' WHERE in_module= :in_module AND show_func=1 ORDER BY subweight ASC');
-                $sth->bindParam(':in_module', $mod, PDO::PARAM_STR);
-                $sth->execute();
-                while ([$func_id] = $sth->fetch(3)) {
-                    if (!in_array((int) $func_id, array_map('intval', $array_func_id), true)) {
-                        $sth2 = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_modthemes (func_id, layout, theme) VALUES (' . $func_id . ', :layout, :theme)');
-                        $sth2->bindParam(':layout', $layoutdefault, PDO::PARAM_STR);
-                        $sth2->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
-                        $sth2->execute();
-                    }
-                }
-            }
-
-            // Check module_theme
-            $_theme_check = (!empty($theme)) ? $theme : $global_config['site_theme'];
-            if (!empty($_theme_check) and file_exists(NV_ROOTDIR . '/themes/' . $_theme_check . '/theme.php')) {
-                if (!file_exists(NV_ROOTDIR . '/themes/' . $_theme_check . '/modules/' . $module_theme)) {
-                    $module_theme = $row['module_file'];
-                }
-            } else {
-                $module_theme = $row['module_file'];
-            }
-
-            $sth = $db->prepare('UPDATE ' . NV_MODULES_TABLE . ' SET
-                module_theme=:module_theme, custom_title=:custom_title, site_title=:site_title, admin_title=:admin_title, theme= :theme, mobile= :mobile, description= :description,
-                keywords= :keywords, groups_view= :groups_view, act=' . $act . ', rss=' . $rss . ', sitemap=' . $sitemap . '
-            WHERE title= :title');
-            $sth->bindParam(':module_theme', $module_theme, PDO::PARAM_STR);
-            $sth->bindParam(':custom_title', $custom_title, PDO::PARAM_STR);
-            $sth->bindParam(':site_title', $site_title, PDO::PARAM_STR);
-            $sth->bindParam(':admin_title', $admin_title, PDO::PARAM_STR);
-            $sth->bindParam(':theme', $theme, PDO::PARAM_STR);
-            $sth->bindParam(':mobile', $mobile, PDO::PARAM_STR);
-            $sth->bindParam(':description', $description, PDO::PARAM_STR);
-            $sth->bindParam(':keywords', $keywords, PDO::PARAM_STR);
-            $sth->bindParam(':groups_view', $groups_view, PDO::PARAM_STR);
-            $sth->bindParam(':title', $mod, PDO::PARAM_STR);
-            $sth->execute();
-
-            $mod_name = change_alias($nv_Request->get_title('mod_name', 'post'));
-            if ($mod_name != $mod and preg_match($global_config['check_module'], $mod_name)) {
-                $module_version = [];
-                $version_file = NV_ROOTDIR . '/modules/' . $row['module_file'] . '/version.php';
-                if (file_exists($version_file)) {
-                    include $version_file;
-                    if (isset($module_version['virtual']) and $module_version['virtual']) {
-                        $sth = $db->prepare('UPDATE ' . NV_MODULES_TABLE . ' SET title= :mod_name WHERE title= :mod_old');
-                        $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
-                        $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
-                        if ($sth->execute()) {
-                            // Change module name
-                            $sth = $db->prepare('UPDATE ' . NV_MODFUNCS_TABLE . ' SET in_module= :mod_name WHERE in_module= :mod_old');
-                            $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
-                            $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
-                            $sth->execute();
-
-                            // Change site_home_module
-                            if ($mod == $global_config['site_home_module']) {
-                                $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET config_value= :config_value WHERE config_name = 'site_home_module' AND lang = '" . NV_LANG_DATA . "' AND module='global'");
-                                $sth->bindParam(':config_value', $mod_name, PDO::PARAM_STR);
-                                $sth->execute();
-                            }
-
-                            // Change block
-                            $sth = $db->prepare('UPDATE ' . NV_BLOCKS_TABLE . '_groups SET module= :mod_name WHERE module= :mod_old');
-                            $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
-                            $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
-                            $sth->execute();
-
-                            // Change config
-                            $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET module= :mod_name WHERE lang = '" . NV_LANG_DATA . "' AND module= :mod_old");
-                            $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
-                            $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
-                            $sth->execute();
-
-                            // Change comment
-                            $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_comment SET module= :mod_name WHERE module= :mod_old');
-                            $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
-                            $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
-                            $sth->execute();
-
-                            // Change logs
-                            $sth = $db->prepare('UPDATE ' . $db_config['prefix'] . "_logs SET module_name= :mod_name WHERE lang = '" . NV_LANG_DATA . "' AND module_name= :mod_old");
-                            $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
-                            $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
-                            $sth->execute();
-                        }
-                    }
-                }
-            }
-            $nv_Cache->delAll();
-            nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('edit', $mod), '', $admin_info['userid']);
-
-            nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
+        if (!empty($layoutdefault) and file_exists(NV_ROOTDIR . '/themes/' . $_theme . '/layout/layout.' . $layoutdefault . '.tpl')) {
+            $array_layoutdefault[$_theme] = $layoutdefault;
         } else {
-            $data['error'] = $nv_Lang->getModule('edit_error_update_theme', implode(', ', $data['error']));
-        }
-    } elseif ($groups_view != '') {
-        $row['groups_view'] = $groups_view;
-    }
-} else {
-    $custom_title = $row['custom_title'];
-    $site_title = $row['site_title'];
-    $admin_title = $row['admin_title'];
-    $theme = $row['theme'];
-    $module_theme = $row['module_theme'];
-    $mobile = $row['mobile'];
-    $act = $row['act'];
-    $description = $row['description'];
-    $keywords = $row['keywords'];
-    $rss = $row['rss'];
-    $sitemap = $row['sitemap'];
-}
-
-$groups_view = explode(',', $row['groups_view']);
-
-if (empty($custom_title)) {
-    $custom_title = $mod;
-}
-
-$page_title = $nv_Lang->getModule('edit', $mod);
-
-if (file_exists(NV_ROOTDIR . '/modules/' . $row['module_file'] . '/funcs/rss.php')) {
-    $data['rss'] = [$nv_Lang->getModule('activate_rss'), $rss];
-}
-$sitemaps = nv_scandir(NV_ROOTDIR . '/modules/' . $row['module_file'] . '/funcs', '/^sitemap(.*?)\.php$/');
-if (sizeof($sitemaps)) {
-    $data['sitemap'] = [$nv_Lang->getModule('activate_sitemap'), $sitemap];
-}
-
-$data['action'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=edit&amp;mod=' . $mod;
-$data['custom_title'] = $custom_title;
-$data['site_title'] = $site_title;
-$data['admin_title'] = $admin_title;
-$data['theme'] = [$nv_Lang->getModule('theme'), $nv_Lang->getModule('theme_default'), $theme_list, $theme];
-$data['mobile'] = [$nv_Lang->getModule('mobile'), $theme_mobile_default, $theme_mobile_list, $mobile];
-$data['description'] = $description;
-$data['keywords'] = $keywords;
-$data['mod_name'] = $mod;
-$data['module_theme'] = $module_theme;
-$data['checkss'] = $checkss;
-if ($mod != $global_config['site_home_module']) {
-    $data['groups_view'] = [$nv_Lang->getGlobal('groups_view'), $groups_list, $groups_view];
-} else {
-    $data['groups_view'] = [];
-}
-$data['submit'] = $nv_Lang->getGlobal('submit');
-
-$xtpl = new XTemplate('edit.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('DATA', $data);
-
-if (!empty($data['error'])) {
-    $xtpl->parse('main.error');
-}
-
-foreach ($data['theme'][2] as $tm) {
-    $xtpl->assign('THEME', ['key' => $tm, 'selected' => $tm == $data['theme'][3] ? ' selected="selected"' : '']);
-    $xtpl->parse('main.theme');
-}
-
-if (!empty($data['mobile'][2]) or !empty($data['mobile'][1])) {
-    foreach ($data['mobile'][1] as $tm) {
-        $xtpl->assign('MOBILE', ['key' => $tm['key'], 'selected' => $tm['key'] == $data['mobile'][3] ? ' selected="selected"' : '', 'title' => $tm['title']]);
-        $xtpl->parse('main.mobile.loop');
-    }
-    foreach ($data['mobile'][2] as $tm) {
-        $xtpl->assign('MOBILE', ['key' => $tm, 'selected' => $tm == $data['mobile'][3] ? ' selected="selected"' : '', 'title' => $tm]);
-        $xtpl->parse('main.mobile.loop');
-    }
-
-    $xtpl->parse('main.mobile');
-}
-if (!empty($data['groups_view'])) {
-    foreach ($data['groups_view'][1] as $group_id => $grtl) {
-        if ($group_id > 2) {
-            $xtpl->assign('GROUPS_VIEW', [
-                'key' => $group_id,
-                'checked' => in_array((int) $group_id, array_map('intval', $data['groups_view'][2]), true) ? ' checked="checked"' : '',
-                'title' => $grtl
-            ]);
-            $xtpl->parse('main.groups_view.loop');
+            $error[] = $_theme;
         }
     }
-    $xtpl->parse('main.groups_view');
+    if (!empty($error)) {
+        $respon['mess'] = $nv_Lang->getModule('edit_error_update_theme', implode(', ', $error));
+        nv_jsonOutput($respon);
+    }
+
+    foreach ($array_layoutdefault as $selectthemes => $layoutdefault) {
+        $array_func_id = [];
+        $sth = $db->prepare('SELECT func_id FROM ' . NV_PREFIXLANG . '_modthemes WHERE theme= :theme');
+        $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
+        $sth->execute();
+        while ([$func_id] = $sth->fetch(3)) {
+            $array_func_id[] = $func_id;
+        }
+
+        $sth = $db->prepare('SELECT func_id FROM ' . NV_MODFUNCS_TABLE . ' WHERE in_module= :in_module AND show_func=1 ORDER BY subweight ASC');
+        $sth->bindParam(':in_module', $mod, PDO::PARAM_STR);
+        $sth->execute();
+        while ([$func_id] = $sth->fetch(3)) {
+            if (!in_array((int) $func_id, array_map('intval', $array_func_id), true)) {
+                $sth2 = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_modthemes (func_id, layout, theme) VALUES (' . $func_id . ', :layout, :theme)');
+                $sth2->bindParam(':layout', $layoutdefault, PDO::PARAM_STR);
+                $sth2->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
+                $sth2->execute();
+            }
+        }
+    }
+
+    // Check module_theme
+    $_theme_check = (!empty($theme)) ? $theme : $global_config['site_theme'];
+    if (!empty($_theme_check) and file_exists(NV_ROOTDIR . '/themes/' . $_theme_check . '/theme.php')) {
+        if (!file_exists(NV_ROOTDIR . '/themes/' . $_theme_check . '/modules/' . $module_theme)) {
+            $module_theme = $row['module_file'];
+        }
+    } else {
+        $module_theme = $row['module_file'];
+    }
+
+    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('edit', $mod), '', $admin_info['userid']);
+
+    $sth = $db->prepare('UPDATE ' . NV_MODULES_TABLE . ' SET
+        module_theme=:module_theme, custom_title=:custom_title, site_title=:site_title, admin_title=:admin_title, theme= :theme, mobile= :mobile, description= :description,
+        keywords= :keywords, groups_view= :groups_view, act=' . $act . ', rss=' . $rss . ', sitemap=' . $sitemap . ', icon=:icon
+    WHERE title= :title');
+    $sth->bindParam(':module_theme', $module_theme, PDO::PARAM_STR);
+    $sth->bindParam(':custom_title', $custom_title, PDO::PARAM_STR);
+    $sth->bindParam(':site_title', $site_title, PDO::PARAM_STR);
+    $sth->bindParam(':admin_title', $admin_title, PDO::PARAM_STR);
+    $sth->bindParam(':theme', $theme, PDO::PARAM_STR);
+    $sth->bindParam(':mobile', $mobile, PDO::PARAM_STR);
+    $sth->bindParam(':description', $description, PDO::PARAM_STR);
+    $sth->bindParam(':keywords', $keywords, PDO::PARAM_STR);
+    $sth->bindParam(':groups_view', $groups_view, PDO::PARAM_STR);
+    $sth->bindParam(':title', $mod, PDO::PARAM_STR);
+    $sth->bindParam(':icon', $icon, PDO::PARAM_STR);
+    $sth->execute();
+
+    $mod_name = change_alias($nv_Request->get_title('mod_name', 'post'));
+    if ($mod_name != $mod and preg_match($global_config['check_module'], $mod_name)) {
+        $module_version = [];
+        $version_file = NV_ROOTDIR . '/modules/' . $row['module_file'] . '/version.php';
+        if (file_exists($version_file)) {
+            include $version_file;
+            if (isset($module_version['virtual']) and $module_version['virtual']) {
+                $sth = $db->prepare('UPDATE ' . NV_MODULES_TABLE . ' SET title= :mod_name WHERE title= :mod_old');
+                $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
+                $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
+                if ($sth->execute()) {
+                    // Change module name
+                    $sth = $db->prepare('UPDATE ' . NV_MODFUNCS_TABLE . ' SET in_module= :mod_name WHERE in_module= :mod_old');
+                    $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
+                    $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
+                    $sth->execute();
+
+                    // Change site_home_module
+                    if ($mod == $global_config['site_home_module']) {
+                        $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET config_value= :config_value WHERE config_name = 'site_home_module' AND lang = '" . NV_LANG_DATA . "' AND module='global'");
+                        $sth->bindParam(':config_value', $mod_name, PDO::PARAM_STR);
+                        $sth->execute();
+                    }
+
+                    // Change block
+                    $sth = $db->prepare('UPDATE ' . NV_BLOCKS_TABLE . '_groups SET module= :mod_name WHERE module= :mod_old');
+                    $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
+                    $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
+                    $sth->execute();
+
+                    // Change config
+                    $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET module= :mod_name WHERE lang = '" . NV_LANG_DATA . "' AND module= :mod_old");
+                    $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
+                    $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
+                    $sth->execute();
+
+                    // Change comment
+                    $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_comment SET module= :mod_name WHERE module= :mod_old');
+                    $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
+                    $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
+                    $sth->execute();
+
+                    // Change logs
+                    $sth = $db->prepare('UPDATE ' . $db_config['prefix'] . "_logs SET module_name= :mod_name WHERE lang = '" . NV_LANG_DATA . "' AND module_name= :mod_old");
+                    $sth->bindParam(':mod_name', $mod_name, PDO::PARAM_STR);
+                    $sth->bindParam(':mod_old', $mod, PDO::PARAM_STR);
+                    $sth->execute();
+                }
+            }
+        }
+    }
+    $nv_Cache->delAll();
+
+    $respon['status'] = 'success';
+    $respon['mess'] = $nv_Lang->getGlobal('save_success');
+    $respon['redirect'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name;
+    nv_jsonOutput($respon);
 }
 
-$xtpl->assign('ACTIVE', ($act == 1) ? ' checked="checked"' : '');
+$tpl->assign('DATA', $row);
+$tpl->assign('THEME_LIST', $theme_list);
+$tpl->assign('DTHEME_MOBILE', $theme_mobile_default);
+$tpl->assign('THEME_MOBILE', $theme_mobile_list);
+$tpl->assign('FEATURE_RSS', $feature_rss);
+$tpl->assign('FEATURE_SITEMAP', $feature_sitemap);
+$tpl->assign('GCONFIG', $global_config);
+$tpl->assign('GROUPS_LIST', $groups_list);
+$tpl->assign('ICON_PACKS', $fontawesome_packs);
 
-if (isset($data['rss'])) {
-    $xtpl->assign('RSS', ($data['rss'][1] == 1) ? ' checked="checked"' : '');
-    $xtpl->parse('main.rss');
-}
-if (isset($data['sitemap'])) {
-    $xtpl->assign('SITEMAP', ($data['sitemap'][1] == 1) ? ' checked="checked"' : '');
-    $xtpl->parse('main.sitemap');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('edit.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

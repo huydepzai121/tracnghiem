@@ -18,11 +18,12 @@ $module_version = [
     'modfuncs' => 'main,rss',
     'is_sysmod' => 1,
     'virtual' => 1,
-    'version' => '4.5.00',
+    'version' => '4.6.00',
     'date' => 'Saturday, July 17, 2021 4:00:00 PM GMT+07:00',
     'author' => 'VINADES.,JSC <contact@vinades.vn>',
     'note' => '',
     'uploads_dir' => [
         $module_upload
-    ]
+    ],
+    'icon' => 'fa-solid fa-file-pen'
 ];

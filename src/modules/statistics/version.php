@@ -21,8 +21,9 @@ $module_version = [
     'layoutdefault' => 'body:main,allreferers,allcountries,allbrowsers,allos,allbots',
     'is_sysmod' => 0,
     'virtual' => 2,
-    'version' => '4.5.00',
+    'version' => '4.6.00',
     'date' => 'Saturday, July 17, 2021 4:00:00 PM GMT+07:00',
     'author' => 'VINADES.,JSC <contact@vinades.vn>',
-    'note' => ''
+    'note' => '',
+    'icon' => 'fa-solid fa-chart-simple'
 ];

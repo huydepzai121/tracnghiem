@@ -821,9 +821,19 @@ $(document).ready(function() {
     // Condition: The returned result must be in JSON format with the following elements:
     // status ('OK/error', required), mess (Error content), input (input name),
     // redirect (redirect URL if status is OK), refresh (Reload page if status is OK)
+    const formAj = $('.ajax-submit');
+    if (formAj.length > 0) {
+        $('[type="text"], textarea, select', formAj).on('change keyup', function() {
+            $(this).removeClass('is-invalid is-valid');
+        });
+    }
+
     $('body').on('submit', '.ajax-submit', function(e) {
         e.preventDefault();
-        $('.has-error', this).removeClass('has-error');
+
+        $('.is-invalid', this).removeClass('is-invalid');
+        $('.is-valid', this).removeClass('is-valid');
+
         if (typeof(CKEDITOR) !== 'undefined') {
             for (instance in CKEDITOR.instances) {
                 CKEDITOR.instances[instance].updateElement();
@@ -842,25 +852,37 @@ $(document).ready(function() {
             cache: false,
             dataType: "json"
         }).done(function(a) {
-            if (a.status == 'error') {
+            if (a.status == 'NO' || a.status == 'no' || a.status == 'error') {
                 $('input, textarea, select, button', that).prop('disabled', false);
-                alert(a.mess);
                 if (a.input) {
-                    if ($('[name^=' + a.input + ']', that).length) {
-                        $('[name^=' + a.input + ']', that).parent().addClass('has-error');
-                        $('[name^=' + a.input + ']', that).focus()
+                    let ele = $('[name^=' + a.input + ']', that);
+                    if (ele.length) {
+                        $('.invalid-feedback', ele.parent()).html(a.mess);
+                        ele.addClass('is-invalid').focus();
+                        return;
                     }
                 }
-            } else if (a.status == 'OK') {
+                nvToast(a.mess, 'error');
+                return;
+            }
+
+            if (a.status == 'OK' || a.status == 'ok' || a.status == 'success') {
                 if ('function' === typeof callback) {
-                    callback()
+                    callback();
                 } else if ('string' == typeof callback && "function" === typeof window[callback]) {
-                    window[callback]()
+                    window[callback]();
                 }
                 if (a.redirect) {
-                    window.location.href = a.redirect
+                    let timeout = 0;
+                    if (a.mess) {
+                        nvToast(a.mess, 'success');
+                        timeout = 2000;
+                    }
+                    setTimeout(() => {
+                        window.location.href = a.redirect;
+                    }, timeout);
                 } else if (a.refresh) {
-                    window.location.reload()
+                    window.location.reload();
                 } else {
                     setTimeout(() => {
                         $('input, textarea, select, button', that).prop('disabled', false);
@@ -869,7 +891,7 @@ $(document).ready(function() {
                                 CKEDITOR.instances[instance].setReadOnly(false)
                             }
                         }
-                    }, 1000)
+                    }, 1000);
                 }
             }
         })

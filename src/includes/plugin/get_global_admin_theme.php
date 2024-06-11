@@ -20,8 +20,13 @@ nv_add_hook($module_name, 'get_global_admin_theme', $priority, function ($vars) 
     $module_info = $vars[2];
     $op = $vars[3];
 
-    if (defined('NV_ADMIN') and $module_name == 'siteinfo' and in_array($op, ['main', 'widget'])) {
-        $admin_theme = 'admin_future';
+    $new_theme = 'admin_future';
+
+    if ($module_name == 'siteinfo' and in_array($op, ['main', 'widget'])) {
+        return $new_theme;
+    }
+    if ($module_name == 'modules' and in_array($op, ['edit'])) {
+        return $new_theme;
     }
 
     return $admin_theme;

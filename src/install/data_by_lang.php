@@ -35,14 +35,16 @@ $installMods['about'] = [
         ],
         'sitemap' => [],
         'rss' => []
-    ]
+    ],
+    'icon' => 'fa-solid fa-campground'
 ];
 
 $installMods['zalo'] = [
     'custom_title' => 'Zalo',
     'admin_title' => 'Zalo',
     'admin_file' => 1,
-    'groups_view' => '3'
+    'groups_view' => '3',
+    'icon' => 'fa-solid fa-z'
 ];
 
 $installMods['news'] = [
@@ -114,7 +116,8 @@ $installMods['news'] = [
         'instant-rss' => [
             'func_custom_name' => 'Instant Articles RSS'
         ]
-    ]
+    ],
+    'icon' => 'fa-solid fa-newspaper'
 ];
 
 $installMods['users'] = [
@@ -202,7 +205,8 @@ $installMods['users'] = [
             'theme_mobile' => 'main'
         ],
         'oauth' => []
-    ]
+    ],
+    'icon' => 'fa-solid fa-users'
 ];
 
 $installMods['myapi'] = [
@@ -219,7 +223,8 @@ $installMods['myapi'] = [
             'theme_default' => 'main',
             'theme_mobile' => 'main'
         ]
-    ]
+    ],
+    'icon' => 'fa-brands fa-nfc-symbol'
 ];
 
 $installMods['inform'] = [
@@ -234,7 +239,8 @@ $installMods['inform'] = [
             'theme_default' => 'left-main',
             'theme_mobile' => 'main'
         ]
-    ]
+    ],
+    'icon' => 'fa-solid fa-bell'
 ];
 
 $installMods['contact'] = [
@@ -250,7 +256,8 @@ $installMods['contact'] = [
             'theme_default' => 'left-main',
             'theme_mobile' => 'main'
         ]
-    ]
+    ],
+    'icon' => 'fa-solid fa-phone'
 ];
 
 $installMods['statistics'] = [
@@ -308,7 +315,8 @@ $installMods['statistics'] = [
             'theme_default' => 'left-main',
             'theme_mobile' => 'main'
         ]
-    ]
+    ],
+    'icon' => 'fa-solid fa-chart-simple'
 ];
 
 $installMods['voting'] = [
@@ -325,7 +333,8 @@ $installMods['voting'] = [
             'theme_default' => 'left-main',
             'theme_mobile' => 'main'
         ]
-    ]
+    ],
+    'icon' => 'fa-solid fa-square-poll-vertical'
 ];
 
 $installMods['banners'] = [
@@ -361,7 +370,8 @@ $installMods['banners'] = [
         'clinfo' => [],
         'logininfo' => [],
         'viewmap' => []
-    ]
+    ],
+    'icon' => 'fa-solid fa-rectangle-ad'
 ];
 
 $installMods['seek'] = [
@@ -377,7 +387,8 @@ $installMods['seek'] = [
             'theme_mobile' => 'main'
         ],
         'opensearch' => []
-    ]
+    ],
+    'icon' => 'fa-solid fa-magnifying-glass'
 ];
 
 $installMods['menu'] = [
@@ -385,7 +396,8 @@ $installMods['menu'] = [
     'admin_title' => $install_lang['modules']['menu_for_acp'],
     'admin_file' => 1,
     'groups_view' => '6',
-    'sitemap' => 1
+    'sitemap' => 1,
+    'icon' => 'fa-solid fa-network-wired'
 ];
 
 $installMods['feeds'] = [
@@ -400,7 +412,8 @@ $installMods['feeds'] = [
             'theme_default' => 'left-main-right',
             'theme_mobile' => 'main'
         ]
-    ]
+    ],
+    'icon' => 'fa-solid fa-rss'
 ];
 
 $installMods['page'] = [
@@ -418,7 +431,8 @@ $installMods['page'] = [
         ],
         'sitemap' => [],
         'rss' => []
-    ]
+    ],
+    'icon' => 'fa-solid fa-file-pen'
 ];
 
 $installMods['comment'] = [
@@ -451,7 +465,8 @@ $installMods['comment'] = [
         'down' => [
             'show_func' => 1
         ]
-    ]
+    ],
+    'icon' => 'fa-solid fa-comments'
 ];
 
 $installMods['siteterms'] = [
@@ -476,7 +491,8 @@ $installMods['siteterms'] = [
             'theme_mobile' => 'main'
         ],
         'sitemap' => []
-    ]
+    ],
+    'icon' => 'fa-solid fa-gavel'
 ];
 
 $installMods['freecontent'] = [
@@ -484,7 +500,8 @@ $installMods['freecontent'] = [
     'admin_title' => $install_lang['modules']['freecontent_for_acp'],
     'admin_file' => 1,
     'groups_view' => '6',
-    'sitemap' => 1
+    'sitemap' => 1,
+    'icon' => 'fa-solid fa-cube'
 ];
 
 $installMods['two-step-verification'] = [
@@ -511,7 +528,8 @@ $installMods['two-step-verification'] = [
             'theme_default' => 'left-main-right',
             'theme_mobile' => 'main'
         ]
-    ]
+    ],
+    'icon' => 'fa-solid fa-shield-halved'
 ];
 
 /**
@@ -951,7 +969,11 @@ $blockGroups = [
  * Nhap du lieu cho table: nv4_vi_modules
  */
 $db->query('TRUNCATE TABLE ' . $db_config['prefix'] . '_' . $lang_data . '_modules');
-$sth = $db->prepare('INSERT INTO ' . $db_config['prefix'] . '_' . $lang_data . '_modules (title, module_file, module_data, module_upload, module_theme, custom_title, admin_title, set_time, main_file, admin_file, theme, mobile, description, keywords, groups_view, weight, act, admins, rss, sitemap) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+$sth = $db->prepare('INSERT INTO ' . $db_config['prefix'] . '_' . $lang_data . '_modules (
+    title, module_file, module_data, module_upload, module_theme, custom_title, admin_title,
+    set_time, main_file, admin_file, theme, mobile, description, keywords, groups_view,
+    weight, act, admins, rss, sitemap, icon
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 $weight = 0;
 foreach ($installMods as $mod_name => $vals) {
     ++$weight;
@@ -975,7 +997,8 @@ foreach ($installMods as $mod_name => $vals) {
         1,
         '',
         !empty($vals['rss']) ? 1 : 0,
-        !empty($vals['sitemap']) ? 1 : 0
+        !empty($vals['sitemap']) ? 1 : 0,
+        $vals['icon'] ?? ''
     ];
     $sth->execute($_vals);
 }

@@ -2769,6 +2769,7 @@ function nv_sys_mods($lang = '')
                     'rss' => $row['rss'],
                     'sitemap' => $row['sitemap'],
                     'is_search' => file_exists(NV_ROOTDIR . '/modules/' . $row['module_file'] . '/search.php') ? 1 : 0,
+                    'icon' => $row['icon'],
                     'funcs' => []
                 ];
             }

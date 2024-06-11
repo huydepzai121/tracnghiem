@@ -122,6 +122,7 @@ $sql_create_table[] = 'CREATE TABLE ' . NV_AUTHORS_GLOBALTABLE . "_module (
   act_2 tinyint(4) NOT NULL DEFAULT '1',
   act_3 tinyint(4) NOT NULL DEFAULT '1',
   checksum varchar(32) DEFAULT '',
+  icon varchar(100) NOT NULL DEFAULT '' COMMENT 'Icon',
   PRIMARY KEY (mid),
   UNIQUE KEY module (module)
 ) ENGINE=InnoDB COMMENT 'Bật tắt module trong quản trị theo cấp quản trị'";
