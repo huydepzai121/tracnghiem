@@ -106,7 +106,7 @@ function nv_admin_theme(?string $contents, $head_site = 1)
                 'name' => $m,
                 'link' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $m,
                 'title' => $v,
-                'icon' => isset($site_mods[$m]) ? ($site_mods[$m]['icon'] ?? 'fas fa-globe') : '',
+                'icon' => (isset($site_mods[$m]) and !empty($site_mods[$m]['icon'])) ? $site_mods[$m]['icon'] : 'fa-solid fa-globe',
                 'subs' => nv_get_submenu_mod($m)
             ];
         } else {
@@ -114,7 +114,7 @@ function nv_admin_theme(?string $contents, $head_site = 1)
             $array_mod_current = [
                 'link' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $m,
                 'title' => $v,
-                'icon' => isset($site_mods[$m]) ? ($site_mods[$m]['icon'] ?? 'fas fa-globe') : (isset($admin_mods[$m]) ? ($admin_mods[$m]['icon'] ?? 'fas fa-globe') : ''),
+                'icon' => (isset($site_mods[$m]) and !empty($site_mods[$m]['icon'])) ? $site_mods[$m]['icon'] : ((isset($admin_mods[$m]) and !empty($admin_mods[$m]['icon'])) ? $admin_mods[$m]['icon'] : 'fa-solid fa-globe'),
                 'active' => ((empty($op) or $op == 'main') or (!empty($set_active_op) and $set_active_op == 'main')) ? true : false,
                 'subs' => []
             ];
