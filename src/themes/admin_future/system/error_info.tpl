@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body pb-2">
                 {foreach from=$ERRORS item=error}
-                <div class="card mb-2 border-{$CONFIGS[$error.errno][2]}">
+                <div class="card mb-2 border-1 border-{$CONFIGS[$error.errno][2]}">
                     <div class="card-body{if $CONFIGS[$error.errno][2] eq 'danger'} text-danger{/if}">
                         <div class="card-title h5"><i class="{$CONFIGS[$error.errno][1]} text-{$CONFIGS[$error.errno][2]}"></i> {$CONFIGS[$error.errno][0]}</div>
                         {$error.info}
