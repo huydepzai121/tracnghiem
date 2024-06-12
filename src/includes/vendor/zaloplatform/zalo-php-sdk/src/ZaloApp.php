@@ -14,7 +14,7 @@ use Zalo\Exceptions\ZaloSDKException;
  *
  * @package Zalo
  */
-class ZaloApp
+class ZaloApp implements \Serializable
 {
     /**
      * @var string The app ID.
@@ -70,7 +70,7 @@ class ZaloApp
      *
      * @return string
      */
-    public function __serialize()
+    public function serialize()
     {
         return implode('|', [$this->id, $this->secret]);
     }
@@ -80,7 +80,7 @@ class ZaloApp
      *
      * @param string $serialized
      */
-    public function __unserialize($serialized)
+    public function unserialize($serialized)
     {
         list($id, $secret) = explode('|', $serialized);
 

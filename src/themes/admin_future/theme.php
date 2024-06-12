@@ -74,7 +74,6 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $nv_Lang->loadFile(NV_ROOTDIR . '/themes/' . $tpl_dir . '/language/' . NV_LANG_INTERFACE . '.php');
 
     $tpl = new \NukeViet\Template\NVSmarty();
-    $tpl->registerPlugin('modifier', 'implode', 'implode');
     $tpl->registerPlugin('modifier', 'date', 'nv_date');
     $tpl->registerPlugin('modifier', 'submenu', 'nv_get_submenu');
     $tpl->registerPlugin('modifier', 'submenumod', 'nv_get_submenu_mod');

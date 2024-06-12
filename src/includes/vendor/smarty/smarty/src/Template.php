@@ -555,6 +555,9 @@ class Template extends TemplateBase {
 	 */
 	public function getStreamVariable($variable)
 	{
+
+		trigger_error("Using stream variables (\`\{\$foo:bar\}\`)is deprecated.", E_USER_DEPRECATED);
+
 		$_result = '';
 		$fp = fopen($variable, 'r+');
 		if ($fp) {
@@ -601,7 +604,6 @@ class Template extends TemplateBase {
 	 * @return bool cache status
 	 * @throws \Exception
 	 * @throws \Smarty\Exception
-	 * @link https://www.smarty.net/docs/en/api.is.cached.tpl
 	 *
 	 * @api  Smarty::isCached()
 	 */
@@ -645,8 +647,7 @@ class Template extends TemplateBase {
 			} else {
 
 				// After rendering a template, the tpl/config variables are reset, so the template can be re-used.
-				$savedTplVars = $this->tpl_vars;
-				$savedConfigVars = $this->config_vars;
+				$this->pushStack();
 
 				// Start output-buffering.
 				ob_start();
@@ -654,8 +655,7 @@ class Template extends TemplateBase {
 				$result = $this->render(false, $function);
 
 				// Restore the template to its previous state
-				$this->tpl_vars = $savedTplVars;
-				$this->config_vars = $savedConfigVars;
+				$this->popStack();
 			}
 
 			if (isset($errorHandler)) {

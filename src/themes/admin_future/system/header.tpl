@@ -36,7 +36,7 @@
         nv_safemode = {$ADMIN_INFO.safemode},
         nv_area_admin = 1,
         XSSsanitize = {(int) $GCONFIG.admin_XSSsanitize},
-        nv_whitelisted_tags = [{if not empty($GCONFIG.allowed_html_tags)}'{implode(', ', $GCONFIG.allowed_html_tags)}'{/if}],
+        nv_whitelisted_tags = [{if not empty($GCONFIG.allowed_html_tags)}'{join($GCONFIG.allowed_html_tags, ', ')}'{/if}],
         nv_whitelisted_attr = {$WHITELISTED_ATTR};
     </script>
 

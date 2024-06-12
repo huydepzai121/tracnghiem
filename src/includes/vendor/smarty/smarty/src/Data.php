@@ -48,6 +48,20 @@ class Data
     public $config_vars = array();
 
 	/**
+	 * This variable will hold a stack of template variables.
+	 *
+	 * @var null|array
+	 */
+	private $_var_stack = [];
+
+	/**
+	 * This variable will hold a stack of config variables.
+	 *
+	 * @var null|array
+	 */
+	private $_config_stack = [];
+
+	/**
 	 * Default scope for new variables
 	 * @var int
 	 */
@@ -95,7 +109,7 @@ class Data
             foreach ($tpl_var as $_key => $_val) {
                 $this->assign($_key, $_val, $nocache, $scope);
             }
-			return;
+			return $this;
         }
 		switch ($scope ?? $this->getDefaultScope()) {
 			case self::SCOPE_GLOBAL:
@@ -149,8 +163,6 @@ class Data
      *                              be not cached
      *
      * @return Data
-     * @link https://www.smarty.net/docs/en/api.append.tpl
-     *
      * @api  Smarty::append()
      */
 	public function append($tpl_var, $value = null, $merge = false, $nocache = false)
@@ -204,7 +216,6 @@ class Data
      *
      * @return mixed variable value or or array of variables
      * @api  Smarty::getTemplateVars()
-     * @link https://www.smarty.net/docs/en/api.get.template.vars.tpl
      *
      */
     public function getTemplateVars($varName = null, $searchParents = true)
@@ -213,7 +224,10 @@ class Data
 			return $this->getValue($varName, $searchParents);
 	    }
 
-		return array_merge($this->parent && $searchParents ? $this->parent->getTemplateVars() : [], $this->tpl_vars);
+		return array_merge(
+			$this->parent && $searchParents ? $this->parent->getTemplateVars() : [],
+			array_map(function(Variable $var) { return $var->getValue(); }, $this->tpl_vars)
+		);
     }
 
 	/**
@@ -276,7 +290,7 @@ class Data
 	 * @return bool
 	 */
 	public function hasVariable($varName): bool {
-		return !($this->getVariable($varName) instanceof UndefinedVariable);
+		return !($this->getVariable($varName, true, false) instanceof UndefinedVariable);
 	}
 
 	/**
@@ -337,7 +351,6 @@ class Data
 	 * @param string|array $tpl_var the template variable(s) to clear
 	 *
 	 * @return Data
-	 * @link https://www.smarty.net/docs/en/api.clear.assign.tpl
 	 *
 	 * @api  Smarty::clearAssign()
 	 */
@@ -357,7 +370,6 @@ class Data
 	 * clear all the assigned template variables.
 	 *
 	 * @return Data
-	 * @link https://www.smarty.net/docs/en/api.clear.all.assign.tpl
 	 *
 	 * @api  Smarty::clearAllAssign()
 	 */
@@ -373,7 +385,6 @@ class Data
 	 * @param string|null $name variable name or null
 	 *
 	 * @return Data
-	 * @link https://www.smarty.net/docs/en/api.clear.config.tpl
 	 *
 	 * @api  Smarty::clearConfig()
 	 */
@@ -426,7 +437,6 @@ class Data
 	 *
 	 * @return mixed variable value or or array of variables
 	 * @throws Exception
-	 * @link https://www.smarty.net/docs/en/api.get.config.vars.tpl
 	 *
 	 * @api  Smarty::getConfigVars()
 	 */
@@ -448,7 +458,6 @@ class Data
 
 	 * @returns $this
 	 * @throws \Exception
-	 * @link https://www.smarty.net/docs/en/api.config.load.tpl
 	 *
 	 * @api  Smarty::configLoad()
 	 */
@@ -492,5 +501,21 @@ class Data
 	 */
 	public function setParent($parent): void {
 		$this->parent = $parent;
+	}
+
+	public function pushStack(): void {
+		$stackList = [];
+		foreach ($this->tpl_vars as $name => $variable) {
+			$stackList[$name] = clone $variable; // variables are stored in Variable objects
+		}
+		$this->_var_stack[] = $this->tpl_vars;
+		$this->tpl_vars = $stackList;
+
+		$this->_config_stack[] = $this->config_vars;
+	}
+
+	public function popStack(): void {
+		$this->tpl_vars = array_pop($this->_var_stack);
+		$this->config_vars = array_pop($this->_config_stack);
 	}
 }

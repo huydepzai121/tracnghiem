@@ -43,7 +43,7 @@ class ConfigLoad extends Base {
 	 * @var array
 	 * @see BasePlugin
 	 */
-	protected $optional_attributes = ['section', 'scope'];
+	protected $optional_attributes = ['section'];
 
 	/**
 	 * Attribute definition: Overwrites base class.
@@ -51,7 +51,7 @@ class ConfigLoad extends Base {
 	 * @var array
 	 * @see BasePlugin
 	 */
-	protected $option_flags = ['nocache', 'noscope'];
+	protected $option_flags = [];
 
 	/**
 	 * Compiles code for the {config_load} tag
@@ -62,12 +62,11 @@ class ConfigLoad extends Base {
 	 * @return string compiled code
 	 * @throws \Smarty\CompilerException
 	 */
-	public function compile($args, \Smarty\Compiler\Template $compiler, $parameter = [], $tag = null, $function = null) {
+	public function compile($args, \Smarty\Compiler\Template $compiler, $parameter = [], $tag = null, $function = null): string
+	{
 		// check and get attributes
 		$_attr = $this->getAttributes($compiler, $args);
-		if ($_attr['nocache'] === true) {
-			$compiler->trigger_template_error('nocache option not allowed', null, true);
-		}
+
 		// save possible attributes
 		$conf_file = $_attr['file'];
 		$section = $_attr['section'] ?? 'null';
