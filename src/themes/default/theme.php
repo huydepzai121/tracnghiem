@@ -67,7 +67,7 @@ function nv_site_theme($contents, $full = true)
     $xtpl->assign('SITE_DESCRIPTION', $global_config['site_description']);
     $xtpl->assign('NV_CHECK_PASS_MSTIME', ((int) ($global_config['user_check_pass_time']) - 62) * 1000);
     $xtpl->assign('MODULE_NAME', $module_name);
-    $xtpl->assign('NV_CURRENTTIME', nv_date('l, d/m/Y, H:i', NV_CURRENTTIME));
+    $xtpl->assign('NV_CURRENTTIME', nv_date_format(1) . ' ' . nv_time_format());
     $xtpl->assign('NV_COOKIE_PREFIX', $global_config['cookie_prefix']);
     $xtpl->assign('SITE_FAVICON', $site_favicon);
 

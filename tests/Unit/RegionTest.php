@@ -73,8 +73,8 @@ class RegionTest extends \Codeception\Test\Unit
     {
         $timestamp = 1718268338;
 
-        $this->assertEquals('13/06/2024', nv_date_format($timestamp, 1, 'vi'));
-        $this->assertEquals('06/13/2024', nv_date_format($timestamp, 1, 'en'));
+        $this->assertEquals('13/06/2024', nv_date_format(1, $timestamp, 'vi'));
+        $this->assertEquals('06/13/2024', nv_date_format(1, $timestamp, 'en'));
     }
 
     /**

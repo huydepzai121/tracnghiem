@@ -948,12 +948,12 @@ function nv_date($format, $time = 0)
 }
 
 /**
- * @param int $timestamp
  * @param int $short
+ * @param int $timestamp
  * @param string $lang
  * @return string
  */
-function nv_date_format(?int $timestamp = null, int $short = 1, string $lang = '')
+function nv_date_format(int $short = 1, ?int $timestamp = null, string $lang = '')
 {
     global $global_config, $nv_default_regions;
 
@@ -969,12 +969,12 @@ function nv_date_format(?int $timestamp = null, int $short = 1, string $lang = '
 }
 
 /**
- * @param int $timestamp
  * @param int $short
+ * @param int $timestamp
  * @param string $lang
  * @return string
  */
-function nv_time_format(?int $timestamp = null, int $short = 1, string $lang = '')
+function nv_time_format(int $short = 1, ?int $timestamp = null, string $lang = '')
 {
     global $global_config, $nv_default_regions;
 
