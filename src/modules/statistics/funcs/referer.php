@@ -60,7 +60,7 @@ foreach ($cts['rows'] as $key => $month) {
     $total += $month['count'];
 }
 
-$cts['total'] = $total ? number_format($total, 0, ',', '.') : 0;
+$cts['total'] = $total ? nv_number_format($total) : 0;
 $cts['dataLabel'] = implode('_', $data_label);
 $cts['dataValue'] = implode('_', $data_value);
 

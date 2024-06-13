@@ -48,7 +48,7 @@ if (!nv_function_exists('nv_block_counter_button')) {
         }
 
         $count_data = array_map(function ($number) {
-            return !empty($number) ? number_format($number) : 0;
+            return !empty($number) ? nv_number_format($number) : 0;
         }, $count_data);
 
         $block_theme = get_tpl_dir([$global_config['module_theme'], $global_config['site_theme']], 'default', '/modules/statistics/global.counter_button.tpl');

@@ -47,7 +47,7 @@ if (($cache = $nv_Cache->getItem($mod, $cacheFile, $cacheTTL)) != false) {
 if ($_arr_siteinfo['number_user'] > 0) {
     $siteinfo[] = [
         'key' => $nv_Lang->getModule('siteinfo_user'),
-        'value' => number_format($_arr_siteinfo['number_user'])
+        'value' => nv_number_format($_arr_siteinfo['number_user'])
     ];
 }
 
@@ -55,7 +55,7 @@ if ($_arr_siteinfo['number_user'] > 0) {
 if ($_arr_siteinfo['number_user_reg'] > 0) {
     $pendinginfo[] = [
         'key' => $nv_Lang->getModule('siteinfo_waiting'),
-        'value' => number_format($_arr_siteinfo['number_user_reg']),
+        'value' => nv_number_format($_arr_siteinfo['number_user_reg']),
         'link' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $mod . '&amp;' . NV_OP_VARIABLE . '=user_waiting'
     ];
 }
@@ -64,7 +64,7 @@ if ($_arr_siteinfo['number_user_reg'] > 0) {
 if (!empty($_arr_siteinfo['number_user_edit']) and isset($access_admin['access_editcensor'][$level]) and $access_admin['access_editcensor'][$level] == 1) {
     $pendinginfo[] = [
         'key' => $nv_Lang->getModule('siteinfo_editcensor'),
-        'value' => number_format($_arr_siteinfo['number_user_edit']),
+        'value' => nv_number_format($_arr_siteinfo['number_user_edit']),
         'link' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $mod . '&amp;' . NV_OP_VARIABLE . '=editcensor'
     ];
 }
@@ -95,7 +95,7 @@ if (isset($access_admin['access_groups'][$level]) and $access_admin['access_grou
         foreach ($pending_lists as $row) {
             $pendinginfo[] = [
                 'key' => $nv_Lang->getModule('group_user_peding', $row['title']),
-                'value' => number_format($row['num_users'], 0, ',', '.'),
+                'value' => nv_number_format($row['num_users'], 0, ',', '.'),
                 'link' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $mod . '&amp;' . NV_OP_VARIABLE . '=groups&userlist=' . $row['group_id']
             ];
         }
@@ -106,7 +106,7 @@ if (isset($access_admin['access_groups'][$level]) and $access_admin['access_grou
 if (!empty($_arr_siteinfo['number_active2step_request'])) {
     $pendinginfo[] = [
         'key' => $nv_Lang->getModule('active2step_status2'),
-        'value' => number_format($_arr_siteinfo['number_active2step_request']),
+        'value' => nv_number_format($_arr_siteinfo['number_active2step_request']),
         'link' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $mod . '&amp;active2step=request'
     ];
 }

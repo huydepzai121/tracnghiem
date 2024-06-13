@@ -183,7 +183,7 @@ if (empty($roleCount)) {
         $role['credential_status_format'] = $role['credential_status'] === 1 ? $nv_Lang->getModule('activated') : ($role['credential_status'] === 0 ? $nv_Lang->getModule('suspended') : $nv_Lang->getModule('not_activated'));
         $role['credential_addtime'] = $role['credential_addtime'] > 0 ? nv_date('d/m/Y H:i', $role['credential_addtime']) : '';
         $role['credential_endtime'] = $role['credential_endtime'] > 0 ? nv_date('d/m/Y H:i', $role['credential_endtime']) : ($role['credential_endtime'] == 0 ? $nv_Lang->getModule('indefinitely') : '');
-        $role['credential_quota'] = $role['credential_quota'] > 0 ? number_format($role['credential_quota'], 0, '', '.') : ($role['credential_quota'] == 0 ? $nv_Lang->getModule('no_quota') : '');
+        $role['credential_quota'] = $role['credential_quota'] > 0 ? nv_number_format($role['credential_quota']) : ($role['credential_quota'] == 0 ? $nv_Lang->getModule('no_quota') : '');
         $role['credential_access_count'] = $role['credential_access_count'] >= 0 ? $role['credential_access_count'] : '';
         $role['credential_last_access'] = $role['credential_last_access'] > 0 ? nv_date('d/m/Y H:i', $role['credential_last_access']) : '';
         $xtpl->assign('ROLE', $role);

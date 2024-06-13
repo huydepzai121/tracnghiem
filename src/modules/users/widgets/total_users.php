@@ -43,7 +43,7 @@ $widget_info = [
             $nv_Cache->setItem($module_name, $cacheFile, serialize($_arr_siteinfo), $cacheTTL);
         }
 
-        $tpl->assign('NUM', number_format($_arr_siteinfo['number_user']));
+        $tpl->assign('NUM', nv_number_format($_arr_siteinfo['number_user']));
 
         return $tpl->fetch('widget_usrtotal.tpl');
     }

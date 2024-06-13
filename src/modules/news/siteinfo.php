@@ -55,14 +55,14 @@ if (($cache = $nv_Cache->getItem($mod, $cacheFile)) != false) {
 // Tong so bai viet
 $siteinfo[] = [
     'key' => $nv_Lang->getModule('siteinfo_publtime'),
-    'value' => number_format($_arr_siteinfo['number_publtime'])
+    'value' => nv_number_format($_arr_siteinfo['number_publtime'])
 ];
 
 //So bai viet thanh vien gui toi
 if ($_arr_siteinfo['number_users_send'] > 0) {
     $siteinfo[] = [
         'key' => $nv_Lang->getModule('siteinfo_users_send'),
-        'value' => number_format($_arr_siteinfo['number_users_send'])
+        'value' => nv_number_format($_arr_siteinfo['number_users_send'])
     ];
 }
 
@@ -70,7 +70,7 @@ if ($_arr_siteinfo['number_users_send'] > 0) {
 if ($_arr_siteinfo['number_pending'] > 0) {
     $siteinfo[] = [
         'key' => $nv_Lang->getModule('siteinfo_pending'),
-        'value' => number_format($_arr_siteinfo['number_pending'])
+        'value' => nv_number_format($_arr_siteinfo['number_pending'])
     ];
 }
 
@@ -78,7 +78,7 @@ if ($_arr_siteinfo['number_pending'] > 0) {
 if ($_arr_siteinfo['number_expired'] > 0) {
     $siteinfo[] = [
         'key' => $nv_Lang->getModule('siteinfo_expired'),
-        'value' => number_format($_arr_siteinfo['number_expired'])
+        'value' => nv_number_format($_arr_siteinfo['number_expired'])
     ];
 }
 
@@ -86,7 +86,7 @@ if ($_arr_siteinfo['number_expired'] > 0) {
 if ($_arr_siteinfo['number_exptime'] > 0) {
     $siteinfo[] = [
         'key' => $nv_Lang->getModule('siteinfo_exptime'),
-        'value' => number_format($_arr_siteinfo['number_exptime'])
+        'value' => nv_number_format($_arr_siteinfo['number_exptime'])
     ];
 }
 
@@ -94,7 +94,7 @@ if ($_arr_siteinfo['number_exptime'] > 0) {
 if ($_arr_siteinfo['number_comment'] > 0) {
     $siteinfo[] = [
         'key' => $nv_Lang->getModule('siteinfo_comment'),
-        'value' => number_format($_arr_siteinfo['number_comment'])
+        'value' => nv_number_format($_arr_siteinfo['number_comment'])
     ];
 }
 
@@ -102,7 +102,7 @@ if ($_arr_siteinfo['number_comment'] > 0) {
 if (!empty($module_config[$mod]['tags_remind']) and $_arr_siteinfo['number_incomplete'] > 0) {
     $pendinginfo[] = [
         'key' => $nv_Lang->getModule('siteinfo_tags_incomplete'),
-        'value' => number_format($_arr_siteinfo['number_incomplete']),
+        'value' => nv_number_format($_arr_siteinfo['number_incomplete']),
         'link' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $mod . '&amp;' . NV_OP_VARIABLE . '=tags&amp;incomplete=1'
     ];
 }

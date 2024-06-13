@@ -49,7 +49,7 @@ if ($num_items) {
             'key' => $country,
             'name' => ($country != 'ZZ' and isset($countries[$country])) ? ($nv_Lang->existsGlobal('country_' . $country) ? $nv_Lang->getGlobal('country_' . $country) : $countries[$country][1]) : $nv_Lang->getGlobal('unknown'),
             'count' => $count,
-            'count_format' => !empty($count) ? number_format($count) : 0,
+            'count_format' => !empty($count) ? nv_number_format($count) : 0,
             'last_visit' => !empty($last_visit) ? nv_date('l, d F Y H:i', $last_visit) : '',
             'proc' => ceil(($count / $max) * 100)
         ];

@@ -221,7 +221,7 @@ function nv_convertfromBytes($size)
         ++$i;
     }
 
-    return number_format($size, 2) . ' ' . $iec[$i];
+    return nv_number_format($size) . ' ' . $iec[$i];
 }
 
 /**

@@ -34,7 +34,7 @@ $widget_info = [
         while ($row = $result->fetch()) {
             $categories[] = $row['c_val'];
             $data[] = $row['c_count'];
-            $data_formatted[] = NV_LANG_INTERFACE == 'vi' ? number_format($row['c_count'], 0, ',', '.') : number_format($row['c_count']);
+            $data_formatted[] = nv_number_format($row['c_count']);
         }
 
         $tpl->assign('DATA', json_encode([

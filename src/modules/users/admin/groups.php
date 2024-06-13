@@ -516,7 +516,7 @@ if ($nv_Request->isset_request('listUsers', 'get')) {
         }
         $idsite = ($global_config['idsite'] == $groupsList[$group_id]['idsite']) ? 0 : $global_config['idsite'];
         foreach ($group_users as $_type => $arr_userids) {
-            $xtpl->assign('PTITLE', $nv_Lang->getModule('admin_' . $_type . '_in_group_caption', $title, number_format($array_number[$_type], 0, ',', '.')));
+            $xtpl->assign('PTITLE', $nv_Lang->getModule('admin_' . $_type . '_in_group_caption', $title, nv_number_format($array_number[$_type])));
             foreach ($arr_userids as $_userid) {
                 $row = $array_userid[$_userid];
                 $row['full_name'] = nv_show_name_user($row['first_name'], $row['last_name'], $row['username']);
@@ -916,7 +916,7 @@ foreach ($groupsList as $group_id => $values) {
         'title' => ($group_id < 10) ? $nv_Lang->getGlobal('level' . $group_id) : $values['title'],
         'add_time' => nv_date('d/m/Y H:i', $values['add_time']),
         'exp_time' => !empty($values['exp_time']) ? nv_date('d/m/Y H:i', $values['exp_time']) : $nv_Lang->getGlobal('unlimited'),
-        'number' => is_numeric($values['numbers']) ? number_format($values['numbers']) : $values['numbers'],
+        'number' => is_numeric($values['numbers']) ? nv_number_format($values['numbers']) : $values['numbers'],
         'act' => $values['act'] ? ' checked="checked"' : '',
         'disabled' => ($group_id < 10 or !defined('NV_IS_SPADMIN') or $values['idsite'] != $global_config['idsite']) ? ' disabled="disabled"' : '',
         'link_userlist' => $link_userlist

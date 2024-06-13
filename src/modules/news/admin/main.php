@@ -578,8 +578,8 @@ if (($module_config[$module_name]['elas_use'] == 1) and $checkss == NV_CHECK_SES
             'status' => $status > $global_code_defined['row_locked_status'] ? $nv_Lang->getModule('content_locked_bycat') : $nv_Lang->getModule('status_' . $status),
             'class' => $status > $global_code_defined['row_locked_status'] ? $array_status_class['4'] : $array_status_class[$status],
             'userid' => $_userid,
-            'hitstotal' => number_format($hitstotal, 0, ',', '.'),
-            'hitscm' => number_format($hitscm, 0, ',', '.'),
+            'hitstotal' => nv_number_format($hitstotal),
+            'hitscm' => nv_number_format($hitscm),
             'numtags' => 0,
             'feature' => $admin_funcs,
             'author' => $author
@@ -791,8 +791,8 @@ if (($module_config[$module_name]['elas_use'] == 1) and $checkss == NV_CHECK_SES
             'status' => $status > $global_code_defined['row_locked_status'] ? $nv_Lang->getModule('content_locked_bycat') : $nv_Lang->getModule('status_' . $status),
             'class' => $status > $global_code_defined['row_locked_status'] ? $array_status_class['4'] : $array_status_class[$status],
             'userid' => $_userid,
-            'hitstotal' => number_format($hitstotal, 0, ',', '.'),
-            'hitscm' => number_format($hitscm, 0, ',', '.'),
+            'hitstotal' => nv_number_format($hitstotal),
+            'hitscm' => nv_number_format($hitscm),
             'numtags' => 0,
             'feature' => $admin_funcs,
             'author' => $author

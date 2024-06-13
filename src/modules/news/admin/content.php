@@ -1685,7 +1685,7 @@ if (!empty($error)) {
 
 // Thông báo vượt quá hệ thống lớn
 if (!$is_submit_form and $total_news_current == NV_MIN_MEDIUM_SYSTEM_ROWS and $rowcontent['mode'] == 'add') {
-    $xtpl->assign('LARGE_SYS_MESSAGE', $nv_Lang->getModule('large_sys_message', number_format($total_news_current, 0, ',', '.')));
+    $xtpl->assign('LARGE_SYS_MESSAGE', $nv_Lang->getModule('large_sys_message', nv_number_format($total_news_current)));
     $xtpl->parse('main.large_sys_note');
 }
 

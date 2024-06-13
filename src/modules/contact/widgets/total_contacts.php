@@ -37,7 +37,7 @@ $widget_info = [
             $nv_Cache->setItem($module_name, $cacheFile, serialize($_arr_siteinfo), $cacheTTL);
         }
 
-        $tpl->assign('NUM', number_format($_arr_siteinfo['total_contacts']));
+        $tpl->assign('NUM', nv_number_format($_arr_siteinfo['total_contacts']));
 
         return $tpl->fetch('widget_contacttotal.tpl');
     }

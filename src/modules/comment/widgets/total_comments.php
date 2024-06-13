@@ -37,7 +37,7 @@ $widget_info = [
             $nv_Cache->setItem($module_name, $cacheFile, serialize($_arr_siteinfo), $cacheTTL);
         }
 
-        $tpl->assign('NUM', number_format($_arr_siteinfo['total_comments']));
+        $tpl->assign('NUM', nv_number_format($_arr_siteinfo['total_comments']));
 
         return $tpl->fetch('widget_cmttotal.tpl');
     }

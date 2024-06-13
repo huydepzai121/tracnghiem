@@ -610,8 +610,8 @@ function nv_show_block_list($bid)
             $xtpl->assign('ROW', [
                 'publtime' => nv_date('H:i d/m/Y', $row['publtime']),
                 'status' => $nv_Lang->getModule('status_' . $row['status']),
-                'hitstotal' => number_format($row['hitstotal'], 0, ',', '.'),
-                'hitscm' => number_format($row['hitscm'], 0, ',', '.'),
+                'hitstotal' => nv_number_format($row['hitstotal']),
+                'hitscm' => nv_number_format($row['hitscm']),
                 'id' => $row['id'],
                 'link' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$row['catid']]['alias'] . '/' . $row['alias'] . '-' . $row['id'] . $global_config['rewrite_exturl'],
                 'title' => $row['title']

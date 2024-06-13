@@ -38,7 +38,7 @@ foreach ($_rows as $row) {
     $row['url_view'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $row['alias'] . $global_config['rewrite_exturl'];
     $row['url_edit'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=content&amp;id=' . $row['id'];
     $row['checkss'] = md5($row['id'] . NV_CHECK_SESSION);
-    $row['hitstotal'] = number_format($row['hitstotal'], 0, ',', '.');
+    $row['hitstotal'] = nv_number_format($row['hitstotal']);
     for ($i = 1; $i <= $num; ++$i) {
         $xtpl->assign('WEIGHT', [
             'w' => $i,

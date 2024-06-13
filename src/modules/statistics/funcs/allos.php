@@ -52,7 +52,7 @@ if ($num_items) {
         $os_list[] = [
             'name' => $name,
             'count' => $count,
-            'count_format' => !empty($count) ? number_format($count) : 0,
+            'count_format' => !empty($count) ? nv_number_format($count) : 0,
             'last_visit' => !empty($last_visit) ? nv_date('l, d F Y H:i', $last_visit) : '',
             'proc' => ceil(($count / $max) * 100)
         ];

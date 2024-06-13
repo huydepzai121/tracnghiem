@@ -18,7 +18,7 @@ $number = $db->query('SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $mod_data .
 if ($number > 0) {
     $pendinginfo[] = [
         'key' => $nv_Lang->getModule('siteinfo_new'),
-        'value' => number_format($number),
+        'value' => nv_number_format($number),
         'link' => NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $mod
     ];
 }

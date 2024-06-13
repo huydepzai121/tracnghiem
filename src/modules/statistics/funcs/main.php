@@ -37,7 +37,7 @@ while ([$year, $count] = $result->fetch(3)) {
 
 $ctsy = [];
 $ctsy['caption'] = $nv_Lang->getModule('statbyyear');
-$ctsy['total'] = number_format($total, 0, ',', '.');
+$ctsy['total'] = nv_number_format($total);
 $ctsy['dataLabel'] = implode('_', array_keys($year_list));
 $ctsy['dataValue'] = implode('_', $year_list);
 
@@ -77,7 +77,7 @@ foreach ($month_list as $m) {
 
 $ctsm = [];
 $ctsm['caption'] = $nv_Lang->getModule('statbymonth', $current_year);
-$ctsm['total'] = number_format($total, 0, ',', '.');
+$ctsm['total'] = nv_number_format($total);
 $ctsm['dataLabel'] = implode('_', $data_label);
 $ctsm['dataValue'] = implode('_', $data_value);
 
@@ -93,7 +93,7 @@ while ([$day, $count] = $result->fetch(3)) {
 
 $ctsdm = [];
 $ctsdm['caption'] = $nv_Lang->getModule('statbyday', $current_month_str, $current_year);
-$ctsdm['total'] = number_format($total, 0, ',', '.');
+$ctsdm['total'] = nv_number_format($total);
 $ctsdm['dataLabel'] = implode('_', array_keys($day_list));
 $ctsdm['dataValue'] = implode('_', $day_list);
 
@@ -125,7 +125,7 @@ foreach ($dayofweek_list as $m) {
 
 $ctsdw = [];
 $ctsdw['caption'] = $nv_Lang->getModule('statbydayofweek');
-$ctsdw['total'] = number_format($total, 0, ',', '.');
+$ctsdw['total'] = nv_number_format($total);
 $ctsdw['dataLabel'] = implode('_', $data_label);
 $ctsdw['dataValue'] = implode('_', $data_value);
 
@@ -142,7 +142,7 @@ while ([$hour, $count] = $result->fetch(3)) {
 
 $ctsh = [];
 $ctsh['caption'] = $nv_Lang->getModule('statbyhour') . ' (' . date('d/m/Y', NV_CURRENTTIME) . ')';
-$ctsh['total'] = number_format($total, 0, ',', '.');
+$ctsh['total'] = nv_number_format($total);
 $ctsh['dataLabel'] = implode('_', array_keys($hour_list));
 $ctsh['dataValue'] = implode('_', $hour_list);
 
@@ -157,7 +157,7 @@ while ([$country, $count, $last_visit] = $result->fetch(3)) {
         'key' => $country,
         'name' => ($country != 'ZZ' and isset($countries[$country])) ? ($nv_Lang->existsGlobal('country_' . $country) ? $nv_Lang->getGlobal('country_' . $country) : $countries[$country][1]) : $nv_Lang->getGlobal('unknown'),
         'count' => $count,
-        'count_format' => !empty($count) ? number_format($count) : 0,
+        'count_format' => !empty($count) ? nv_number_format($count) : 0,
         'last_visit' => !empty($last_visit) ? nv_date('l, d F Y H:i', $last_visit) : ''
     ];
 
@@ -171,7 +171,7 @@ $others = $all - $total;
 $ctsc = [];
 $ctsc['rows'] = $countries_list;
 $ctsc['max'] = $max;
-$ctsc['others'] = number_format($others, 0, ',', '.');
+$ctsc['others'] = nv_number_format($others);
 $ctsc['others_url'] = NV_BASE_MOD_URL . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['allcountries'];
 
 // trinh duyet
@@ -186,7 +186,7 @@ while ([$br, $count, $last_visit] = $result->fetch(3)) {
     $browsers_list[] = [
         'name' => $name,
         'count' => $count,
-        'count_format' => !empty($count) ? number_format($count) : 0,
+        'count_format' => !empty($count) ? nv_number_format($count) : 0,
         'last_visit' => !empty($last_visit) ? nv_date('l, d F Y H:i', $last_visit) : ''
     ];
 
@@ -200,7 +200,7 @@ $others = $all - $total;
 $ctsb = [];
 $ctsb['rows'] = $browsers_list;
 $ctsb['max'] = $max;
-$ctsb['others'] = number_format($others, 0, ',', '.');
+$ctsb['others'] = nv_number_format($others);
 $ctsb['others_url'] = NV_BASE_MOD_URL . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['allbrowsers'];
 
 // he dieu hanh
@@ -217,7 +217,7 @@ while ([$os, $count, $last_visit] = $result->fetch(3)) {
     $os_list[] = [
         'name' => $name,
         'count' => $count,
-        'count_format' => !empty($count) ? number_format($count) : 0,
+        'count_format' => !empty($count) ? nv_number_format($count) : 0,
         'last_visit' => !empty($last_visit) ? nv_date('l, d F Y H:i', $last_visit) : ''
     ];
 
@@ -231,7 +231,7 @@ $others = $all - $total;
 $ctso = [];
 $ctso['rows'] = $os_list;
 $ctso['max'] = $max;
-$ctso['others'] = number_format($others, 0, ',', '.');
+$ctso['others'] = nv_number_format($others);
 $ctsb['others_url'] = NV_BASE_MOD_URL . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['allos'];
 
 $contents = nv_theme_statistics_main($ctsy, $ctsm, $ctsdm, $ctsdw, $ctsc, $ctsb, $ctso, $ctsh);

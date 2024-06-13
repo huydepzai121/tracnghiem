@@ -444,7 +444,7 @@ if (!empty($role_id)) {
             $credential['last_access'] = !empty($credential['last_access']) ? nv_date('d/m/Y H:i', $credential['last_access']) : '';
             $credential['addtime'] = nv_date('d/m/Y H:i', $credential['addtime']);
             $credential['endtime'] = !empty($credential['endtime']) ? nv_date('d/m/Y H:i', $credential['endtime']) : $nv_Lang->getModule('indefinitely');
-            $credential['quota'] = !empty($credential['quota']) ? number_format($credential['quota'], 0, '', '.') : $nv_Lang->getModule('no_quota');
+            $credential['quota'] = !empty($credential['quota']) ? nv_number_format($credential['quota']) : $nv_Lang->getModule('no_quota');
             $xtpl->assign('CREDENTIAL', $credential);
 
             $sts = [$nv_Lang->getModule('suspended'), $nv_Lang->getModule('active')];
