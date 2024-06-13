@@ -502,7 +502,7 @@ if (($module_config[$module_name]['elas_use'] == 1) and $checkss == NV_CHECK_SES
             $value['_source']['author']
         ];
         [$id, $catid_i, $listcatid, $post_id, $title, $alias, $status, $addtime, $edittime, $publtime, $exptime, $hitstotal, $hitscm, $_userid, $author] = $array_list_elastic_search;
-        $publtime = nv_date('H:i d/m/y', $publtime);
+        $publtime = nv_datetime_format($publtime, 1);
         $title = nv_clean60($title);
         if ($catid > 0) {
             $catid_i = $catid;
@@ -710,7 +710,7 @@ if (($module_config[$module_name]['elas_use'] == 1) and $checkss == NV_CHECK_SES
 
     $data = $array_ids = $array_userid = [];
     while ([$id, $catid_i, $listcatid, $post_id, $title, $alias, $status, $weight, $addtime, $edittime, $publtime, $exptime, $hitstotal, $hitscm, $_userid, $author] = $result->fetch(3)) {
-        $publtime = nv_date('H:i d/m/y', $publtime);
+        $publtime = nv_datetime_format($publtime, 1);
 
         if ($catid > 0) {
             $catid_i = $catid;
@@ -1232,7 +1232,7 @@ if ($loadhistory) {
     $xtpl->assign('NEW_ID', $loadhistory_id);
 
     foreach ($array_histories as $history) {
-        $history['historytime'] = nv_date('d/m/Y H:i:s', $history['historytime']);
+        $history['historytime'] = nv_datetime_format($history['historytime']);
         $history['admin_id'] = isset($array_users[$history['admin_id']]) ? $array_users[$history['admin_id']]['show_name'] : ('#' . $array_users[$history['admin_id']]);
         $xtpl->assign('HISTORY', $history);
         $xtpl->parse('history.loop');

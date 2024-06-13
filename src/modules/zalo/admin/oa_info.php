@@ -119,7 +119,7 @@ $oa_info = array_replace(array_flip($keys), $oa_info);
 foreach ($oa_info as $key => $val) {
     if ($key == 'is_verified' or !empty($val)) {
         $key == 'is_verified' && $val = $nv_Lang->getModule('verify_status_' . $val);
-        $key == 'updatetime' && $val = nv_date('d/m/Y H:i', $val);
+        $key == 'updatetime' && $val = nv_datetime_format($val, 1);
         $key == 'oa_type' && $val = $nv_Lang->getModule('oa_type_' . $val);
         $key == 'qrcode' && $val = NV_MY_DOMAIN . NV_BASE_SITEURL . $val;
         $xtpl->assign('OA', [

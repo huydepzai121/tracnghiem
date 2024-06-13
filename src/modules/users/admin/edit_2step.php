@@ -164,8 +164,8 @@ if (empty($row['active2step'])) {
     $result = $db->query($sql);
     while ($code = $result->fetch()) {
         $code['status'] = $nv_Lang->getModule('user_2step_codes_s' . $code['is_used']);
-        $code['time_creat'] = $code['time_creat'] ? nv_date('H:i:s d/m/Y', $code['time_creat']) : '';
-        $code['time_used'] = $code['time_used'] ? nv_date('H:i:s d/m/Y', $code['time_used']) : '';
+        $code['time_creat'] = $code['time_creat'] ? nv_datetime_format($code['time_creat'] , 1) : '';
+        $code['time_used'] = $code['time_used'] ? nv_datetime_format($code['time_used'], 1) : '';
         $xtpl->assign('CODE', $code);
         $xtpl->parse('main.code');
     }

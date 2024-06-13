@@ -382,7 +382,7 @@ function follower_profile_save($user_id, $follower_profile)
     $row['city_id'] = !empty($follower_profile['shared_info']['city']) ? get_province_id($follower_profile['shared_info']['city']) : '';
     $row['district_id'] = (!empty($row['city_id']) and !empty($follower_profile['shared_info']['district'])) ? get_district_id($row['city_id'], $follower_profile['shared_info']['district']) : '';
 
-    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_followers SET 
+    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_followers SET
         app_id = ' . $db->quote($global_config['zaloAppID']) . ',
         user_id_by_app = :user_id_by_app,
         display_name = :display_name,
@@ -400,7 +400,7 @@ function follower_profile_save($user_id, $follower_profile)
         city_id = :city_id,
         district_id = :district_id,
         is_sync = 1,
-        updatetime = ' . NV_CURRENTTIME . ' 
+        updatetime = ' . NV_CURRENTTIME . '
         WHERE user_id = ' . $db->quote($user_id));
     $sth->bindParam(':user_id_by_app', $row['user_id_by_app'], PDO::PARAM_STR);
     $sth->bindParam(':display_name', $row['display_name'], PDO::PARAM_STR);
@@ -486,8 +486,8 @@ function video_add($video)
 {
     global $db;
 
-    $sth = $db->prepare('INSERT INTO ' . NV_MOD_TABLE . '_video 
-        (video_id, token, video_name, video_size, description, view, thumb, status, status_message, convert_percent, convert_error_code, addtime) VALUES 
+    $sth = $db->prepare('INSERT INTO ' . NV_MOD_TABLE . '_video
+        (video_id, token, video_name, video_size, description, view, thumb, status, status_message, convert_percent, convert_error_code, addtime) VALUES
         (:video_id, :token, :video_name, :video_size, :description, :view, :thumb, :status, :status_message, :convert_percent, :convert_error_code, ' . NV_CURRENTTIME . ')');
     $sth->bindValue(':video_id', $video['video_id'], PDO::PARAM_STR);
     $sth->bindValue(':token', $video['token'], PDO::PARAM_STR);
@@ -516,8 +516,8 @@ function video_update($id, $video)
 {
     global $db;
 
-    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_video SET 
-    token = :token, status_message = :status_message, video_name = :video_name, video_size = :video_size, convert_percent = :convert_percent, convert_error_code = :convert_error_code, video_id = :video_id, status = :status 
+    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_video SET
+    token = :token, status_message = :status_message, video_name = :video_name, video_size = :video_size, convert_percent = :convert_percent, convert_error_code = :convert_error_code, video_id = :video_id, status = :status
     WHERE id = ' . $id);
     $sth->bindParam(':token', $video['token'], PDO::PARAM_STR);
     $sth->bindParam(':status_message', $video['status_message'], PDO::PARAM_STR);
@@ -545,8 +545,8 @@ function video_edit_save($id, $view, $thumb, $description)
 {
     global $db;
 
-    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_video SET 
-    view = :view, thumb = :thumb, description = :description 
+    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_video SET
+    view = :view, thumb = :thumb, description = :description
     WHERE id = ' . $id);
     $sth->bindParam(':view', $view, PDO::PARAM_STR);
     $sth->bindParam(':thumb', $thumb, PDO::PARAM_STR);
@@ -643,8 +643,8 @@ function get_upload($type)
     $files = [];
     while ($row = $result->fetch()) {
         $exptime = $row['addtime'] + (604800 - 60);
-        $row['addtime'] = nv_date('H:i d/m/Y', $row['addtime']);
-        $row['exptime'] = nv_date('H:i d/m/Y', $exptime);
+        $row['addtime'] = nv_datetime_format($row['addtime'], true);
+        $row['exptime'] = nv_datetime_format($exptime, 1);
         $row['type_name'] = $nv_Lang->getModule('type_' . $row['type']);
         $row['isexpired'] = ((NV_CURRENTTIME - (int) $row['addtime']) < 604800);
         $row['fullname'] = !empty($row['localfile']) ? NV_BASE_SITEURL . NV_UPLOADS_DIR . '/zalo/' . $row['localfile'] : '';
@@ -673,8 +673,8 @@ function upload_save($type, $file, $localfile, $extension, $width, $height, $zal
 {
     global $db;
 
-    $sth = $db->prepare('INSERT INTO ' . NV_MOD_TABLE . '_upload 
-        (type, extension, file, localfile, width, height, zalo_id, description, addtime) VALUES 
+    $sth = $db->prepare('INSERT INTO ' . NV_MOD_TABLE . '_upload
+        (type, extension, file, localfile, width, height, zalo_id, description, addtime) VALUES
         (:type, :extension, :file, :localfile, ' . $width . ', ' . $height . ', :zalo_id, :description, ' . NV_CURRENTTIME . ')');
     $sth->bindValue(':type', $type, PDO::PARAM_STR);
     $sth->bindValue(':extension', $extension, PDO::PARAM_STR);
@@ -836,7 +836,7 @@ function update_tag($alias, $new_name)
 {
     global $db;
 
-    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_tags SET 
+    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_tags SET
     name = :name WHERE alias = :alias');
     $sth->bindParam(':name', $new_name, PDO::PARAM_STR);
     $sth->bindParam(':alias', $alias, PDO::PARAM_STR);
@@ -950,7 +950,7 @@ function conversation_to_html($contents, $user_id)
         $y = $count - $i - 1;
         $message = $contents[$content_keys[$y]];
         $message['avatar'] = !empty($message['src']) ? $follower_info['avatar120'] : $oa_info['avatar'];
-        $message['time_format'] = nv_date('H:i d/m/Y', $message['time']);
+        $message['time_format'] = nv_datetime_format($message['time'], 1);
 
         if ($message['src'] == '0' and !empty($message['note'])) {
             $note = json_decode($message['note'], true);
@@ -1185,9 +1185,9 @@ function save_last_conversation($contents, $user_id)
 {
     global $db;
 
-    $sth = $db->prepare('INSERT INTO ' . NV_MOD_TABLE . "_conversation 
-        (message_id, user_id, src, time, type, message, links, thumb, url, description, location, note) VALUES 
-        (:message_id, :user_id, :src, :time, :type, :message, :links, :thumb, :url, :description, :location, '') ON DUPLICATE KEY UPDATE 
+    $sth = $db->prepare('INSERT INTO ' . NV_MOD_TABLE . "_conversation
+        (message_id, user_id, src, time, type, message, links, thumb, url, description, location, note) VALUES
+        (:message_id, :user_id, :src, :time, :type, :message, :links, :thumb, :url, :description, :location, '') ON DUPLICATE KEY UPDATE
         time=VALUES(time), type=VALUES(type), message=VALUES(message), links=VALUES(links), thumb=VALUES(thumb), url=VALUES(url), description=VALUES(description), location=VALUES(location)");
     foreach ($contents as $content) {
         if (!empty($content['message_id'])) {
@@ -1227,8 +1227,8 @@ function save_conversation($user_id, $message_id, $note)
     global $db;
 
     if (!empty($message_id)) {
-        $sth = $db->prepare('INSERT IGNORE INTO ' . NV_MOD_TABLE . '_conversation 
-        (message_id, user_id, src, time, message, links, description, note) VALUES 
+        $sth = $db->prepare('INSERT IGNORE INTO ' . NV_MOD_TABLE . '_conversation
+        (message_id, user_id, src, time, message, links, description, note) VALUES
         (:message_id, :user_id, 0, ' . NV_CURRENTTIME . ", '', '', '', :note)");
 
         $sth->bindValue(':message_id', $message_id, PDO::PARAM_STR);
@@ -1472,8 +1472,8 @@ function template_save($type, $content)
 {
     global $db;
 
-    $sth = $db->prepare('INSERT INTO ' . NV_MOD_TABLE . '_template 
-        (type, content) VALUES 
+    $sth = $db->prepare('INSERT INTO ' . NV_MOD_TABLE . '_template
+        (type, content) VALUES
         (:type, :content)');
 
     $sth->bindValue(':type', $type, PDO::PARAM_STR);
@@ -1494,7 +1494,7 @@ function template_update($id, $content)
 {
     global $db;
 
-    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_template SET 
+    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_template SET
     content = :content WHERE id = ' . $id);
     $sth->bindParam(':content', $content, PDO::PARAM_STR);
     $sth->execute();
@@ -1664,7 +1664,7 @@ function zalo_id_update($id, $zalo_id)
 {
     global $db;
 
-    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . "_article SET 
+    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . "_article SET
     zalo_id = :zalo_id, token = '' WHERE id = " . $id);
     $sth->bindParam(':zalo_id', $zalo_id, PDO::PARAM_STR);
     $sth->execute();
@@ -1731,8 +1731,8 @@ function save_article($save_article)
         'comment' => !empty($save_article['comment']) ? $save_article['comment'] : 'show'
     ];
 
-    $sql = 'INSERT INTO ' . NV_MOD_TABLE . '_article 
-        (token, type, title, author, cover_type, cover_photo_url, cover_video_id, cover_view, cover_status, description, body, related_medias, tracking_link, video_id, video_avatar, status, comment, create_date, update_date, is_sync) VALUES 
+    $sql = 'INSERT INTO ' . NV_MOD_TABLE . '_article
+        (token, type, title, author, cover_type, cover_photo_url, cover_video_id, cover_view, cover_status, description, body, related_medias, tracking_link, video_id, video_avatar, status, comment, create_date, update_date, is_sync) VALUES
         (:token, :type, :title, :author, :cover_type, :cover_photo_url, :cover_video_id, :cover_view, :cover_status, :description, :body, :related_medias, :tracking_link, :video_id, :video_avatar, :status, :comment, ' . NV_CURRENTTIME . ', ' . NV_CURRENTTIME . ', 1)';
 
     return $db->insert_id($sql, 'id', $data);
@@ -1769,10 +1769,10 @@ function update_article($id, $save_article)
         'comment' => !empty($save_article['comment']) ? $save_article['comment'] : 'show'
     ];
 
-    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_article SET 
-    title = :title, author = :author, cover_type = :cover_type, cover_photo_url = :cover_photo_url, 
+    $sth = $db->prepare('UPDATE ' . NV_MOD_TABLE . '_article SET
+    title = :title, author = :author, cover_type = :cover_type, cover_photo_url = :cover_photo_url,
     cover_video_id = :cover_video_id, cover_view = :cover_view, cover_status = :cover_status, description = :description,
-    body = :body, related_medias = :related_medias, tracking_link = :tracking_link, video_id = :video_id, 
+    body = :body, related_medias = :related_medias, tracking_link = :tracking_link, video_id = :video_id,
     video_avatar = :video_avatar, status = :status, comment = :comment, update_date = ' . NV_CURRENTTIME . ', is_sync = 1 WHERE id = ' . $id);
     $sth->bindParam(':title', $data['title'], PDO::PARAM_STR);
     $sth->bindParam(':author', $data['author'], PDO::PARAM_STR);

@@ -200,7 +200,7 @@ while ($row = $result2->fetch()) {
     } elseif ($row['email_verification_time'] == 0) {
         $info_verify = $nv_Lang->getModule('emailverify_sys4');
     } elseif ($row['email_verification_time'] > 0) {
-        $info_verify = $nv_Lang->getModule('emailverify_sys5', nv_date('H:i d/m/Y', $row['email_verification_time']));
+        $info_verify = $nv_Lang->getModule('emailverify_sys5', nv_datetime_format($row['email_verification_time'], 1));
     } else {
         // Cái này để debug trong trường hợp lỗi CSDL
         $info_verify = 'Error verification data';
@@ -215,7 +215,7 @@ while ($row = $result2->fetch()) {
         'username' => $row['username'],
         'full_name' => nv_show_name_user($row['first_name'], $row['last_name'], $row['username']),
         'email' => $row['email'],
-        'regdate' => date('d/m/Y H:i', $row['regdate']),
+        'regdate' => nv_datetime_format($row['regdate']),
         'checked' => $row['active'] ? ' checked="checked"' : '',
         'disabled' => ($is_setactive) ? ' onclick="nv_chang_status(' . $row['userid'] . ');"' : ' disabled="disabled"',
         'setactive' => $is_setactive,

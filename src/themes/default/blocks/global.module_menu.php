@@ -9,8 +9,6 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-use Smarty\Exception;
-
 if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }

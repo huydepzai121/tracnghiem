@@ -240,7 +240,7 @@ if (!empty($video_list)) {
     foreach ($video_list as $file) {
         $file['size_format'] = !empty($file['video_size']) ? nv_convertfromBytes($file['video_size']) : '';
         $file['view_format'] = $nv_Lang->getModule('video_view_' . $file['view']);
-        $file['addtime_format'] = nv_date('d/m/Y H:i', $file['addtime']);
+        $file['addtime_format'] = nv_datetime_format($file['addtime']);
         if (!empty($file['thumb'])) {
             if (!nv_is_url($file['thumb'])) {
                 if (file_exists(NV_UPLOADS_REAL_DIR . '/zalo/' . $file['thumb'])) {

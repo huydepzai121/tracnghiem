@@ -50,8 +50,8 @@ if ($nv_Request->isset_request('getlist,type', 'get')) {
     }
     if (!empty($values)) {
         $values = implode(', ', $values);
-        $sql = 'INSERT INTO ' . NV_MOD_TABLE . '_article (zalo_id, token, type, title, description, body, related_medias, status, create_date, update_date, total_view, total_share, is_sync) 
-            VALUES ' . $values . ' 
+        $sql = 'INSERT INTO ' . NV_MOD_TABLE . '_article (zalo_id, token, type, title, description, body, related_medias, status, create_date, update_date, total_view, total_share, is_sync)
+            VALUES ' . $values . '
             ON DUPLICATE KEY UPDATE status=VALUES(status), create_date=VALUES(create_date), update_date=VALUES(update_date), total_view=VALUES(total_view), total_share=VALUES(total_share)';
         $db->query($sql);
     }
@@ -878,7 +878,7 @@ if ($num_items) {
     $get_zalo_id = [];
 
     while ($row = $result->fetch()) {
-        $row['create_date_format'] = nv_date('d/m/Y H:i', $row['create_date']);
+        $row['create_date_format'] = nv_datetime_format($row['create_date']);
         $row['type_format'] = $nv_Lang->getModule('article_' . $row['type']);
         $row['zalo_url'] = !empty($row['zalo_id']) ? 'https://rd.zapps.vn/' . ($row['type'] == 'normal' ? 'detail' : 'video') . '/' . $global_config['zaloOfficialAccountID'] . '?id=' . $row['zalo_id'] . '&pageId=' . $global_config['zaloOfficialAccountID'] : '';
         $xtpl->assign('ARTICLE', $row);

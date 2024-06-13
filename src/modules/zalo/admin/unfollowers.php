@@ -51,7 +51,7 @@ $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 if ($unfollowers_count) {
     foreach ($unfollowers as $unfollower) {
         $unfollower['user_gender'] = $unfollower['user_gender'] != '' ? $nv_Lang->getModule('user_gender_' . $unfollower['user_gender']) : '';
-        $unfollower['updatetime_format'] = nv_date('d/m/Y H:i', $unfollower['updatetime']);
+        $unfollower['updatetime_format'] = nv_datetime_format($unfollower['updatetime'], true);
         $xtpl->assign('UNFOLLOWER', $unfollower);
         $xtpl->parse('main.isUnfollowers.follower');
     }

@@ -617,7 +617,7 @@ if ($nv_Request->isset_request('user_id', 'get')) {
             }
             $key == 'user_gender' && $val = (in_array((int) $val, [1,2], true) ? $nv_Lang->getModule('user_gender_' . $val) : '');
             $key == 'is_sensitive' && $val = $nv_Lang->getModule('is_sensitive_' . $val);
-            $key == 'updatetime' && $val = nv_date('d/m/Y H:i', $val);
+            $key == 'updatetime' && $val = nv_datetime_format($val);
             $key == 'user_id_by_app' && $key = $nv_Lang->getModule($key) . '<br/>' . $row['app_id'];
             $key == 'phone_code' && $val = $callingcodes[$val][1] . ' +' . $callingcodes[$val][0];
             $key == 'city_id' && $val = $provinces[$val][0];
@@ -817,7 +817,7 @@ if (!empty($tags)) {
 if ($followers_count) {
     foreach ($followers as $follower) {
         $follower['user_gender'] = (in_array((int) $follower['user_gender'], [1,2], true) ? $nv_Lang->getModule('user_gender_' . $follower['user_gender']) : '');
-        $follower['updatetime_format'] = nv_date('d/m/Y H:i', $follower['updatetime']);
+        $follower['updatetime_format'] = nv_datetime_format($follower['updatetime'], 1);
         $xtpl->assign('FOLLOWER', $follower);
         $xtpl->parse('main.isFollowers.follower');
     }

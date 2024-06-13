@@ -65,7 +65,7 @@ if (empty($vid)) {
                 'action' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name,
                 'langresult' => $nv_Lang->getModule('voting_result'),
                 'langsubmit' => $nv_Lang->getModule('voting_hits'),
-                'publtime' => nv_date('l - d/m/Y H:i', $current_voting['publ_time'])
+                'publtime' => nv_datetime_format($current_voting['publ_time'], 1, 0)
             ];
             $xtpl->assign('VOTING', $voting_array);
 
@@ -234,7 +234,7 @@ if (empty($vid)) {
         $vrow[] = $row2;
     }
 
-    $pubtime = nv_date('d/m/Y H:i', $row['publ_time']);
+    $pubtime = nv_datetime_format($row['publ_time']);
     $lang = [
         'total' => $nv_Lang->getModule('voting_total'),
         'counter' => $nv_Lang->getModule('voting_counter'),

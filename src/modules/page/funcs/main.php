@@ -66,8 +66,8 @@ if ($page_config['viewtype'] == 2) {
 
     $rowdetail['number_add_time'] = $rowdetail['add_time'];
     $rowdetail['number_edit_time'] = $rowdetail['edit_time'] ?: $rowdetail['add_time'];
-    $rowdetail['add_time'] = nv_date('H:i T l, d/m/Y', $rowdetail['add_time']);
-    $rowdetail['edit_time'] = nv_date('H:i T l, d/m/Y', $rowdetail['edit_time']);
+    $rowdetail['add_time'] = nv_datetime_format($rowdetail['add_time'], 1, 0);
+    $rowdetail['edit_time'] = nv_datetime_format($rowdetail['edit_time'], 1, 0);
     $rowdetail['link'] = $canonicalUrl;
 
     $module_info['layout_funcs'][$op_file] = !empty($rowdetail['layout_func']) ? $rowdetail['layout_func'] : $module_info['layout_funcs'][$op_file];

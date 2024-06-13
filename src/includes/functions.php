@@ -995,6 +995,24 @@ function nv_time_format(int $short = 1, ?int $timestamp = null, string $lang = '
 }
 
 /**
+ * Hiển thị đầy đủ ngày tháng năm, giờ phút hoặc ngược lại
+ *
+ * @param int $timestamp
+ * @param int $reverse
+ * @param int $short
+ * @param string $lang
+ * @return string
+ */
+function nv_datetime_format(?int $timestamp = null, int $reverse = 0, int $short = 1, string $lang = '')
+{
+    if ($reverse) {
+        return nv_time_format(1, $timestamp, $lang) . ' ' . nv_date_format($short, $timestamp, $lang);
+    }
+
+    return nv_date_format($short, $timestamp, $lang) . ' ' . nv_time_format(1, $timestamp, $lang);
+}
+
+/**
  * nv_monthname()
  *
  * @param int $i
