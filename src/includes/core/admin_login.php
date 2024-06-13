@@ -402,7 +402,7 @@ if (empty($admin_pre_data) and $nv_Request->isset_request('nv_login,nv_password'
     }
     $admin_login_success = true;
 } else {
-    if (empty($admin_login_redirect)) {
+    if (empty($admin_login_redirect) and strpos($nv_Request->request_uri, 'nocache=') === false) {
         $nv_Request->set_Session('admin_login_redirect', $nv_Request->request_uri);
     }
     $nv_username = $nv_password = '';
