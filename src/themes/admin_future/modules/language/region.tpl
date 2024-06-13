@@ -96,7 +96,7 @@
                                     <div class="col-12 col-sm-8 col-lg-6 col-xxl-5">
                                         <select class="form-select" id="element_currency_display" name="currency_display">
                                             {for $display=0 to 3}
-                                            <option value="{$display}"{$DATA.currency_display eq $display} selected/if}>{$LANG->getModule("currency_display`$display`")}</option>
+                                            <option value="{$display}"{$DATA.currency_display eq $display ? ' selected' : ''}>{$LANG->getModule("currency_display`$display`")}</option>
                                             {/for}
                                         </select>
                                     </div>
