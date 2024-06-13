@@ -148,7 +148,6 @@ $lang_module['lang_geo_config'] = 'Configure the function to define language by 
 $lang_module['site_lang'] = 'Default language';
 $lang_module['site_timezone'] = 'Site\'s timezone';
 $lang_module['current_time'] = 'Current time: %s';
-$lang_module['date_time_pattern'] = 'Date and time format';
 $lang_module['gzip_method'] = 'Activate gzip';
 $lang_module['proxy_blocker'] = 'Block queries via proxy';
 $lang_module['proxy_blocker_0'] = 'Don\'t check';

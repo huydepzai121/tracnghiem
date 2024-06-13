@@ -122,22 +122,6 @@
 
                     <li class="list-group-item">
                         <div class="form-group mb-0">
-                            <label class="col-sm-10 control-label"><strong>{LANG.date_time_pattern}</strong></label>
-                            <div class="col-sm-14">
-                                <div class="row">
-                                    <div class="col-xs-14 col-sm-8 col-md-6">
-                                        <input type="text" name="date_pattern" value="{DATA.date_pattern}" class="form-control" />
-                                    </div>
-                                    <div class="col-xs-10 col-sm-6 col-md-4">
-                                        <input type="text" name="time_pattern" value="{DATA.time_pattern}" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-
-                    <li class="list-group-item">
-                        <div class="form-group mb-0">
                             <label class="col-sm-10 control-label"><strong>{LANG.ssl_https}</strong></label>
                             <div class="col-sm-14">
                                 <select id="ssl_https" name="ssl_https" class="form-control" data-val="{DATA.ssl_https}" data-confirm="{LANG.note_ssl}" style="width:fit-content">

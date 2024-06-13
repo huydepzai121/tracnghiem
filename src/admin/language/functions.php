@@ -22,7 +22,7 @@ $menu_top = [
     'custom_title' => $nv_Lang->getGlobal('mod_language')
 ];
 
-$allow_func = ['main'];
+$allow_func = ['main', 'region'];
 if (empty($global_config['idsite'])) {
     $allow_func[] = 'read';
     $allow_func[] = 'copy';

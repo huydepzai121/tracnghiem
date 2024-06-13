@@ -823,13 +823,25 @@ $(document).ready(function() {
     // redirect (redirect URL if status is OK), refresh (Reload page if status is OK)
     const formAj = $('.ajax-submit');
     if (formAj.length > 0) {
-        $('[type="text"], textarea, select', formAj).on('change keyup', function() {
+        $('select', formAj).on('change keyup', function() {
             $(this).removeClass('is-invalid is-valid');
+        });
+        $('[type="text"], textarea', formAj).on('change keyup', function() {
+            if (trim($(this).val()) == '' && $(this).is('.required')) {
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid is-valid');
+            }
         });
     }
 
     $('body').on('submit', '.ajax-submit', function(e) {
         e.preventDefault();
+
+        if ($('.is-invalid:visible', this).length > 0) {
+            $('.is-invalid:visible:first', this).focus();
+            return;
+        }
 
         $('.is-invalid', this).removeClass('is-invalid');
         $('.is-valid', this).removeClass('is-valid');
@@ -854,6 +866,9 @@ $(document).ready(function() {
         }).done(function(a) {
             if (a.status == 'NO' || a.status == 'no' || a.status == 'error') {
                 $('input, textarea, select, button', that).prop('disabled', false);
+                if (a.tab) {
+                    bootstrap.Tab.getInstance(document.getElementById(a.tab)).show();
+                }
                 if (a.input) {
                     let ele = $('[name^=' + a.input + ']', that);
                     if (ele.length) {
@@ -872,17 +887,19 @@ $(document).ready(function() {
                 } else if ('string' == typeof callback && "function" === typeof window[callback]) {
                     window[callback]();
                 }
+                let timeout = 0;
+                if (a.mess) {
+                    nvToast(a.mess, 'success');
+                    timeout = 2000;
+                }
                 if (a.redirect) {
-                    let timeout = 0;
-                    if (a.mess) {
-                        nvToast(a.mess, 'success');
-                        timeout = 2000;
-                    }
                     setTimeout(() => {
                         window.location.href = a.redirect;
                     }, timeout);
                 } else if (a.refresh) {
-                    window.location.reload();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, timeout);
                 } else {
                     setTimeout(() => {
                         $('input, textarea, select, button', that).prop('disabled', false);

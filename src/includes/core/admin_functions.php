@@ -154,13 +154,13 @@ function nv_save_file_config_global()
     $config_variable['error_log_filename'] = NV_ERRORLOGS_FILENAME;
     $config_variable['notice_log_filename'] = NV_NOTICELOGS_FILENAME;
     $config_variable['error_log_fileext'] = NV_LOGS_EXT;
-    $config_variable['error_send_email'] = $config_variable['error_send_email'];
 
     $config_name_array = ['file_allowed_ext', 'forbid_extensions', 'forbid_mimes', 'allow_sitelangs', 'allow_request_mods', 'config_sso'];
-    $config_name_json = ['crosssite_valid_domains', 'crosssite_valid_ips', 'crosssite_allowed_variables', 'crossadmin_valid_domains', 'crossadmin_valid_ips', 'domains_whitelist', 'ip_allow_null_origin', 'zaloWebhookIPs', 'end_url_variables', 'cdn_url'];
+    $config_name_json = ['crosssite_valid_domains', 'crosssite_valid_ips', 'crosssite_allowed_variables', 'crossadmin_valid_domains', 'crossadmin_valid_ips', 'domains_whitelist', 'ip_allow_null_origin', 'zaloWebhookIPs', 'end_url_variables', 'cdn_url', 'region'];
 
     foreach ($config_variable as $c_config_name => $c_config_value) {
         if (in_array($c_config_name, $config_name_array, true)) {
+            // Tách chuỗi lưu thành array
             if (!empty($c_config_value)) {
                 $c_config_value = "'" . implode("','", array_map('trim', explode(',', $c_config_value))) . "'";
             } else {
@@ -168,10 +168,14 @@ function nv_save_file_config_global()
             }
             $content_config .= "\$global_config['" . $c_config_name . "'] = [" . $c_config_value . "];\n";
         } elseif (in_array($c_config_name, $config_name_json, true)) {
+            // json_decode => Lưu thành biến
             if (empty($c_config_value)) {
                 $value = [];
             } else {
-                $value = (array) json_decode($c_config_value, true);
+                $value = json_decode($c_config_value, true);
+                if (!is_array($value)) {
+                    $value = [];
+                }
                 if ($c_config_name == 'cdn_url' and json_last_error() !== JSON_ERROR_NONE) {
                     $value = [$c_config_value => [1]];
                 }

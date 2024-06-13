@@ -28,6 +28,9 @@ nv_add_hook($module_name, 'get_global_admin_theme', $priority, function ($vars) 
     if ($module_name == 'modules' and in_array($op, ['edit'])) {
         return $new_theme;
     }
+    if ($module_name == 'language' and in_array($op, ['region'])) {
+        return $new_theme;
+    }
 
     return $admin_theme;
 });

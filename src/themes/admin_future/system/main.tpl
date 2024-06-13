@@ -51,7 +51,7 @@
                                             {assign var=submenu value=submenu($mname) nocache}
                                             <div class="col-md-3 col-sm-6">
                                                 <ul class="list-unstyled mb-4">
-                                                    <li class="fs-3 fw-medium mb-2 border-bottom pb-1"><a href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$mname}">{$mvalue.custom_title}</a></li>
+                                                    <li class="fs-4 fw-medium mb-2 border-bottom pb-1"><a href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$mname}">{$mvalue.custom_title}</a></li>
                                                     {foreach from=$submenu key=mop item=mopname}
                                                     <li class="mb-1"><a href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$mname}&amp;{$smarty.const.NV_OP_VARIABLE}={$mop}">{$mopname}</a></li>
                                                     {/foreach}

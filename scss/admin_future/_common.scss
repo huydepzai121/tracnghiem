@@ -46,3 +46,19 @@
         transform: translate(0, 0);
     }
 }
+
+// Sửa vị trí cuộn của sticky
+@each $breakpoint in map-keys($grid-breakpoints) {
+    @include media-breakpoint-up($breakpoint) {
+        $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+        .sticky#{$infix}-top {
+            top: $header-height;
+        }
+    }
+}
+
+// Card tab
+.card-header-tabs {
+    border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
+}

@@ -148,7 +148,6 @@ $lang_module['lang_geo_config'] = 'Cấu hình nhận dạng ngôn ngữ theo qu
 $lang_module['site_lang'] = 'Ngôn ngữ mặc định';
 $lang_module['site_timezone'] = 'Múi giờ của site';
 $lang_module['current_time'] = 'Giờ hiện tại: %s';
-$lang_module['date_time_pattern'] = 'Kiểu hiển thị ngày tháng năm, giờ phút';
 $lang_module['gzip_method'] = 'Bật chế độ gzip';
 $lang_module['proxy_blocker'] = 'Chặn các truy vấn thông qua proxy';
 $lang_module['proxy_blocker_0'] = 'Không chặn';

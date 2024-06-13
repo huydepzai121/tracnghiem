@@ -28,6 +28,7 @@ $h5-font-size: $font-size-base * 1.125; // 18px
 $h6-font-size: $font-size-base; // 16px
 
 $border-width: 1px;
+$border-color: $gray-200;
 $body-color: $gray-600;
 $link-decoration: none;
 $main-bg: #eee;
@@ -49,6 +50,7 @@ $zindex-left-sidebar: 940;
 $zindex-right-sidebar: 960;
 $zindex-developer-error: 950;
 $zindex-nv-offcanvas: 1046;
+$zindex-sticky: 930;
 
 // Phần header
 $header-height: 3.75rem; // 60px
@@ -123,6 +125,7 @@ $card-border-width: 0;
 
 // Dropdown
 $dropdown-border-color: var(--bs-body-bg);
+$dropdown-divider-bg: var(--nv-border-color-translucent);
 
 // Popovers
 $popover-border-color: var(--bs-body-bg);

@@ -195,7 +195,7 @@
   --bs-highlight-bg: #fff3cd;
   --bs-border-width: 1px;
   --bs-border-style: solid;
-  --bs-border-color: #d5d5d5;
+  --bs-border-color: #e5e5e5;
   --bs-border-color-translucent: rgba(0, 0, 0, 0.175);
   --bs-border-radius: 0.1875rem;
   --bs-border-radius-sm: 0.125rem;
@@ -3477,7 +3477,7 @@ textarea.form-control-lg {
   --bs-dropdown-border-radius: var(--bs-border-radius);
   --bs-dropdown-border-width: var(--bs-border-width);
   --bs-dropdown-inner-border-radius: calc(var(--bs-border-radius) - var(--bs-border-width));
-  --bs-dropdown-divider-bg: var(--bs-body-bg);
+  --bs-dropdown-divider-bg: var(--nv-border-color-translucent);
   --bs-dropdown-divider-margin-y: 0.5rem;
   --bs-dropdown-box-shadow: var(--bs-box-shadow);
   --bs-dropdown-link-color: var(--bs-body-color);
@@ -3747,7 +3747,7 @@ textarea.form-control-lg {
   --bs-dropdown-box-shadow: ;
   --bs-dropdown-link-color: #d5d5d5;
   --bs-dropdown-link-hover-color: #fff;
-  --bs-dropdown-divider-bg: var(--bs-body-bg);
+  --bs-dropdown-divider-bg: var(--nv-border-color-translucent);
   --bs-dropdown-link-hover-bg: rgba(255, 255, 255, 0.15);
   --bs-dropdown-link-active-color: #fff;
   --bs-dropdown-link-active-bg: #4285f4;
@@ -7085,73 +7085,73 @@ textarea.form-control-lg {
 .sticky-top {
   position: sticky;
   top: 0;
-  z-index: 1020;
+  z-index: 930;
 }
 
 .sticky-bottom {
   position: sticky;
   bottom: 0;
-  z-index: 1020;
+  z-index: 930;
 }
 
 @media (min-width: 576px) {
   .sticky-sm-top {
     position: sticky;
     top: 0;
-    z-index: 1020;
+    z-index: 930;
   }
   .sticky-sm-bottom {
     position: sticky;
     bottom: 0;
-    z-index: 1020;
+    z-index: 930;
   }
 }
 @media (min-width: 768px) {
   .sticky-md-top {
     position: sticky;
     top: 0;
-    z-index: 1020;
+    z-index: 930;
   }
   .sticky-md-bottom {
     position: sticky;
     bottom: 0;
-    z-index: 1020;
+    z-index: 930;
   }
 }
 @media (min-width: 992px) {
   .sticky-lg-top {
     position: sticky;
     top: 0;
-    z-index: 1020;
+    z-index: 930;
   }
   .sticky-lg-bottom {
     position: sticky;
     bottom: 0;
-    z-index: 1020;
+    z-index: 930;
   }
 }
 @media (min-width: 1200px) {
   .sticky-xl-top {
     position: sticky;
     top: 0;
-    z-index: 1020;
+    z-index: 930;
   }
   .sticky-xl-bottom {
     position: sticky;
     bottom: 0;
-    z-index: 1020;
+    z-index: 930;
   }
 }
 @media (min-width: 1400px) {
   .sticky-xxl-top {
     position: sticky;
     top: 0;
-    z-index: 1020;
+    z-index: 930;
   }
   .sticky-xxl-bottom {
     position: sticky;
     bottom: 0;
-    z-index: 1020;
+    z-index: 930;
   }
 }
 .hstack {
@@ -25237,6 +25237,7 @@ readers do not read off random characters that represent icons */
   --nv-notification-btn-bg-hover: #ededed;
   --nv-notification-unread-border-color: #b9e3ea;
   --nv-chart-grid-border-opacity: 1;
+  --nv-border-color-translucent: #e5e5e5;
 }
 
 [data-bs-theme=dark] {
@@ -25258,6 +25259,7 @@ readers do not read off random characters that represent icons */
   --nv-notification-btn-bg-hover: #2a2e33;
   --nv-notification-unread-border-color: #073137;
   --nv-chart-grid-border-opacity: .2;
+  --nv-border-color-translucent: #343a40;
 }
 
 [data-bs-theme=dark] .ps .ps__rail-x:hover,
@@ -25324,6 +25326,39 @@ readers do not read off random characters that represent icons */
 }
 .nv-offcanvas.show {
   transform: translate(0, 0);
+}
+
+.sticky-top {
+  top: 3.75rem;
+}
+
+@media (min-width: 576px) {
+  .sticky-sm-top {
+    top: 3.75rem;
+  }
+}
+@media (min-width: 768px) {
+  .sticky-md-top {
+    top: 3.75rem;
+  }
+}
+@media (min-width: 992px) {
+  .sticky-lg-top {
+    top: 3.75rem;
+  }
+}
+@media (min-width: 1200px) {
+  .sticky-xl-top {
+    top: 3.75rem;
+  }
+}
+@media (min-width: 1400px) {
+  .sticky-xxl-top {
+    top: 3.75rem;
+  }
+}
+.card-header-tabs {
+  border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
 }
 
 .header-outer {
@@ -26402,7 +26437,7 @@ p + .image-style-side {
   --bs-dropdown-border-radius: var(--bs-border-radius);
   --bs-dropdown-border-width: var(--bs-border-width);
   --bs-dropdown-inner-border-radius: calc(var(--bs-border-radius) - var(--bs-border-width));
-  --bs-dropdown-divider-bg: var(--bs-body-bg);
+  --bs-dropdown-divider-bg: var(--nv-border-color-translucent);
   --bs-dropdown-divider-margin-y: 0.5rem;
   --bs-dropdown-box-shadow: var(--bs-box-shadow);
   --bs-dropdown-link-color: var(--bs-body-color);

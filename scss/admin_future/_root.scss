@@ -25,6 +25,8 @@
     --nv-notification-unread-border-color: #{$notification-unread-border-color};
 
     --nv-chart-grid-border-opacity: 1;
+
+    --nv-border-color-translucent: #{$gray-200};
 }
 
 [data-bs-theme="dark"] {
@@ -53,4 +55,6 @@
     --nv-notification-unread-border-color: #{$notification-unread-border-color-dark};
 
     --nv-chart-grid-border-opacity: .2;
+
+    --nv-border-color-translucent: #{$gray-800};
 }

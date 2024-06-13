@@ -148,7 +148,6 @@ $lang_module['lang_geo_config'] = 'Configuration de la fonctionnalité de défin
 $lang_module['site_lang'] = 'Langue par défaut';
 $lang_module['site_timezone'] = 'Fuseau horaire';
 $lang_module['current_time'] = 'Heure: %s';
-$lang_module['date_time_pattern'] = 'Format de date et d\'heure';
 $lang_module['gzip_method'] = 'Activer gzip';
 $lang_module['proxy_blocker'] = 'Bloquer les requêtes via proxy';
 $lang_module['proxy_blocker_0'] = 'Sans contrôle';

@@ -93,13 +93,6 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
         }, $array_config_site['site_phone']);
     }
 
-    $preg_replace = [
-        'pattern' => "/[^a-z\-\_\.\,\;\:\@\/\\s]/i",
-        'replacement' => ''
-    ];
-    $array_config_site['date_pattern'] = nv_substr($nv_Request->get_title('date_pattern', 'post', '', 0, $preg_replace), 0, 255);
-    $array_config_site['time_pattern'] = nv_substr($nv_Request->get_title('time_pattern', 'post', '', 0, $preg_replace), 0, 255);
-
     $array_config_site['searchEngineUniqueID'] = $nv_Request->get_title('searchEngineUniqueID', 'post', '');
     if (preg_match('/[^a-zA-Z0-9\:\-\_\.]/', $array_config_site['searchEngineUniqueID'])) {
         $array_config_site['searchEngineUniqueID'] = '';

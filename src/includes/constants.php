@@ -541,3 +541,46 @@ $nv_parse_ini_timezone = [
     'Pacific/Tongatapu' => ['winter_offset' => 46800, 'summer_offset' => 46800],
     'Pacific/Kiritimati' => ['winter_offset' => 50400, 'summer_offset' => 50400]
 ];
+
+$nv_default_regions = [
+    'vi' => [
+        'decimal_symbol' => ',',
+        'decimal_length' => 2,
+        'thousand_symbol' => '.',
+        'leading_zero' => 0,
+        'trailing_zero' => 1,
+        'currency_symbol' => 'đ',
+        'currency_display' => 0,
+        'currency_decimal_symbol' => ',',
+        'currency_thousand_symbol' => '.',
+        'currency_decimal_length' => 2,
+        'currency_trailing_zero' => 1,
+        'date_sort' => 'd/m/Y',
+        'date_long' => 'l, d F Y',
+        'first_day_of_week' => 0,
+        'time_sort' => 'g:i A',
+        'time_long' => 'g:i:s A',
+        'am_char' => 'SA',
+        'pm_char' => 'CH'
+    ],
+    'en' => [
+        'decimal_symbol' => '.',
+        'decimal_length' => 2,
+        'thousand_symbol' => ',',
+        'leading_zero' => 0,
+        'trailing_zero' => 1,
+        'currency_symbol' => '$',
+        'currency_display' => 2,
+        'currency_decimal_symbol' => '.',
+        'currency_thousand_symbol' => ',',
+        'currency_decimal_length' => 2,
+        'currency_trailing_zero' => 1,
+        'date_sort' => 'm/d/Y',
+        'date_long' => 'l, d F Y',
+        'first_day_of_week' => 0,
+        'time_sort' => 'g:i A',
+        'time_long' => 'g:i:s A',
+        'am_char' => 'AM',
+        'pm_char' => 'PM'
+    ],
+];
