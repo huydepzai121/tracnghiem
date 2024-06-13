@@ -84,7 +84,7 @@ function nv_var_export($var_array, $isInt = false)
         '/array\s*\(\s*/' => '[',
         '/\s*,?\s*\)\s*/' => ']',
         '/\s*=>\s*/' => ' => ',
-        '/\s*,\s*/' => ', '
+        '/[\s]+,[\s]+/' => ', '
     ];
     if ($isInt) {
         $patterns['/\'0\'/'] = '0';

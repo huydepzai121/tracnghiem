@@ -124,35 +124,35 @@ $(document).ready(function() {
 
         let demoDate = () => {
             if ($('.is-invalid', $('#tab-date')).length > 0) {
-                $('#lbl_demo_date_sort').html('##########');
+                $('#lbl_demo_date_short').html('##########');
                 $('#lbl_demo_date_long').html('##########');
                 return;
             }
 
-            let fSort, fLong;
-            fSort = php2luxon($('[name="date_sort"]', frRegion).val());
+            let fshort, fLong;
+            fshort = php2luxon($('[name="date_short"]', frRegion).val());
             fLong = php2luxon($('[name="date_long"]', frRegion).val());
 
-            $('#lbl_demo_date_sort').html(dt.now().setLocale(nv_lang_interface).toFormat(fSort));
-            $('#lbl_demo_date_long').html(dt.now().setLocale(nv_lang_interface).toFormat(fLong));
+            $('#lbl_demo_date_short').html(dt.now().setLocale(nv_lang_data).toFormat(fshort));
+            $('#lbl_demo_date_long').html(dt.now().setLocale(nv_lang_data).toFormat(fLong));
         }
 
         let demoTime = () => {
             if ($('.is-invalid', $('#tab-time')).length > 0) {
-                $('#lbl_demo_time_sort').html('##########');
+                $('#lbl_demo_time_short').html('##########');
                 $('#lbl_demo_time_long').html('##########');
                 return;
             }
 
-            let fSort, fLong, am, pm;
-            am = dt.fromRFC2822('Tue, 01 Nov 2016 01:23:12 +0630').setLocale(nv_lang_interface).toFormat('a');
-            pm = dt.fromRFC2822('Tue, 01 Nov 2016 13:23:12 +0630').setLocale(nv_lang_interface).toFormat('a');
+            let fshort, fLong, am, pm;
+            am = dt.fromRFC2822('Tue, 01 Nov 2016 01:23:12 +0630').setLocale(nv_lang_data).toFormat('a');
+            pm = dt.fromRFC2822('Tue, 01 Nov 2016 13:23:12 +0630').setLocale(nv_lang_data).toFormat('a');
 
-            fSort = php2luxon($('[name="time_sort"]', frRegion).val());
+            fshort = php2luxon($('[name="time_short"]', frRegion).val());
             fLong = php2luxon($('[name="time_long"]', frRegion).val());
 
-            $('#lbl_demo_time_sort').html(dt.now().setLocale(nv_lang_interface).toFormat(fSort).replace(am, $('[name="am_char"]', frRegion).val()));
-            $('#lbl_demo_time_long').html(dt.now().setLocale(nv_lang_interface).toFormat(fLong).replace(pm, $('[name="pm_char"]', frRegion).val()));
+            $('#lbl_demo_time_short').html(dt.now().setLocale(nv_lang_data).toFormat(fshort).replace(am, $('[name="am_char"]', frRegion).val()));
+            $('#lbl_demo_time_long').html(dt.now().setLocale(nv_lang_data).toFormat(fLong).replace(pm, $('[name="pm_char"]', frRegion).val()));
         }
 
         demoNumber();

@@ -403,6 +403,7 @@ $lang_global['note'] = 'Note';
 $lang_global['ip'] = 'Adresse IP';
 $lang_global['browser'] = 'Navigateur';
 $lang_global['sys_mods'] = 'Modules système';
+$lang_global['preview'] = 'Aperçu';
 $lang_global['country_AD'] = 'Andorre';
 $lang_global['country_AE'] = 'Arabes Unis';
 $lang_global['country_AF'] = 'Afghanistan';

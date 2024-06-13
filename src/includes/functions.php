@@ -948,6 +948,53 @@ function nv_date($format, $time = 0)
 }
 
 /**
+ * @param int $timestamp
+ * @param int $short
+ * @param string $lang
+ * @return string
+ */
+function nv_date_format(?int $timestamp = null, int $short = 1, string $lang = '')
+{
+    global $global_config, $nv_default_regions;
+
+    if (is_null($timestamp)) {
+        $timestamp = NV_CURRENTTIME;
+    }
+    if (empty($lang)) {
+        $lang = NV_LANG_INTERFACE;
+    }
+    $region = $global_config['region'][$lang] ?? $nv_default_regions[$lang] ?? $nv_default_regions['en'];
+
+    return nv_date($short ? $region['date_short'] : $region['date_long'], $timestamp);
+}
+
+/**
+ * @param int $timestamp
+ * @param int $short
+ * @param string $lang
+ * @return string
+ */
+function nv_time_format(?int $timestamp = null, int $short = 1, string $lang = '')
+{
+    global $global_config, $nv_default_regions;
+
+    if (is_null($timestamp)) {
+        $timestamp = NV_CURRENTTIME;
+    }
+    if (empty($lang)) {
+        $lang = NV_LANG_INTERFACE;
+    }
+    $region = $global_config['region'][$lang] ?? $nv_default_regions[$lang] ?? $nv_default_regions['en'];
+    $replaces = [
+        'am' => $region['am_char'],
+        'AM' => $region['am_char'],
+        'pm' => $region['pm_char'],
+        'PM' => $region['pm_char'],
+    ];
+    return str_replace(array_keys($replaces), array_values($replaces), nv_date($short ? $region['time_short'] : $region['time_long'], $timestamp));
+}
+
+/**
  * nv_monthname()
  *
  * @param int $i
@@ -3927,4 +3974,62 @@ function nv_sendmail_from_template($emailid, $data = [], $lang = '', $attachment
         return $result[0];
     }
     return $result;
+}
+
+/**
+ * @param float $num
+ * @param string $lang
+ * @return string
+ */
+function nv_number_format(float $num, string $lang = '')
+{
+    global $nv_default_regions, $global_config;
+
+    if (empty($lang)) {
+        $lang = NV_LANG_INTERFACE;
+    }
+    $region = $global_config['region'][$lang] ?? $nv_default_regions[$lang] ?? $nv_default_regions['en'];
+    $num = number_format($num, $region['decimal_length'], $region['decimal_symbol'], $region['thousand_symbol']);
+    if (strpos($num, $region['decimal_symbol']) !== false) {
+        if ($region['trailing_zero']) {
+            $num = rtrim($num, '0');
+            $num = rtrim($num, $region['decimal_symbol']);
+        }
+        if ($region['leading_zero']) {
+            $num = ltrim($num, '0');
+        }
+    }
+
+    return $num;
+}
+
+/**
+ * @param float $num
+ * @param string $lang
+ * @return string
+ */
+function nv_currency_format(float $num, string $lang = '')
+{
+    global $nv_default_regions, $global_config;
+
+    if (empty($lang)) {
+        $lang = NV_LANG_INTERFACE;
+    }
+    $region = $global_config['region'][$lang] ?? $nv_default_regions[$lang] ?? $nv_default_regions['en'];
+    $num = number_format($num, $region['currency_decimal_length'], $region['currency_decimal_symbol'], $region['currency_thousand_symbol']);
+    if (strpos($num, $region['currency_decimal_symbol']) !== false) {
+        if ($region['currency_trailing_zero']) {
+            $num = rtrim($num, '0');
+            $num = rtrim($num, $region['currency_decimal_symbol']);
+        }
+    }
+
+    switch ($region['currency_display']) {
+        case 3: $num = $region['currency_symbol'] . ' ' . $num; break;
+        case 2: $num = $region['currency_symbol'] . $num; break;
+        case 1: $num = $num . ' ' . $region['currency_symbol']; break;
+        default: $num = $num . $region['currency_symbol'];
+    }
+
+    return $num;
 }

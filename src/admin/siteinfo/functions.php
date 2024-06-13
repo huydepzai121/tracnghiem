@@ -358,7 +358,7 @@ function get_theme_config()
  * @param bool $lang
  * @return number|boolean
  */
-function save_theme_config(string|array $config_name, string|array $config_value, bool $lang = true)
+function save_theme_config($config_name, $config_value, bool $lang = true)
 {
     global $db, $admin_info;
 

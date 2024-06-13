@@ -151,10 +151,10 @@
                         <div class="tab-pane fade{$TAB eq 'date' ? ' show active' : ''}" id="tab-date" role="tabpanel" aria-labelledby="link-date" tabindex="0">
                             <div class="form-contents">
                                 <div class="row mb-3">
-                                    <label for="element_date_sort" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('region_display_sort')} <span class="text-danger">(*)</span></label>
+                                    <label for="element_date_short" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('region_display_short')} <span class="text-danger">(*)</span></label>
                                     <div class="col-12 col-sm-8 col-lg-6 col-xxl-5">
-                                        <input type="text" class="form-control required" id="element_date_sort" name="date_sort" value="{$DATA.date_sort}" maxlength="50" list="element_date_sort_lists">
-                                        <datalist id="element_date_sort_lists">
+                                        <input type="text" class="form-control required" id="element_date_short" name="date_short" value="{$DATA.date_short}" maxlength="50" list="element_date_short_lists">
+                                        <datalist id="element_date_short_lists">
                                             <option value="d/m/Y">
                                             <option value="d/m/y">
                                             <option value="d-m-y">
@@ -197,10 +197,10 @@
                         <div class="tab-pane fade{$TAB eq 'time' ? ' show active' : ''}" id="tab-time" role="tabpanel" aria-labelledby="link-time" tabindex="0">
                             <div class="form-contents">
                                 <div class="row mb-3">
-                                    <label for="element_time_sort" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('region_display_sort')} <span class="text-danger">(*)</span></label>
+                                    <label for="element_time_short" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('region_display_short')} <span class="text-danger">(*)</span></label>
                                     <div class="col-12 col-sm-8 col-lg-6 col-xxl-5">
-                                        <input type="text" class="form-control required" id="element_time_sort" name="time_sort" value="{$DATA.time_sort}" maxlength="50" list="element_time_sort_lists">
-                                        <datalist id="element_time_sort_lists">
+                                        <input type="text" class="form-control required" id="element_time_short" name="time_short" value="{$DATA.time_short}" maxlength="50" list="element_time_short_lists">
+                                        <datalist id="element_time_short_lists">
                                             <option value="g:i A">
                                             <option value="H:i">
                                         </datalist>
@@ -286,9 +286,9 @@
                     <div data-toggle="preview" data-tab="date" id="preview-date"{$TAB neq 'date' ? ' class="d-none"' : ''}>
                         <div class="row">
                             <div class="col-4 mb-2">
-                                {$LANG->getModule('region_display_sort')}
+                                {$LANG->getModule('region_display_short')}
                             </div>
-                            <div class="col-8 mb-2" id="lbl_demo_date_sort">
+                            <div class="col-8 mb-2" id="lbl_demo_date_short">
                             </div>
                             <div class="col-4">
                                 {$LANG->getModule('region_display_long')}
@@ -300,9 +300,9 @@
                     <div data-toggle="preview" data-tab="time" id="preview-time"{$TAB neq 'time' ? ' class="d-none"' : ''}>
                         <div class="row">
                             <div class="col-4 mb-2">
-                                {$LANG->getModule('region_display_sort')}
+                                {$LANG->getModule('region_display_short')}
                             </div>
-                            <div class="col-8 mb-2" id="lbl_demo_time_sort">
+                            <div class="col-8 mb-2" id="lbl_demo_time_short">
                             </div>
                             <div class="col-4">
                                 {$LANG->getModule('region_display_long')}

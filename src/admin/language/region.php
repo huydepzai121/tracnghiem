@@ -42,11 +42,11 @@ if ($nv_Request->get_title('saveform', 'post', '') === NV_CHECK_SESSION) {
     $array['currency_decimal_length'] = $nv_Request->get_absint('currency_decimal_length', 'post', 0);
     $array['currency_trailing_zero'] = (int) $nv_Request->get_bool('currency_trailing_zero', 'post', false);
 
-    $array['date_sort'] = nv_substr($nv_Request->get_title('date_sort', 'post', ''), 0, 50);
+    $array['date_short'] = nv_substr($nv_Request->get_title('date_short', 'post', ''), 0, 50);
     $array['date_long'] = nv_substr($nv_Request->get_title('date_long', 'post', ''), 0, 50);
     $array['first_day_of_week'] = (int) $nv_Request->get_bool('first_day_of_week', 'post', false);
 
-    $array['time_sort'] = nv_substr($nv_Request->get_title('time_sort', 'post', ''), 0, 50);
+    $array['time_short'] = nv_substr($nv_Request->get_title('time_short', 'post', ''), 0, 50);
     $array['time_long'] = nv_substr($nv_Request->get_title('time_long', 'post', ''), 0, 50);
     $array['am_char'] = nv_substr($nv_Request->get_title('am_char', 'post', ''), 0, 50);
     $array['pm_char'] = nv_substr($nv_Request->get_title('pm_char', 'post', ''), 0, 50);
@@ -91,8 +91,8 @@ if ($nv_Request->get_title('saveform', 'post', '') === NV_CHECK_SESSION) {
         $respon['mess'] = $nv_Lang->getGlobal('required_invalid');
         nv_jsonOutput($respon);
     }
-    if (empty($array['date_sort'])) {
-        $respon['input'] = 'date_sort';
+    if (empty($array['date_short'])) {
+        $respon['input'] = 'date_short';
         $respon['tab'] = 'link-date';
         $respon['mess'] = $nv_Lang->getGlobal('required_invalid');
         nv_jsonOutput($respon);
@@ -103,8 +103,8 @@ if ($nv_Request->get_title('saveform', 'post', '') === NV_CHECK_SESSION) {
         $respon['mess'] = $nv_Lang->getGlobal('required_invalid');
         nv_jsonOutput($respon);
     }
-    if (empty($array['time_sort'])) {
-        $respon['input'] = 'time_sort';
+    if (empty($array['time_short'])) {
+        $respon['input'] = 'time_short';
         $respon['tab'] = 'link-time';
         $respon['mess'] = $nv_Lang->getGlobal('required_invalid');
         nv_jsonOutput($respon);

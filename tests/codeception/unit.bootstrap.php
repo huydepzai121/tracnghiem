@@ -26,6 +26,7 @@ define('NV_MAINFILE', true);
 define('NV_SITE_TIMEZONE_GMT_NAME', preg_replace('/^([\+|\-]{1}\d{2})(\d{2})$/', '$1:$2', date('O')));
 
 global $db, $db_slave, $global_config, $meta_property, $nv_parse_ini_timezone, $language_array, $nv_plugins, $db_config;
+global $nv_default_regions, $nv_Lang;
 
 $global_config = [];
 
@@ -50,9 +51,14 @@ define('NV_BANNERS_GLOBALTABLE', $db_config['prefix'] . '_banners');
 define('NV_COUNTER_GLOBALTABLE', $db_config['prefix'] . '_counter');
 
 define('NV_LANG_DATA', $global_config['allow_sitelangs'][0]);
+define('NV_LANG_INTERFACE', $global_config['allow_sitelangs'][0]);
+
 define('NV_CURRENTTIME', time());
 
 $db = $db_slave = new NukeViet\Core\Database($db_config);
+
+$nv_Lang = new NukeViet\Core\Language();
+$nv_Lang->loadGlobal();
 
 require NV_ROOTDIR . '/includes/functions.php';
 require NV_ROOTDIR . '/includes/core/filesystem_functions.php';
