@@ -249,7 +249,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="element_pm_char" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('char_am')} <span class="text-danger">(*)</span></label>
+                                    <label for="element_pm_char" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('char_pm')} <span class="text-danger">(*)</span></label>
                                     <div class="col-12 col-sm-8 col-lg-6 col-xxl-5">
                                         <input type="text" class="form-control required" id="element_pm_char" name="pm_char" value="{$DATA.pm_char}" maxlength="50" list="element_pm_char_lists">
                                         <datalist id="element_pm_char_lists">
