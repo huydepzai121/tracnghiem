@@ -108,6 +108,7 @@ if ($nv_Request->get_title('checkss', 'post') == $checkss) {
         }
 
         $db->query('DELETE FROM ' . NV_AUTHORS_GLOBALTABLE . ' WHERE admin_id = ' . $admin_id);
+        $db->query('DELETE FROM ' . NV_AUTHORS_GLOBALTABLE . '_vars WHERE admin_id = ' . $admin_id);
 
         if ($action_account == 1) {
             $db->query('UPDATE ' . NV_USERS_GLOBALTABLE . ' SET active=0 WHERE userid=' . $admin_id);
