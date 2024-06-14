@@ -482,7 +482,7 @@ class NvUpdate
         $xtpl->assign('CONFIG', $this->config);
         $xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
 
-        $xtpl->assign('RELEASE_DATE', !empty($this->config['release_date']) ? nv_date('d/m/Y H:i:s', $this->config['release_date']) : 'N/A');
+        $xtpl->assign('RELEASE_DATE', !empty($this->config['release_date']) ? nv_datetime_format($this->config['release_date'], 0, 0) : 'N/A');
         $xtpl->assign('ALLOW_OLD_VERSION', !empty($this->config['allow_old_version']) ? implode(', ', $this->config['allow_old_version']) : 'N/A');
         $xtpl->assign('UPDATE_AUTO_TYPE', isset($this->config['update_auto_type']) ? $this->lang->getModule('update_auto_type_' . $this->config['update_auto_type']) : 'N/A');
 
@@ -535,8 +535,7 @@ class NvUpdate
 
             if ($array['data_backuped']) {
                 // Thong bao da backup CSDL vao luc
-
-                $xtpl->assign('DATA_MESSAGE', sprintf($this->lang->getModule('update_data_backuped'), nv_date('H:i d/m/Y', $array['data_backuped'])));
+                $xtpl->assign('DATA_MESSAGE', sprintf($this->lang->getModule('update_data_backuped'), nv_datetime_format($array['data_backuped'], 1)));
                 $xtpl->parse('main.step1.data_backuped');
             }
 
@@ -554,7 +553,7 @@ class NvUpdate
             if ($array['file_backuped']) {
                 // Thong bao da backup CODE vao luc
 
-                $xtpl->assign('FILE_MESSAGE', sprintf($this->lang->getModule('update_file_backuped'), nv_date('H:i d/m/Y', $array['file_backuped'])));
+                $xtpl->assign('FILE_MESSAGE', sprintf($this->lang->getModule('update_file_backuped'), nv_datetime_format($array['file_backuped'], 1)));
                 $xtpl->parse('main.step1.file_backuped');
             }
 
@@ -784,7 +783,7 @@ class NvUpdate
             }
 
             $mod['class'] = $i++ % 2 ? 'specalt' : 'spec';
-            $mod['time'] = $mod['date'] ? nv_date('d/m/y H:i', strtotime($mod['date'])) : 'N/A';
+            $mod['time'] = $mod['date'] ? nv_datetime_format(strtotime($mod['date'])) : 'N/A';
 
             $xtpl->assign('ROW', $mod);
             $xtpl->parse('module_info.loop');

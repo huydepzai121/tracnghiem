@@ -656,7 +656,7 @@ while ($row = $result->fetch()) {
     $row['version'] = array_filter(explode(' ', $row['version']));
 
     if (sizeof($row['version']) == 2) {
-        $row['version'] = $row['version'][0] . '-' . nv_date('d/m/Y', $row['version'][1]);
+        $row['version'] = $row['version'][0] . '-' . nv_date_format(1, $row['version'][1]);
     } else {
         $row['version'] = 'N/A';
     }

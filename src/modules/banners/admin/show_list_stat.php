@@ -125,7 +125,7 @@ $replacement = '';
 
 $a = 0;
 while ($row = $result->fetch()) {
-    $contents['rows'][$a][] = nv_date('d/m/Y H:i', $row['click_time']);
+    $contents['rows'][$a][] = nv_datetime_format($row['click_time']);
     $contents['rows'][$a][] = $row['click_ip'];
     $contents['rows'][$a][] = isset($countries[$row['click_country']]) ? $countries[$row['click_country']][1] : $row['click_country'];
     $contents['rows'][$a][] = $row['click_browse_name'];

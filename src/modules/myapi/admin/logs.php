@@ -162,7 +162,7 @@ if ($all_pages) {
         ->offset(($page - 1) * $per_page);
     $result = $db->query($db->sql());
     while ($row = $result->fetch()) {
-        $row['log_time'] = nv_date('d.m.Y H:i', $row['log_time']);
+        $row['log_time'] = nv_datetime_format($row['log_time']);
         $row['role_type'] = $nv_Lang->getModule('api_role_type_' . $row['role_type']);
         $row['role_object'] = $nv_Lang->getModule('api_role_object_' . $row['role_object']);
         $data[$row['id']] = $row;

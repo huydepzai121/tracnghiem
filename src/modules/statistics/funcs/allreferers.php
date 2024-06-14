@@ -49,7 +49,7 @@ if ($num_items) {
             'key' => $host,
             'count' => $count,
             'count_format' => nv_number_format($count),
-            'last_visit' => !empty($last_visit) ? nv_date('l, d F Y H:i', $last_visit) : '',
+            'last_visit' => !empty($last_visit) ? nv_datetime_format($last_visit, 0, 0) : '',
             'bymonth_link' => NV_BASE_MOD_URL . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['referer'] . '&amp;host=' . $host,
             'proc' => ceil(($count / $max) * 100)
         ];

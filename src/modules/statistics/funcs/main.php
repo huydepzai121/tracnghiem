@@ -158,7 +158,7 @@ while ([$country, $count, $last_visit] = $result->fetch(3)) {
         'name' => ($country != 'ZZ' and isset($countries[$country])) ? ($nv_Lang->existsGlobal('country_' . $country) ? $nv_Lang->getGlobal('country_' . $country) : $countries[$country][1]) : $nv_Lang->getGlobal('unknown'),
         'count' => $count,
         'count_format' => !empty($count) ? nv_number_format($count) : 0,
-        'last_visit' => !empty($last_visit) ? nv_date('l, d F Y H:i', $last_visit) : ''
+        'last_visit' => !empty($last_visit) ? nv_datetime_format($last_visit, 0, 0) : ''
     ];
 
     $total = $total + $count;
@@ -187,7 +187,7 @@ while ([$br, $count, $last_visit] = $result->fetch(3)) {
         'name' => $name,
         'count' => $count,
         'count_format' => !empty($count) ? nv_number_format($count) : 0,
-        'last_visit' => !empty($last_visit) ? nv_date('l, d F Y H:i', $last_visit) : ''
+        'last_visit' => !empty($last_visit) ? nv_datetime_format($last_visit, 0, 0) : ''
     ];
 
     $total = $total + $count;
@@ -218,7 +218,7 @@ while ([$os, $count, $last_visit] = $result->fetch(3)) {
         'name' => $name,
         'count' => $count,
         'count_format' => !empty($count) ? nv_number_format($count) : 0,
-        'last_visit' => !empty($last_visit) ? nv_date('l, d F Y H:i', $last_visit) : ''
+        'last_visit' => !empty($last_visit) ? nv_datetime_format($last_visit, 0, 0) : ''
     ];
 
     $total = $total + $count;

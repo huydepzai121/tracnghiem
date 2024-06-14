@@ -30,9 +30,9 @@ function main_theme($type, $roleCount, $roleList, $api_user, $generate_page)
     $page_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
 
     $roleList = array_map(function ($item) {
-        $item['credential_addtime_format'] = $item['credential_addtime'] > 0 ? nv_date('d/m/Y H:i', $item['credential_addtime']) : '';
-        $item['credential_endtime_format'] = $item['credential_endtime'] > 0 ? nv_date('d/m/Y H:i', $item['credential_endtime']) : '';
-        $item['credential_last_access_format'] = $item['credential_last_access'] > 0 ? nv_date('d/m/Y H:i', $item['credential_last_access']) : '';
+        $item['credential_addtime_format'] = $item['credential_addtime'] > 0 ? nv_datetime_format($item['credential_addtime']) : '';
+        $item['credential_endtime_format'] = $item['credential_endtime'] > 0 ? nv_datetime_format($item['credential_endtime']) : '';
+        $item['credential_last_access_format'] = $item['credential_last_access'] > 0 ? nv_datetime_format($item['credential_last_access']) : '';
 
         return $item;
     }, $roleList);

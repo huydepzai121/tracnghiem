@@ -441,9 +441,9 @@ if (!empty($role_id)) {
         $xtpl->assign('CREDENTIAL_COUNT', $credentialcount);
 
         foreach ($credentiallist as $credential) {
-            $credential['last_access'] = !empty($credential['last_access']) ? nv_date('d/m/Y H:i', $credential['last_access']) : '';
-            $credential['addtime'] = nv_date('d/m/Y H:i', $credential['addtime']);
-            $credential['endtime'] = !empty($credential['endtime']) ? nv_date('d/m/Y H:i', $credential['endtime']) : $nv_Lang->getModule('indefinitely');
+            $credential['last_access'] = !empty($credential['last_access']) ? nv_datetime_format($credential['last_access']) : '';
+            $credential['addtime'] = nv_datetime_format($credential['addtime']);
+            $credential['endtime'] = !empty($credential['endtime']) ? nv_datetime_format($credential['endtime']) : $nv_Lang->getModule('indefinitely');
             $credential['quota'] = !empty($credential['quota']) ? nv_number_format($credential['quota']) : $nv_Lang->getModule('no_quota');
             $xtpl->assign('CREDENTIAL', $credential);
 

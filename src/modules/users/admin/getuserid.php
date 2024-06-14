@@ -250,7 +250,7 @@ if ($nv_Request->isset_request('save', 'get')) {
         }
 
         foreach ($array_user as $row) {
-            $row['regdate'] = nv_date('d/m/Y H:i', $row['regdate']);
+            $row['regdate'] = nv_datetime_format($row['regdate']);
             $row['return'] = $row[$return];
             $xtpl->assign('ROW', $row);
             $xtpl->parse('resultdata.data.row');

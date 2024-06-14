@@ -1006,10 +1006,10 @@ function nv_time_format(int $short = 1, ?int $timestamp = null, string $lang = '
 function nv_datetime_format(?int $timestamp = null, int $reverse = 0, int $short = 1, string $lang = '')
 {
     if ($reverse) {
-        return nv_time_format(1, $timestamp, $lang) . ' ' . nv_date_format($short, $timestamp, $lang);
+        return nv_time_format($short, $timestamp, $lang) . ' ' . nv_date_format($short, $timestamp, $lang);
     }
 
-    return nv_date_format($short, $timestamp, $lang) . ' ' . nv_time_format(1, $timestamp, $lang);
+    return nv_date_format($short, $timestamp, $lang) . ' ' . nv_time_format($short, $timestamp, $lang);
 }
 
 /**
@@ -4050,4 +4050,124 @@ function nv_currency_format(float $num, string $lang = '')
     }
 
     return $num;
+}
+
+/**
+ * @param string $key
+ * @param string $lang
+ * @return NULL|string|number
+ */
+function nv_region_config(string $key, string $lang = '')
+{
+    global $nv_default_regions, $global_config;
+
+    if (empty($lang)) {
+        $lang = NV_LANG_INTERFACE;
+    }
+    $region = $global_config['region'][$lang] ?? $nv_default_regions[$lang] ?? $nv_default_regions['en'];
+    return $region[$key] ?? null;
+}
+
+/**
+ * Hàm lấy unixtime từ chuỗi get
+ *
+ * @param string $str
+ * @param int $hh
+ * @param int $mm
+ * @param int $ss
+ * @param string $lang
+ * @param string $method
+ * @return boolean|number|boolean
+ */
+function nv_d2u_get(string $str, ?int $hh = null, ?int $mm = null, ?int $ss = null, string $lang = '', string $method = 'get')
+{
+    if (empty($lang)) {
+        $lang = NV_LANG_INTERFACE;
+    }
+    $format = nv_region_config($method == 'get' ? 'date_get' : 'date_post', $lang);
+    $sep = substr($format, 1, 1);
+    $arr_fmt = explode($sep, $format);
+    $regex = [];
+    $regex_data = [
+        'd' => '([0-9]{1,2})',
+        'm' => '([0-9]{1,2})',
+        'Y' => '([0-9]{4})',
+    ];
+    $offset_d = $offset_m = $offset_y = 0;
+    foreach ($arr_fmt as $offset => $fmt) {
+        $regex[] = $regex_data[$fmt];
+        switch ($fmt) {
+            case 'd':
+                $offset_d = $offset + 1;
+                break;
+            case 'm':
+                $offset_m = $offset + 1;
+                break;
+            default:
+                $offset_y = $offset + 1;
+        }
+    }
+    $regex = '/^[\s]*' . implode(nv_preg_quote($sep), $regex) . '[\s]*(.*?)$/';
+    if (!preg_match($regex, $str, $matches)) {
+        return false;
+    }
+
+    if (is_null($hh) or is_null($mm) or is_null($ss)) {
+        // Tự tìm thêm ngày giờ nếu không chỉ định
+        $hh = $mm = $ss = 0;
+        if (!empty($matches[4]) and preg_match('/([0-9]{1,2})\:([0-9]{1,2})\:*([0-9]{0,2})/', $matches[4], $m)) {
+            $hh = intval($m[1]);
+            $mm = intval($m[2]);
+            $ss = intval($m[3]);
+        }
+    }
+
+    return mktime($hh, $mm, $ss, intval($matches[$offset_m]), intval($matches[$offset_d]), intval($matches[$offset_y]));
+}
+
+/**
+ * Hàm lấy unixtime từ chuỗi post
+ *
+ * @param string $str
+ * @param int $hh
+ * @param int $mm
+ * @param int $ss
+ * @param string $lang
+ * @return boolean
+ */
+function nv_d2u_post(string $str, ?int $hh = null, ?int $mm = null, ?int $ss = null, string $lang = '')
+{
+    return nv_d2u_get($str, $hh, $mm, $ss, $lang, 'post');
+}
+
+/**
+ * Chuyển unixtime sang chuỗi ngày tháng trong GET
+ *
+ * @param int $timestamp
+ * @param string $lang
+ * @param string $method
+ * @return string|string|NULL
+ */
+function nv_u2d_get(?int $timestamp, string $lang = '', string $method = 'get')
+{
+    if (empty($timestamp)) {
+        return '';
+    }
+    if (empty($lang)) {
+        $lang = NV_LANG_INTERFACE;
+    }
+    $format = nv_region_config($method == 'get' ? 'date_get' : 'date_post', $lang);
+    return nv_date($format, $timestamp);
+}
+
+/**
+ * Chuyển unixtime sang chuỗi ngày tháng trong POST
+ *
+ * @param int $timestamp
+ * @param string $lang
+ * @return string
+ */
+function nv_u2d_post(?int $timestamp, string $lang = '')
+{
+    return nv_u2d_get($timestamp, $lang, 'post');
 }

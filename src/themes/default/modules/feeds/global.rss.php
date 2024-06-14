@@ -175,7 +175,7 @@ if (!nv_function_exists('nv_block_global_rss')) {
                 $array_rrs[$key]['text'] = nv_clean60($array_rrs[$key]['title'], (int) $block_config['title_length']);
             }
 
-            $array_rrs[$key]['pubDate'] = ($block_config['ispubdate'] and !empty($array_rrs[$key]['pubtime'])) ? nv_date('d/m/Y H:i', $array_rrs[$key]['pubtime']) : '';
+            $array_rrs[$key]['pubDate'] = ($block_config['ispubdate'] and !empty($array_rrs[$key]['pubtime'])) ? nv_datetime_format($array_rrs[$key]['pubtime']) : '';
             $array_rrs[$key]['target'] = $block_config['istarget'];
         }
 

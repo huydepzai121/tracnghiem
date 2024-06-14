@@ -56,7 +56,7 @@ if (!nv_function_exists('nv_block_login')) {
                 $avata = NV_STATIC_URL . 'themes/' . $block_theme . '/images/users/no_avatar.png';
             }
 
-            $user_info['current_login_txt'] = nv_date('d/m, H:i', $user_info['current_login']);
+            $user_info['current_login_txt'] = nv_datetime_format($user_info['current_login']);
             $xtpl->assign('URL_LOGOUT', defined('NV_IS_ADMIN') ? 'nv_admin_logout' : 'bt_logout');
             $xtpl->assign('MODULENAME', $module_info['custom_title']);
             $xtpl->assign('AVATA', $avata);

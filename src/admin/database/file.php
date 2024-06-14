@@ -99,7 +99,7 @@ foreach ($array_content as $filetime => $files) {
             'stt' => ++$stt,
             'name' => $file['name'],
             'filesize' => nv_convertfromBytes($file['filesize']),
-            'filetime' => nv_date('l d/m/Y h:i:s A', $filetime),
+            'filetime' => nv_datetime_format($filetime, 0, 0),
             'link_getfile' => $link_getfile,
             'link_delete' => $link_delete
         ]);

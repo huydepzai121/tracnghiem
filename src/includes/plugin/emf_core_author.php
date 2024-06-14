@@ -88,7 +88,7 @@ $callback = function ($vars, $from_data, $receive_data) {
             $time_keys = ['time'];
             foreach ($time_keys as $key) {
                 if (!empty($vars[$key]) and is_numeric($vars[$key])) {
-                    $merge_fields[$key]['data'] = nv_date('H:i d/m/Y', $vars[$key]);
+                    $merge_fields[$key]['data'] = nv_datetime_format($vars[$key], 1);
                 }
             }
         }

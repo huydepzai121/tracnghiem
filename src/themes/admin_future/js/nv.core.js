@@ -867,7 +867,7 @@ $(document).ready(function() {
             if (a.status == 'NO' || a.status == 'no' || a.status == 'error') {
                 $('input, textarea, select, button', that).prop('disabled', false);
                 if (a.tab) {
-                    bootstrap.Tab.getInstance(document.getElementById(a.tab)).show();
+                    bootstrap.Tab.getOrCreateInstance(document.getElementById(a.tab)).show();
                 }
                 if (a.input) {
                     let ele = $('[name^=' + a.input + ']', that);

@@ -189,7 +189,7 @@ while ($data_i = $sth->fetch()) {
         }
     }
 
-    $data_i['time'] = nv_date('d/m/Y h:i:s A', $data_i['log_time']);
+    $data_i['time'] = nv_datetime_format($data_i['log_time'], 0, 0);
     $data[] = $data_i;
     unset($data_i);
 }

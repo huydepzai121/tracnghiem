@@ -33,7 +33,7 @@ if (!$author_info['is_guest']) {
     if (!empty($author_info['image'])) {
         $author_info['image'] = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_upload . '/authors/' . $author_info['image'];
     }
-    $author_info['add_time_format'] = nv_date('d/m/Y', $author_info['add_time']);
+    $author_info['add_time_format'] = nv_date_format(1, $author_info['add_time']);
 
     $page_title = $author_info['pseudonym'];
     $where = 'status=1 AND id IN (SELECT id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_authorlist WHERE aid=' . $author_info['id'] . ')';

@@ -277,7 +277,7 @@ if (!empty($contact_allowed['view'])) {
         }
 
         $send_time = date('r', $row['send_time']);
-        $row['send_time'] = nv_date('H:i d/m/Y', $row['send_time']);
+        $row['send_time'] = nv_datetime_format($row['send_time'], 1);
 
         $departments = get_department_list();
         if (isset($departments[$row['cid']])) {
@@ -353,7 +353,7 @@ if (!empty($contact_allowed['view'])) {
             $xtpl->assign('PROCESSED', [
                 'name' => $processed_by_name,
                 'url' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=authors&amp;id=' . $row['processed_by'],
-                'time' => nv_date('H:i d/m/Y', $row['processed_time'])
+                'time' => nv_datetime_format($row['processed_time'], 1)
             ]);
             if (!empty($processed_by_name)) {
                 $xtpl->parse('main.is_processed.processed_person');
@@ -588,7 +588,7 @@ if (!empty($contact_allowed['view'])) {
                 'path' => $contact_allowed['view'][$row['cid']],
                 'cat' => $row['cat'],
                 'title' => nv_clean60($row['title'], 60),
-                'time' => $row['send_time'] >= $currday ? nv_date('H:i d/m/Y', $row['send_time']) : nv_date('d/m/Y', $row['send_time']),
+                'time' => $row['send_time'] >= $currday ? nv_datetime_format($row['send_time'], 1) : nv_date_format(1, $row['send_time']),
                 'style' => !$row['is_read'] ? 'font-weight:bold;' : '',
                 'onclick' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;id=' . $row['id'],
                 'status' => $status,

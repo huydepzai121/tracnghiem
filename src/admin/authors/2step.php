@@ -272,7 +272,7 @@ if (empty($array_oauth)) {
 } else {
     foreach ($array_oauth as $oauth) {
         $oauth['email_or_id'] = !empty($oauth['oauth_email']) ? $oauth['oauth_email'] : $oauth['oauth_id'];
-        $oauth['addtime'] = nv_date('H:i d/m/Y', $oauth['addtime']);
+        $oauth['addtime'] = nv_datetime_format($oauth['addtime'], 1);
         $xtpl->assign('OAUTH', $oauth);
         $xtpl->parse('main.oauth_data.oauth');
     }

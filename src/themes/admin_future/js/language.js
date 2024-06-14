@@ -126,6 +126,8 @@ $(document).ready(function() {
             if ($('.is-invalid', $('#tab-date')).length > 0) {
                 $('#lbl_demo_date_short').html('##########');
                 $('#lbl_demo_date_long').html('##########');
+                $('#lbl_demo_date_get').html('##########');
+                $('#lbl_demo_date_post').html('##########');
                 return;
             }
 
@@ -135,6 +137,13 @@ $(document).ready(function() {
 
             $('#lbl_demo_date_short').html(dt.now().setLocale(nv_lang_data).toFormat(fshort));
             $('#lbl_demo_date_long').html(dt.now().setLocale(nv_lang_data).toFormat(fLong));
+
+            let dget, dpost;
+            dget = php2luxon($('[name="date_get"]', frRegion).val());
+            dpost = php2luxon($('[name="date_post"]', frRegion).val());
+
+            $('#lbl_demo_date_get').html(dt.now().setLocale(nv_lang_data).toFormat(dget));
+            $('#lbl_demo_date_post').html(dt.now().setLocale(nv_lang_data).toFormat(dpost));
         }
 
         let demoTime = () => {

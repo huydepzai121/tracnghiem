@@ -561,7 +561,11 @@ $nv_default_regions = [
         'time_short' => 'g:i A',
         'time_long' => 'g:i:s A',
         'am_char' => 'SA',
-        'pm_char' => 'CH'
+        'pm_char' => 'CH',
+        'date_get' => 'd-m-Y',
+        'date_post' => 'd/m/Y',
+        'jsdate_get' => 'dd-mm-yyyy',
+        'jsdate_post' => 'dd/mm/yyyy'
     ],
     'en' => [
         'decimal_symbol' => '.',
@@ -581,6 +585,10 @@ $nv_default_regions = [
         'time_short' => 'g:i A',
         'time_long' => 'g:i:s A',
         'am_char' => 'AM',
-        'pm_char' => 'PM'
+        'pm_char' => 'PM',
+        'date_get' => 'm-d-Y',
+        'date_post' => 'm/d/Y',
+        'jsdate_get' => 'mm-dd-yyyy',
+        'jsdate_post' => 'mm/dd/yyyy'
     ],
 ];

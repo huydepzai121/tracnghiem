@@ -42,7 +42,7 @@ if ($nv_Request->isset_request('i', 'get')) {
             $xtpl->parse('error');
             echo $xtpl->text('error');
         } else {
-            $values['onlineVersion'] = $nv_Lang->getModule('newVersion_detail', (string) $new_version->version, (string) $new_version->name, nv_date('d/m/Y H:i', strtotime((string) $new_version->date)));
+            $values['onlineVersion'] = $nv_Lang->getModule('newVersion_detail', (string) $new_version->version, (string) $new_version->name, nv_datetime_format(strtotime((string) $new_version->date)));
             $xtpl->assign('VALUE', $values);
 
             if (nv_version_compare($global_config['version'], (string) $new_version->version) < 0) {
@@ -62,7 +62,7 @@ if ($nv_Request->isset_request('i', 'get')) {
 
             clearstatcache();
             $sysUpdDate = filemtime(NV_ROOTDIR . '/' . NV_CACHEDIR . '/nukeviet.version.' . NV_LANG_INTERFACE . '.xml');
-            $xtpl->assign('SYSUPDDATE', nv_date('d/m/Y H:i', $sysUpdDate));
+            $xtpl->assign('SYSUPDDATE', nv_datetime_format($sysUpdDate));
 
             $xtpl->parse('sysUpd');
             echo $xtpl->text('sysUpd');
@@ -132,8 +132,8 @@ if ($nv_Request->isset_request('i', 'get')) {
                     $info .= !empty($value['new_version']) ? $value['new_version'] : ((!empty($value['version']) and $value['origin']) ? $value['version'] : 'n/a');
 
                     $tooltip = [];
-                    $tooltip[] = ['title' => $nv_Lang->getModule('userVersion'), 'content' => (!empty($value['version']) ? $value['version'] : 'n/a') . (!empty($value['date']) ? ' (' . nv_date('d/m/Y H:i', strtotime($value['date'])) . ')' : '')];
-                    $tooltip[] = ['title' => $nv_Lang->getModule('onlineVersion'), 'content' => (!empty($value['new_version']) ? $value['new_version'] : ((!empty($value['version']) and $value['origin']) ? $value['version'] : 'n/a')) . (!empty($value['new_date']) ? ' (' . nv_date('d/m/Y H:i', strtotime($value['new_date'])) . ')' : '')];
+                    $tooltip[] = ['title' => $nv_Lang->getModule('userVersion'), 'content' => (!empty($value['version']) ? $value['version'] : 'n/a') . (!empty($value['date']) ? ' (' . nv_datetime_format(strtotime($value['date'])) . ')' : '')];
+                    $tooltip[] = ['title' => $nv_Lang->getModule('onlineVersion'), 'content' => (!empty($value['new_version']) ? $value['new_version'] : ((!empty($value['version']) and $value['origin']) ? $value['version'] : 'n/a')) . (!empty($value['new_date']) ? ' (' . nv_datetime_format(strtotime($value['new_date'])) . ')' : '')];
 
                     if (!empty($value['author'])) {
                         $tooltip[] = ['title' => $nv_Lang->getModule('extAuthor'), 'content' => $value['author']];
@@ -211,7 +211,7 @@ if ($nv_Request->isset_request('i', 'get')) {
                 }
             }
 
-            $xtpl->assign('EXTUPDDATE', nv_date('d/m/Y H:i', $extUpdDate));
+            $xtpl->assign('EXTUPDDATE', nv_datetime_format($extUpdDate));
             $xtpl->assign('LINKNEWEXT', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=extensions&amp;' . NV_OP_VARIABLE . '=newest');
 
             $xtpl->parse('extUpd');

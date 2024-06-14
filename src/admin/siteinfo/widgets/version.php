@@ -36,7 +36,7 @@ $widget_info = [
         if (!empty($new_version)) {
             $field[] = [
                 'key' => $nv_Lang->getModule('version_news'),
-                'value' => $nv_Lang->getModule('newVersion_detail', (string) $new_version->version, nv_date('d/m/Y H:i', strtotime($new_version->date)))
+                'value' => $nv_Lang->getModule('newVersion_detail', (string) $new_version->version, nv_datetime_format(strtotime($new_version->date)))
             ];
 
             if (nv_version_compare($global_config['version'], $new_version->version) < 0) {

@@ -21,8 +21,8 @@ $per_page_old = $nv_Request->get_int('per_page', 'cookie', 50);
 $per_page = $nv_Request->get_int('per_page', 'get', $per_page_old);
 $num_items = $nv_Request->get_int('num_items', 'get', 0);
 $search_type_date = $nv_Request->get_title('type_date', 'get', 'addtime');
-$search_time_from = $nv_Request->get_title('search_time_from', 'get', '');
-$search_time_to = $nv_Request->get_title('search_time_to', 'get', '');
+$search_time_from = nv_d2u_get($nv_Request->get_title('search_time_from', 'get', ''));
+$search_time_to = nv_d2u_get($nv_Request->get_title('search_time_to', 'get', ''), 23, 59, 59);
 
 if ($per_page < 1 or $per_page > 500) {
     $per_page = 50;
@@ -32,8 +32,6 @@ if ($per_page_old != $per_page) {
 }
 
 !in_array($search_type_date, ['addtime', 'publtime', 'exptime'], true) && $search_type_date = 'addtime';
-$search_time_from = preg_match('/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/', $search_time_from, $m) ? mktime(0, 0, 0, (int) ($m[2]), (int) ($m[1]), (int) ($m[3])) : 0;
-$search_time_to = preg_match('/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/', $search_time_to, $m) ? mktime(23, 59, 59, (int) ($m[2]), (int) ($m[1]), (int) ($m[3])) : 0;
 
 $q = $nv_Request->get_title('q', 'get', '');
 $q = str_replace('+', ' ', $q);
@@ -399,19 +397,15 @@ if (($module_config[$module_name]['elas_use'] == 1) and $checkss == NV_CHECK_SES
     }
 
     if (!empty($search_time_from)) {
-        if (preg_match('/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/', $search_time_from, $m)) {
-            $match[]['range'][$search_type_date] = [
-                'gte' => mktime(00, 00, 00, $m[2], $m[1], $m[3])
-            ];
-        }
+        $match[]['range'][$search_type_date] = [
+            'gte' => $search_time_from
+        ];
     }
 
     if (!empty($search_time_to)) {
-        if (preg_match('/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/', $search_time_to, $m)) {
-            $match[]['range'][$search_type_date] = [
-                'lte' => mktime(23, 59, 59, $m[2], $m[1], $m[3])
-            ];
-        }
+        $match[]['range'][$search_type_date] = [
+            'lte' => $search_time_to
+        ];
     }
 
     if ($catid != 0) {
@@ -932,8 +926,8 @@ if (!empty($array_removeid)) {
 }
 
 $base_url_mod .= '&amp;type_date=' . $search_type_date;
-$search_time_from = empty($search_time_from) ? '' : nv_date('d/m/Y', $search_time_from);
-$search_time_to = empty($search_time_to) ? '' : nv_date('d/m/Y', $search_time_to);
+$search_time_from = nv_u2d_get($search_time_from);
+$search_time_to = nv_u2d_get($search_time_to);
 if (!empty($search_time_from)) {
     $base_url_mod .= '&amp;search_time_from=' . urlencode($search_time_from);
 }

@@ -36,7 +36,7 @@ $array_url_instruction['edit'] = 'https://wiki.nukeviet.vn/nukeviet4:admin:modul
  */
 function nv_parse_vers($ver)
 {
-    return $ver[1] . '-' . nv_date('d/m/Y', $ver[2]);
+    return $ver[1] . '-' . nv_date_format(1, $ver[2]);
 }
 
 /**

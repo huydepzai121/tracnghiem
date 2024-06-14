@@ -60,7 +60,7 @@ if (!empty($error)) {
     unset($array['files'], $array['image_demo']);
 
     // Change some variable to display value
-    $array['updatetime'] = nv_date('H:i d/m/Y', $array['updatetime']);
+    $array['updatetime'] = nv_datetime_format($array['updatetime'], 1);
     $array['view_hits'] = number_format($array['view_hits'], 0, '.', '.');
     $array['download_hits'] = number_format($array['download_hits'], 0, '.', '.');
     $array['rating_text'] = $nv_Lang->getModule('rating_text_detail', number_format($array['rating_totals'], 0, '.', '.'), number_format($array['rating_hits'], 0, '.', '.'));

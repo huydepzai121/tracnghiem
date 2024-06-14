@@ -34,7 +34,7 @@ if ($global_config['allowuserlogin']) {
 
     if (defined('NV_IS_USER')) {
         empty($user_info['avata']) && $user_info['avata'] = NV_STATIC_URL . $template_dir . '/images/users/no_avatar.png';
-        $user_info['current_login_txt'] = nv_date('d/m, H:i', $user_info['current_login']);
+        $user_info['current_login_txt'] = nv_datetime_format($user_info['current_login']);
     }
     if (defined('NV_IS_ADMIN')) {
         $new_drag_block = (defined('NV_IS_DRAG_BLOCK')) ? 0 : 1;

@@ -608,7 +608,7 @@ function nv_show_block_list($bid)
     if ($num > 0) {
         foreach ($array_block as $row) {
             $xtpl->assign('ROW', [
-                'publtime' => nv_date('H:i d/m/Y', $row['publtime']),
+                'publtime' => nv_datetime_format($row['publtime'], 1),
                 'status' => $nv_Lang->getModule('status_' . $row['status']),
                 'hitstotal' => nv_number_format($row['hitstotal']),
                 'hitscm' => nv_number_format($row['hitscm']),

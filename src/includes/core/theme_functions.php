@@ -721,7 +721,7 @@ function nv_disable_site()
 
     $reopening_time = $global_config['closed_site'] > 0 ? $global_config['site_reopening_time'] : ((!empty($global_config['closed_subsite']) and $global_config['idsite'] > 0) ? $global_config['subsite_reopening_time'] : 0);
     if (!empty($reopening_time) and $reopening_time > NV_CURRENTTIME) {
-        $disable_site_content .= '<br/><br/>' . $nv_Lang->getGlobal('closed_site_reopening_time') . ': ' . nv_date('d/m/Y H:i', $reopening_time);
+        $disable_site_content .= '<br/><br/>' . $nv_Lang->getGlobal('closed_site_reopening_time') . ': ' . nv_datetime_format($reopening_time);
         $disable_site_headers = [
             'Retry-After: ' . gmdate('D, d M Y H:i:s', $reopening_time) . ' GMT'
         ];

@@ -51,7 +51,7 @@ if ($num_items) {
             'name' => $name,
             'count' => $count,
             'count_format' => !empty($count) ? nv_number_format($count) : 0,
-            'last_visit' => !empty($last_visit) ? nv_date('l, d F Y H:i', $last_visit) : '',
+            'last_visit' => !empty($last_visit) ? nv_datetime_format($last_visit, 0, 0) : '',
             'proc' => ceil(($count / $max) * 100)
         ];
     }

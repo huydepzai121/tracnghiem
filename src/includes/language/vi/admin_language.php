@@ -122,3 +122,6 @@ $lang_module['char_am'] = 'Kí tự thay thế AM';
 $lang_module['char_pm'] = 'Kí tự thay thế PM';
 $lang_module['datetime_format_guide'] = 'Các cú pháp định dạng ngày giờ xem';
 $lang_module['datetime_format_guide1'] = 'tại đây';
+$lang_module['date_getpost_error'] = 'Định dạng ngày tháng không hợp lệ';
+$lang_module['date_get'] = 'Ngày ở form tìm kiếm';
+$lang_module['date_post'] = 'Ngày ở form nhập liệu';

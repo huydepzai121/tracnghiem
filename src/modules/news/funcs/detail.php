@@ -300,7 +300,7 @@ $news_contents['author'] = !empty($authors) ? implode(', ', $authors) : '';
 $news_contents['schema_author'] = !empty($schema_author) ? implode(', ', $schema_author) : '';
 
 $news_contents['number_publtime'] = $news_contents['publtime'];
-$news_contents['publtime'] = nv_date('l - d/m/Y H:i', $news_contents['publtime']);
+$news_contents['publtime'] = nv_date_format(0, $news_contents['publtime']) . ' ' . nv_time_format(1, $news_contents['publtime']);
 $news_contents['newscheckss'] = md5($news_contents['id'] . NV_CHECK_SESSION);
 
 $related_new_array = [];

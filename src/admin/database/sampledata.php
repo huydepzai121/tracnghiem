@@ -328,7 +328,7 @@ $array = [];
 foreach ($files as $file) {
     $array[] = [
         'title' => substr(substr($file, 5), 0, -4),
-        'creattime' => nv_date('H:i d/m/Y', filemtime(NV_ROOTDIR . '/install/samples/' . $file)),
+        'creattime' => nv_datetime_format(filemtime(NV_ROOTDIR . '/install/samples/' . $file), 1),
     ];
 }
 

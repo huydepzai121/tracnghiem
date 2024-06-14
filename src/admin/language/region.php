@@ -22,6 +22,17 @@ $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('OP', $op);
 
+$format_post = [
+    'd/m/Y',
+    'm/d/Y',
+    'Y/m/d'
+];
+$format_get = [
+    'd-m-Y',
+    'm-d-Y',
+    'Y-m-d'
+];
+
 if ($nv_Request->get_title('saveform', 'post', '') === NV_CHECK_SESSION) {
     $respon = [
         'status' => 'error',
@@ -50,6 +61,9 @@ if ($nv_Request->get_title('saveform', 'post', '') === NV_CHECK_SESSION) {
     $array['time_long'] = nv_substr($nv_Request->get_title('time_long', 'post', ''), 0, 50);
     $array['am_char'] = nv_substr($nv_Request->get_title('am_char', 'post', ''), 0, 50);
     $array['pm_char'] = nv_substr($nv_Request->get_title('pm_char', 'post', ''), 0, 50);
+
+    $array['date_get'] = nv_substr($nv_Request->get_title('date_get', 'post', ''), 0, 50);
+    $array['date_post'] = nv_substr($nv_Request->get_title('date_post', 'post', ''), 0, 50);
 
     if ($array['decimal_length'] > 9) {
         $array['decimal_length'] = 9;
@@ -103,6 +117,30 @@ if ($nv_Request->get_title('saveform', 'post', '') === NV_CHECK_SESSION) {
         $respon['mess'] = $nv_Lang->getGlobal('required_invalid');
         nv_jsonOutput($respon);
     }
+    if (empty($array['date_get'])) {
+        $respon['input'] = 'date_get';
+        $respon['tab'] = 'link-date';
+        $respon['mess'] = $nv_Lang->getGlobal('required_invalid');
+        nv_jsonOutput($respon);
+    }
+    if (empty($array['date_post'])) {
+        $respon['input'] = 'date_post';
+        $respon['tab'] = 'link-date';
+        $respon['mess'] = $nv_Lang->getGlobal('required_invalid');
+        nv_jsonOutput($respon);
+    }
+    if (!in_array($array['date_get'], $format_get)) {
+        $respon['input'] = 'date_get';
+        $respon['tab'] = 'link-date';
+        $respon['mess'] = $nv_Lang->getModule('date_getpost_error');
+        nv_jsonOutput($respon);
+    }
+    if (!in_array($array['date_post'], $format_post)) {
+        $respon['input'] = 'date_post';
+        $respon['tab'] = 'link-date';
+        $respon['mess'] = $nv_Lang->getModule('date_getpost_error');
+        nv_jsonOutput($respon);
+    }
     if (empty($array['time_short'])) {
         $respon['input'] = 'time_short';
         $respon['tab'] = 'link-time';
@@ -127,6 +165,9 @@ if ($nv_Request->get_title('saveform', 'post', '') === NV_CHECK_SESSION) {
         $respon['mess'] = $nv_Lang->getGlobal('required_invalid');
         nv_jsonOutput($respon);
     }
+
+    $array['jsdate_get'] = str_replace(['d', 'm', 'Y'], ['dd', 'mm', 'yyyy'], $array['date_get']);
+    $array['jsdate_post'] = str_replace(['d', 'm', 'Y'], ['dd', 'mm', 'yyyy'], $array['date_post']);
 
     $region = $global_config['region'] ?? [];
     $region[NV_LANG_DATA] = $array;
@@ -153,6 +194,8 @@ if (!in_array($tab, $tabs)) {
 }
 $tpl->assign('TAB', $tab);
 $tpl->assign('DATA', $array);
+$tpl->assign('FORMAT_GET', $format_get);
+$tpl->assign('FORMAT_POST', $format_post);
 
 $contents = $tpl->fetch('region.tpl');
 

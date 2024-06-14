@@ -134,7 +134,7 @@ if ($checkss == NV_CHECK_SESSION) {
             'data' => [
                 'greeting_user' => greeting_for_user_create($user_info['username'], $user_info['first_name'], $user_info['last_name'], $user_info['gender']),
                 'Home' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA, NV_MY_DOMAIN),
-                'time' => nv_date('H:i:s d/m/Y', NV_CURRENTTIME),
+                'time' => nv_datetime_format(NV_CURRENTTIME, 1, 0),
                 'ip' => NV_CLIENT_IP,
                 'browser' => NV_USER_AGENT
             ]

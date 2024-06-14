@@ -113,7 +113,7 @@ if (isset($check_allow_upload_dir['view_dir']) and isset($array_dirname[$path]))
                 $file['size'] = nv_convertfromBytes($file['filesize']);
             }
 
-            $file['data'] .= '|' . $file['ext'] . '|' . $file['type'] . '|' . nv_convertfromBytes($file['filesize']) . '|' . $file['userid'] . '|' . nv_date('l, d F Y, H:i:s P', $file['mtime']) . '|';
+            $file['data'] .= '|' . $file['ext'] . '|' . $file['type'] . '|' . nv_convertfromBytes($file['filesize']) . '|' . $file['userid'] . '|' . nv_datetime_format($file['mtime'], 0, 0) . '|';
             $file['data'] .= (empty($q)) ? '' : $file['dirname'];
             $file['data'] .= '|' . $file['mtime'];
 

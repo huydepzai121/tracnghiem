@@ -58,7 +58,7 @@ if ($tokend_confirm_password != $tokend) {
             nv_json_result([
                 'status' => 'error',
                 'input' => '',
-                'mess' => $nv_Lang->getGlobal('userlogin_blocked', $global_config['login_number_tracking'], nv_date('H:i d/m/Y', $blocker->login_block_end))
+                'mess' => $nv_Lang->getGlobal('userlogin_blocked', $global_config['login_number_tracking'], nv_datetime_format($blocker->login_block_end, 1))
             ]);
         }
 

@@ -512,8 +512,8 @@ if (empty($rolelist)) {
             'title' => $role['role_title'],
             'type' => $nv_Lang->getModule('api_role_type_' . $role['role_type']),
             'object' => $nv_Lang->getModule('api_role_object_' . $role['role_object']),
-            'addtime' => nv_date('d/m/Y H:i', $role['addtime']),
-            'edittime' => $role['edittime'] ? nv_date('d/m/Y H:i', $role['edittime']) : '',
+            'addtime' => nv_datetime_format($role['addtime']),
+            'edittime' => $role['edittime'] ? nv_datetime_format($role['edittime']) : '',
             'id' => $role['role_id']
         ]);
 

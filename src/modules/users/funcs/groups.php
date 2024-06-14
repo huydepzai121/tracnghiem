@@ -267,7 +267,7 @@ if ($nv_Request->isset_request('gid, getuserid', 'post, get')) {
         if (!empty($array_user)) {
             foreach ($array_user as $row) {
                 $row['full_name'] = nv_show_name_user($row['first_name'], $row['last_name'], $row['username']);
-                $row['regdate'] = nv_date('d/m/Y H:i', $row['regdate']);
+                $row['regdate'] = nv_datetime_format($row['regdate']);
                 $row['return'] = $row[$return];
                 $xtpl->assign('ROW', $row);
                 $xtpl->parse('resultdata.data.row');
@@ -662,7 +662,7 @@ if (sizeof($array_op) == 2 and $array_op[0] == 'groups' and $array_op[1]) {
         $filtersql .= ' AND idsite=' . $global_config['idsite'];
     }
 
-    $groupsList[$group_id]['exp'] = !empty($groupsList[$group_id]['exp_time']) ? nv_date('d/m/Y', $groupsList[$group_id]['exp_time']) : $nv_Lang->getModule('group_exp_unlimited');
+    $groupsList[$group_id]['exp'] = !empty($groupsList[$group_id]['exp_time']) ? nv_date_format(1, $groupsList[$group_id]['exp_time']) : $nv_Lang->getModule('group_exp_unlimited');
     $groupsList[$group_id]['group_avatar'] = !empty($groupsList[$group_id]['group_avatar']) ? NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_upload . '/' . $groupsList[$group_id]['group_avatar'] : NV_BASE_SITEURL . NV_ASSETS_DIR . '/images/user-group.jpg';
     $groupsList[$group_id]['group_type_mess'] = $nv_Lang->getModule('group_type_' . $groupsList[$group_id]['group_type']);
     $groupsList[$group_id]['group_type_note'] = !empty($nv_Lang->getModule('group_type_' . $groupsList[$group_id]['group_type'] . '_note')) ? $nv_Lang->getModule('group_type_' . $groupsList[$group_id]['group_type'] . '_note') : '';
@@ -893,8 +893,8 @@ if ($nv_Request->isset_request('list', 'get')) {
 
         $loop = [
             'title' => $values['title'],
-            'add_time' => nv_date('d/m/Y H:i', $values['add_time']),
-            'exp_time' => !empty($values['exp_time']) ? nv_date('d/m/Y H:i', $values['exp_time']) : $nv_Lang->getGlobal('indefinitely'),
+            'add_time' => nv_datetime_format($values['add_time']),
+            'exp_time' => !empty($values['exp_time']) ? nv_datetime_format($values['exp_time']) : $nv_Lang->getGlobal('indefinitely'),
             'number' => nv_number_format($values['numbers']),
             'link_userlist' => nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '/' . $group_id, true)
         ];

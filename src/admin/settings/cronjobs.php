@@ -55,7 +55,7 @@ while ($row = $result->fetch()) {
     ];
     $contents[$row['id']]['act'] = $row['act'];
     $contents[$row['id']]['last_time'] = $row['last_time'];
-    $contents[$row['id']]['last_time_title'] = !empty($row['last_time']) ? nv_date('d/m/Y H:i', $row['last_time']) : $nv_Lang->getModule('last_time0');
+    $contents[$row['id']]['last_time_title'] = !empty($row['last_time']) ? nv_datetime_format($row['last_time']) : $nv_Lang->getModule('last_time0');
     $contents[$row['id']]['last_result'] = $row['last_result'];
     $contents[$row['id']]['last_result_title'] = empty($row['last_time']) ? $nv_Lang->getModule('last_result_empty') : $nv_Lang->getModule('last_result' . $row['last_result']);
     $contents[$row['id']]['detail'][$nv_Lang->getModule('run_file')] = $row['run_file'];
@@ -63,12 +63,12 @@ while ($row = $result->fetch()) {
     if (!empty($row['params'])) {
         $contents[$row['id']]['detail'][$nv_Lang->getModule('params')] = preg_replace('/\,\s*/', ', ', $row['params']);
     }
-    $contents[$row['id']]['detail'][$nv_Lang->getModule('start_time')] = nv_date('l, d/m/Y H:i', $row['start_time']);
+    $contents[$row['id']]['detail'][$nv_Lang->getModule('start_time')] = nv_datetime_format($row['start_time'], 0, 0);
     $contents[$row['id']]['detail'][$nv_Lang->getModule('interval')] = nv_convertfromSec($row['inter_val'] * 60);
     $contents[$row['id']]['detail'][$nv_Lang->getModule('is_del')] = !empty($row['del']) ? $nv_Lang->getModule('isdel') : $nv_Lang->getModule('notdel');
     $contents[$row['id']]['detail'][$nv_Lang->getModule('is_sys')] = !empty($row['is_sys']) ? $nv_Lang->getModule('system') : $nv_Lang->getModule('client');
     $contents[$row['id']]['detail'][$nv_Lang->getModule('act')] = !empty($row['act']) ? $nv_Lang->getModule('act1') : $nv_Lang->getModule('act0');
-    $contents[$row['id']]['detail'][$nv_Lang->getModule('last_time')] = !empty($row['last_time']) ? nv_date('l, d/m/Y H:i:s', $row['last_time']) : $nv_Lang->getModule('last_time0');
+    $contents[$row['id']]['detail'][$nv_Lang->getModule('last_time')] = !empty($row['last_time']) ? nv_datetime_format($row['last_time'], 0, 0) : $nv_Lang->getModule('last_time0');
     $contents[$row['id']]['detail'][$nv_Lang->getModule('last_result')] = empty($row['last_time']) ? $nv_Lang->getModule('last_result_empty') : $nv_Lang->getModule('last_result' . $row['last_result']);
 
     if (empty($row['act'])) {
@@ -76,9 +76,9 @@ while ($row = $result->fetch()) {
     } else {
         $interval = $row['inter_val'] * 60;
         if (empty($interval) or empty($row['last_time'])) {
-            $next_time = nv_date('l, d/m/Y H:i:s', max($row['start_time'], $global_config['cronjobs_next_time'], NV_CURRENTTIME));
+            $next_time = nv_datetime_format(max($row['start_time'], $global_config['cronjobs_next_time'], NV_CURRENTTIME), 0, 0);
         } else {
-            $next_time = nv_date('l, d/m/Y H:i:s', $row['last_time'] + $interval);
+            $next_time = nv_datetime_format($row['last_time'] + $interval, 0, 0);
         }
     }
 
@@ -104,8 +104,8 @@ $xtpl->assign('LAUCHER_SERVER_URL', $url);
 $xtpl->assign('CRON_CODE', $code);
 
 if ($global_config['cronjobs_last_time'] > 0) {
-    $xtpl->assign('LAST_CRON', $nv_Lang->getModule('cron_last_time', nv_date('d/m/Y H:i:s', $global_config['cronjobs_last_time'])));
-    $xtpl->assign('NEXT_CRON', $nv_Lang->getModule('cron_next_time', nv_date('d/m/Y H:i:s', ($global_config['cronjobs_last_time'] + $global_config['cronjobs_interval'] * 60))));
+    $xtpl->assign('LAST_CRON', $nv_Lang->getModule('cron_last_time', nv_datetime_format($global_config['cronjobs_last_time'])));
+    $xtpl->assign('NEXT_CRON', $nv_Lang->getModule('cron_next_time', nv_datetime_format(($global_config['cronjobs_last_time'] + $global_config['cronjobs_interval'] * 60))));
     $xtpl->parse('main.next_cron');
 }
 

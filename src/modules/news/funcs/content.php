@@ -691,7 +691,7 @@ if ($num_items) {
         ->offset(($page - 1) * $per_page);
     $result = $db->query($db->sql());
     while ($item = $result->fetch()) {
-        $item['publtime'] = nv_date('d/m/Y h:i:s A', $item['publtime']);
+        $item['publtime'] = nv_datetime_format($item['publtime'], 0, 0);
         $item['status_note'] = $item['status'] != 1 ? $nv_Lang->getModule('status_alert', $nv_Lang->getModule('status_' . $item['status'])) : '';
         $item['imghome'] = $item['imgmobile'] = '';
         get_homeimgfile($item);

@@ -228,7 +228,7 @@ while ($data = $result->fetch()) {
         }
 
         $data['add_time_iso'] = nv_date("Y-m-d\TH:i:sO", $data['add_time']);
-        $data['add_time'] = nv_date('H:i d/m/Y', $data['add_time']);
+        $data['add_time'] = nv_datetime_format($data['add_time'], 1);
 
         if (!empty($data['title'])) {
             $array_data[$data['id']] = $data;

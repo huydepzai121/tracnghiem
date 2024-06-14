@@ -56,7 +56,7 @@ if ($id > 0 and $catid > 0) {
             'alias' => $content['alias'],
             'image' => '',
             'position' => $content['imgposition'],
-            'time' => nv_date('l - d/m/Y H:i', $content['publtime']),
+            'time' => nv_date_format(0, $content['publtime']) . ' ' . nv_time_format(1, $content['publtime']),
             'status' => $content['status'],
             'hometext' => $content['hometext'],
             'bodytext' => $content['bodytext'],

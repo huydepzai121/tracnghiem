@@ -238,7 +238,7 @@ if (!nv_function_exists('nv_block_data_config_rss')) {
                 } else {
                     $item['text'] = $item['title'];
                 }
-                $item['pubDate'] = !empty($item['pubtime']) ? nv_date('l - d/m/Y H:i', $item['pubtime']) : '';
+                $item['pubDate'] = !empty($item['pubtime']) ? nv_datetime_format($item['pubtime'], 0, 0) : '';
                 $xtpl->assign('DATA', $item);
                 if (!empty($item['description']) and $block_config['isdescription']) {
                     $xtpl->parse('main.loop.description');

@@ -182,9 +182,31 @@
                                     <label for="element_first_day_of_week" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('first_day_of_week')}</label>
                                     <div class="col-12 col-sm-8 col-lg-6 col-xxl-5">
                                         <select class="form-select" id="element_first_day_of_week" name="first_day_of_week">
-                                            <option value="0"{if $DATA.first_day_of_week eq  0} selected{/if}>{$LANG->getGlobal('monday')}</option>
-                                            <option value="1"{if $DATA.first_day_of_week eq  1} selected{/if}>{$LANG->getGlobal('sunday')}</option>
+                                            <option value="0"{if $DATA.first_day_of_week eq 0} selected{/if}>{$LANG->getGlobal('monday')}</option>
+                                            <option value="1"{if $DATA.first_day_of_week eq 1} selected{/if}>{$LANG->getGlobal('sunday')}</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="element_date_get" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('date_get')}</label>
+                                    <div class="col-12 col-sm-8 col-lg-6 col-xxl-5">
+                                        <select class="form-select" id="element_date_get" name="date_get">
+                                            {foreach from=$FORMAT_GET item=fmt}
+                                            <option value="{$fmt}"{if $DATA.date_get eq $fmt} selected{/if}>{$fmt}</option>
+                                            {/foreach}
+                                        </select>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="element_date_post" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('date_post')}</label>
+                                    <div class="col-12 col-sm-8 col-lg-6 col-xxl-5">
+                                        <select class="form-select" id="element_date_post" name="date_post">
+                                            {foreach from=$FORMAT_POST item=fmt}
+                                            <option value="{$fmt}"{if $DATA.date_post eq $fmt} selected{/if}>{$fmt}</option>
+                                            {/foreach}
+                                        </select>
+                                        <div class="invalid-feedback"></div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -290,10 +312,20 @@
                             </div>
                             <div class="col-8 mb-2" id="lbl_demo_date_short">
                             </div>
-                            <div class="col-4">
+                            <div class="col-4 mb-2">
                                 {$LANG->getModule('region_display_long')}
                             </div>
-                            <div class="col-8" id="lbl_demo_date_long">
+                            <div class="col-8 mb-2" id="lbl_demo_date_long">
+                            </div>
+                            <div class="col-6 mb-2">
+                                {$LANG->getModule('date_get')}
+                            </div>
+                            <div class="col-6 mb-2" id="lbl_demo_date_get">
+                            </div>
+                            <div class="col-6">
+                                {$LANG->getModule('date_post')}
+                            </div>
+                            <div class="col-6" id="lbl_demo_date_post">
                             </div>
                         </div>
                     </div>

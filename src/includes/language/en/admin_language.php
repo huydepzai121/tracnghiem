@@ -121,3 +121,6 @@ $lang_module['char_am'] = 'AM symbol';
 $lang_module['char_pm'] = 'PM symbol';
 $lang_module['datetime_format_guide'] = 'See more about date and time format syntax';
 $lang_module['datetime_format_guide1'] = 'here';
+$lang_module['date_getpost_error'] = 'Invalid date format';
+$lang_module['date_get'] = 'Format in get form';
+$lang_module['date_post'] = 'Format in post form';

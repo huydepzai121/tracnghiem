@@ -44,7 +44,7 @@ if ($nv_Request->isset_request('turnoff2step', 'post')) {
         'data' => [
             'greeting_user' => greeting_for_user_create($user_info['username'], $user_info['first_name'], $user_info['last_name'], $user_info['gender']),
             'Home' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA, NV_MY_DOMAIN),
-            'time' => nv_date('H:i:s d/m/Y', NV_CURRENTTIME),
+            'time' => nv_datetime_format(NV_CURRENTTIME, 0, 0),
             'ip' => NV_CLIENT_IP,
             'browser' => NV_USER_AGENT,
             'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN)
@@ -69,7 +69,7 @@ if ($nv_Request->isset_request('changecode2step', 'post')) {
         'data' => [
             'greeting_user' => greeting_for_user_create($user_info['username'], $user_info['first_name'], $user_info['last_name'], $user_info['gender']),
             'Home' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA, NV_MY_DOMAIN),
-            'time' => nv_date('H:i:s d/m/Y', NV_CURRENTTIME),
+            'time' => nv_datetime_format(NV_CURRENTTIME, 0, 0),
             'ip' => NV_CLIENT_IP,
             'browser' => NV_USER_AGENT,
             'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN)

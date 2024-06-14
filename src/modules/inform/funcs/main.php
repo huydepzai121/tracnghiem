@@ -368,11 +368,11 @@ if ($nv_Request->isset_request('manager', 'get')) {
         $row['receiver_ids'] = !empty($row['receiver_ids']) ? array_map('intval', explode(',', $row['receiver_ids'])) : [];
         !empty($row['receiver_ids']) && $members = array_merge($members, $row['receiver_ids']);
 
-        $row['add_time_format'] = nv_date('d.m.y H:i', $row['add_time']);
+        $row['add_time_format'] = nv_datetime_format($row['add_time']);
         if (!empty($row['exp_time'])) {
-            $row['exp_time_format'] = nv_date('d.m.y H:i', $row['exp_time']);
+            $row['exp_time_format'] = nv_datetime_format($row['exp_time']);
             if ($row['exp_time'] < NV_CURRENTTIME) {
-                $row['exp_time_format'] .= '<br/>' . $nv_Lang->getModule('to_be_removed') . '<br/>' . (nv_date('d.m.y H:i', ($row['exp_time'] + $global_config['inform_exp_del'])));
+                $row['exp_time_format'] .= '<br/>' . $nv_Lang->getModule('to_be_removed') . '<br/>' . (nv_datetime_format(($row['exp_time'] + $global_config['inform_exp_del'])));
             }
         } else {
             $row['exp_time_format'] = $nv_Lang->getModule('unlimited');

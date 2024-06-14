@@ -49,7 +49,7 @@ function viewcat_grid_new($array_catpage, $catid, $generate_page)
     $a = 0;
     foreach ($array_catpage as $array_row_i) {
         $newday = $array_row_i['publtime'] + (86400 * $array_row_i['newday']);
-        $array_row_i['publtime'] = nv_date('d/m/Y H:i:s', $array_row_i['publtime']);
+        $array_row_i['publtime'] = nv_datetime_format($array_row_i['publtime']);
 
         if ($array_row_i['external_link']) {
             $array_row_i['target_blank'] = 'target="_blank"';
@@ -152,7 +152,7 @@ function viewcat_list_new($array_catpage, $catid, $page, $generate_page)
     $a = $page;
     foreach ($array_catpage as $array_row_i) {
         $newday = $array_row_i['publtime'] + (86400 * $array_row_i['newday']);
-        $array_row_i['publtime'] = nv_date('d/m/Y H:i:s', $array_row_i['publtime']);
+        $array_row_i['publtime'] = nv_datetime_format($array_row_i['publtime']);
 
         if ($module_config[$module_name]['showtooltip']) {
             $array_row_i['hometext_clean'] = nv_clean60(strip_tags($array_row_i['hometext']), $module_config[$module_name]['tooltip_length'], true);
@@ -230,7 +230,7 @@ function viewcat_page_new($array_catpage, $array_cat_other, $generate_page)
     $a = 0;
     foreach ($array_catpage as $array_row_i) {
         $newday = $array_row_i['publtime'] + (86400 * $array_row_i['newday']);
-        $array_row_i['publtime'] = nv_date('d/m/Y H:i:s', $array_row_i['publtime']);
+        $array_row_i['publtime'] = nv_datetime_format($array_row_i['publtime']);
         $array_row_i['listcatid'] = explode(',', $array_row_i['listcatid']);
         $num_cat = sizeof($array_row_i['listcatid']);
 
@@ -315,7 +315,7 @@ function viewcat_page_new($array_catpage, $array_cat_other, $generate_page)
 
         foreach ($array_cat_other as $array_row_i) {
             $newday = $array_row_i['publtime'] + (86400 * $array_row_i['newday']);
-            $array_row_i['publtime'] = nv_date('d/m/Y', $array_row_i['publtime']);
+            $array_row_i['publtime'] = nv_date_format(1, $array_row_i['publtime']);
 
             if ($array_row_i['external_link']) {
                 $array_row_i['target_blank'] = 'target="_blank"';
@@ -371,7 +371,7 @@ function viewcat_top($array_catcontent, $generate_page)
         $a = 0;
         foreach ($array_catcontent as $array_catcontent_i) {
             $newday = $array_catcontent_i['publtime'] + (86400 * $array_catcontent_i['newday']);
-            $array_catcontent_i['publtime'] = nv_date('d/m/Y H:i:s', $array_catcontent_i['publtime']);
+            $array_catcontent_i['publtime'] = nv_datetime_format($array_catcontent_i['publtime']);
 
             if ($array_catcontent_i['external_link']) {
                 $array_catcontent_i['target_blank'] = 'target="_blank"';
@@ -497,7 +497,7 @@ function viewsubcat_main($viewcat, $array_cat)
             $a = 0;
             foreach ($array_cat[$key]['content'] as $array_row_i) {
                 $newday = isset($array_row_i['newday']) ? $array_row_i['publtime'] + (86400 * $array_row_i['newday']) : 0;
-                $array_row_i['publtime'] = nv_date('d/m/Y H:i', $array_row_i['publtime']);
+                $array_row_i['publtime'] = nv_datetime_format($array_row_i['publtime']);
                 ++$a;
 
                 if ($array_row_i['external_link']) {
@@ -590,7 +590,7 @@ function viewcat_two_column($array_content, $array_catpage)
     if (!empty($array_content)) {
         foreach ($array_content as $key => $array_content_i) {
             $newday = $array_content_i['publtime'] + (86400 * $array_content_i['newday']);
-            $array_content_i['publtime'] = nv_date('d/m/Y H:i:s', $array_content_i['publtime']);
+            $array_content_i['publtime'] = nv_datetime_format($array_content_i['publtime']);
 
             if ($array_content_i['external_link']) {
                 $array_content_i['target_blank'] = 'target="_blank"';
@@ -649,7 +649,7 @@ function viewcat_two_column($array_content, $array_catpage)
             $array_content_i = $array_catpage_i['content'][0];
             $newday = $array_content_i['publtime'] + (86400 * $array_content_i['newday']);
             $array_content_i['hometext'] = nv_clean60(strip_tags($array_content_i['hometext']), 200);
-            $array_content_i['publtime'] = nv_date('d/m/Y H:i:s', $array_content_i['publtime']);
+            $array_content_i['publtime'] = nv_datetime_format($array_content_i['publtime']);
 
             if ($array_content_i['external_link']) {
                 $array_content_i['target_blank'] = 'target="_blank"';
@@ -783,7 +783,7 @@ function detail_theme($news_contents, $array_keyword, $related_new_array, $relat
         $xtpl->assign('SCHEMA_IMAGE', NV_STATIC_URL . 'themes/' . $template . '/images/no_image.gif');
     }
 
-    $news_contents['addtime'] = nv_date('d/m/Y h:i:s', $news_contents['addtime']);
+    $news_contents['addtime'] = nv_datetime_format($news_contents['addtime']);
     $news_contents['css_autoplay'] = $news_contents['autoplay'] ? ' checked' : '';
 
     !empty($news_contents['hometext']) && $news_contents['hometext'] = '<div data-toggle="error-report">' . $news_contents['hometext'] . '</div>';
@@ -966,7 +966,7 @@ function detail_theme($news_contents, $array_keyword, $related_new_array, $relat
                 if ($newday >= NV_CURRENTTIME) {
                     $xtpl->parse('main.others.related_new.loop.newday');
                 }
-                $related_new_array_i['time'] = nv_date('d/m/Y', $related_new_array_i['time']);
+                $related_new_array_i['time'] = nv_date_format(1, $related_new_array_i['time']);
 
                 $xtpl->assign('RELATED_NEW', $related_new_array_i);
 
@@ -994,7 +994,7 @@ function detail_theme($news_contents, $array_keyword, $related_new_array, $relat
                 if ($newday >= NV_CURRENTTIME) {
                     $xtpl->parse('main.others.related.loop.newday');
                 }
-                $related_array_i['time'] = nv_date('d/m/Y', $related_array_i['time']);
+                $related_array_i['time'] = nv_date_format(1, $related_array_i['time']);
                 $xtpl->assign('RELATED', $related_array_i);
 
                 if ($module_config[$module_name]['showtooltip']) {
@@ -1020,7 +1020,7 @@ function detail_theme($news_contents, $array_keyword, $related_new_array, $relat
                 if ($newday >= NV_CURRENTTIME) {
                     $xtpl->parse('main.others.topic.loop.newday');
                 }
-                $topic_array_i['time'] = nv_date('d/m/Y', $topic_array_i['time']);
+                $topic_array_i['time'] = nv_date_format(1, $topic_array_i['time']);
                 $xtpl->assign('TOPIC', $topic_array_i);
 
                 if (!empty($module_config[$module_name]['showtooltip'])) {
@@ -1165,7 +1165,7 @@ function topic_theme($topic_array, $topic_other_array, $generate_page, $page_tit
 
     if (!empty($topic_other_array)) {
         foreach ($topic_other_array as $topic_other_array_i) {
-            $topic_other_array_i['publtime'] = nv_date('H:i d/m/Y', $topic_other_array_i['publtime']);
+            $topic_other_array_i['publtime'] = nv_datetime_format($topic_other_array_i['publtime']);
 
             if ($topic_other_array_i['external_link']) {
                 $topic_other_array_i['target_blank'] = 'target="_blank"';
@@ -1238,7 +1238,7 @@ function author_theme($author_info, $topic_array, $topic_other_array, $generate_
 
     if (!empty($topic_other_array)) {
         foreach ($topic_other_array as $topic_other_array_i) {
-            $topic_other_array_i['publtime'] = nv_date('H:i d/m/Y', $topic_other_array_i['publtime']);
+            $topic_other_array_i['publtime'] = nv_datetime_format($topic_other_array_i['publtime']);
 
             if ($topic_other_array_i['external_link']) {
                 $topic_other_array_i['target_blank'] = 'target="_blank"';

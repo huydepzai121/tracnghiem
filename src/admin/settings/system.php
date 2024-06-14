@@ -305,7 +305,7 @@ if (defined('NV_IS_GODADMIN')) {
         'panel' => empty($global_config['closed_site']) ? 'success' : 'danger',
         'icon' => empty($global_config['closed_site']) ? 'fa-check' : 'fa-ban',
         'title' => $closed_site_Modes[$global_config['closed_site']],
-        'reopening' => !empty($global_config['site_reopening_time']) ? $nv_Lang->getModule('closed_site_reopening_time') . ': ' . nv_date('d/m/Y H:i', $global_config['site_reopening_time']) : ''
+        'reopening' => !empty($global_config['site_reopening_time']) ? $nv_Lang->getModule('closed_site_reopening_time') . ': ' . nv_datetime_format($global_config['site_reopening_time']) : ''
     ]);
 
     $xtpl->assign('MY_DOMAINS', $array_config_global['my_domains']);
@@ -346,7 +346,7 @@ if (defined('NV_IS_GODADMIN')) {
 
     $xtpl->parse('main.closed_site');
 
-    $xtpl->assign('CURRENT_TIME', $nv_Lang->getModule('current_time', nv_date('H:i T l, d/m/Y', NV_CURRENTTIME)));
+    $xtpl->assign('CURRENT_TIME', $nv_Lang->getModule('current_time', nv_datetime_format(NV_CURRENTTIME, 1, 0)));
     $xtpl->assign('TIMEZONEOP', 'byCountry');
     $xtpl->assign('TIMEZONESELECTED', ($array_config_global['site_timezone'] == 'byCountry') ? "selected='selected'" : '');
     $xtpl->assign('TIMEZONELANGVALUE', $nv_Lang->getModule('timezoneByCountry'));

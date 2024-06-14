@@ -51,7 +51,7 @@ $xtpl->assign('GENERATE_PAGE', $generate_page);
 $i = 0;
 while ($row = $result->fetch()) {
     ++$i;
-    $row['publtime'] = nv_date('H:i d/m/y', $row['publtime']);
+    $row['publtime'] = nv_datetime_format($row['publtime'], 1);
     $row['status'] = $nv_Lang->getModule('status_' . $row['status']);
     $row['hitstotal'] = nv_number_format($row['hitstotal']);
     $row['hitscm'] = nv_number_format($row['hitscm']);

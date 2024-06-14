@@ -65,10 +65,10 @@ if ($num_rows < 1) {
         $row['status_text'] = $nv_Lang->getModule('content_status_' . $row['status']);
 
         if ($row['start_time'] > 0) {
-            $row['status_text'] .= '. ' . $nv_Lang->getModule('content_status_note0') . ' ' . nv_date('H:i:s d/m/Y', $row['start_time']);
+            $row['status_text'] .= '. ' . $nv_Lang->getModule('content_status_note0') . ' ' . nv_datetime_format($row['start_time'], 1, 0);
 
             if ($row['end_time'] > 0) {
-                $row['status_text'] .= '. ' . sprintf($row['status'] == 2 ? $nv_Lang->getModule('content_status_note2') : $nv_Lang->getModule('content_status_note1'), nv_date('H:i:s d/m/Y', $row['end_time']));
+                $row['status_text'] .= '. ' . sprintf($row['status'] == 2 ? $nv_Lang->getModule('content_status_note2') : $nv_Lang->getModule('content_status_note1'), nv_datetime_format($row['end_time'], 1, 0));
             }
         }
 

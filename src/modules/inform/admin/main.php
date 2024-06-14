@@ -592,8 +592,8 @@ while ($row = $result->fetch()) {
         $row['receiver_title'] = $nv_Lang->getModule('to_all');
     }
 
-    $row['add_time_format'] = nv_date('d.m.Y H:i', $row['add_time']);
-    $row['exp_time_format'] = !empty($row['exp_time']) ? nv_date('d.m.Y H:i', $row['exp_time']) : $nv_Lang->getModule('unlimited');
+    $row['add_time_format'] = nv_datetime_format($row['add_time']);
+    $row['exp_time_format'] = !empty($row['exp_time']) ? nv_datetime_format($row['exp_time']) : $nv_Lang->getModule('unlimited');
 
     if ($row['add_time'] > NV_CURRENTTIME) {
         $row['status'] = 'waiting';

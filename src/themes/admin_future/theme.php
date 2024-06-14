@@ -182,6 +182,8 @@ function nv_admin_theme(?string $contents, $head_site = 1)
         $whitelisted_attr[] = 'allowfullscreen';
     }
     $tpl->assign('WHITELISTED_ATTR', "['" . implode("', '", $whitelisted_attr). "']");
+    $tpl->assign('JSDATE_GET', nv_region_config('jsdate_get'));
+    $tpl->assign('JSDATE_POST', nv_region_config('jsdate_post'));
 
     $tpl->assign('MODULE_CONTENT', $contents);
 

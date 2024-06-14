@@ -914,8 +914,8 @@ foreach ($groupsList as $group_id => $values) {
     $loop = [
         'group_id' => $group_id,
         'title' => ($group_id < 10) ? $nv_Lang->getGlobal('level' . $group_id) : $values['title'],
-        'add_time' => nv_date('d/m/Y H:i', $values['add_time']),
-        'exp_time' => !empty($values['exp_time']) ? nv_date('d/m/Y H:i', $values['exp_time']) : $nv_Lang->getGlobal('unlimited'),
+        'add_time' => nv_datetime_format($values['add_time']),
+        'exp_time' => !empty($values['exp_time']) ? nv_datetime_format($values['exp_time']) : $nv_Lang->getGlobal('unlimited'),
         'number' => is_numeric($values['numbers']) ? nv_number_format($values['numbers']) : $values['numbers'],
         'act' => $values['act'] ? ' checked="checked"' : '',
         'disabled' => ($group_id < 10 or !defined('NV_IS_SPADMIN') or $values['idsite'] != $global_config['idsite']) ? ' disabled="disabled"' : '',

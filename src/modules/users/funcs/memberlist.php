@@ -177,7 +177,7 @@ if (isset($array_op[1]) and !empty($array_op[1])) {
             $item['photo'] = NV_STATIC_URL . 'themes/' . $module_info['template'] . '/images/' . $module_file . '/no_avatar.png';
         }
 
-        $item['regdate'] = nv_date('d/m/Y', $item['regdate']);
+        $item['regdate'] = nv_date_format(1, $item['regdate']);
         $item['user'] = change_alias($item['username']) . '-' . $item['md5username'];
         $item['link'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=memberlist/' . $item['user'];
         $item['gender'] = ($item['gender'] == 'M') ? $nv_Lang->getModule('male') : ($item['gender'] == 'F' ? $nv_Lang->getModule('female') : $nv_Lang->getModule('na'));

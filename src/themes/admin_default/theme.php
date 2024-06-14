@@ -100,6 +100,8 @@ function nv_admin_theme($contents, $head_site = 1)
     $xtpl->assign('NV_XSS_SANITIZE', ($global_config['admin_XSSsanitize'] ? 1 : 0));
     $xtpl->assign('NV_WHITELISTED_TAGS', !empty($global_config['allowed_html_tags']) ? "['" . implode("', '", $global_config['allowed_html_tags']) . "']" : '');
     $xtpl->assign('NV_WHITELISTED_ATTR', "['" . implode("', '", $whitelisted_attr). "']");
+    $xtpl->assign('JSDATE_GET', nv_region_config('jsdate_get'));
+    $xtpl->assign('JSDATE_POST', nv_region_config('jsdate_post'));
     $xtpl->assign('MODULE_NAME', $module_name);
     $xtpl->assign('MODULE_FILE', $module_file);
     $xtpl->assign('NV_ADMIN_THEME', $admin_info['admin_theme']);

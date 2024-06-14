@@ -217,7 +217,7 @@ function nv_comment_module_data($module, $comment_array, $is_delete, $allowed_co
                 $xtpl->assign('CHILDREN', $comment_array_reply);
                 $xtpl->parse('main.detail.children');
             }
-            $comment_array_i['post_time'] = nv_date('d/m/Y H:i', $comment_array_i['post_time']);
+            $comment_array_i['post_time'] = nv_datetime_format($comment_array_i['post_time']);
 
             if (!empty($comment_array_i['photo']) and file_exists(NV_ROOTDIR . '/' . $comment_array_i['photo'])) {
                 $comment_array_i['photo'] = NV_BASE_SITEURL . $comment_array_i['photo'];
@@ -296,7 +296,7 @@ function nv_comment_module_data_reply($module, $comment_array, $is_delete, $allo
             $xtpl->assign('CHILDREN', $comment_array_reply);
             $xtpl->parse('children.detail.children');
         }
-        $comment_array_i['post_time'] = nv_date('d/m/Y H:i', $comment_array_i['post_time']);
+        $comment_array_i['post_time'] = nv_datetime_format($comment_array_i['post_time']);
 
         if (!empty($comment_array_i['photo']) and file_exists(NV_ROOTDIR . '/' . $comment_array_i['photo'])) {
             $comment_array_i['photo'] = NV_BASE_SITEURL . $comment_array_i['photo'];

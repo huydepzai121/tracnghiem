@@ -70,7 +70,7 @@ function user_getlist_theme($items, $generate_page, $filter, $page_url)
                 $item['is_hidden'] = $filter == 'hidden' ? 1 : 0;
                 $item['is_viewed'] = !empty($item['viewed_time']) ? 1 : 0;
                 $item['is_favorite'] = !empty($item['favorite_time']) ? 1 : 0;
-                $item['add_time'] = nv_date('d.m.Y H:i', $item['add_time']);
+                $item['add_time'] = nv_datetime_format($item['add_time']);
                 if (!empty($item['link']) and !preg_match('#^https?\:\/\/#', $item['link'])) {
                     $item['link'] = nv_url_rewrite(NV_BASE_SITEURL . $item['link'], true);
                 }

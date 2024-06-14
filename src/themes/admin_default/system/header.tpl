@@ -33,7 +33,9 @@
                  nv_area_admin = 1,
                  XSSsanitize = {NV_XSS_SANITIZE},
                  nv_whitelisted_tags = {NV_WHITELISTED_TAGS},
-                 nv_whitelisted_attr = {NV_WHITELISTED_ATTR};
+                 nv_whitelisted_attr = {NV_WHITELISTED_ATTR},
+                 nv_jsdate_get = '{JSDATE_GET}',
+                 nv_jsdate_post = '{JSDATE_POST}';
         </script>
         <script type="text/javascript" src="{ASSETS_STATIC_URL}/js/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="{ASSETS_LANG_STATIC_URL}/js/language/{NV_LANG_INTERFACE}{AUTO_MINIFIED}.js"></script>

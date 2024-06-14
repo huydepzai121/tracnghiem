@@ -182,8 +182,8 @@ if (empty($susp_reason)) {
 } else {
     $xtpl->assign('SUSPEND_INFO', $nv_Lang->getModule('suspend_info_yes'));
     foreach ($susp_reason as $vals) {
-        $xtpl->assign('VALUE0', $nv_Lang->getModule('suspend_info', nv_date('d/m/Y H:i', $vals['starttime']), $ads[$vals['start_admin']]));
-        $xtpl->assign('VALUE1', !empty($vals['endtime']) ? $nv_Lang->getModule('suspend_info', nv_date('d/m/Y H:i', $vals['endtime']), $ads[$vals['end_admin']]) : '');
+        $xtpl->assign('VALUE0', $nv_Lang->getModule('suspend_info', nv_datetime_format($vals['starttime']), $ads[$vals['start_admin']]));
+        $xtpl->assign('VALUE1', !empty($vals['endtime']) ? $nv_Lang->getModule('suspend_info', nv_datetime_format($vals['endtime']), $ads[$vals['end_admin']]) : '');
         $xtpl->assign('VALUE2', $vals['info']);
 
         if (empty($vals['endtime'])) {

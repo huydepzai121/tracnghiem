@@ -58,7 +58,7 @@ if ($numrows) {
             $level_txt = implode(', ', $array_mod);
         }
         $last_login = (int) ($row['last_login']);
-        $last_login = $last_login ? nv_date('l, d/m/Y H:i', $last_login) : $nv_Lang->getModule('last_login0');
+        $last_login = $last_login ? nv_datetime_format($last_login, 0, 0) : $nv_Lang->getModule('last_login0');
         $last_agent = $row['last_agent'];
 
         $_browser = new NukeViet\Client\Browser($last_agent);
@@ -71,7 +71,7 @@ if ($numrows) {
             $last_reason = array_shift($last_reason);
             [$susp_admin_id, $susp_admin_name] = $db->query('SELECT userid,first_name,last_name FROM ' . NV_USERS_GLOBALTABLE . ' WHERE userid=' . (int) ($last_reason['start_admin']))->fetch(3);
             $susp_admin_name = '<a href="' . NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;id=' . $susp_admin_id . '">' . $susp_admin_name . '</a>';
-            $is_suspend = $nv_Lang->getModule('is_suspend1', nv_date('d/m/Y H:i', $last_reason['starttime']), $susp_admin_name, $last_reason['info']);
+            $is_suspend = $nv_Lang->getModule('is_suspend1', nv_datetime_format($last_reason['starttime']), $susp_admin_name, $last_reason['info']);
         } elseif (empty($row['active'])) {
             $is_suspend = $nv_Lang->getModule('is_suspend2');
             $row['is_suspend'] = 1;
@@ -175,7 +175,7 @@ if ($numrows) {
             $admins[$row['admin_id']]['options']['allow_create_subdirectories'] = [$nv_Lang->getModule('allow_create_subdirectories'), !empty($allow_create_subdirectories) ? $nv_Lang->getGlobal('yes') : $nv_Lang->getGlobal('no')];
             $admins[$row['admin_id']]['options']['allow_modify_subdirectories'] = [$nv_Lang->getModule('allow_modify_subdirectories'), !empty($allow_modify_subdirectories) ? $nv_Lang->getGlobal('yes') : $nv_Lang->getGlobal('no')];
 
-            $admins[$row['admin_id']]['options']['regtime'] = [$nv_Lang->getModule('regtime'), nv_date('l, d/m/Y H:i', $row['regdate'])];
+            $admins[$row['admin_id']]['options']['regtime'] = [$nv_Lang->getModule('regtime'), nv_datetime_format($row['regdate'], 0, 0)];
             $admins[$row['admin_id']]['options']['last_login'] = [$nv_Lang->getModule('last_login'), $last_login];
             $admins[$row['admin_id']]['options']['last_ip'] = [$nv_Lang->getModule('last_ip'), $row['last_ip']];
             $admins[$row['admin_id']]['options']['browser'] = [$nv_Lang->getModule('browser'), $br['name']];

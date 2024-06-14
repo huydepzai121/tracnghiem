@@ -95,7 +95,7 @@ if (!nv_function_exists('nv_comment_new')) {
                 if (isset($array_news_id[$comment['id']])) {
                     $comment['url_comment'] = nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module . '&' . NV_OP_VARIABLE . '=' . $array_news_id[$comment['id']]['alias_cat'] . '/' . $array_news_id[$comment['id']]['alias_id'] . '-' . $comment['id'] . $global_config['rewrite_exturl'], true);
                     $comment['content'] = nv_clean60($comment['content'], $block_config['titlelength']);
-                    $comment['post_time'] = nv_date('d/m/Y H:i', $comment['post_time']);
+                    $comment['post_time'] = nv_datetime_format($comment['post_time']);
                     $xtpl->assign('COMMENT', $comment);
                     $xtpl->parse('main.loop');
                 }

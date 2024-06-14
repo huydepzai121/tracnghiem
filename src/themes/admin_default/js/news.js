@@ -656,7 +656,7 @@ $(function() {
 
     if ($("#from_date, #to_date").length) {
         $("#from_date, #to_date").datepicker({
-            dateFormat: "dd/mm/yy",
+            dateFormat: nv_jsdate_get.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,
