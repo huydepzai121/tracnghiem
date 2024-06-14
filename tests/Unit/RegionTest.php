@@ -78,9 +78,62 @@ class RegionTest extends \Codeception\Test\Unit
     }
 
     /**
-     * Kiểm tra định dạng giờ
+     * Kiểm tra chuyển get date thành timestamp
      */
-    public function testTimeFormat()
+    public function testD2UGet()
     {
+        $this->assertEquals(1718298000, nv_d2u_get('14-06-2024', null, null, null, 'vi'));
+        $this->assertEquals(1718298000, nv_d2u_get('06-14-2024', null, null, null, 'en'));
+
+        $this->assertEquals(1718384399, nv_d2u_get('14-06-2024', 23, 59, 59, 'vi'));
+        $this->assertEquals(1718384399, nv_d2u_get('06-14-2024', 23, 59, 59, 'en'));
+
+        $this->assertEquals(1718349800, nv_d2u_get('14-06-2024 14:23:20', null, null, null, 'vi'));
+        $this->assertEquals(1718349800, nv_d2u_get('06-14-2024 14:23:20', null, null, null, 'en'));
+
+        $this->assertEquals(1718349780, nv_d2u_get('14-06-2024 14:23', null, null, null, 'vi'));
+        $this->assertEquals(1718349780, nv_d2u_get('06-14-2024 14:23', null, null, null, 'en'));
+
+        $this->assertEquals(1718384399, nv_d2u_get('14-06-2024 14:23:20', 23, 59, 59, 'vi'));
+        $this->assertEquals(1718384399, nv_d2u_get('06-14-2024 14:23:20', 23, 59, 59, 'en'));
+    }
+
+    /**
+     * Kiểm tra chuyển post date thành timestamp
+     */
+    public function testD2UPost()
+    {
+        $this->assertEquals(1718298000, nv_d2u_post('14/06/2024', null, null, null, 'vi'));
+        $this->assertEquals(1718298000, nv_d2u_post('06/14/2024', null, null, null, 'en'));
+
+        $this->assertEquals(1718384399, nv_d2u_post('14/06/2024', 23, 59, 59, 'vi'));
+        $this->assertEquals(1718384399, nv_d2u_post('06/14/2024', 23, 59, 59, 'en'));
+
+        $this->assertEquals(1718349800, nv_d2u_post('14/06/2024 14:23:20', null, null, null, 'vi'));
+        $this->assertEquals(1718349800, nv_d2u_post('06/14/2024 14:23:20', null, null, null, 'en'));
+
+        $this->assertEquals(1718349780, nv_d2u_post('14/06/2024 14:23', null, null, null, 'vi'));
+        $this->assertEquals(1718349780, nv_d2u_post('06/14/2024 14:23', null, null, null, 'en'));
+
+        $this->assertEquals(1718384399, nv_d2u_post('14/06/2024 14:23:20', 23, 59, 59, 'vi'));
+        $this->assertEquals(1718384399, nv_d2u_post('06/14/2024 14:23:20', 23, 59, 59, 'en'));
+    }
+
+    /**
+     * Kiểm tra chuyển timestamp thành get date
+     */
+    public function testU2DGet()
+    {
+        $this->assertEquals('14-06-2024', nv_u2d_get(1718298000, 'vi'));
+        $this->assertEquals('06-14-2024', nv_u2d_get(1718298000, 'en'));
+    }
+
+    /**
+     * Kiểm tra chuyển timestamp thành post date
+     */
+    public function testU2DPost()
+    {
+        $this->assertEquals('14/06/2024', nv_u2d_post(1718298000, 'vi'));
+        $this->assertEquals('06/14/2024', nv_u2d_post(1718298000, 'en'));
     }
 }
