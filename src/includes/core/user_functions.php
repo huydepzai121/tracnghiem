@@ -593,9 +593,10 @@ function nv_html_meta_tags($html = true)
  * nv_html_links()
  *
  * @param bool $html
+ * @param book $moduleCss
  * @return array|string
  */
-function nv_html_links($html = true)
+function nv_html_links($html = true, $moduleCss = true)
 {
     global $canonicalUrl, $prevPage, $nextPage, $nv_html_links, $global_config, $nv_Lang;
 
@@ -642,9 +643,11 @@ function nv_html_links($html = true)
         $return = array_merge_recursive($return, $nv_html_site_rss);
     }
 
-    $nv_html_css = nv_html_css(false);
-    if ($nv_html_css) {
-        $return = array_merge_recursive($return, $nv_html_css);
+    if ($moduleCss) {
+        $nv_html_css = nv_html_css(false);
+        if ($nv_html_css) {
+            $return = array_merge_recursive($return, $nv_html_css);
+        }
     }
 
     // Thêm các thẻ link từ cấu hình Link-Tags trong admin
@@ -821,9 +824,10 @@ function nv_html_site_rss($html = true)
  * @param bool  $language_js Có kết nối với file ngôn ngữ JS hay không
  * @param bool  $global_js   Có kết nối với file global.js hay không
  * @param bool  $default_js  Có kết nối với file JS của theme Default hay không khi thiếu file tương ứng ở theme đang sử dụng
+ * @param bool  $module_js   Có kết nối với file JS của module hay không
  * @return array|string
  */
-function nv_html_site_js($html = true, $other_js = [], $language_js = true, $global_js = true, $default_js = true)
+function nv_html_site_js($html = true, $other_js = [], $language_js = true, $global_js = true, $default_js = true, $module_js = true)
 {
     global $global_config, $module_info, $module_name, $module_file, $nv_Lang, $op, $client_info, $user_info, $browser;
 
@@ -906,24 +910,26 @@ function nv_html_site_js($html = true, $other_js = [], $language_js = true, $glo
     }
 
     // module js
-    if (theme_file_exists($module_info['template'] . '/js/' . $module_info['module_theme'] . '.js')) {
-        $return[] = [
-            'ext' => 1,
-            'content' => NV_STATIC_URL . 'themes/' . $module_info['template'] . '/js/' . $module_info['module_theme'] . '.js'
-        ];
-    } else {
-        $fs = glob(NV_ROOTDIR . '/themes/' . $module_info['template'] . '/js/' . $module_file . '.*');
-        if (!empty($fs) and in_array(NV_ROOTDIR . '/themes/' . $module_info['template'] . '/js/' . $module_file . '.js', $fs, true)) {
+    if ($module_js) {
+        if (theme_file_exists($module_info['template'] . '/js/' . $module_info['module_theme'] . '.js')) {
             $return[] = [
                 'ext' => 1,
-                'content' => NV_STATIC_URL . 'themes/' . $module_info['template'] . '/js/' . $module_file . '.js'
+                'content' => NV_STATIC_URL . 'themes/' . $module_info['template'] . '/js/' . $module_info['module_theme'] . '.js'
             ];
-        } elseif ($default_js and (empty($fs) or !in_array(NV_ROOTDIR . '/themes/' . $module_info['template'] . '/js/' . $module_file . '.nojs', $fs, true))) {
-            if (theme_file_exists('default/js/' . $module_file . '.js')) {
+        } else {
+            $fs = glob(NV_ROOTDIR . '/themes/' . $module_info['template'] . '/js/' . $module_file . '.*');
+            if (!empty($fs) and in_array(NV_ROOTDIR . '/themes/' . $module_info['template'] . '/js/' . $module_file . '.js', $fs, true)) {
                 $return[] = [
                     'ext' => 1,
-                    'content' => NV_STATIC_URL . 'themes/default/js/' . $module_file . '.js'
+                    'content' => NV_STATIC_URL . 'themes/' . $module_info['template'] . '/js/' . $module_file . '.js'
                 ];
+            } elseif ($default_js and (empty($fs) or !in_array(NV_ROOTDIR . '/themes/' . $module_info['template'] . '/js/' . $module_file . '.nojs', $fs, true))) {
+                if (theme_file_exists('default/js/' . $module_file . '.js')) {
+                    $return[] = [
+                        'ext' => 1,
+                        'content' => NV_STATIC_URL . 'themes/default/js/' . $module_file . '.js'
+                    ];
+                }
             }
         }
     }
