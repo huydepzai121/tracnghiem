@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{$CSS_MODULE}" type="text/css">
     {/if}
 
-    <script data-show="inline" type="text/javascript" src="{$smarty.const.NV_BASE_SITEURL}themes/{$ADMIN_INFO.admin_theme}/js/nv.init.js"></script>
+    <script data-show="inline" type="text/javascript" src="{$smarty.const.NV_BASE_SITEURL}themes/{$ADMIN_INFO.admin_theme}/js/nv.head.js"></script>
     <script type="text/javascript">
     var nv_base_siteurl = '{$smarty.const.NV_BASE_SITEURL}',
         nv_assets_dir = '{$smarty.const.NV_ASSETS_DIR}',
