@@ -27,6 +27,10 @@
             @include border-radius($form-select-border-radius, 0);
             @include box-shadow($form-select-box-shadow);
             @include transition($form-select-transition);
+
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
 
         .select2-selection__clear {
@@ -42,12 +46,102 @@
         }
     }
 
+    .select2-selection--multiple {
+        min-height: calc(2 * $form-select-padding-y + $form-select-line-height * $font-size-base + 2 * $form-select-border-width);
+        user-select: none;
+        padding: 0 calc($form-select-padding-x / 2) calc($form-select-padding-y - 2 * $form-select-border-width) 0;
+        font-family: $form-select-font-family;
+        @include font-size($form-select-font-size);
+        font-weight: $form-select-font-weight;
+        line-height: $form-select-line-height;
+        color: $form-select-color;
+        background-color: $form-select-bg;
+        border: $form-select-border-width solid $form-select-border-color;
+        @include border-radius($form-select-border-radius, 0);
+        @include box-shadow($form-select-box-shadow);
+        @include transition($form-select-transition);
+
+        display: block;
+
+        .select2-selection__rendered {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: inline;
+            position: relative;
+
+            .select2-selection__choice {
+                display: inline-block;
+                margin-left: calc($form-select-padding-x / 2);
+                margin-top: calc($form-select-padding-y - 2 * $form-select-border-width);
+                border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+                border-radius: var(--bs-border-radius-sm);
+                background-color: var(--bs-tertiary-bg);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                vertical-align: bottom;
+                position: relative;
+                max-width: calc(100% - $form-select-padding-x / 2);
+
+                .select2-selection__choice__remove {
+                    background-color: transparent;
+                    border: none;
+                    border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+                }
+
+                .select2-selection__choice__display {
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    padding-left: .125rem;
+                    padding-right: .3125rem;
+                }
+            }
+        }
+
+        .select2-search--inline {
+            max-width: 100%;
+
+            .select2-search__field {
+                padding: 0;
+                resize: none;
+                outline: 0;
+                height: calc($form-select-line-height * $font-size-base);
+                max-width: 100%;
+                overflow: hidden;
+                word-break: keep-all;
+                line-height: 1.4;
+                margin-left: calc($form-select-padding-x / 2);
+                margin-top: $form-select-padding-y;
+                vertical-align: bottom;
+                transform: translate(0, -.1875rem);
+                color: $form-select-color;
+                border: none;
+            }
+        }
+    }
+
     &.select2-container--disabled {
         .select2-selection--single {
             .select2-selection__rendered {
                 color: $form-select-disabled-color;
                 background-color: $form-select-disabled-bg;
                 border-color: $form-select-disabled-border-color;
+            }
+        }
+
+        .select2-selection--multiple {
+            color: $form-select-disabled-color;
+            background-color: $form-select-disabled-bg;
+            border-color: $form-select-disabled-border-color;
+
+            .select2-selection__rendered {
+                .select2-selection__choice {
+                    .select2-selection__choice__remove {
+                        cursor: default;
+                    }
+                }
             }
         }
     }
@@ -61,6 +155,15 @@
                 } @else {
                     box-shadow: $form-select-focus-box-shadow;
                 }
+            }
+        }
+
+        .select2-selection--multiple {
+            border-color: $form-select-focus-border-color;
+            @if $enable-shadows {
+                @include box-shadow($form-select-box-shadow, $form-select-focus-box-shadow);
+            } @else {
+                box-shadow: $form-select-focus-box-shadow;
             }
         }
     }
@@ -127,6 +230,18 @@
 
     &[aria-selected] {
         cursor: pointer;
+    }
+
+    &.select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: var(--bs-dropdown-link-hover-bg);
+    }
+
+    &.select2-results__option--disabled {
+        color: var(--bs-secondary-color);
+    }
+
+    &.select2-results__option--selected {
+        color: var(--bs-link-color);
     }
 }
 
