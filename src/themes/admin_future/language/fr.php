@@ -27,3 +27,4 @@ $lang_global['color_mode_auto'] = 'Automatique';
 $lang_global['text_direction'] = 'Direction';
 $lang_global['text_direction_ltr'] = 'LTR';
 $lang_global['text_direction_rtl'] = 'RTL';
+$lang_global['toggle_left_sidebar'] = 'Basculer la barre latérale gauche';

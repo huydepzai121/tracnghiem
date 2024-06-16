@@ -27,3 +27,4 @@ $lang_global['color_mode_auto'] = 'Tự động theo thiết bị';
 $lang_global['text_direction'] = 'Hướng giao diện';
 $lang_global['text_direction_ltr'] = 'LTR';
 $lang_global['text_direction_rtl'] = 'RTL';
+$lang_global['toggle_left_sidebar'] = 'Mở rộng, thu gọn thanh menu dọc';
