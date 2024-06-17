@@ -97,7 +97,7 @@ function user_register($gfx_chk, $checkss, $data_questions, $array_field_config,
             // Các trường hệ thống xuất độc lập
             if (!empty($row['system'])) {
                 if ($row['field'] == 'birthday') {
-                    $row['value'] = (empty($row['value'])) ? '' : date('d/m/Y', $row['value']);
+                    $row['value'] = nv_u2d_post($row['value']);
                     $row['min_old_user'] = $global_users_config['min_old_user'];
                     $datepicker = true;
                 } elseif ($row['field'] == 'sig') {
@@ -166,7 +166,7 @@ function user_register($gfx_chk, $checkss, $data_questions, $array_field_config,
                     }
                     $xtpl->parse('main.field.loop.textbox');
                 } elseif ($row['field_type'] == 'date') {
-                    $row['value'] = (empty($row['value'])) ? '' : date('d/m/Y', $row['value']);
+                    $row['value'] = nv_u2d_post($row['value']);
                     $xtpl->assign('FIELD', $row);
                     if ($row['min_length']) {
                         $xtpl->parse('main.field.loop.date.minDate');
@@ -817,7 +817,7 @@ function user_info($data, $array_field_config, $custom_fields, $types, $data_que
             $row['value'] = (isset($custom_fields[$row['field']])) ? $custom_fields[$row['field']] : '';
             $row['required'] = ($row['required']) ? 'required' : '';
             if ($row['field'] == 'birthday') {
-                $row['value'] = (empty($row['value'])) ? '' : date('d/m/Y', $row['value']);
+                $row['value'] = nv_u2d_post($row['value']);
                 $row['min_old_user'] = $global_users_config['min_old_user'];
                 $datepicker = true;
             } elseif ($row['field'] == 'sig') {
@@ -1099,7 +1099,7 @@ function user_info($data, $array_field_config, $custom_fields, $types, $data_que
                     }
                     $xtpl->parse('main.tab_edit_others.loop.textbox');
                 } elseif ($row['field_type'] == 'date') {
-                    $row['value'] = (empty($row['value'])) ? '' : date('d/m/Y', $row['value']);
+                    $row['value'] = nv_u2d_post($row['value']);
                     $datepicker = true;
                     $xtpl->assign('FIELD', $row);
                     if (!empty($row['min_length'])) {
@@ -1465,7 +1465,7 @@ function user_welcome($array_field_config, $custom_fields)
             if ($row['show_profile']) {
                 $question_type = $row['field_type'];
                 if ($question_type == 'date') {
-                    $value = !empty($custom_fields[$row['field']]) ? date('d/m/Y', $custom_fields[$row['field']]) : '';
+                    $value = nv_date_format(1, $custom_fields[$row['field']] ?? 0);
                 } elseif ($question_type == 'checkbox') {
                     $result = explode(',', $custom_fields[$row['field']]);
                     $value = [];
@@ -1733,7 +1733,7 @@ function nv_memberslist_detail_theme($item, $array_field_config, $custom_fields,
             if ($row['show_profile']) {
                 $question_type = $row['field_type'];
                 if ($question_type == 'date') {
-                    $value = !empty($custom_fields[$row['field']]) ? date('d/m/Y', $custom_fields[$row['field']]) : '';
+                    $value = nv_date_format(1, $custom_fields[$row['field']] ?? 0);
                 } elseif ($question_type == 'checkbox') {
                     $result = explode(',', $custom_fields[$row['field']]);
                     $value = [];

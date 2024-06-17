@@ -214,6 +214,7 @@ $lang_module['listusers_order_ASC'] = 'Ascending';
 $lang_module['notuser'] = 'Members do not exist under this option!';
 $lang_module['field_match_type_error'] = '%s doesn\'t match the rule';
 $lang_module['field_min_max_value'] = 'You must fill in the %1$s field from %2$s to %3$s characters';
+$lang_module['field_min_max_value_date'] = 'You must fill in the %1$s field from %2$s to %3$s';
 $lang_module['field_min_max_error'] = 'You must fill in the %1$s field from %2$s to %3$s characters';
 $lang_module['field_match_type_required'] = '%s is required to be declared';
 $lang_module['errorMessage'] = 'Notifications from website';

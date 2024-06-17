@@ -303,23 +303,15 @@ if ($nv_Request->isset_request('save', 'post')) {
         }
     } elseif ($dataform['field_type'] == 'date') {
         $date_fields = 1;
-        if (preg_match('/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/', $nv_Request->get_string('min_date', 'post'), $m)) {
-            $dataform['min_length'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
-        } else {
-            $dataform['min_length'] = 0;
-        }
-        if (preg_match('/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/', $nv_Request->get_string('max_date', 'post'), $m)) {
-            $dataform['max_length'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
-        } else {
-            $dataform['max_length'] = 0;
+
+        $dataform['min_length'] = nv_d2u_post($nv_Request->get_string('min_date', 'post'));
+        $dataform['max_length'] = nv_d2u_post($nv_Request->get_string('max_date', 'post'));
+        $dataform['current_date'] = $nv_Request->get_int('current_date', 'post', 0);
+        $dataform['default_value'] = 0;
+        if (empty($dataform['current_date'])) {
+            $dataform['default_value'] = nv_d2u_post($nv_Request->get_string('default_date', 'post'));
         }
 
-        $dataform['current_date'] = $nv_Request->get_int('current_date', 'post', 0);
-        if (!$dataform['current_date'] and preg_match('/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/', $nv_Request->get_string('default_date', 'post'), $m)) {
-            $dataform['default_value'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
-        } else {
-            $dataform['default_value'] = 0;
-        }
         $dataform['match_type'] = 'none';
         $dataform['match_regex'] = $dataform['func_callback'] = '';
         $field_choices['current_date'] = $dataform['current_date'];
@@ -547,11 +539,12 @@ if ($nv_Request->isset_request('save', 'post')) {
                         //2^32 LONGTEXT
                         $type_date = 'LONGTEXT NOT NULL';
                     }
-                    $save = false;
                     try {
-                        $save = $db->exec('ALTER TABLE ' . NV_MOD_TABLE . '_info CHANGE ' . $dataform_old['field'] . ' ' . $dataform_old['field'] . ' ' . $type_date . ' COMMENT ' . $db->quote($dataform['title']));
-                    } catch (PDOException $e) {
-                        trigger_error($e->getMessage());
+                        $db->query('ALTER TABLE ' . NV_MOD_TABLE . '_info CHANGE ' . $dataform_old['field'] . ' ' . $dataform_old['field'] . ' ' . $type_date . ' COMMENT ' . $db->quote($dataform['title']));
+                        $save = true;
+                    } catch (Throwable $e) {
+                        $save = false;
+                        trigger_error(print_r($e, true));
                     }
                 }
             }
@@ -763,9 +756,9 @@ if ($nv_Request->isset_request('qlist', 'get')) {
         $date_fields = 1;
         $dataform['current_date_1'] = ($field_choices['current_date'] == 1) ? ' checked="checked"' : '';
         $dataform['current_date_0'] = ($field_choices['current_date'] == 0) ? ' checked="checked"' : '';
-        $dataform['default_date'] = empty($dataform['default_value']) ? '' : date('d/m/Y', $dataform['default_value']);
-        $dataform['min_date'] = empty($dataform['min_length']) ? '' : date('d/m/Y', $dataform['min_length']);
-        $dataform['max_date'] = empty($dataform['max_length']) ? '' : date('d/m/Y', $dataform['max_length']);
+        $dataform['default_date'] = nv_u2d_post($dataform['default_value']);
+        $dataform['min_date'] = nv_u2d_post($dataform['min_length']);
+        $dataform['max_date'] = nv_u2d_post($dataform['max_length']);
     } elseif ($dataform['field_type'] == 'file') {
         $file_fields = 1;
     } else {

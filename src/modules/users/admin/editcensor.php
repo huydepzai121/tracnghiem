@@ -136,7 +136,7 @@ if ($nv_Request->isset_request('approved', 'post')) {
             if (isset($array_field_config[$fkey])) {
                 $field = $array_field_config[$fkey];
                 if ($field['field_type'] == 'date') {
-                    $custom_fields[$fkey] = empty($custom_fields[$fkey]) ? '' : date('d/m/Y', $custom_fields[$fkey]);
+                    $custom_fields[$fkey] = nv_u2d_post($custom_fields[$fkey] ?? 0);
                 } elseif ($field['field_type'] == 'checkbox' or $field['field_type'] == 'multiselect' or $field['field_type'] == 'file') {
                     $custom_fields[$fkey] = empty($custom_fields[$fkey]) ? [] : explode(',', $custom_fields[$fkey]);
                 }
@@ -257,7 +257,7 @@ if (!empty($reviewuid)) {
             $custom_fields['sig'] = $_user['sig'];
             $custom_fields['view_mail'] = $_user['view_mail'];
         } else {
-            $custom_fields['birthday'] = empty($custom_fields['birthday']) ? '' : date('d/m/Y', $custom_fields['birthday']);
+            $custom_fields['birthday'] = nv_u2d_post($custom_fields['birthday']);
         }
 
         // Kiểm tra các trường dữ liệu tùy biến + Hệ thống
@@ -343,8 +343,8 @@ if (!empty($reviewuid)) {
             // Các trường hệ thống xuất độc lập
             if (!empty($row['system'])) {
                 if ($row['field'] == 'birthday') {
-                    $row['value'] = (empty($row['value'])) ? '' : date('d/m/Y', $row['value']);
-                    $row['valueold'] = (empty($row['valueold'])) ? '' : date('d/m/Y', $row['valueold']);
+                    $row['value'] = nv_u2d_post($row['value']);
+                    $row['valueold'] = nv_u2d_post($row['valueold']);
                 } elseif ($row['field'] == 'sig') {
                     $row['value'] = nv_htmlspecialchars(nv_br2nl($row['value']));
                 }
@@ -380,8 +380,8 @@ if (!empty($reviewuid)) {
                 if ($row['field_type'] == 'textbox' or $row['field_type'] == 'number') {
                     $xtpl->parse('main.custom.loop.textbox');
                 } elseif ($row['field_type'] == 'date') {
-                    $row['value'] = (empty($row['value'])) ? '' : date('d/m/Y', $row['value']);
-                    $row['valueold'] = (empty($row['valueold'])) ? '' : date('d/m/Y', $row['valueold']);
+                    $row['value'] = nv_u2d_post($row['value']);
+                    $row['valueold'] = nv_u2d_post($row['valueold']);
                     $xtpl->assign('FIELD', $row);
                     $xtpl->parse('main.custom.loop.date');
                 } elseif ($row['field_type'] == 'textarea') {
@@ -611,7 +611,7 @@ while ($row = $result->fetch()) {
         'username' => $row['username'],
         'full_name' => nv_show_name_user($row['first_name'], $row['last_name'], $row['username']),
         'email' => $row['email'],
-        'lastedit' => date('d/m/Y H:i', $row['lastedit'])
+        'lastedit' => nv_datetime_format($row['lastedit'])
     ];
 }
 

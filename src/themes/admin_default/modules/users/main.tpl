@@ -57,7 +57,7 @@
                 <div class="col-xs-12 col-md-5">
                     <div class="form-group">
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{REG_TIME_FROM}" name="reg_from" id="reg_time_from" placeholder="{LANG.reg_time_from}">
+                            <input type="text" class="form-control" value="{REG_TIME_FROM}" name="reg_from" id="reg_time_from" placeholder="{LANG.reg_time_from}" autocomplete="off">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button" id="from-btn">
                                     <em class="fa fa-calendar fa-fix"></em>
@@ -69,7 +69,7 @@
                 <div class="col-xs-12 col-md-5">
                     <div class="form-group">
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{REG_TIME_TO}" name="reg_to" id="reg_time_to" placeholder="{LANG.reg_time_to}">
+                            <input type="text" class="form-control" value="{REG_TIME_TO}" name="reg_to" id="reg_time_to" placeholder="{LANG.reg_time_to}" autocomplete="off">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button" id="to-btn">
                                     <em class="fa fa-calendar fa-fix"></em>

@@ -537,7 +537,7 @@ if ($nv_Request->isset_request('userid', 'get')) {
             // Các trường hệ thống xuất độc lập
             if (!empty($row['system'])) {
                 if ($row['field'] == 'birthday') {
-                    $row['value'] = (empty($row['value'])) ? '' : date('d/m/Y', $row['value']);
+                    $row['value'] = nv_u2d_post($row['value']);
                 } elseif ($row['field'] == 'sig') {
                     $row['value'] = nv_htmlspecialchars(nv_br2nl($row['value']));
                 }
@@ -578,7 +578,7 @@ if ($nv_Request->isset_request('userid', 'get')) {
                 if ($row['field_type'] == 'textbox' or $row['field_type'] == 'number') {
                     $xtpl->parse('user_details.field.loop.textbox');
                 } elseif ($row['field_type'] == 'date') {
-                    $row['value'] = (empty($row['value'])) ? '' : date('d/m/Y', $row['value']);
+                    $row['value'] = nv_u2d_post($row['value']);
                     $xtpl->assign('FIELD', $row);
                     $xtpl->parse('user_details.field.loop.date');
                 } elseif ($row['field_type'] == 'textarea') {
@@ -780,7 +780,7 @@ while ($row = $result->fetch()) {
         'username' => $row['username'],
         'full_name' => nv_show_name_user($row['first_name'], $row['last_name'], $row['username']),
         'email' => $row['email'],
-        'regdate' => date('d/m/Y H:i', $row['regdate'])
+        'regdate' => nv_datetime_format($row['regdate'])
     ];
 }
 

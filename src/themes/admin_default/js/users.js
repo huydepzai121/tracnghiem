@@ -646,7 +646,7 @@ $(document).ready(function() {
     if ($.fn.datepicker) {
         $(".datepicker").datepicker({
             showOn: "both",
-            dateFormat: "dd/mm/yy",
+            dateFormat: nv_jsdate_post.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,
@@ -656,7 +656,7 @@ $(document).ready(function() {
         });
         $("#birthday").datepicker({
             showOn: "both",
-            dateFormat: "dd/mm/yy",
+            dateFormat: nv_jsdate_post.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,
@@ -919,7 +919,7 @@ $(document).ready(function() {
         });
         $(".mydatepicker", user_details).datepicker({
             showOn: "focus",
-            dateFormat: "dd/mm/yy",
+            dateFormat: nv_jsdate_post.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,
@@ -1110,7 +1110,7 @@ $(document).ready(function() {
 
     if ($("#reg_time_from, #reg_time_to").length) {
         $("#reg_time_from, #reg_time_to").datepicker({
-            dateFormat: "dd.mm.yy",
+            dateFormat: nv_jsdate_get.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,

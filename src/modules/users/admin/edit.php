@@ -117,7 +117,7 @@ if ($nv_Request->isset_request('psr', 'post')) {
     nv_jsonOutput([
         'userid' => $userid,
         'username' => $row['username'],
-        'pass_creation_time' => !empty($row['pass_creation_time']) ? date('d/m/Y H:i', $row['pass_creation_time']) : '',
+        'pass_creation_time' => nv_datetime_format($row['pass_creation_time']),
         'pass_reset_request' => $nv_Lang->getModule('pass_reset_request' . $row['pass_reset_request'])
     ]);
 }
@@ -577,7 +577,7 @@ if (defined('NV_IS_USER_FORUM')) {
         // Các trường hệ thống xuất độc lập
         if (!empty($row['system'])) {
             if ($row['field'] == 'birthday') {
-                $row['value'] = (empty($row['value'])) ? '' : date('d/m/Y', $row['value']);
+                $row['value'] = nv_u2d_post($row['value']);
             } elseif ($row['field'] == 'sig') {
                 $row['value'] = nv_htmlspecialchars(nv_br2nl($row['value']));
             }
@@ -618,7 +618,7 @@ if (defined('NV_IS_USER_FORUM')) {
             if ($row['field_type'] == 'textbox' or $row['field_type'] == 'number') {
                 $xtpl->parse('main.edit_user.field.loop.textbox');
             } elseif ($row['field_type'] == 'date') {
-                $row['value'] = (empty($row['value'])) ? '' : date('d/m/Y', $row['value']);
+                $row['value'] = nv_u2d_post($row['value']);
                 $xtpl->assign('FIELD', $row);
                 $xtpl->parse('main.edit_user.field.loop.date');
             } elseif ($row['field_type'] == 'textarea') {

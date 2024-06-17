@@ -57,7 +57,7 @@ function deleteAvatar(a, b, c) {
 function datepickerShow(a) {
     if ("object" == typeof $.datepicker) {
         $(a).datepicker({
-            dateFormat: "dd/mm/yy",
+            dateFormat: nv_jsdate_post.replace('yyyy', 'yy'),
             changeMonth: !0,
             changeYear: !0,
             showOtherMonths: !0,
@@ -706,7 +706,7 @@ $(function() {
                     that.show();
                 }
             };
-        
+
         var modalObj = $('#' + $(this).data('modal')),
             fileAccept = modalObj.data('accept'),
             maxsize = parseInt(modalObj.data('maxsize')),
@@ -735,7 +735,7 @@ $(function() {
                                 return !1;
                             }
                         }
-        
+
                         // Check file size
                         if (typeof ($(this)[0].files) != "undefined") {
                             if ($(this)[0].files[0].size > maxsize) {

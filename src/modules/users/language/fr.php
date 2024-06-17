@@ -214,6 +214,7 @@ $lang_module['listusers_order_ASC'] = 'ascendant';
 $lang_module['notuser'] = 'Aucun utilisateur pour cette option!';
 $lang_module['field_match_type_error'] = '%s ne respecte pas les règle';
 $lang_module['field_min_max_value'] = 'Vous devez renseigner le champ %1$s de %2$s à %3$s caractères';
+$lang_module['field_min_max_value_date'] = 'Vous devez renseigner le champ %1$s de %2$s à %3$s';
 $lang_module['field_min_max_error'] = 'Vous devez renseigner le champ %1$s de %2$s à %3$s caractères';
 $lang_module['field_match_type_required'] = '%s doit être rempli';
 $lang_module['errorMessage'] = 'Message du système';

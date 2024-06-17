@@ -631,13 +631,7 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
 
                 $post['description'] = $nv_Request->get_title('description', 'post', '', 1);
                 $post['content'] = $nv_Request->get_editor('content', '', NV_ALLOWED_HTML_TAGS);
-                $post['exp_time'] = $nv_Request->get_title('exp_time', 'post', '');
-
-                if (preg_match('/^([\d]{1,2})\/([\d]{1,2})\/([\d]{4})$/', $post['exp_time'], $matches)) {
-                    $post['exp_time'] = mktime(23, 59, 59, $matches[2], $matches[1], $matches[3]);
-                } else {
-                    $post['exp_time'] = 0;
-                }
+                $post['exp_time'] = nv_d2u_post($nv_Request->get_title('exp_time', 'post', ''), 23, 59, 59);
 
                 $post['group_type'] = $nv_Request->get_int('group_type', 'post', 0);
                 if (!in_array($post['group_type'], [0, 1, 2], true)) {
@@ -792,7 +786,7 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
         if ($nv_Request->isset_request('edit', 'get')) {
             $post = $groupsList[$post['id']];
             $post['content'] = nv_editor_br2nl($post['content']);
-            $post['exp_time'] = !empty($post['exp_time']) ? date('d/m/Y', $post['exp_time']) : '';
+            $post['exp_time'] = nv_u2d_post($post['exp_time']);
             $post['siteus'] = $post['siteus'] ? ' checked="checked"' : '';
             $post['id'] = $post['group_id'];
 

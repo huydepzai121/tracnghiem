@@ -214,6 +214,7 @@ $lang_module['listusers_order_ASC'] = 'tăng dần';
 $lang_module['notuser'] = 'Không tồn tại người dùng nào theo lựa chọn này!';
 $lang_module['field_match_type_error'] = '%s không đúng quy tắc';
 $lang_module['field_min_max_value'] = 'Bạn phải điền vào trường %1$s từ %2$s đến %3$s ký tự';
+$lang_module['field_min_max_value_date'] = 'Bạn phải điền vào trường %1$s từ ngày %2$s đến ngày %3$s';
 $lang_module['field_min_max_error'] = 'Bạn phải điền vào trường %1$s từ %2$s đến %3$s ký tự';
 $lang_module['field_match_type_required'] = '%s bắt buộc nhập';
 $lang_module['errorMessage'] = 'Thông báo từ hệ thống';

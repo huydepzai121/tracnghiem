@@ -168,14 +168,14 @@ function get_alias() {
     //<![CDATA[
     $(document).ready(function() {
         $("#addCat [name=title]").change(function() {
-        	var alias = strip_tags(trim($("#addCat [name=alias]").val()));
+            var alias = strip_tags(trim($("#addCat [name=alias]").val()));
             if (alias == '') {
                 get_alias()
             }
         });
         $('[name="exp_time"]').datepicker({
             showOn : "both",
-            dateFormat : "dd/mm/yy",
+            dateFormat : nv_jsdate_post.replace('yyyy', 'yy'),
             changeMonth : true,
             changeYear : true,
             showOtherMonths : true,

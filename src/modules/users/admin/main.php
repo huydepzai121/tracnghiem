@@ -138,17 +138,21 @@ if ($active2step == 'disabled') {
 }
 
 $reg_from = $nv_Request->get_title('reg_from', 'post,get', '');
-unset($m);
-if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $reg_from, $m)) {
-    $_arr_where[] = 'tb1.regdate >= ' . mktime(0, 0, 0, $m[2], $m[1], $m[3]);
+$reg_from_t = nv_d2u_get($reg_from);
+if ($reg_from_t != 0) {
+    $_arr_where[] = 'tb1.regdate >= ' . $reg_from_t;
     $base_url .= '&amp;reg_from=' . $reg_from;
+} else {
+    $reg_from = '';
 }
 
 $reg_to = $nv_Request->get_title('reg_to', 'post,get', '');
-unset($m);
-if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $reg_to, $m)) {
-    $_arr_where[] = 'tb1.regdate <= ' . mktime(23, 59, 59, $m[2], $m[1], $m[3]);
+$reg_to_t = nv_d2u_get($reg_to, 23, 59, 59);
+if ($reg_to_t != 0) {
+    $_arr_where[] = 'tb1.regdate <= ' . $reg_to_t;
     $base_url .= '&amp;reg_to=' . $reg_to;
+} else {
+    $reg_to = '';
 }
 
 $page = $nv_Request->get_int('page', 'get', 1);

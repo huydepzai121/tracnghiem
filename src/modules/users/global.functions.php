@@ -243,7 +243,8 @@ function fieldsCheck(&$custom_fields, &$array_data, &$query_field, &$valid_field
                     ];
                 }
             } elseif ($row_f['field_type'] == 'date') {
-                if (!preg_match('/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/', $value, $m)) {
+                $value = nv_d2u_post($value);
+                if (empty($value)) {
                     return [
                         'status' => 'error',
                         'input' => $field_input_name,
@@ -251,20 +252,19 @@ function fieldsCheck(&$custom_fields, &$array_data, &$query_field, &$valid_field
                     ];
                 }
 
-                $m[1] = (int) ($m[1]);
-                $m[2] = (int) ($m[2]);
-                $m[3] = (int) ($m[3]);
-                $value = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
-
                 if ($row_f['min_length'] > 0 and ($value < $row_f['min_length'] or $value > $row_f['max_length'])) {
                     return [
                         'status' => 'error',
                         'input' => $field_input_name,
-                        'mess' => $nv_Lang->getModule('field_min_max_value', $row_f['title'], date('d/m/Y', $row_f['min_length']), date('d/m/Y', $row_f['max_length']))
+                        'mess' => $nv_Lang->getModule('field_min_max_value_date', $row_f['title'], nv_u2d_post($row_f['min_length']), nv_u2d_post($row_f['max_length']))
                     ];
                 }
 
-                if ($row_f['field'] == 'birthday' and !empty($global_users_config['min_old_user']) and ($m[3] > (date('Y') - $global_users_config['min_old_user']) or ($m[3] == (date('Y') - $global_users_config['min_old_user']) and ($m[2] > date('n') or ($m[2] == date('n') and $m[1] > date('j')))))) {
+                $dd = intval(date('j', $value));
+                $mm = intval(date('n', $value));
+                $yy = intval(date('Y', $value));
+
+                if ($row_f['field'] == 'birthday' and !empty($global_users_config['min_old_user']) and ($yy > (date('Y') - $global_users_config['min_old_user']) or ($yy == (date('Y') - $global_users_config['min_old_user']) and ($mm > date('n') or ($mm == date('n') and $dd > date('j')))))) {
                     return [
                         'status' => 'error',
                         'input' => $field_input_name,

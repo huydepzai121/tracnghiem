@@ -957,6 +957,9 @@ function nv_date_format(int $short = 1, ?int $timestamp = null, string $lang = '
 {
     global $global_config, $nv_default_regions;
 
+    if (!is_null($timestamp) and empty($timestamp)) {
+        return '';
+    }
     if (is_null($timestamp)) {
         $timestamp = NV_CURRENTTIME;
     }
@@ -978,6 +981,9 @@ function nv_time_format(int $short = 1, ?int $timestamp = null, string $lang = '
 {
     global $global_config, $nv_default_regions;
 
+    if (!is_null($timestamp) and empty($timestamp)) {
+        return '';
+    }
     if (is_null($timestamp)) {
         $timestamp = NV_CURRENTTIME;
     }
@@ -1005,6 +1011,9 @@ function nv_time_format(int $short = 1, ?int $timestamp = null, string $lang = '
  */
 function nv_datetime_format(?int $timestamp = null, int $reverse = 0, int $short = 1, string $lang = '')
 {
+    if (!is_null($timestamp) and empty($timestamp)) {
+        return '';
+    }
     if ($reverse) {
         return nv_time_format($short, $timestamp, $lang) . ' ' . nv_date_format($short, $timestamp, $lang);
     }
@@ -4077,7 +4086,7 @@ function nv_region_config(string $key, string $lang = '')
  * @param int $ss
  * @param string $lang
  * @param string $method
- * @return boolean|number
+ * @return number
  */
 function nv_d2u_get(string $str, ?int $hh = null, ?int $mm = null, ?int $ss = null, string $lang = '', string $method = 'get')
 {
@@ -4109,7 +4118,7 @@ function nv_d2u_get(string $str, ?int $hh = null, ?int $mm = null, ?int $ss = nu
     }
     $regex = '/^[\s]*' . implode(nv_preg_quote($sep), $regex) . '[\s]*(.*?)$/';
     if (!preg_match($regex, $str, $matches)) {
-        return false;
+        return 0;
     }
 
     if (is_null($hh) or is_null($mm) or is_null($ss)) {
@@ -4122,7 +4131,7 @@ function nv_d2u_get(string $str, ?int $hh = null, ?int $mm = null, ?int $ss = nu
         }
     }
 
-    return mktime($hh, $mm, $ss, intval($matches[$offset_m]), intval($matches[$offset_d]), intval($matches[$offset_y]));
+    return (int) mktime($hh, $mm, $ss, intval($matches[$offset_m]), intval($matches[$offset_d]), intval($matches[$offset_y]));
 }
 
 /**
@@ -4133,7 +4142,7 @@ function nv_d2u_get(string $str, ?int $hh = null, ?int $mm = null, ?int $ss = nu
  * @param int $mm
  * @param int $ss
  * @param string $lang
- * @return boolean
+ * @return number
  */
 function nv_d2u_post(string $str, ?int $hh = null, ?int $mm = null, ?int $ss = null, string $lang = '')
 {
