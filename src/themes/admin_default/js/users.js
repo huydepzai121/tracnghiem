@@ -431,10 +431,10 @@ function nv_load_current_date() {
     if ($("input[name=current_date]:checked").val() == 1) {
         $("input[name=default_date]").attr('disabled', 'disabled');
         $("input[name=default_date]").datepicker("destroy");
-    } else {
+    } else if ($("input[name=default_date]").is(':visible')) {
         $("input[name=default_date]").datepicker({
             showOn: "both",
-            dateFormat: "dd/mm/yy",
+            dateFormat: nv_jsdate_post.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,
@@ -443,6 +443,8 @@ function nv_load_current_date() {
         });
         $("input[name=default_date]").removeAttr("disabled");
         $("input[name=default_date]").focus();
+    } else {
+        $("input[name=default_date]").val('');
     }
 }
 
@@ -690,7 +692,7 @@ $(document).ready(function() {
     });
     if ($.fn.datepicker) {
         $("#last_loginfrom,#last_loginto,#regdatefrom,#regdateto").datepicker({
-            dateFormat: "dd.mm.yy",
+            dateFormat: nv_jsdate_get.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,
@@ -737,6 +739,7 @@ $(document).ready(function() {
             $("#numberfields").show();
         } else if (field_type == 'date') {
             $("#datefields").show();
+            nv_load_current_date();
         } else if (field_type == 'file') {
             $("#filefields").show();
         } else {

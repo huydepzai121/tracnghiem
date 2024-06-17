@@ -44,7 +44,7 @@ $(function() {
         }
         $('.checkall', childApisItem).prop('checked', !notCheckedLength)
     });
-    // Khi tích vào nút Chọn tất cả 
+    // Khi tích vào nút Chọn tất cả
     $('#role').on('change', '.checkall', function() {
         var isChecked = $(this).is(':checked'),
             childApisItem = $(this).parents('.child-apis-item');
@@ -517,7 +517,7 @@ $(function() {
         });
 
         $('.fromdate,.todate', logs).datepicker({
-            dateFormat: "dd.mm.yy",
+            dateFormat: nv_jsdate_get.replace('yyyy', 'yy'),
             showOtherMonths: true,
             showOn: 'focus'
         });

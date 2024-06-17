@@ -300,7 +300,7 @@
 <script>
     $(function() {
         $('.adddate, .enddate').datepicker({
-            dateFormat: "dd.mm.yy",
+            dateFormat: nv_jsdate_post.replace('yyyy', 'yy'),
             showOtherMonths: true,
             showOn: 'focus',
             beforeShow: function() {

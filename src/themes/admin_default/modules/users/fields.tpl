@@ -195,14 +195,23 @@
             <tbody>
                 <tr>
                     <td>{LANG.field_default_value}:</td>
-                    <td><label> <input type="radio" value="1" name="current_date" {DATAFORM.current_date_1}> {LANG.field_current_date}</label><label> <input type="radio" value="0" name="current_date" {DATAFORM.current_date_0}> {LANG.field_default_date}</label>&nbsp;<input class="form-control date" style="width:100px" type="text" value="{DATAFORM.default_date}" name="default_date"></td>
+                    <td>
+                        <label>
+                            <input type="radio" value="1" name="current_date" {DATAFORM.current_date_1}> {LANG.field_current_date}
+                        </label>
+                        <label>
+                            <input type="radio" value="0" name="current_date" {DATAFORM.current_date_0}> {LANG.field_default_date}
+                        </label>
+                        &nbsp;
+                        <input class="form-control" style="width:100px" type="text" value="{DATAFORM.default_date}" name="default_date" autocomplete="off">
+                    </td>
                 </tr>
                 <tr>
                     <td>{LANG.field_min_date}:</td>
                     <td>
-                        <input class="form-control datepicker validatefield" style="width:100px" type="text" value="{DATAFORM.min_date}" name="min_date" maxlength="10">
+                        <input class="form-control datepicker" style="width:100px" type="text" value="{DATAFORM.min_date}" name="min_date" maxlength="10" autocomplete="off">
                         <span style="margin-left: 50px;">{LANG.field_max_date}:</span>
-                        <input class="form-control datepicker validatefield" style="width:100px" type="text" value="{DATAFORM.max_date}" name="max_date" maxlength="10">
+                        <input class="form-control datepicker" style="width:100px" type="text" value="{DATAFORM.max_date}" name="max_date" maxlength="10" autocomplete="off">
                     </td>
                 </tr>
             </tbody>
@@ -377,50 +386,41 @@
     var items = '{FIELD_CHOICES_NUMBER}';
 
     $(document).ready(function() {
-                if ($("input[name=fid]").val() == 0) {
-                    nv_show_list_field();
-                }
-                nv_load_current_date();
+        if ($("input[name=fid]").val() == 0) {
+            nv_show_list_field();
+        }
+        nv_load_current_date();
 
-                $.validator.addMethod('validalphanumeric', function(str) {
-                            if (str == '') {
-                                return true;
-                            }
-                            var fieldCheck_rule = /^([a-zA-Z0-9_-])+$/;
-                            return (fieldCheck_rule.test(str)) ? true : false;
-                            }, '{LANG.field_match_type_alphanumeric}');
+        $.validator.addMethod('validalphanumeric', function(str) {
+            if (str == '') {
+                return true;
+            }
+            var fieldCheck_rule = /^([a-zA-Z0-9_-])+$/;
+            return (fieldCheck_rule.test(str)) ? true : false;
+        }, '{LANG.field_match_type_alphanumeric}');
 
-                            $.validator.addMethod('validatefield', function(str) {
-                                if (str == '') {
-                                    return true
-                                }
-                                var re = new RegExp(/^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{MATCH2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{MATCH2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{MATCH2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$/)
-                                var m = str.match(re)
-                                return (m ? true : false)
-                                }, '{LANG.field_match_type_date}');
+        $('#ffields').validate();
+    });
 
-                                $('#ffields').validate();
-                            });
+    function nv_load_sqlchoice(choice_name_select, choice_seltected) {
+        var getval = "";
+        if (choice_name_select == "table") {
+            var choicesql_module = $("select[name=choicesql_module]").val();
+            var module_selected = (choicesql_module == "" || choicesql_module == undefined ) ? '{SQL_DATA_CHOICE.0}' : choicesql_module;
+            getval = "&module=" + module_selected;
+            $("#choicesql_column").html("");
+        } else if (choice_name_select == "column") {
+            var choicesql_module = $("select[name=choicesql_module]").val();
+            var module_selected = (choicesql_module == "" || choicesql_module == undefined ) ? '{SQL_DATA_CHOICE.0}' : choicesql_module;
+            var choicesql_table = $("select[name=choicesql_table]").val();
+            var table_selected = (choicesql_table == "" || choicesql_table == undefined ) ? '{SQL_DATA_CHOICE.1}' : choicesql_table;
+            getval = "&module=" + module_selected + "&table=" + table_selected;
+        }
+        $.post(script_name + '?' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=fields&nocache=' + new Date().getTime(), 'choicesql=1&choice=' + choice_name_select + getval + '&choice_seltected=' + choice_seltected, function(res) {
+            $('#choicesql_' + choice_name_select).html(res);
 
-                            function nv_load_sqlchoice(choice_name_select, choice_seltected) {
-                                var getval = "";
-                                if (choice_name_select == "table") {
-                                    var choicesql_module = $("select[name=choicesql_module]").val();
-                                    var module_selected = (choicesql_module == "" || choicesql_module == undefined ) ? '{SQL_DATA_CHOICE.0}' : choicesql_module;
-                                    getval = "&module=" + module_selected;
-                                    $("#choicesql_column").html("");
-                                } else if (choice_name_select == "column") {
-                                    var choicesql_module = $("select[name=choicesql_module]").val();
-                                    var module_selected = (choicesql_module == "" || choicesql_module == undefined ) ? '{SQL_DATA_CHOICE.0}' : choicesql_module;
-                                    var choicesql_table = $("select[name=choicesql_table]").val();
-                                    var table_selected = (choicesql_table == "" || choicesql_table == undefined ) ? '{SQL_DATA_CHOICE.1}' : choicesql_table;
-                                    getval = "&module=" + module_selected + "&table=" + table_selected;
-                                }
-                                $.post(script_name + '?' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=fields&nocache=' + new Date().getTime(), 'choicesql=1&choice=' + choice_name_select + getval + '&choice_seltected=' + choice_seltected, function(res) {
-                                    $('#choicesql_' + choice_name_select).html(res);
-
-                                });
-                            }
+        });
+    }
 </script>
 <!-- END: load -->
 <!-- BEGIN: nv_load_sqlchoice -->

@@ -186,7 +186,7 @@ $(document).ready(function() {
     if ($('.datepicker-search').length) {
         $('.datepicker-search').datepicker({
             showOn: "both",
-            dateFormat: "dd-mm-yy",
+            dateFormat: nv_jsdate_get.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,

@@ -121,24 +121,16 @@ if (!empty($get_data['userid'])) {
     }
 }
 
-$get_data['fromdate'] = $nv_Request->get_title('fromdate', 'get', '');
-unset($m);
-if (preg_match('/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})/', $get_data['fromdate'], $m)) {
-    $mktime = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
-    $page_url .= '&amp;fromdate=' . $get_data['fromdate'];
-    $where[] = 'tb1.log_time >= ' . $mktime;
-} else {
-    $get_data['fromdate'] = '';
+$get_data['fromdate'] = nv_d2u_get($nv_Request->get_title('fromdate', 'get', ''));
+if ($get_data['fromdate'] !== false) {
+    $page_url .= '&amp;fromdate=' . nv_u2d_get($get_data['fromdate']);
+    $where[] = 'tb1.log_time >= ' . $get_data['fromdate'];
 }
 
-$get_data['todate'] = $nv_Request->get_title('todate', 'get', '');
-unset($m);
-if (preg_match('/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})/', $get_data['todate'], $m)) {
-    $mktime = mktime(23, 59, 59, $m[2], $m[1], $m[3]);
-    $page_url .= '&amp;todate=' . $get_data['todate'];
-    $where[] = 'tb1.log_time <= ' . $mktime;
-} else {
-    $get_data['todate'] = '';
+$get_data['todate'] = nv_d2u_get($nv_Request->get_title('todate', 'get', ''), 23, 59, 59);
+if ($get_data['todate'] !== false) {
+    $page_url .= '&amp;todate=' . nv_u2d_get($get_data['todate']);
+    $where[] = 'tb1.log_time <= ' . $get_data['todate'];
 }
 
 $page = $nv_Request->get_int('page', 'get', 1);
@@ -171,6 +163,8 @@ if ($all_pages) {
 }
 
 $page_title = $nv_Lang->getModule('logs');
+$get_data['fromdate'] = nv_u2d_get($get_data['fromdate']);
+$get_data['todate'] = nv_u2d_get($get_data['todate']);
 
 $xtpl = new XTemplate('logs.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
 $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);

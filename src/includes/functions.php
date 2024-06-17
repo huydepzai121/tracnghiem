@@ -4077,7 +4077,7 @@ function nv_region_config(string $key, string $lang = '')
  * @param int $ss
  * @param string $lang
  * @param string $method
- * @return boolean|number|boolean
+ * @return boolean|number
  */
 function nv_d2u_get(string $str, ?int $hh = null, ?int $mm = null, ?int $ss = null, string $lang = '', string $method = 'get')
 {
@@ -4146,7 +4146,7 @@ function nv_d2u_post(string $str, ?int $hh = null, ?int $mm = null, ?int $ss = n
  * @param int $timestamp
  * @param string $lang
  * @param string $method
- * @return string|string|NULL
+ * @return string
  */
 function nv_u2d_get(?int $timestamp, string $lang = '', string $method = 'get')
 {

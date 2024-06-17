@@ -48,13 +48,13 @@
                 <tbody id="search_other" style="display:none;">
                     <tr>
                         <td>{LANG.regdate}</td>
-                        <td>{LANG.from} <input class="form-control txt" type="text" value="" name="regdatefrom" id="regdatefrom" style="width: 90px" maxlength="100" /> {LANG.to} <input class="form-control txt" type="text" value="" name="regdateto" id="regdateto" style="width: 90px" maxlength="100" /></td>
+                        <td>{LANG.from} <input class="form-control txt" type="text" value="" name="regdatefrom" id="regdatefrom" style="width: 110px" maxlength="100" /> {LANG.to} <input class="form-control txt" type="text" value="" name="regdateto" id="regdateto" style="width: 110px" maxlength="100" /></td>
                         <td>{LANG.sig}</td>
                         <td><input class="form-control fixwidthinput" type="text" name="sig" value="" maxlength="100" /></td>
                     </tr>
                     <tr>
                         <td>{LANG.last_login}</td>
-                        <td>{LANG.from} <input class="form-control txt" type="text" value="" name="last_loginfrom" id="last_loginfrom" style="width: 90px" maxlength="100" /> {LANG.to} <input class="form-control txt" type="text" value="" name="last_loginto" id="last_loginto" style="width: 90px" maxlength="100" /></td>
+                        <td>{LANG.from} <input class="form-control txt" type="text" value="" name="last_loginfrom" id="last_loginfrom" style="width: 110px" maxlength="100" /> {LANG.to} <input class="form-control txt" type="text" value="" name="last_loginto" id="last_loginto" style="width: 110px" maxlength="100" /></td>
                         <td>{LANG.last_idlogin}</td>
                         <td><input class="form-control fixwidthinput" type="text" name="last_ip" value="" maxlength="100" /></td>
                     </tr>

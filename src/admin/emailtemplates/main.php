@@ -54,23 +54,13 @@ $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_D
 $is_search = 0;
 $array_search = [];
 $array_search['q'] = $nv_Request->get_title('q', 'get', '');
-$array_search['from'] = $nv_Request->get_title('f', 'get', '');
-$array_search['to'] = $nv_Request->get_title('t', 'get', '');
+$array_search['from'] = nv_d2u_get($nv_Request->get_title('f', 'get', ''));
+$array_search['to'] = nv_d2u_get($nv_Request->get_title('t', 'get', ''), 23, 59, 59);
 $array_search['catid'] = $nv_Request->get_absint('c', 'get', 0);
 $array_search['module_name'] = $nv_Request->get_title('m', 'get', '');
 $array_search['lang'] = $nv_Request->get_title('l', 'get', '');
 
 // Xử lý dữ liệu tìm kiếm
-if (preg_match('/^([0-9]{1,2})\-([0-9]{1,2})\-([0-9]{4})$/', $array_search['from'], $m)) {
-    $array_search['from'] = mktime(0, 0, 0, intval($m[2]), intval($m[1]), intval($m[3]));
-} else {
-    $array_search['from'] = 0;
-}
-if (preg_match('/^([0-9]{1,2})\-([0-9]{1,2})\-([0-9]{4})$/', $array_search['to'], $m)) {
-    $array_search['to'] = mktime(23, 59, 59, intval($m[2]), intval($m[1]), intval($m[3]));
-} else {
-    $array_search['to'] = 0;
-}
 if (!isset($global_array_cat[$array_search['catid']])) {
     $array_search['catid'] = 0;
 }
@@ -91,12 +81,12 @@ if (!empty($array_search['q'])) {
     $is_search++;
 }
 if (!empty($array_search['from'])) {
-    $base_url .= '&amp;f=' . nv_date('d-m-Y', $array_search['from']);
+    $base_url .= '&amp;f=' . nv_u2d_get($array_search['from']);
     $where[] = "time_add>=" . $array_search['from'];
     $is_search++;
 }
 if (!empty($array_search['to'])) {
-    $base_url .= '&amp;t=' . nv_date('d-m-Y', $array_search['to']);
+    $base_url .= '&amp;t=' . nv_u2d_get($array_search['to']);
     $where[] = "time_add<=" . $array_search['to'];
     $is_search++;
 }
@@ -172,8 +162,8 @@ $tpl->assign('OP', $op);
 $tpl->assign('LANGS', $language_array);
 $tpl->assign('MODULES', $all_modules);
 
-$array_search['from'] = empty($array_search['from']) ? '' : nv_date('d-m-Y', $array_search['from']);
-$array_search['to'] = empty($array_search['to']) ? '' : nv_date('d-m-Y', $array_search['to']);
+$array_search['from'] = nv_u2d_get($array_search['from']);
+$array_search['to'] = nv_u2d_get($array_search['to']);
 
 $tpl->assign('DATA', $array);
 $tpl->assign('CATS', $global_array_cat);

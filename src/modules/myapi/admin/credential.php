@@ -277,18 +277,8 @@ if ($action == 'credential') {
         $endhour = $nv_Request->get_int('endhour', 'post', 0);
         $endmin = $nv_Request->get_int('endmin', 'post', 0);
 
-        unset($m);
-        if (!empty($adddate) and preg_match('/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/', $adddate, $m)) {
-            $addtime = mktime($addhour, $addmin, 0, $m[2], $m[1], $m[3]);
-        } else {
-            $addtime = NV_CURRENTTIME;
-        }
-        unset($m);
-        if (!empty($enddate) and preg_match('/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/', $enddate, $m)) {
-            $endtime = mktime($endhour, $endmin, 0, $m[2], $m[1], $m[3]);
-        } else {
-            $endtime = 0;
-        }
+        $addtime = (int) nv_d2u_post($adddate, $addhour, $addmin, 0);
+        $endtime = (int) nv_d2u_post($enddate, $endhour, $endmin, 0);
 
         $quota = $nv_Request->get_int('quota', 'post', 0);
 
@@ -313,22 +303,24 @@ if ($action == 'credential') {
         'endmin' => 59,
         'quota' => ''
     ];
+
     if ($nv_Request->isset_request('edit, userid', 'get')) {
         $userid = $nv_Request->get_absint('userid', 'get', 0);
         if (!empty($userid)) {
             $row = $db->query('SELECT addtime, endtime, quota FROM ' . $db_config['prefix'] . '_api_role_credential WHERE userid = ' . $userid . ' AND role_id = ' . $role_id)->fetch();
             if (!empty($row)) {
                 $credential_data['userid'] = $userid;
-                $addtime = explode('|', nv_date('d.m.Y|H|i', $row['addtime']));
-                $credential_data['adddate'] = $addtime[0];
-                $credential_data['addhour'] = (int) $addtime[1];
-                $credential_data['addmin'] = (int) $addtime[2];
+
+                $credential_data['adddate'] = nv_u2d_post($row['addtime']);
+                $credential_data['addhour'] = (int) date('H', $row['addtime']);
+                $credential_data['addmin'] = (int) date('i', $row['addtime']);
+
                 if (!empty($row['endtime'])) {
-                    $endtime = explode('|', nv_date('d.m.Y|H|i', $row['endtime']));
-                    $credential_data['enddate'] = $endtime[0];
-                    $credential_data['endhour'] = (int) $endtime[1];
-                    $credential_data['endmin'] = (int) $endtime[2];
+                    $credential_data['enddate'] = nv_u2d_post($row['endtime']);
+                    $credential_data['endhour'] = (int) date('H', $row['endtime']);
+                    $credential_data['endmin'] = (int) date('i', $row['endtime']);
                 }
+
                 $credential_data['quota'] = !empty($row['quota']) ? (int) $row['quota'] : '';
             }
         }

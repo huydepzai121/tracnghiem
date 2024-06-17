@@ -54,7 +54,7 @@
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon" title="{LANG.fromdate}"><i class="fa fa-calendar"></i></span>
-                        <input type="text" class="form-control fromdate" name="fromdate" value="{GET_DATA.fromdate}" maxlength="10" placeholder="{LANG.fromdate}" />
+                        <input type="text" class="form-control fromdate" name="fromdate" value="{GET_DATA.fromdate}" maxlength="10" placeholder="{LANG.fromdate}" autocomplete="off">
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon" title="{LANG.todate}"><i class="fa fa-calendar"></i></span>
-                        <input type="text" class="form-control todate" name="todate" value="{GET_DATA.todate}" maxlength="10" placeholder="{LANG.todate}" />
+                        <input type="text" class="form-control todate" name="todate" value="{GET_DATA.todate}" maxlength="10" placeholder="{LANG.todate}" autocomplete="off">
                     </div>
                 </div>
             </div>

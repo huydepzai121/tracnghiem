@@ -1,1 +1,2 @@
 - Sau khi dev xong giao diện admin_future tìm trong thư mục src các đoạn FIXME để xóa hoặc thay đổi
+- Tìm dd/mm/yy dd.mm.yy dd-mm-yy sửa sang nv_jsdate_get nv_jsdate_post cho phù hợp

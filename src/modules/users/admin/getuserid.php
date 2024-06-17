@@ -66,36 +66,12 @@ if ($nv_Request->isset_request('save', 'get')) {
     $array['full_name'] = $nv_Request->get_title('full_name', 'get', '');
     $array['email'] = $nv_Request->get_title('email', 'get', '');
     $array['sig'] = $nv_Request->get_title('sig', 'get', '');
-    $array['regdatefrom'] = $nv_Request->get_title('regdatefrom', 'get', '');
-    $array['regdateto'] = $nv_Request->get_title('regdateto', 'get', '');
-    $array['last_loginfrom'] = $nv_Request->get_title('last_loginfrom', 'get', '');
-    $array['last_loginto'] = $nv_Request->get_title('last_loginto', 'get', '');
+    $array['regdatefrom'] = nv_d2u_get($nv_Request->get_title('regdatefrom', 'get', ''));
+    $array['regdateto'] = nv_d2u_get($nv_Request->get_title('regdateto', 'get', ''), 23, 59, 59);
+    $array['last_loginfrom'] = nv_d2u_get($nv_Request->get_title('last_loginfrom', 'get', ''));
+    $array['last_loginto'] = nv_d2u_get($nv_Request->get_title('last_loginto', 'get', ''), 23, 59, 59);
     $array['last_ip'] = $nv_Request->get_title('last_ip', 'get', '');
     $array['gender'] = $nv_Request->get_title('gender', 'get', '');
-
-    if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $array['regdatefrom'], $m)) {
-        $array['regdatefrom1'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
-    } else {
-        $array['regdatefrom1'] = '';
-    }
-
-    if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $array['regdateto'], $m)) {
-        $array['regdateto1'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
-    } else {
-        $array['regdateto1'] = '';
-    }
-
-    if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $array['last_loginfrom'], $m)) {
-        $array['last_loginfrom1'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
-    } else {
-        $array['last_loginfrom1'] = '';
-    }
-
-    if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $array['last_loginto'], $m)) {
-        $array['last_loginto1'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
-    } else {
-        $array['last_loginto1'] = '';
-    }
 
     $is_null = true;
     foreach ($array as $check) {
@@ -142,24 +118,24 @@ if ($nv_Request->isset_request('save', 'get')) {
         $array_where[] = '( gender =' . $db->quote($array['gender']) . ' )';
     }
 
-    if (!empty($array['regdatefrom1'])) {
-        $base_url .= '&amp;regdatefrom=' . rawurlencode(nv_date('d/m/Y', $array['regdatefrom1']));
-        $array_where[] = '( regdate >= ' . $array['regdatefrom1'] . ' )';
+    if (!empty($array['regdatefrom'])) {
+        $base_url .= '&amp;regdatefrom=' . rawurlencode(nv_u2d_get($array['regdatefrom']));
+        $array_where[] = '( regdate >= ' . $array['regdatefrom'] . ' )';
     }
 
-    if (!empty($array['regdateto1'])) {
-        $base_url .= '&amp;regdateto=' . rawurlencode(nv_date('d/m/Y', $array['regdateto1']));
-        $array_where[] = '( regdate <= ' . $array['regdateto1'] . ' )';
+    if (!empty($array['regdateto'])) {
+        $base_url .= '&amp;regdateto=' . rawurlencode(nv_u2d_get($array['regdateto']));
+        $array_where[] = '( regdate <= ' . $array['regdateto'] . ' )';
     }
 
-    if (!empty($array['last_loginfrom1'])) {
-        $base_url .= '&amp;last_loginfrom=' . rawurlencode(nv_date('d/m/Y', $array['last_loginfrom1']));
-        $array_where[] = '( last_login >= ' . $array['last_loginfrom1'] . ' )';
+    if (!empty($array['last_loginfrom'])) {
+        $base_url .= '&amp;last_loginfrom=' . rawurlencode(nv_u2d_get($array['last_loginfrom']));
+        $array_where[] = '( last_login >= ' . $array['last_loginfrom'] . ' )';
     }
 
-    if (!empty($array['last_loginto1'])) {
-        $base_url .= '&amp;last_loginto=' . rawurlencode(nv_date('d/m/Y', $array['last_loginto1']));
-        $array_where[] = '( last_login <= ' . $array['last_loginto1'] . ' )';
+    if (!empty($array['last_loginto'])) {
+        $base_url .= '&amp;last_loginto=' . rawurlencode(nv_u2d_get($array['last_loginto']));
+        $array_where[] = '( last_login <= ' . $array['last_loginto'] . ' )';
     }
     if (!empty($filtersql)) {
         $data_str = $crypt->decrypt($filtersql, NV_CHECK_SESSION);
