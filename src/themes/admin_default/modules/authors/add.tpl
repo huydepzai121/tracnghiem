@@ -124,7 +124,7 @@
                     <td>{LANG.lev_expired}:</td>
                     <td>
                         <div class="input-group mb" style="width:fit-content">
-                            <input type="text" class="form-control" value="" name="lev_expired" placeholder="DD.MM.YYYY" id="lev_expired" autocomplete="off">
+                            <input type="text" class="form-control" value="" name="lev_expired" placeholder="{DATE_FORMAT}" id="lev_expired" autocomplete="off">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button" id="lev_expired_btn">
                                     <em class="fa fa-calendar fa-fix"></em>

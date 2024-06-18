@@ -18,7 +18,6 @@ var nv_aryDayName = "Sunday Monday Tuesday Wednesday Thursday Friday Saturday".s
     nv_is_recreate_confirm = ["Are you sure to 'repair'?", "Be 'Repair' succesfully", "'Repair' fail for some unknown reason"],
     nv_is_add_user_confirm = ["Are you sure to add new member into group?", "'Add' new member into group successfully", " 'Add ' fail for some unknown reason"],
     nv_is_exclude_user_confirm = ["Are you sure to exclude this member?", "'Exclude' member successfully", " 'Exclude  member fail for some unknown reason"],
-    nv_formatString = "dd.mm.yyyy",
     nv_gotoString = "Go To Current Month",
     nv_todayString = "Today is",
     nv_weekShortString = "Wk",

@@ -108,13 +108,15 @@ if ($nv_Request->get_int('save', 'post', 0)) {
     }
 
     $lev_expired = $nv_Request->get_title('lev_expired', 'post', '');
-    unset($matches);
-    if (!empty($lev_expired) and !preg_match('/^(0?[1-9]|[12][0-9]|3[01])[\/\-\.](0?[1-9]|1[012])[\/\-\.](\d{4})$/', $lev_expired, $matches)) {
-        nv_htmlOutput($nv_Lang->getModule('lev_expired_error'));
-    }
-    $lev_expired_sql = !empty($lev_expired) ? mktime(23, 59, 59, $matches[2], $matches[1], $matches[3]) : 0;
-    if ($lev_expired_sql and $lev_expired_sql <= NV_CURRENTTIME) {
-        nv_htmlOutput($nv_Lang->getModule('lev_expired_error'));
+    $lev_expired_sql = 0;
+    if (!empty($lev_expired)) {
+        $lev_expired_sql = nv_d2u_post($lev_expired, 23, 59, 59);
+        if (empty($lev_expired_sql)) {
+            nv_htmlOutput($nv_Lang->getModule('lev_expired_error'));
+        }
+        if ($lev_expired_sql <= NV_CURRENTTIME) {
+            nv_htmlOutput($nv_Lang->getModule('lev_expired_error'));
+        }
     }
 
     $lev = $nv_Request->get_int('lev', 'post', 0);
@@ -280,6 +282,7 @@ $xtpl->assign('FILTERSQL', $crypt->encrypt($filtersql, NV_CHECK_SESSION));
 $xtpl->assign('ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=add');
 $xtpl->assign('CHECKSS', $checkss);
 $xtpl->assign('USERID', $userid ?: '');
+$xtpl->assign('DATE_FORMAT', nv_region_config('jsdate_post'));
 
 foreach ($adminThemes as $_admin_theme) {
     $xtpl->assign('THEME_NAME', $_admin_theme);

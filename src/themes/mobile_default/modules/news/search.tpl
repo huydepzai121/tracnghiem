@@ -38,8 +38,8 @@
 
             <div class="form-group form-inline">
                 <div class="col-md-8">{LANG.from_date}</div>
-                <div class="col-md-8"><input class="datepicker form-control" name="from_date" value="{FROM_DATE}" style="width: 120px; display: inline" maxlength="10" type="text" /></div>
-                <div class="col-md-8">{LANG.to_date}: <input class="datepicker form-control" name="to_date" value="{TO_DATE}" style="width:120px; display: inline" maxlength="10" type="text" /></div>
+                <div class="col-md-8"><input class="datepicker form-control" name="from_date" value="{FROM_DATE}" style="width: 120px; display: inline" maxlength="10" type="text" autocomplete="off"></div>
+                <div class="col-md-8">{LANG.to_date}: <input class="datepicker form-control" name="to_date" value="{TO_DATE}" style="width:120px; display: inline" maxlength="10" type="text" autocomplete="off"></div>
             </div>
 
             <div class="form-group form-inline">
@@ -69,7 +69,7 @@
         });
         $(".datepicker").datepicker({
             showOn: "both",
-            dateFormat: "dd.mm.yy",
+            dateFormat: nv_jsdate_get.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,

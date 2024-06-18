@@ -47,7 +47,7 @@ $(document).ready(function() {
     // Logs
     if ($.fn.datepicker) {
         $("#from,#to").datepicker({
-            dateFormat: "dd.mm.yy",
+            dateFormat: nv_jsdate_get.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,

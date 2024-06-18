@@ -147,17 +147,23 @@ if (!empty($catid)) {
     $is_search = true;
 }
 $from_date = $nv_Request->get_title('from_date', 'get', '', 0);
-$date_array['from_date'] = preg_replace('/[^0-9]/', '.', urldecode($from_date));
-if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $date_array['from_date'])) {
+$date_array['from_date'] = $from_date;
+$from_date = nv_d2u_get($from_date);
+if (!empty($from_date)) {
     $base_url .= '&from_date=' . urlencode($date_array['from_date']);
     $is_search = true;
+} else {
+    $date_array['from_date'] = '';
 }
 
 $to_date = $nv_Request->get_title('to_date', 'get', '', 0);
-$date_array['to_date'] = preg_replace('/[^0-9]/', '.', urldecode($to_date));
-if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $date_array['to_date'])) {
+$date_array['to_date'] = $to_date;
+$to_date = nv_d2u_get($to_date, 23, 59, 59);
+if (!empty($to_date)) {
     $base_url .= '&to_date=' . urlencode($date_array['to_date']);
     $is_search = true;
+} else {
+    $date_array['to_date'] = '';
 }
 
 $page = $nv_Request->get_int('page', 'get', 1);
@@ -342,15 +348,15 @@ if (empty($key) and ($catid == 0) and empty($from_date) and empty($to_date)) {
         }
 
         $todate_elastic = [];
-        if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $date_array['to_date'], $m)) {
+        if ($to_date > 0) {
             $todate_elastic = [
-                'lte' => mktime(23, 59, 59, $m[2], $m[1], $m[3])
+                'lte' => $to_date
             ];
         }
         $fromdate_elastic = [];
-        if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $date_array['from_date'], $m)) {
+        if ($from_date > 0) {
             $fromdate_elastic = [
-                'gte' => mktime(0, 0, 0, $m[2], $m[1], $m[3])
+                'gte' => $from_date
             ];
         }
 
@@ -471,13 +477,12 @@ if (empty($key) and ($catid == 0) and empty($from_date) and empty($to_date)) {
             }
         }
 
-        if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $date_array['to_date'], $m)) {
-            $where .= ' AND tb1.publtime <=' . mktime(23, 59, 59, $m[2], $m[1], $m[3]);
+        if ($to_date > 0) {
+            $where .= ' AND tb1.publtime <=' . $to_date;
         }
-        if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $date_array['from_date'], $m)) {
-            $where .= ' AND tb1.publtime >=' . mktime(0, 0, 0, $m[2], $m[1], $m[3]);
+        if ($from_date > 0) {
+            $where .= ' AND tb1.publtime >=' . $from_date;
         }
-
         if ($catid > 0) {
             $table_search = NV_PREFIXLANG . '_' . $module_data . '_' . $catid;
         } else {

@@ -153,7 +153,7 @@ if (empty($array) and $page = 1 and empty($is_search)) {
 }
 
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->registerPlugin('modifier', 'date', 'nv_date');
+$tpl->registerPlugin('modifier', 'date', 'nv_datetime_format');
 $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
@@ -161,6 +161,7 @@ $tpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
 $tpl->assign('OP', $op);
 $tpl->assign('LANGS', $language_array);
 $tpl->assign('MODULES', $all_modules);
+$tpl->assign('DATE_FORMAT', nv_region_config('jsdate_get'));
 
 $array_search['from'] = nv_u2d_get($array_search['from']);
 $array_search['to'] = nv_u2d_get($array_search['to']);

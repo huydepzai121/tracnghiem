@@ -18,7 +18,6 @@ var nv_aryDayName = "Chủ nhật;Thứ Hai;Thứ Ba;Thứ Tư;Thứ Năm;Thứ 
     nv_is_recreate_confirm = ["Bạn thực sự muốn thực hiện lệnh 'Cài lại'?", "Lệnh 'Cài lại' đã được thực hiện", "Vì một lý do nào đó lệnh 'Cài lại' đã không được thực hiện"],
     nv_is_add_user_confirm = ["Bạn thực sự muốn thêm người dùng này vào nhóm?", "Lệnh 'Thêm vào nhóm' đã được thực hiện", "Vì một lý do nào đó lệnh 'Thêm vào nhóm' đã không được thực hiện"],
     nv_is_exclude_user_confirm = ["Bạn thực sự muốn loại thành viên này ra khỏi nhóm?", "Lệnh 'Loại khỏi nhóm' đã được thực hiện", "Vì một lý do nào đó lệnh 'Loại khỏi nhóm' đã không được thực hiện"],
-    nv_formatString = "dd.mm.yyyy",
     nv_gotoString = "Chọn tháng hiện tại",
     nv_todayString = "Hôm nay",
     nv_weekShortString = "Tuần",

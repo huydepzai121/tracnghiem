@@ -12,13 +12,13 @@
         <div class="col-xs-12 col-sm-5 col-lg-3">
             <div class="form-group">
                 <label>{$LANG->getModule('from')}:</label>
-                <input type="text" class="form-control datepicker-search" name="f" value="{$SEARCH.from}" autocomplete="off" placeholder="dd-mm-yyyy">
+                <input type="text" class="form-control datepicker-search" name="f" value="{$SEARCH.from}" autocomplete="off" placeholder="{$DATE_FORMAT}">
             </div>
         </div>
         <div class="col-xs-12 col-sm-5 col-lg-3">
             <div class="form-group">
                 <label>{$LANG->getModule('to')}:</label>
-                <input type="text" class="form-control datepicker-search" name="t" value="{$SEARCH.to}" autocomplete="off" placeholder="dd-mm-yyyy">
+                <input type="text" class="form-control datepicker-search" name="t" value="{$SEARCH.to}" autocomplete="off" placeholder="{$DATE_FORMAT}">
             </div>
         </div>
         <div class="col-xs-24 col-sm-6 col-lg-5">
@@ -73,8 +73,8 @@
                     {/if}
                 </td>
                 <td class="cell-detail">
-                    <span>{"H:i d/m/Y"|date:$row.time_add}</span>
-                    {if not empty($row.time_update)}<div class="text-muted">{"H:i d/m/Y"|date:$row.time_update}</div>{/if}
+                    <span>{$row.time_add|date:1}</span>
+                    {if not empty($row.time_update)}<div class="text-muted">{$row.time_update|date:1}</div>{/if}
                 </td>
                 <td class="text-nowrap text-center">
                     <a href="{$NV_BASE_ADMINURL}?index.php?{$NV_LANG_VARIABLE}={$NV_LANG_DATA}&amp;{$NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$NV_OP_VARIABLE}=test&amp;emailid={$row.emailid}" class="text-primary" title="{$LANG->get('test')}" data-toggle="tooltip"><i class="fa fa-lg fa-paper-plane"></i></a>

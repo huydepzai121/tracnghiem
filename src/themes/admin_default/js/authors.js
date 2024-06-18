@@ -85,7 +85,7 @@ $(function() {
 
     if ($("#lev_expired").length) {
         $("#lev_expired").datepicker({
-            dateFormat: "dd.mm.yy",
+            dateFormat: nv_jsdate_post.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,

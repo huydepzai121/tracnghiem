@@ -63,7 +63,7 @@ if ($row['lev'] == 3) {
     }
 }
 
-$old_lev_expired = !empty($row['lev_expired']) ? date('d.m.Y', $row['lev_expired']) : '';
+$old_lev_expired = nv_u2d_post($row['lev_expired']);
 $old_downgrade_to_modadmin = !empty($row['after_exp_action']) ? true : false;
 $old_after_modules = $old_downgrade_to_modadmin ? json_decode($row['after_exp_action'], true) : [];
 
@@ -213,7 +213,8 @@ if ($nv_Request->get_int('save', 'post', 0)) {
         $allow_files_type = array_values(array_intersect($global_config['file_allowed_ext'], $allow_files_type));
         $files_level = (!empty($allow_files_type) ? implode(',', $allow_files_type) : '') . '|' . $allow_modify_files . '|' . $allow_create_subdirectories . '|' . $allow_modify_subdirectories;
         unset($matches);
-        $lev_expired_sql = preg_match('/^(0?[1-9]|[12][0-9]|3[01])[\/\-\.](0?[1-9]|1[012])[\/\-\.](\d{4})$/', $lev_expired, $matches) ? mktime(23, 59, 59, $matches[2], $matches[1], $matches[3]) : 0;
+
+        $lev_expired_sql = nv_d2u_post($lev_expired, 23, 59, 59);
         $after_modules_sql = $downgrade_to_modadmin ? json_encode($after_modules) : '';
 
         $sth = $db->prepare('UPDATE ' . NV_AUTHORS_GLOBALTABLE . ' SET editor = :editor, lev=' . $lev . ', lev_expired=' . $lev_expired_sql . ', after_exp_action=:after_exp_action, files_level= :files_level, position= :position, main_module = :main_module, admin_theme = :admin_theme, edittime=' . NV_CURRENTTIME . ' WHERE admin_id=' . $admin_id);
@@ -453,6 +454,7 @@ $xtpl->assign('ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '='
 $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('CHECKSS', $checkss);
+$xtpl->assign('DATE_FORMAT', nv_region_config('jsdate_post'));
 
 if ((defined('NV_IS_SPADMIN') and $admin_info['level'] == 1) or (defined('NV_IS_SPADMIN') and $row['lev'] != 1 and $row['admin_id'] != $admin_info['admin_id'])) {
     $xtpl->assign('POSITION', $position);

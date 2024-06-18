@@ -107,7 +107,6 @@ $lang_module['counter'] = 'Lượt';
 $lang_module['total_comment'] = 'Phản hồi';
 $lang_module['search_cat'] = 'Chuyên mục';
 $lang_module['search_all'] = 'Tất cả các chuyên mục';
-$lang_module['search_date_rule'] = 'dd.mm.yyyy';
 $lang_module['content'] = 'Quản lý bài viết';
 $lang_module['your_content'] = 'Bài viết của bạn';
 $lang_module['author_info'] = 'Thông tin tác giả';

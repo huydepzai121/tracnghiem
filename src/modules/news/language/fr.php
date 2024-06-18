@@ -107,7 +107,6 @@ $lang_module['counter'] = 'Total';
 $lang_module['total_comment'] = 'Commentaires';
 $lang_module['search_cat'] = 'Catégorie';
 $lang_module['search_all'] = 'Toutes les catégories';
-$lang_module['search_date_rule'] = 'dd.mm.yyyy';
 $lang_module['content'] = 'Gestion des Articles';
 $lang_module['your_content'] = 'Vos articles';
 $lang_module['author_info'] = 'Informations sur l\'auteur';

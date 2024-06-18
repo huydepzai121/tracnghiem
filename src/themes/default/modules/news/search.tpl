@@ -42,7 +42,7 @@
                 <label class="col-sm-7 control-label">{LANG.from_date}</label>
                 <div class="col-sm-17">
                     <div class="input-group">
-                        <input type="text" class="form-control" name="from_date" id="from_date" value="{FROM_DATE}" maxlength="10" />
+                        <input type="text" class="form-control" name="from_date" id="from_date" value="{FROM_DATE}" maxlength="10" autocomplete="off">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button" id="from-btn">
                                 <em class="fa fa-calendar fa-fix">&nbsp;</em>
@@ -55,7 +55,7 @@
                 <label class="col-sm-7 control-label">{LANG.to_date}</label>
                 <div class="col-sm-17">
                     <div class="input-group">
-                        <input type="text" class="form-control" name="to_date" id="to_date" value="{TO_DATE}" maxlength="10" />
+                        <input type="text" class="form-control" name="to_date" id="to_date" value="{TO_DATE}" maxlength="10" autocomplete="off">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button" id="to-btn">
                                 <em class="fa fa-calendar fa-fix">&nbsp;</em>
@@ -78,7 +78,7 @@
 <script>
     $(function() {
         $("#from_date, #to_date").datepicker({
-            dateFormat: "dd.mm.yy",
+            dateFormat: nv_jsdate_get.replace('yyyy', 'yy'),
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,

@@ -18,7 +18,6 @@ var nv_aryDayName = "Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi".split(
     nv_is_recreate_confirm = ["Êtes-vous sûr de vouloir 'ré-installer'?", " 'Ré-installation' réussie", "'Ré-installation' échouée pour une raison inconnue"],
     nv_is_add_user_confirm = ["Êtes-vous sûr de vouloir ajouter les nouveaux membres au groupe?", "'Ajout' de nouveaux membres au groupe avec succcès", " 'Ajout ' échoué pour une raison inconnue"],
     nv_is_exclude_user_confirm = ["Êtes-vous sûr de vouloir éliminer ce membre?", "'Élimination' réussie", " 'Élimination  échouée pour une raison inconnue"],
-    nv_formatString = "jj.mm.aaaa",
     nv_gotoString = "Aller au mois actuel",
     nv_todayString = "Aujourd'hui c'est",
     nv_weekShortString = "Semaine",

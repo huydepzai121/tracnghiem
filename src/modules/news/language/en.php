@@ -107,7 +107,6 @@ $lang_module['counter'] = 'counter';
 $lang_module['total_comment'] = 'Feedback';
 $lang_module['search_cat'] = 'Category';
 $lang_module['search_all'] = 'All categories';
-$lang_module['search_date_rule'] = 'dd.mm.yyyy';
 $lang_module['content'] = 'Management Articles';
 $lang_module['your_content'] = 'Your articles';
 $lang_module['author_info'] = 'Author information';

@@ -15,12 +15,6 @@ if (!defined('NV_IS_FILE_SITEINFO')) {
 
 // Eg: $id = nv_insert_logs('lang','module name','name key','note',1, 'link acess');
 
-// Call jquery datepicker
-$my_head = '<link type="text/css" href="' . ASSETS_STATIC_URL . "/js/jquery-ui/jquery-ui.min.css\" rel=\"stylesheet\" />\n";
-
-$my_footer .= '<script type="text/javascript" src="' . ASSETS_STATIC_URL . "/js/jquery-ui/jquery-ui.min.js\"></script>\n";
-$my_footer .= '<script type="text/javascript" src="' . ASSETS_LANG_STATIC_URL . '/js/language/jquery.ui.datepicker-' . NV_LANG_INTERFACE . ".js\"></script>\n";
-
 $page_title = $nv_Lang->getModule('logs_title');
 
 $page = $nv_Request->get_int('page', 'get', 1);
@@ -33,7 +27,7 @@ $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_D
 
 // Search data
 $data_search = [
-    'q' => $nv_Lang->getModule('filter_enterkey'),
+    'q' => '',
     'from' => '',
     'to' => '',
     'lang' => '',
@@ -65,26 +59,26 @@ if ($nv_Request->isset_request('filter', 'get') and $nv_Request->isset_request('
     $base_url .= '&amp;filter=1&amp;checksess=' . $checksess;
     $disabled = '';
 
-    if (!empty($data_search['q']) and $data_search['q'] != $nv_Lang->getModule('filter_enterkey')) {
+    if (!empty($data_search['q'])) {
         $base_url .= '&amp;q=' . $data_search['q'];
         $array_where[] = '( name_key LIKE :keyword1 OR note_action LIKE :keyword2 )';
         $check_like = true;
     }
 
-    if (!empty($data_search['from'])) {
-        if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $data_search['from'], $match)) {
-            $from = mktime(0, 0, 0, $match[2], $match[1], $match[3]);
-            $array_where[] = 'log_time >= ' . $from;
-            $base_url .= '&amp;from=' . $data_search['from'];
-        }
+    $from = nv_d2u_get($data_search['from']);
+    if ($from != 0) {
+        $array_where[] = 'log_time >= ' . $from;
+        $base_url .= '&amp;from=' . urlencode($data_search['from']);
+    } else {
+        $data_search['from'] = '';
     }
 
-    if (!empty($data_search['to'])) {
-        if (preg_match('/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/', $data_search['to'], $match)) {
-            $to = mktime(23, 59, 59, $match[2], $match[1], $match[3]);
-            $array_where[] = 'log_time <= ' . $to;
-            $base_url .= '&amp;to=' . $data_search['to'];
-        }
+    $to = nv_d2u_get($data_search['to'], 23, 59, 59);
+    if ($to != 0) {
+        $array_where[] = 'log_time <= ' . $to;
+        $base_url .= '&amp;to=' . urlencode($data_search['to']);
+    } else {
+        $data_search['to'] = '';
     }
 
     if (!empty($data_search['lang'])) {
