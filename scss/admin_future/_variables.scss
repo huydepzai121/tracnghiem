@@ -34,6 +34,7 @@ $link-decoration: none;
 $main-bg: #eee;
 $min-contrast-ratio: 3;
 $theme-breakpoint: 767.98px;
+$spacer: 1rem;
 
 // Shadow một số và tắt một số
 $enable-shadows: true;
@@ -120,8 +121,11 @@ $breadcrumb-bg: $white;
 $toast-spacing: 1rem;
 
 // Card
+$card-border-color: var(--bs-border-color);
 $card-box-shadow: 0 0.0625rem 0.125rem rgba($black, .075);
 $card-border-width: 0;
+$card-cap-bg: transparent;
+$card-cap-padding-y: $spacer;
 
 // Dropdown
 $dropdown-border-color: var(--bs-body-bg);

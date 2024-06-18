@@ -58,7 +58,53 @@
     }
 }
 
-// Card tab
+// Card
+.card {
+    > .list-group:last-child {
+        > .list-group-item:last-child {
+            border-bottom-right-radius: var(--bs-border-radius);
+            border-bottom-left-radius: var(--bs-border-radius);
+        }
+    }
+}
+
+.card-header {
+    --bs-card-border-width: var(--bs-border-width);
+}
+
+.table-card {
+    margin: calc(-1 * var(--bs-card-spacer-y)) calc(-1 * var(--bs-card-spacer-x));
+
+    td, th {
+        &:first-child {
+            padding-left: var(--bs-card-spacer-x);
+        }
+    }
+
+    td, th {
+        &:last-child {
+            padding-right: var(--bs-card-spacer-x);
+        }
+    }
+
+    tbody, tfoot, thead {
+        &:last-child {
+            tr:last-child {
+                td, th {
+                    border-bottom-width: 0;
+                }
+            }
+        }
+    }
+}
+
 .card-header-tabs {
-    border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
+    margin-right: calc(-1 * var(--bs-card-cap-padding-x));
+    margin-left: calc(-1 * var(--bs-card-cap-padding-x));
+    margin-top: calc(-.5 * var(--bs-card-cap-padding-y));
+
+    .nav-tabs {
+        padding-left: calc(0.5 * var(--bs-card-cap-padding-x));
+        padding-right: calc(0.5 * var(--bs-card-cap-padding-x));
+    }
 }
