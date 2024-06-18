@@ -401,4 +401,39 @@ $(document).ready(function() {
             c = "click" == i.type ? !c || (this.checked = !1) : this.checked
         }
     }());
+
+    // Cố định header bảng
+    function stickyTable() {
+        if ($('table.table:not(.table-sticky)').length > 1) {
+            return;
+        }
+        let offset = 0;
+        $('table.table').each(function() {
+            let ctn = $(this).parent();
+            if ((offset++ == 0 && ($(this).closest('form').length == 1 || ctn.is('.table-responsive')) && $('thead', $(this)).length > 0) || $(this).is('.table-sticky')) {
+                var allowed;
+                if (ctn.is('.table-responsive')) {
+                    allowed = !(ctn[0].scrollWidth > ctn[0].clientWidth );
+                } else {
+                    allowed = true;
+                }
+                console.log(allowed);
+                if (allowed) {
+                    $(this).stickyTableHeaders({
+                        cacheHeaderHeight: true
+                    });
+                } else {
+                    $(this).stickyTableHeaders('destroy');
+                }
+            }
+        });
+    }
+    stickyTable();
+    let timerstickyTable;
+    $(window).on('resize', function() {
+        clearTimeout(timerstickyTable);
+        timerstickyTable = setTimeout(() => {
+            stickyTable();
+        }, 210);
+    });
 });

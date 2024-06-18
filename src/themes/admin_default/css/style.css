@@ -53,6 +53,7 @@
     --nv-color-dark: #000;
     --nv-bg-color-info: #d9edf7;
     --nv-bg-color-info-hover: #b5ddf1;
+    --nv-bg-color: #fff;
 }
 
 /* Global */
@@ -690,6 +691,10 @@ table caption {
     font-weight: bold;
     line-height: 22px;
     padding: 0px 0 5px;
+}
+
+.tableFloatingHeaderOriginal:not(.bg-primary, .bg-info, .bg-danger, .bg-success) {
+    background-color: var(--nv-bg-color);
 }
 
 .panel .table-panel tr > th:first-child,

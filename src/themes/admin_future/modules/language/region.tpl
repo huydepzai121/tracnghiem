@@ -2,8 +2,8 @@
 <div class="row">
     <div class="col-lg-12 col-xl-8 col-xxl-6 order-1 order-xl-0">
         <div class="card">
-            <div class="card-header">
-                <ul class="nav nav-tabs card-header-tabs nav-justified" id="tab-region">
+            <div class="card-header card-header-tabs">
+                <ul class="nav nav-tabs nav-justified" id="tab-region">
                     <li class="nav-item">
                         <a class="nav-link text-truncate{$TAB eq 'numbers' ? ' active' : ''}" data-bs-toggle="tab" id="link-numbers" data-tab="numbers" data-bs-target="#tab-numbers" aria-current="{$TAB eq 'numbers' ? 'true' : 'false'}" role="tab" aria-controls="tab-numbers" aria-selected="{$TAB eq 'numbers' ? 'true' : 'false'}" href="#" data-location="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;tab=numbers">{$LANG->getModule('region_numbers')}</a>
                     </li>

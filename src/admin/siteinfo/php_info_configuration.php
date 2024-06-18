@@ -17,38 +17,15 @@ $page_title = $nv_Lang->getModule('configuration_php');
 
 require_once NV_ROOTDIR . '/includes/core/phpinfo.php';
 
-$xtpl = new XTemplate('configuration_php.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/configuration_php.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
 
 $array = phpinfo_array(4, 1);
-$caption = $nv_Lang->getModule('configuration_php');
-$thead = [$nv_Lang->getModule('directive'), $nv_Lang->getModule('local_value'), $nv_Lang->getModule('master_value')];
+$tpl->assign('DATA', empty($array['PHP Core']) ? [] : $array['PHP Core']);
 
-if (!empty($array['PHP Core'])) {
-    $xtpl->assign('CAPTION', $caption);
-    $xtpl->assign('THEAD0', $thead[0]);
-    $xtpl->assign('THEAD1', $thead[1]);
-    $xtpl->assign('THEAD2', $thead[2]);
-
-    $a = 0;
-    foreach ($array['PHP Core'] as $key => $value) {
-        $xtpl->assign('KEY', $key);
-
-        if (!is_array($value)) {
-            $xtpl->assign('VALUE', $value);
-            $xtpl->parse('main.loop.if');
-        } else {
-            $xtpl->assign('VALUE0', $value[0]);
-            $xtpl->assign('VALUE1', $value[1]);
-            $xtpl->parse('main.loop.else');
-        }
-
-        $xtpl->parse('main.loop');
-        ++$a;
-    }
-
-    $xtpl->parse('main');
-    $contents = $xtpl->text('main');
-}
+$contents = $tpl->fetch('configuration_php.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

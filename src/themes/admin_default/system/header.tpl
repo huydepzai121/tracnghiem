@@ -57,5 +57,7 @@
         <!--[if IE]>
         <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=EmulateIE8; IE=EDGE" />
         <![endif]-->
+
+        <script type="text/javascript" src="{ASSETS_STATIC_URL}/js/stickytableheaders/jquery.stickytableheaders.min.js"></script>
     </head>
     <body>

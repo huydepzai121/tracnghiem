@@ -58,5 +58,6 @@
     {/if}
     <link rel="stylesheet" href="{$smarty.const.ASSETS_STATIC_URL}/js/perfect-scrollbar/style.css">
     <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/perfect-scrollbar/min.js"></script>
+    <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/stickytableheaders/jquery.stickytableheaders.min.js"></script>
 </head>
 <body{if not empty($TCONFIG.collapsed_left_sidebar)} class="collapsed-left-sidebar"{/if} data-checksess="{$smarty.const.NV_CHECK_SESSION}">

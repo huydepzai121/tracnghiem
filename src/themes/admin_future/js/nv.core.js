@@ -596,6 +596,10 @@ $(document).ready(function() {
             setLbarTip();
         }
         $('body').toggleClass('collapsed-left-sidebar');
+        // Cập nhật lại chiều rộng các stickyTableHeaders
+        setTimeout(() => {
+            $(window).trigger('resize.stickyTableHeaders');
+        }, 250);
         storeThemeConfig('collapsed_left_sidebar', collapsed ? 0 : 1);
     });
 
@@ -937,6 +941,44 @@ $(document).ready(function() {
             c = "click" == i.type ? !c || (this.checked = !1) : this.checked
         }
     }());
+
+    // Cố định header bảng
+    function stickyTable() {
+        $('.table-sticky').each(function() {
+            let ctn = $(this).parent(), bkp = '', test = ctn.attr('class').match(/table\-responsive\-*(sm|md|lg|xl|xxl)*/);
+            if (test !== null) {
+                bkp = test[1] || 'all';
+            }
+            let allowed;
+            if (bkp == '') {
+                allowed = true;
+            } else {
+                switch(bkp) {
+                    case 'sm': allowed = !$.isXs(); break;
+                    case 'md': allowed = !$.isSm(); break;
+                    case 'lg': allowed = !$.isMd(); break;
+                    case 'xl': allowed = !$.isLg(); break;
+                    default: allowed = false;
+                }
+            }
+            if (allowed) {
+                $(this).stickyTableHeaders({
+                    fixedOffset: $('header'),
+                    cacheHeaderHeight: true
+                });
+            } else {
+                $(this).stickyTableHeaders('destroy');
+            }
+        });
+    }
+    stickyTable();
+    let timerstickyTable;
+    $(window).on('resize', function() {
+        clearTimeout(timerstickyTable);
+        timerstickyTable = setTimeout(() => {
+            stickyTable();
+        }, 210);
+    });
 
     // Tooltip
     ([...document.querySelectorAll('[data-bs-toggle="tooltip"]')].map(tipEle => new bootstrap.Tooltip(tipEle)));

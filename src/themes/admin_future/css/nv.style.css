@@ -4437,13 +4437,13 @@ textarea.form-control-lg {
   --bs-card-title-color: ;
   --bs-card-subtitle-color: ;
   --bs-card-border-width: 0;
-  --bs-card-border-color: var(--bs-border-color-translucent);
+  --bs-card-border-color: var(--bs-border-color);
   --bs-card-border-radius: var(--bs-border-radius);
   --bs-card-box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.075);
   --bs-card-inner-border-radius: calc(var(--bs-border-radius) - 0);
-  --bs-card-cap-padding-y: 0.5rem;
+  --bs-card-cap-padding-y: 1rem;
   --bs-card-cap-padding-x: 1rem;
-  --bs-card-cap-bg: rgba(var(--bs-body-color-rgb), 0.03);
+  --bs-card-cap-bg: transparent;
   --bs-card-cap-color: ;
   --bs-card-height: ;
   --bs-card-color: ;
@@ -25383,8 +25383,36 @@ readers do not read off random characters that represent icons */
     top: 3.75rem;
   }
 }
+.card > .list-group:last-child > .list-group-item:last-child {
+  border-bottom-right-radius: var(--bs-border-radius);
+  border-bottom-left-radius: var(--bs-border-radius);
+}
+
+.card-header {
+  --bs-card-border-width: var(--bs-border-width);
+}
+
+.table-card {
+  margin: calc(-1 * var(--bs-card-spacer-y)) calc(-1 * var(--bs-card-spacer-x));
+}
+.table-card td:first-child, .table-card th:first-child {
+  padding-left: var(--bs-card-spacer-x);
+}
+.table-card td:last-child, .table-card th:last-child {
+  padding-right: var(--bs-card-spacer-x);
+}
+.table-card tbody:last-child tr:last-child td, .table-card tbody:last-child tr:last-child th, .table-card tfoot:last-child tr:last-child td, .table-card tfoot:last-child tr:last-child th, .table-card thead:last-child tr:last-child td, .table-card thead:last-child tr:last-child th {
+  border-bottom-width: 0;
+}
+
 .card-header-tabs {
-  border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
+  margin-right: calc(-1 * var(--bs-card-cap-padding-x));
+  margin-left: calc(-1 * var(--bs-card-cap-padding-x));
+  margin-top: calc(-0.5 * var(--bs-card-cap-padding-y));
+}
+.card-header-tabs .nav-tabs {
+  padding-left: calc(0.5 * var(--bs-card-cap-padding-x));
+  padding-right: calc(0.5 * var(--bs-card-cap-padding-x));
 }
 
 .header-outer {
