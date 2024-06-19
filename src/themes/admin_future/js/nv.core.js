@@ -250,26 +250,6 @@ function formXSSsanitize(form) {
     });
 }
 
-// checkAll
-function checkAll(a, th) {
-    th.is(":checked") ? ($("[data-toggle=checkAll], [data-toggle=checkSingle]", a).not(":disabled").each(function() {
-        $(this).prop("checked", !0)
-    }), $(".checkBtn", a).length && $(".checkBtn", a).prop("disabled", !1)) : ($("[data-toggle=checkAll], [data-toggle=checkSingle]", a).not(":disabled").each(function() {
-        $(this).prop("checked", !1)
-    }), $(".checkBtn", a).length && $(".checkBtn", a).prop("disabled", !0))
-}
-
-// checkSingle
-function checkSingle(a) {
-    var checked = 0,
-        unchecked = 0;
-    $("[data-toggle=checkSingle]", a).not(":disabled").each(function() {
-        $(this).is(":checked") ? checked++ : unchecked++
-    });
-    0 != checked && 0 == unchecked ? $("[data-toggle=checkAll]", a).prop("checked", !0) : $("[data-toggle=checkAll]", a).prop("checked", !1);
-    $(".checkBtn", a).length && (checked ? $(".checkBtn", a).prop("disabled", !1) : $(".checkBtn", a).prop("disabled", !0))
-}
-
 $(document).ready(function() {
     // Hàm lưu config tùy chỉnh của giao diện
     function storeThemeConfig(configName, configValue, callbackSuccess, callbackError) {
@@ -790,12 +770,31 @@ $(document).ready(function() {
 
     // checkAll
     $('body').on('click', '[data-toggle=checkAll]', function() {
-        checkAll($(this).parents('form'), $(this));
+        let ns = $(this).data('type');
+        let sltorS = '[data-toggle=checkSingle]';
+        let sltorA = '[data-toggle=checkAll]';
+        if (ns) {
+            sltorS += '[data-type="' + ns + '"]';
+            sltorA += '[data-type="' + ns + '"]';
+        }
+        sltorS += ':not(:disabled)';
+        $(sltorA).prop('checked', $(this).is(':checked'));
+        $(sltorA).prop('indeterminate', false);
+        $(sltorS).prop('checked', $(this).is(':checked'));
     });
 
     // checkSingle
     $('body').on('click', '[data-toggle=checkSingle]', function() {
-        checkSingle($(this).parents('form'));
+        let ns = $(this).data('type');
+        let sltorS = '[data-toggle=checkSingle]';
+        let sltorA = '[data-toggle=checkAll]';
+        if (ns) {
+            sltorS += '[data-type="' + ns + '"]';
+            sltorA += '[data-type="' + ns + '"]';
+        }
+        sltorS += ':not(:disabled)';
+        $(sltorA).prop('checked', ($(sltorS + ':checked').length >= $(sltorS).length));
+        $(sltorA).prop('indeterminate', ($(sltorS + ':checked').length > 0 && $(sltorS + ':checked').length < $(sltorS).length));
     });
 
     // Select File

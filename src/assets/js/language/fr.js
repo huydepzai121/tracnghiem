@@ -62,6 +62,7 @@ var nv_aryDayName = "Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi".split(
     nv_code = "Code de sécurité incorrect.",
     nv_close = "Fermer",
     nv_confirm = "Confirmer",
+    nv_please_check = "Veuillez sélectionner au moins une ligne",
     // Message before unload
     nv_msgbeforeunload = "Les données ne sont pas enregistrées. Vous perdrez toutes les données si vous quittez cette page. Veux-tu partir?",
     // ErrorMessage

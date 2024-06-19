@@ -1933,15 +1933,15 @@ progress {
   --bs-table-bg-type: initial;
   --bs-table-color-state: initial;
   --bs-table-bg-state: initial;
-  --bs-table-color: var(--bs-emphasis-color);
+  --bs-table-color: var(--bs-body-color);
   --bs-table-bg: var(--bs-body-bg);
   --bs-table-border-color: var(--bs-border-color);
   --bs-table-accent-bg: transparent;
-  --bs-table-striped-color: var(--bs-emphasis-color);
+  --bs-table-striped-color: var(--bs-body-color);
   --bs-table-striped-bg: rgba(var(--bs-emphasis-color-rgb), 0.05);
-  --bs-table-active-color: var(--bs-emphasis-color);
+  --bs-table-active-color: var(--bs-body-color);
   --bs-table-active-bg: rgba(var(--bs-emphasis-color-rgb), 0.1);
-  --bs-table-hover-color: var(--bs-emphasis-color);
+  --bs-table-hover-color: var(--bs-body-color);
   --bs-table-hover-bg: rgba(var(--bs-emphasis-color-rgb), 0.075);
   width: 100%;
   margin-bottom: 1rem;
@@ -25264,6 +25264,7 @@ readers do not read off random characters that represent icons */
   --nv-notification-unread-border-color: #b9e3ea;
   --nv-chart-grid-border-opacity: 1;
   --nv-border-color-translucent: #e5e5e5;
+  --nv-table-thead-bg: #f9f9f9;
 }
 
 [data-bs-theme=dark] {
@@ -25286,6 +25287,7 @@ readers do not read off random characters that represent icons */
   --nv-notification-unread-border-color: #073137;
   --nv-chart-grid-border-opacity: .2;
   --nv-border-color-translucent: #343a40;
+  --nv-table-thead-bg: #343a40;
 }
 
 [data-bs-theme=dark] .ps .ps__rail-x:hover,
@@ -25405,6 +25407,10 @@ readers do not read off random characters that represent icons */
   border-bottom-width: 0;
 }
 
+.table thead {
+  --bs-table-bg: var(--nv-table-thead-bg);
+}
+
 .card-header-tabs {
   margin-right: calc(-1 * var(--bs-card-cap-padding-x));
   margin-left: calc(-1 * var(--bs-card-cap-padding-x));
@@ -25413,6 +25419,10 @@ readers do not read off random characters that represent icons */
 .card-header-tabs .nav-tabs {
   padding-left: calc(0.5 * var(--bs-card-cap-padding-x));
   padding-right: calc(0.5 * var(--bs-card-cap-padding-x));
+}
+
+.pagination-wrap .pagination {
+  margin-bottom: 0;
 }
 
 .header-outer {
@@ -26716,6 +26726,215 @@ p + .image-style-side {
   position: absolute;
   width: 1px;
   white-space: nowrap;
+}
+
+[data-bs-theme=light] .ui-widget.ui-widget-content,
+[data-bs-theme=dark] .ui-widget.ui-widget-content {
+  border-color: transparent;
+  box-shadow: var(--bs-box-shadow);
+}
+[data-bs-theme=light] .ui-widget-content,
+[data-bs-theme=dark] .ui-widget-content {
+  background-color: var(--bs-body-bg);
+  border-color: var(--bs-border-color);
+  color: var(--bs-body-color);
+}
+[data-bs-theme=light] .ui-widget input,
+[data-bs-theme=light] .ui-widget select,
+[data-bs-theme=light] .ui-widget textarea,
+[data-bs-theme=light] .ui-widget button,
+[data-bs-theme=dark] .ui-widget input,
+[data-bs-theme=dark] .ui-widget select,
+[data-bs-theme=dark] .ui-widget textarea,
+[data-bs-theme=dark] .ui-widget button {
+  font-family: var(--bs-body-font-family);
+}
+[data-bs-theme=light] .ui-datepicker-calendar .ui-state-default,
+[data-bs-theme=dark] .ui-datepicker-calendar .ui-state-default {
+  border-color: transparent;
+  background-color: transparent;
+  color: var(--bs-body-color);
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+[data-bs-theme=light] .ui-datepicker-calendar .ui-state-highlight,
+[data-bs-theme=dark] .ui-datepicker-calendar .ui-state-highlight {
+  border-color: var(--bs-primary);
+  color: var(--bs-body-color);
+}
+[data-bs-theme=light] .ui-datepicker-calendar .ui-state-active,
+[data-bs-theme=light] .ui-datepicker-calendar .ui-state-active:hover,
+[data-bs-theme=dark] .ui-datepicker-calendar .ui-state-active,
+[data-bs-theme=dark] .ui-datepicker-calendar .ui-state-active:hover {
+  background-color: var(--bs-primary);
+  color: var(--bs-white);
+}
+[data-bs-theme=light] .ui-datepicker,
+[data-bs-theme=dark] .ui-datepicker {
+  width: 14.375rem;
+  padding: 0 0.125rem 0 0.125rem;
+  z-index: 1049 !important;
+}
+[data-bs-theme=light] .ui-datepicker td span,
+[data-bs-theme=light] .ui-datepicker td a,
+[data-bs-theme=dark] .ui-datepicker td span,
+[data-bs-theme=dark] .ui-datepicker td a {
+  width: 1.875rem;
+  height: 1.875rem;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1.875rem;
+  padding: 0;
+}
+[data-bs-theme=light] .ui-datepicker td a:hover,
+[data-bs-theme=dark] .ui-datepicker td a:hover {
+  background-color: var(--bs-secondary-bg-subtle);
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-header,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-header {
+  margin: 0 calc(-1 * (0.125rem + 1px)) 0 calc(-1 * (0.125rem + 1px));
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-color: var(--bs-primary);
+  background-color: var(--bs-primary);
+  color: var(--bs-white);
+  padding: 0.5rem;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-header a,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-header a {
+  color: var(--bs-white);
+  cursor: pointer;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-header .ui-state-hover,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-header .ui-state-hover {
+  border: 0;
+  background-color: transparent;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-prev,
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-next,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-prev,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-next {
+  top: 50%;
+  transform: translate(0, -50%);
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-prev::after,
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-next::after,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-prev::after,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-next::after {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  display: inline-block;
+  position: absolute;
+  font-style: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-rendering: auto;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-prev .ui-icon,
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-next .ui-icon,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-prev .ui-icon,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-next .ui-icon {
+  background-image: none;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-prev,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-prev {
+  left: 3px;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-prev::after,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-prev::after {
+  content: "\f053";
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-next,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-next {
+  right: 3px;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-next::after,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-next::after {
+  content: "\f054";
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-prev-hover,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-prev-hover {
+  left: 3px;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-next-hover,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-next-hover {
+  right: 3px;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-title,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-title {
+  margin: 0 2em;
+  display: flex;
+  align-items: center;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-title > *,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-title > * {
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0.5rem 0 0;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  color: var(--bs-white);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-title > *:last-child,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-title > *:last-child {
+  margin-right: 0;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-title > * option,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-title > * option {
+  color: var(--bs-body-color);
+  background-color: var(--bs-tertiary-bg);
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-title > select,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-title > select {
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 16px 12px;
+  padding-right: 22px;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-buttonpane .ui-state-default,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-buttonpane .ui-state-default {
+  border-color: var(--bs-border-color);
+  background-color: var(--bs-tertiary-bg);
+  color: var(--bs-body-color);
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-buttonpane .ui-state-default:hover,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-buttonpane .ui-state-default:hover {
+  border-color: var(--bs-primary);
+}
+[data-bs-theme=light] .ui-datepicker .ui-datepicker-buttonpane .ui-priority-primary,
+[data-bs-theme=dark] .ui-datepicker .ui-datepicker-buttonpane .ui-priority-primary {
+  font-weight: 500;
+}
+[data-bs-theme=light] .ui-datepicker.ui-datepicker-rtl .ui-datepicker-next::after,
+[data-bs-theme=dark] .ui-datepicker.ui-datepicker-rtl .ui-datepicker-next::after {
+  content: "\f053";
+}
+[data-bs-theme=light] .ui-datepicker.ui-datepicker-rtl .ui-datepicker-prev::after,
+[data-bs-theme=dark] .ui-datepicker.ui-datepicker-rtl .ui-datepicker-prev::after {
+  content: "\f054";
+}
+[data-bs-theme=light] .ui-datepicker.ui-datepicker-rtl .ui-datepicker-prev:hover,
+[data-bs-theme=dark] .ui-datepicker.ui-datepicker-rtl .ui-datepicker-prev:hover {
+  /*rtl:begin:ignore*/
+  right: 3px;
+  /*rtl:end:ignore*/
+}
+[data-bs-theme=light] .ui-datepicker.ui-datepicker-rtl .ui-datepicker-next:hover,
+[data-bs-theme=dark] .ui-datepicker.ui-datepicker-rtl .ui-datepicker-next:hover {
+  /*rtl:begin:ignore*/
+  left: 3px;
+  /*rtl:end:ignore*/
 }
 
 /*# sourceMappingURL=nv.style.css.map */

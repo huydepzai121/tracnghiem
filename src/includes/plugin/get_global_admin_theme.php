@@ -22,7 +22,7 @@ nv_add_hook($module_name, 'get_global_admin_theme', $priority, function ($vars) 
 
     $new_theme = 'admin_future';
 
-    if ($module_name == 'siteinfo' and in_array($op, ['php_info_configuration', 'system_info', 'main', 'widget'])) {
+    if ($module_name == 'siteinfo' and in_array($op, ['logs', 'php_info_configuration', 'system_info', 'main', 'widget'])) {
         return $new_theme;
     }
     if ($module_name == 'modules' and in_array($op, ['edit'])) {

@@ -98,6 +98,12 @@
     }
 }
 
+.table {
+    thead {
+        --bs-table-bg: var(--nv-table-thead-bg);
+    }
+}
+
 .card-header-tabs {
     margin-right: calc(-1 * var(--bs-card-cap-padding-x));
     margin-left: calc(-1 * var(--bs-card-cap-padding-x));
@@ -106,5 +112,12 @@
     .nav-tabs {
         padding-left: calc(0.5 * var(--bs-card-cap-padding-x));
         padding-right: calc(0.5 * var(--bs-card-cap-padding-x));
+    }
+}
+
+// Pagination
+.pagination-wrap {
+    .pagination {
+        margin-bottom: 0;
     }
 }

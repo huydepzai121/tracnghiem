@@ -13,10 +13,6 @@ if (!defined('NV_ADMIN') or !defined('NV_MAINFILE') or !defined('NV_IS_MODADMIN'
     exit('Stop!!!');
 }
 
-if ($admin_info['level'] == 1) {
-    $allow_func[] = 'logs_del';
-}
-
 $menu_top = [
     'title' => $module_name,
     'module_file' => '',

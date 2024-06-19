@@ -359,4 +359,121 @@ $(document).ready(function() {
         }
         initDroppable();
     }
+
+    // Select 2
+    if ($('.select2').length) {
+        $('.select2').select2({
+            language: nv_lang_interface,
+            dir: $('html').attr('dir'),
+            width: '100%'
+        });
+    }
+
+    // Chọn ngày tháng
+    if ($('.datepicker').length) {
+        $('.datepicker').datepicker({
+            dateFormat: nv_jsdate_get.replace('yyyy', 'yy'),
+            changeMonth: true,
+            changeYear: true,
+            showOtherMonths: true,
+            buttonText: '{LANG.select}',
+            showButtonPanel: true,
+            showOn: 'focus',
+            isRTL: $('html').attr('dir') == 'rtl'
+        });
+    }
+
+    // Xóa 1 dòng log
+    $('[data-toggle="logDelOne"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(btn.data('confirm'), () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    delete: $('body').data('checksess'),
+                    id: btn.data('id')
+                },
+                success: function() {
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
+
+    // Xóa nhiều dòng log
+    $('[data-toggle="logDelMulti"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        let ctn = $(btn.data('ctn')), listid = [];
+        $('[data-toggle="checkSingle"]:checked', ctn).each(function() {
+            listid.push($(this).val());
+        });
+        if (listid.length < 1)  {
+            nvAlert(nv_please_check);
+            return;
+        }
+        nvConfirm(btn.data('confirm'), () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    delete: $('body').data('checksess'),
+                    listid: listid.join(',')
+                },
+                success: function() {
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
+
+    // Xóa toàn bộ kết quả lọc log
+    $('[data-toggle="logTruncate"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(btn.data('confirm'), () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: btn.data('url') + '&nocache=' + new Date().getTime(),
+                data: {
+                    truncate: $('body').data('checksess')
+                },
+                success: function() {
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
 });

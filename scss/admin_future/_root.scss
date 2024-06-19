@@ -27,6 +27,8 @@
     --nv-chart-grid-border-opacity: 1;
 
     --nv-border-color-translucent: #{$gray-200};
+
+    --nv-table-thead-bg: #{$gray-100};
 }
 
 [data-bs-theme="dark"] {
@@ -57,4 +59,6 @@
     --nv-chart-grid-border-opacity: .2;
 
     --nv-border-color-translucent: #{$gray-800};
+
+    --nv-table-thead-bg: #{$gray-800};
 }
