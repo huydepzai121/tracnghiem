@@ -411,13 +411,7 @@ function nv_html_meta_tags($html = true)
     if (!empty($kw)) {
         $kw = array_unique($kw);
         $key_words = implode(',', $kw);
-        $key_words = preg_replace([
-            "/[ ]*\,[ ]+/",
-            "/[\,]+/"
-        ], [
-            ', ',
-            ', '
-        ], $key_words);
+        $key_words = preg_replace("/(\s*\,\s*)+/", ', ', $key_words);
         $key_words = nv_strtolower(strip_tags($key_words));
         $return[] = [
             'name' => 'name',
