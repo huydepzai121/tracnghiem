@@ -128,3 +128,15 @@
         width: #{$i * 25}px!important;
     }
 }
+
+// Block ellipsis: Chú ý class này chỉ dùng khi không thiết lập font-size, line-height mà dùng mặc định của body
+@for $i from 2 through 4 {
+    .text-truncate-#{$i} {
+        max-height: calc($font-size-base * $line-height-base * $i);
+        -webkit-line-clamp: #{$i};
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
+}

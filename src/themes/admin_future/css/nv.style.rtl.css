@@ -25479,6 +25479,33 @@ readers do not read off random characters that represent icons */
   width: 500px !important;
 }
 
+.text-truncate-2 {
+  max-height: 2.4375rem;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.text-truncate-3 {
+  max-height: 3.65625rem;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.text-truncate-4 {
+  max-height: 4.875rem;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
 .header-outer {
   background-color: var(--nv-header-bg-color);
   position: fixed;

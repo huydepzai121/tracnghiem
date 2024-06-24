@@ -153,16 +153,18 @@
                             <input type="checkbox" data-toggle="checkSingle" value="{$row.id}" class="form-check-input m-0 align-middle" aria-label="{$LANG->getGlobal('toggle_checksingle')}"{if $row.is_locked} disabled{/if}>
                         </td>
                         <td>
-                            {if $row.tool_sort}
-                            <a href="#" class="d-inline-block me-1 link-info" data-toggle="sortArticle" data-id="{$row.id}" data-checksess="{$row.checksess}" data-title="{$LANG->getModule('order_articles')} &quot;{$row.title}&quot;" data-weight="{$row.weight}" aria-label="{$LANG->getModule('order_articles')}"><i class="fa-solid fa-sort" data-bs-toggle="tooltip" data-bs-title="{$LANG->getModule('order_articles_number')}: {$row.weight|nformat}" data-bs-trigger="hover"></i></a>
-                            {/if}
-                            {if $row.is_editing}
-                            <i class="fa-solid {if $row.is_locked}fa-lock{else}fa-unlock{/if} me-1 text-warning" aria-label="{$row.user_editing} {$LANG->getModule('post_is_editing')}." data-bs-toggle="tooltip" data-bs-title="{$row.user_editing} {$LANG->getModule('post_is_editing')}." data-bs-trigger="hover"></i>
-                            {/if}
-                            {if $row.status_id eq 4}
-                            <i class="fa-solid fa-compass-drafting" aria-label="{$LANG->getModule('status_4')}" title="{$LANG->getModule('status_4')}" data-bs-toggle="tooltip" data-bs-trigger="hover"></i>
-                            {/if}
-                            <a target="_blank" href="{$row.link}" title="{$row.title}">{$row.title}</a>
+                            <div class="text-truncate-2">
+                                {if $row.tool_sort}
+                                <a href="#" class="d-inline-block me-1 link-info" data-toggle="sortArticle" data-id="{$row.id}" data-checksess="{$row.checksess}" data-title="{$LANG->getModule('order_articles')} &quot;{$row.title}&quot;" data-weight="{$row.weight}" aria-label="{$LANG->getModule('order_articles')}"><i class="fa-solid fa-sort" data-bs-toggle="tooltip" data-bs-title="{$LANG->getModule('order_articles_number')}: {$row.weight|nformat}" data-bs-trigger="hover"></i></a>
+                                {/if}
+                                {if $row.is_editing}
+                                <i class="fa-solid {if $row.is_locked}fa-lock{else}fa-unlock{/if} me-1 text-warning" aria-label="{$row.user_editing} {$LANG->getModule('post_is_editing')}." data-bs-toggle="tooltip" data-bs-title="{$row.user_editing} {$LANG->getModule('post_is_editing')}." data-bs-trigger="hover"></i>
+                                {/if}
+                                {if $row.status_id eq 4}
+                                <i class="fa-solid fa-compass-drafting" aria-label="{$LANG->getModule('status_4')}" title="{$LANG->getModule('status_4')}" data-bs-toggle="tooltip" data-bs-trigger="hover"></i>
+                                {/if}
+                                <a target="_blank" href="{$row.link}" title="{$row.title}">{$row.title}</a>
+                            </div>
                         </td>
                         <td>{$row.publtime}</td>
                         <td>{$row.author}</td>
