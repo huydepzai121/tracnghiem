@@ -60,14 +60,29 @@
                 <thead class="text-muted">
                     <tr>
                         <th class="text-nowrap" style="width: 1%;">
-                            <input type="checkbox" data-toggle="checkAll" class="form-check-input m-0 align-middle" aria-label="...">
+                            <input type="checkbox" data-toggle="checkAll" class="form-check-input m-0 align-middle" aria-label="{$LANG->getGlobal('toggle_checkall')}">
                         </th>
-                        <th class="text-nowrap" style="width: 10%;">{$LANG->getModule('log_lang')}</th>
-                        <th class="text-nowrap" style="width: 10%;">{$LANG->getModule('log_module_name')}</th>
+                        <th class="text-nowrap" style="width: 10%;">
+                            <a href="{$BASE_URL_ORDER}{if $ARRAY_ORDER.field neq 'lang' or $ARRAY_ORDER.value neq 'desc'}&amp;of=lang{if $ARRAY_ORDER.field neq 'lang' or empty($ARRAY_ORDER.value)}&amp;ov=asc{else}&amp;ov=desc{/if}{/if}" class="d-flex align-items-center justify-content-between">
+                                <span class="me-1">{$LANG->getModule('log_lang')}</span>
+                                {if $ARRAY_ORDER.field neq 'lang' or empty($ARRAY_ORDER.value)}<i class="fa-solid fa-sort"></i>{elseif $ARRAY_ORDER.value eq 'asc'}<i class="fa-solid fa-sort-up"></i>{else}<i class="fa-solid fa-sort-down"></i>{/if}
+                            </a>
+                        </th>
+                        <th class="text-nowrap" style="width: 10%;">
+                            <a href="{$BASE_URL_ORDER}{if $ARRAY_ORDER.field neq 'module_name' or $ARRAY_ORDER.value neq 'desc'}&amp;of=module_name{if $ARRAY_ORDER.field neq 'module_name' or empty($ARRAY_ORDER.value)}&amp;ov=asc{else}&amp;ov=desc{/if}{/if}" class="d-flex align-items-center justify-content-between">
+                                <span class="me-1">{$LANG->getModule('log_module_name')}</span>
+                                {if $ARRAY_ORDER.field neq 'module_name' or empty($ARRAY_ORDER.value)}<i class="fa-solid fa-sort"></i>{elseif $ARRAY_ORDER.value eq 'asc'}<i class="fa-solid fa-sort-up"></i>{else}<i class="fa-solid fa-sort-down"></i>{/if}
+                            </a>
+                        </th>
                         <th class="text-nowrap" style="width: 19.6%;">{$LANG->getModule('log_name_key')}</th>
                         <th class="text-nowrap" style="width: 19.6%;">{$LANG->getModule('log_note')}</th>
                         <th class="text-nowrap" style="width: 19.6%;">{$LANG->getModule('log_username')}</th>
-                        <th class="text-nowrap" style="width: 19.6%;">{$LANG->getModule('log_time')}</th>
+                        <th class="text-nowrap" style="width: 19.6%;">
+                            <a href="{$BASE_URL_ORDER}{if $ARRAY_ORDER.field neq 'log_time' or $ARRAY_ORDER.value neq 'desc'}&amp;of=log_time{if $ARRAY_ORDER.field neq 'log_time' or empty($ARRAY_ORDER.value)}&amp;ov=asc{else}&amp;ov=desc{/if}{/if}" class="d-flex align-items-center justify-content-between">
+                                <span class="me-1">{$LANG->getModule('log_time')}</span>
+                                {if $ARRAY_ORDER.field neq 'log_time' or empty($ARRAY_ORDER.value)}<i class="fa-solid fa-sort"></i>{elseif $ARRAY_ORDER.value eq 'asc'}<i class="fa-solid fa-sort-up"></i>{else}<i class="fa-solid fa-sort-down"></i>{/if}
+                            </a>
+                        </th>
                         {if $ALLOWED_DELETE}
                         <th class="text-nowrap text-end" style="width: 1%;">{$LANG->getModule('log_feature')}</th>
                         {/if}
@@ -77,7 +92,7 @@
                     {foreach from=$DATA key=key item=row}
                     <tr>
                         <td>
-                            <input type="checkbox" data-toggle="checkSingle" value="{$row.id}" class="form-check-input m-0 align-middle" aria-label="...">
+                            <input type="checkbox" data-toggle="checkSingle" value="{$row.id}" class="form-check-input m-0 align-middle" aria-label="{$LANG->getGlobal('toggle_checksingle')}">
                         </td>
                         <td>{$row.lang}</td>
                         <td>{$row.custom_title}</td>
@@ -100,7 +115,7 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center">
             <div>
                 {if $ALLOWED_DELETE}
-                <input type="checkbox" data-toggle="checkAll" class="form-check-input m-0 align-middle" aria-label="...">
+                <input type="checkbox" data-toggle="checkAll" class="form-check-input m-0 align-middle" aria-label="{$LANG->getGlobal('toggle_checkall')}">
                 <button class="btn btn-outline-danger ms-2 me-1 my-1" data-toggle="logDelMulti" data-ctn="#list-items" data-confirm="{$LANG->getModule('log_del_confirm')}"><i class="fa-solid fa-trash" data-icon="fa-trash"></i> {$LANG->getGlobal('delete')}</button>
                 <button class="btn btn-danger me-1 my-1" data-toggle="logTruncate" data-confirm="{$LANG->getModule('log_del_confirm')}" data-url="{$BASE_URL}"><i class="fa-solid fa-ban" data-icon="fa-ban"></i> {$LANG->getModule('log_empty')}</button>
                 {/if}

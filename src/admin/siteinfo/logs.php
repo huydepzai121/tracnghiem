@@ -127,7 +127,7 @@ if ($page > 1) {
     $base_url_order .= '&amp;page=' . $page;
 }
 
-$order_fields = ['lang', 'module', 'time'];
+$order_fields = ['lang', 'module_name', 'log_time'];
 $order_values = ['asc', 'desc'];
 
 if (!in_array($array_order['field'], $order_fields)) {
@@ -248,6 +248,8 @@ $tpl->assign('BASE_URL', $base_url);
 $tpl->assign('DATA', $data);
 $tpl->assign('PAGINATION', nv_generate_page($base_url, $num_items, $per_page, $page));
 $tpl->assign('SEARCH', $array_search);
+$tpl->assign('ARRAY_ORDER', $array_order);
+$tpl->assign('BASE_URL_ORDER', $base_url_order);
 
 $contents = $tpl->fetch('logs.tpl');
 

@@ -73,17 +73,17 @@
 }
 
 .table-card {
-    margin: calc(-1 * var(--bs-card-spacer-y)) calc(-1 * var(--bs-card-spacer-x));
+    margin: calc(-1 * $card-spacer-y) calc(-1 * $card-spacer-x);
 
     td, th {
         &:first-child {
-            padding-left: var(--bs-card-spacer-x);
+            padding-left: $card-spacer-x;
         }
     }
 
     td, th {
         &:last-child {
-            padding-right: var(--bs-card-spacer-x);
+            padding-right: $card-spacer-x;
         }
     }
 
@@ -119,5 +119,12 @@
 .pagination-wrap {
     .pagination {
         margin-bottom: 0;
+    }
+}
+
+// Width in px
+@for $i from 1 through 20 {
+    .fw-#{$i * 25} {
+        width: #{$i * 25}px!important;
     }
 }
