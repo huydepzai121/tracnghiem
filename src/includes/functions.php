@@ -2594,24 +2594,27 @@ function nv_change_buffer($buffer)
 
     if (defined('NV_SYSTEM')) {
         if ($client_info['is_bot'] or stripos(NV_USER_AGENT, 'google') !== false) {
-            $strdata = [];
+            //  Cung cấp tên trang web cho Google Tìm kiếm
+            // https://developers.google.com/search/docs/appearance/site-names?hl=vi#json-ld
+            $typeWebSite = [
+                '@context' => 'https://schema.org',
+                '@type' => 'WebSite',
+                'name' => $global_config['site_name'],
+                'url' => NV_MAIN_DOMAIN . '/'
+            ];
             // Thêm Hộp tìm kiếm liên kết trang web lên Google Search
             // https://developers.google.com/search/docs/appearance/structured-data/sitelinks-searchbox
             if (!empty($global_config['sitelinks_search_box_schema'])) {
-                $strdata[] = [
-                    '@context' => 'https://schema.org',
-                    '@type' => 'WebSite',
-                    'url' => NV_MAIN_DOMAIN . '/',
-                    'potentialAction' => [
-                        '@type' => 'SearchAction',
-                        'target' => [
-                            '@type' => 'EntryPoint',
-                            'urlTemplate' => NV_MY_DOMAIN . nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=seek&amp;q=', true) . '{search_term_string}'
-                        ],
-                        'query-input' => 'required name=search_term_string'
-                    ]
+                $typeWebSite['potentialAction'] = [
+                    '@type' => 'SearchAction',
+                    'target' => [
+                        '@type' => 'EntryPoint',
+                        'urlTemplate' => NV_MY_DOMAIN . nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=seek&amp;q=', true) . '{search_term_string}'
+                    ],
+                    'query-input' => 'required name=search_term_string'
                 ];
             }
+            $strdata = [$typeWebSite];
             // Thêm biểu trưng của tổ chức lên Google Search
             // https://developers.google.com/search/docs/appearance/structured-data/logo
             if (!empty($global_config['organization_logo'])) {
