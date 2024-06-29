@@ -2599,9 +2599,14 @@ function nv_change_buffer($buffer)
             $typeWebSite = [
                 '@context' => 'https://schema.org',
                 '@type' => 'WebSite',
-                'name' => $global_config['site_name'],
-                'url' => NV_MAIN_DOMAIN . '/'
+                'name' => $global_config['site_name']
             ];
+            // Việc cung cấp tên website thay thế bằng thuộc tính alternateName
+            // giúp Google xem xét các lựa chọn khác nếu tên bạn ưu tiên không được chọn
+            if (!empty($global_config['custom_configs']['site_alternate_name'])) {
+                $typeWebSite['alternateName'] = $global_config['custom_configs']['site_alternate_name'];
+            }
+            $typeWebSite['url'] = NV_MAIN_DOMAIN . '/';
             // Thêm Hộp tìm kiếm liên kết trang web lên Google Search
             // https://developers.google.com/search/docs/appearance/structured-data/sitelinks-searchbox
             if (!empty($global_config['sitelinks_search_box_schema'])) {
