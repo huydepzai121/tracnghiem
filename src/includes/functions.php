@@ -2557,7 +2557,7 @@ function api_url_create($action, $language = '', $module = '', $domain = '')
  */
 function nv_change_buffer($buffer)
 {
-    global $global_config, $client_info, $array_mod_title, $nv_Lang;
+    global $global_config, $client_info, $array_mod_title, $nv_Lang, $strdata;
 
     $script = 'script' . (defined('NV_SCRIPT_NONCE') ? ' nonce="' . NV_SCRIPT_NONCE . '"' : '');
 
@@ -2607,19 +2607,21 @@ function nv_change_buffer($buffer)
                 $typeWebSite['alternateName'] = $global_config['custom_configs']['site_alternate_name'];
             }
             $typeWebSite['url'] = NV_MAIN_DOMAIN . '/';
-            // Thêm Hộp tìm kiếm liên kết trang web lên Google Search
-            // https://developers.google.com/search/docs/appearance/structured-data/sitelinks-searchbox
-            if (!empty($global_config['sitelinks_search_box_schema'])) {
-                $typeWebSite['potentialAction'] = [
-                    '@type' => 'SearchAction',
-                    'target' => [
-                        '@type' => 'EntryPoint',
-                        'urlTemplate' => NV_MY_DOMAIN . nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=seek&amp;q=', true) . '{search_term_string}'
-                    ],
-                    'query-input' => 'required name=search_term_string'
-                ];
+            if (!preg_match('/^' . nv_preg_quote(NV_MY_DOMAIN) . '\/?$/', $client_info['selfurl'])) {
+                // Thêm Hộp tìm kiếm liên kết trang web lên Google Search
+                // https://developers.google.com/search/docs/appearance/structured-data/sitelinks-searchbox
+                if (!empty($global_config['sitelinks_search_box_schema'])) {
+                    $typeWebSite['potentialAction'] = [
+                        '@type' => 'SearchAction',
+                        'target' => [
+                            '@type' => 'EntryPoint',
+                            'urlTemplate' => NV_MY_DOMAIN . nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=seek&amp;q=', true) . '{search_term_string}'
+                        ],
+                        'query-input' => 'required name=search_term_string'
+                    ];
+                }
             }
-            $strdata = [$typeWebSite];
+            $strdata[] = $typeWebSite;
             // Thêm biểu trưng của tổ chức lên Google Search
             // https://developers.google.com/search/docs/appearance/structured-data/logo
             if (!empty($global_config['organization_logo'])) {
