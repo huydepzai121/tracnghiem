@@ -40,7 +40,7 @@ function nv_pare_data(id, isEditor) {
     // Add content: Clear editor
     if (id == '') {
         if (isEditor) {
-            CKEDITOR.instances[cfg.ctEditor].setData('');
+            window.nveditor[cfg.ctEditor].setData('');
         }
     } else {
         $.ajax({
@@ -69,7 +69,7 @@ function nv_pare_data(id, isEditor) {
                             $this.val(v);
 
                             if (isEditor) {
-                                CKEDITOR.instances[cfg.ctEditor].setData(v);
+                                window.nveditor[cfg.ctEditor].setData(v);
                             }
                         }
                     });
@@ -83,7 +83,7 @@ function nv_pare_data(id, isEditor) {
 
 $(document).ready(function() {
     // Add block click
-    $(cfg.blockAddBtn).click(function(e) {
+    $(cfg.blockAddBtn).click(function() {
         $(cfg.blockModal).find(cfg.load).hide();
         $(cfg.blockModal + ' .txt').val('').tooltip('destroy');
         $(cfg.blockModal + ' .has-error').removeClass('has-error');
@@ -231,26 +231,36 @@ $(document).ready(function() {
     // Trigger on modal shown
     $(cfg.ctModal).on('shown.bs.modal', function(e) {
         var id = $(cfg.ctModal + ' [name="id"]').val();
-        var isEditor = (typeof CKEDITOR !== "undefined" && $(cfg.ctModal + ' [name="description"]').data('editor') == true) ? true : false;
+        var isEditor = (typeof ClassicEditor !== "undefined" && $(cfg.ctModal + ' [name="description"]').data('editor') == true) ? true : false;
 
         // Build/Rebuild editor
         if (isEditor) {
-            var instance = CKEDITOR.instances[cfg.ctEditor];
-            if (!instance) {
-                CKEDITOR.replace(cfg.ctEditor, {
-                    width: '100%',
-                    height: $(cfg.ctModal + ' [name="description"]').height() - 30,
-                    toolbar: [{
-                        name: 'Tools',
-                        items: ['Undo', 'Redo', '-', 'Bold', 'Italic', 'Underline', '-', 'RemoveFormat', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Source', '-', 'Maximize']
-                    }],
-                    toolbarLocation: 'bottom',
-                    removePlugins: 'elementspath,resize',
-                    on: {
-                        instanceReady: function(e) {
-                            nv_pare_data(id, isEditor);
-                        }
+            window.nveditor = window.nveditor || [];
+            if (!window.nveditor[cfg.ctEditor]) {
+                ClassicEditor.create(document.querySelector('#' + cfg.ctEditor), {
+                    language: nv_lang_interface,
+                    toolbar: {
+                        items: [
+                            'undo',
+                            'redo',
+                            '|',
+                            'bold',
+                            'italic',
+                            'underline',
+                            '|',
+                            'alignment',
+                            'removeFormat',
+                            'sourceEditing'
+                        ],
+                        shouldNotGroupWhenFull: false
                     }
+                })
+                .then(editor => {
+                    window.nveditor[cfg.ctEditor] = editor;
+                    nv_pare_data(id, isEditor);
+                })
+                .catch(err => {
+                    console.error(err.stack);
                 });
             } else {
                 nv_pare_data(id, isEditor);
@@ -269,17 +279,14 @@ $(document).ready(function() {
     $(cfg.ctModal + ' form').submit(function(e) {
         e.preventDefault();
         $this = $(this);
-        var isEditor = (typeof CKEDITOR !== "undefined" && $(cfg.ctModal + ' [name="description"]').data('editor') == true) ? true : false;
+        var isEditor = (typeof ClassicEditor !== "undefined" && $(cfg.ctModal + ' [name="description"]').data('editor') == true) ? true : false;
         $(cfg.ctSubmitBtn).attr('disabled', 'disabled');
         $(cfg.ctModal).find(cfg.load).show();
         $(cfg.ctModal + ' .txt').tooltip('destroy');
         $(cfg.ctModal + ' .has-error').removeClass('has-error');
 
         if (isEditor) {
-            var instance = CKEDITOR.instances[cfg.ctEditor];
-            if (instance) {
-                $this.find('[name="description"]').val(instance.getData());
-            }
+            $this.find('[name="description"]').val(window.nveditor[cfg.ctEditor].getData());
         }
 
         var data = {

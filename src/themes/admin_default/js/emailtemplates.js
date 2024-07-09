@@ -146,6 +146,12 @@ $(document).ready(function() {
                     focusEditor = key;
                 });
             }
+        } else if (window.nveditor != "undefined") {
+            for (const [key, value] of Object.entries(window.nveditor)) {
+                value.editing.view.document.on('change:isFocused', () => {
+                    focusEditor = key;
+                });
+            }
         } else {
             $('[data-toggle="textareaemailcontent"]').on('focus', function() {
                 focusEditor = $(this).attr('id');
@@ -155,6 +161,11 @@ $(document).ready(function() {
             e.preventDefault();
             if (typeof CKEDITOR != 'undefined') {
                 CKEDITOR.instances[focusEditor].insertHtml(' {' + $(this).data('value') + '}');
+            } else if (window.nveditor != "undefined") {
+                window.nveditor[focusEditor].model.change(() => {
+                    window.nveditor[focusEditor].model.insertContent(window.nveditor[focusEditor].data.toModel(window.nveditor[focusEditor].data.processor.toView(' {' + $(this).data('value') + '}')), window.nveditor[focusEditor].model.document.selection);
+                });
+                window.nveditor[focusEditor].editing.view.focus();
             } else {
                 $('#' + focusEditor).val($('#' + focusEditor).val() + ' {' + $(this).data('value') + '}');
             }

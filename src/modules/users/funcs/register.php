@@ -181,11 +181,9 @@ while ($row_field = $result_field->fetch()) {
 }
 
 if (!defined('NV_EDITOR')) {
-    define('NV_EDITOR', 'ckeditor');
+    define('NV_EDITOR', 'ckeditor5-classic');
 }
-if (defined('NV_EDITOR')) {
-    require_once NV_ROOTDIR . '/' . NV_EDITORSDIR . '/' . NV_EDITOR . '/nv.php';
-}
+require_once NV_ROOTDIR . '/' . NV_EDITORSDIR . '/' . NV_EDITOR . '/nv.php';
 
 $custom_fields = $nv_Request->get_array('custom_fields', 'post');
 

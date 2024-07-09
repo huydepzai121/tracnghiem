@@ -13,12 +13,11 @@ function commReset(form) {
     $("[name=pid]", form).val(0);
     $(form)[0].reset();
     if ($(form).data('editor')) {
-        CKEDITOR.instances['commentcontent'].setData('', function() {
-            this.updateElement();
-            if ($('.confirm', form).length) {
-                $('.confirm', form).slideUp()
-            }
-        })
+        window.nveditor['commentcontent'].setData('');
+        $('#commentcontent').val('');
+        if ($('.confirm', form).length) {
+            $('.confirm', form).slideUp();
+        }
     } else {
         if ($('.confirm', form).length) {
             $('.confirm', form).slideUp()
@@ -31,7 +30,10 @@ function commFeedback(cid, post_name) {
         $("#formcomment form [name=pid]").val(cid);
         var data = $('#formcomment form').data();
         if (data.editor) {
-            CKEDITOR.instances['commentcontent'].insertText("@" + post_name + " ");
+            window.nveditor['commentcontent'].model.change(() => {
+                window.nveditor['commentcontent'].model.insertContent(window.nveditor['commentcontent'].data.toModel(window.nveditor['commentcontent'].data.processor.toView("@" + post_name + "&nbsp;")), window.nveditor['commentcontent'].model.document.selection);
+            });
+            window.nveditor['commentcontent'].editing.view.focus();
         } else {
             $("#formcomment form [name=content]").focus();
             $("#formcomment form [name=content]").val("@" + post_name + " ");
@@ -104,7 +106,7 @@ function commFormSubmit(form) {
     }
 
     if ($(form).data('editor')) {
-        CKEDITOR.instances['commentcontent'].updateElement()
+        $('#commentcontent').val(window.nveditor['commentcontent'].getData());
     }
     var content = strip_tags($("[name=content]", form).val());
     content = content.replace(/\s*\&nbsp\;\s*/gi, ' ');
@@ -113,10 +115,8 @@ function commFormSubmit(form) {
         alert(nv_content);
         if ($(form).data('editor')) {
             $('#cke_commentcontent').parent().addClass('has-error');
-            CKEDITOR.instances['commentcontent'].setData('', function() {
-                this.updateElement();
-                this.focus()
-            })
+            window.nveditor['commentcontent'].setData('');
+            $('#commentcontent').val('');
         } else {
             $("[name=content]", form).parent().addClass('has-error');
             $("[name=content]", form).val('').focus();
@@ -155,15 +155,15 @@ $(function() {
         // Gửi comment khi ấn Ctrl + Enter
         var data = commentform.data();
         if (data.editor) {
-            CKEDITOR.instances['commentcontent'].on('key', function(event) {
-                if (event.data.keyCode === 1114125) {
-                    $('[type=submit]', commentform).trigger('click')
+            window.nveditor["commentcontent"].editing.view.document.on('keydown', (event, data) => {
+                if (data.ctrlKey && data.keyCode == 13) {
+                    $('[type=submit]', commentform).trigger('click');
                 }
             });
         } else {
             $('#commentcontent').on("keydown", function(e) {
                 if (e.ctrlKey && e.keyCode == 13) {
-                    $('[type=submit]', commentform).trigger('click')
+                    $('[type=submit]', commentform).trigger('click');
                 }
             });
         }
@@ -175,13 +175,13 @@ $(function() {
         });
     }
 
-    $('input[type=text], input[type=email], input[type=file], textarea', commentform).on('change', function() {
+    $('input[type=text], input[type=email], input[type=file], textarea', commentform).on('keyup change', function() {
         $('.confirm', commentform).slideDown()
     });
 
-    if (typeof(CKEDITOR) !== 'undefined') {
-        CKEDITOR.instances['commentcontent'].on('change', function() {
-            $('.confirm', commentform).slideDown()
+    if (window.nveditor && window.nveditor['commentcontent']) {
+        window.nveditor['commentcontent'].model.document.on('change', () => {
+            $('.confirm', commentform).slideDown();
         });
     }
 

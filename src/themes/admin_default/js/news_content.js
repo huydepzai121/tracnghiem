@@ -49,12 +49,6 @@ function nv_timer_check_takeover(id) {
     return false;
 }
 
-function nv_validCheck(a) {
-    b = $(a).val();
-    if ("" == b) return 0;
-    return 1;
-}
-
 function nv_validErrorShow(a) {
     $(a).parent().parent().addClass("has-error");
     $("[data-mess]", $(a).parent().parent().parent()).not(".tooltip-current").tooltip("destroy");
@@ -69,40 +63,6 @@ function nv_validErrorShow(a) {
 function nv_validErrorHidden(a) {
     $(a).parent().parent().removeClass("has-error")
 }
-
-function nv_validForm(a, module_data, error_bodytext, error_cat) {
-    $(".has-error", a).removeClass("has-error");
-    var c = 0;
-    var x = $(a).find("[name='title']");
-    var y = $(a).find("[name='bodyhtml']");
-
-    if (!nv_validCheck(x)) {
-        return !1, $(".tooltip-current", a).removeClass("tooltip-current"), $(x).addClass("tooltip-current").attr("data-current-mess", $(x).attr("data-mess")), nv_validErrorShow(x), !1;
-    } else {
-        var value = CKEDITOR.instances[module_data + '_bodyhtml'].getData();
-        if (value == "") {
-            $(a).find("#show_error").css('display', 'block');
-            $("#show_error", a).html(error_bodytext);
-            $('html,body').animate({
-                    scrollTop: $("#show_error").offset().top
-                },
-                'slow');
-            return !1;
-        } else {
-            var z = $(a).find(".news_checkbox:checked").val();
-            if (typeof z == "undefined" || z <= 0) {
-                $(a).find("#show_error").css('display', 'block');
-                $("#show_error", a).html(error_cat);
-                $('html,body').animate({
-                        scrollTop: $("#show_error").offset().top
-                    },
-                    'slow');
-                return !1;
-            }
-        }
-    }
-    return !0;
-};
 
 $(function() {
     $("#titlelength").html($("#idtitle").val().length);
@@ -256,7 +216,7 @@ $(function() {
         }
         return false;
     });
-    // Keywords autocomplete end    
+    // Keywords autocomplete end
 
     // Tags autocomplete
     $("#tags-search").bind("keydown", function(event) {
@@ -471,8 +431,15 @@ $(function() {
         var form = $(this).parents('form'),
             mdata = $(this).data('mdata'),
             hometext = strip_tags($('[name=hometext]', form).val()),
-            bodytext = strip_tags(CKEDITOR.instances[mdata + '_bodyhtml'].getData()),
-            content = hometext + ' ' + bodytext;
+            bodytext = '';
+
+        if (typeof CKEDITOR != 'undefined' && CKEDITOR.instances[mdata + '_bodyhtml']) {
+            bodytext = strip_tags(CKEDITOR.instances[mdata + '_bodyhtml'].getData());
+        } else if (typeof window.nveditor != "undefined" && window.nveditor[mdata + '_bodyhtml']) {
+            bodytext = strip_tags(window.nveditor[mdata + '_bodyhtml'].getData());
+        }
+
+        var content = hometext + ' ' + bodytext;
         content = trim(content.replace(/\n|\r/g, ' '));
         if (content != '') {
             $.ajax({
@@ -497,8 +464,15 @@ $(function() {
         var form = $(this).parents('form'),
             mdata = $(this).data('mdata'),
             hometext = strip_tags($('[name=hometext]', form).val()),
-            bodytext = strip_tags(CKEDITOR.instances[mdata + '_bodyhtml'].getData()),
-            content = hometext + ' ' + bodytext;
+            bodytext = '';
+
+        if (typeof CKEDITOR != 'undefined' && CKEDITOR.instances[mdata + '_bodyhtml']) {
+            bodytext = strip_tags(CKEDITOR.instances[mdata + '_bodyhtml'].getData());
+        } else if (typeof window.nveditor != "undefined" && window.nveditor[mdata + '_bodyhtml']) {
+            bodytext = strip_tags(window.nveditor[mdata + '_bodyhtml'].getData());
+        }
+
+        var content = hometext + ' ' + bodytext;
         content = trim(content.replace(/\n|\r/g, ' '));
         if (content != '') {
             $.ajax({
@@ -516,5 +490,58 @@ $(function() {
                 }
             });
         }
-    })
+    });
+
+    // Kiểm tra form đăng bài viết
+    $('#form-news-content').on('submit', function(e) {
+        let form = $(this);
+        $(".has-error", form).removeClass("has-error");
+
+        // Tiêu đề bài viết
+        let iptTitle = $('[name="title"]', form);
+        if (trim(iptTitle.val()) == '') {
+            e.preventDefault();
+            $(".tooltip-current", form).removeClass("tooltip-current");
+            $(iptTitle).addClass("tooltip-current").attr("data-current-mess", $(iptTitle).attr("data-mess"));
+            nv_validErrorShow(iptTitle);
+            return;
+        }
+
+        // Chuyên mục
+        var catid = $(form).find(".news_checkbox:checked").val();
+        if (typeof catid == "undefined" || catid <= 0) {
+            e.preventDefault();
+            $(form).find("#show_error").css('display', 'block');
+            $("#show_error", form).html(form.data('ecat'));
+            $('html,body').animate({
+                scrollTop: $("#show_error").offset().top
+            }, 200);
+            return;
+        }
+
+        // Nội dung bài viết
+        let editorid = form.data('mdata') + '_bodyhtml';
+        if (typeof CKEDITOR != "undefined" && CKEDITOR.instances[editorid]) {
+            if (trim(CKEDITOR.instances[editorid].getData()) == '') {
+                e.preventDefault();
+                $(form).find("#show_error").css('display', 'block');
+                $("#show_error", form).html(form.data('ebodytext'));
+                $('html,body').animate({
+                    scrollTop: $("#show_error").offset().top
+                }, 200);
+                return;
+            }
+        }
+        if (typeof window.nveditor != "undefined" && window.nveditor[editorid]) {
+            if (trim(window.nveditor[editorid].getData()) == '') {
+                e.preventDefault();
+                $(form).find("#show_error").css('display', 'block');
+                $("#show_error", form).html(form.data('ebodytext'));
+                $('html,body').animate({
+                    scrollTop: $("#show_error").offset().top
+                }, 200);
+                return;
+            }
+        }
+    });
 });

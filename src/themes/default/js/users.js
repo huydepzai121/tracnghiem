@@ -284,9 +284,6 @@ function login_validForm(a) {
 }
 
 function reg_form_precheck(a) {
-    // Xử lý các trình soạn thảo
-    if ("undefined" != typeof CKEDITOR)
-        for (var c in CKEDITOR.instances) $("#" + c).val(CKEDITOR.instances[c].getData());
     $(".has-error", a).removeClass("has-error");
     c = 0;
     $(a).find("input.required,input[data-callback],textarea.required,select.required,div.required").each(function() {

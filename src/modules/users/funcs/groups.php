@@ -516,24 +516,10 @@ if (sizeof($array_op) == 3 and $array_op[0] == 'groups' and $array_op[1] and $ar
         nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op);
     }
 
-    if (defined('NV_EDITOR')) {
-        require_once NV_ROOTDIR . '/' . NV_EDITORSDIR . '/' . NV_EDITOR . '/nv.php';
-    } elseif (!nv_function_exists('nv_aleditor') and file_exists(NV_ROOTDIR . '/' . NV_EDITORSDIR . '/ckeditor/ckeditor.js')) {
-        define('NV_EDITOR', true);
-        define('NV_IS_CKEDITOR', true);
-        $my_head .= '<script' . (defined('NV_SCRIPT_NONCE') ? ' nonce="' . NV_SCRIPT_NONCE . '"' : '') . ' src="' . NV_STATIC_URL . NV_EDITORSDIR . '/ckeditor/ckeditor.js"></script>';
-
-        function nv_aleditor($textareaname, $width = '100%', $height = '450px', $val = '', $customtoolbar = '')
-        {
-            global $module_data;
-            $return = '<textarea style="width: ' . $width . '; height:' . $height . ';" id="' . $module_data . '_' . $textareaname . '" name="' . $textareaname . '">' . $val . '</textarea>';
-            $return .= '<script' . (defined('NV_SCRIPT_NONCE') ? ' nonce="' . NV_SCRIPT_NONCE . '"' : '') . ">
-            CKEDITOR.replace( '" . $module_data . '_' . $textareaname . "', {" . (!empty($customtoolbar) ? 'toolbar : "' . $customtoolbar . '",' : '') . " width: '" . $width . "',height: '" . $height . "',removePlugins: 'uploadfile,uploadimage'});
-            </script>";
-
-            return $return;
-        }
+    if (!defined('NV_EDITOR')) {
+        define('NV_EDITOR', 'ckeditor5-classic');
     }
+    require_once NV_ROOTDIR . '/' . NV_EDITORSDIR . '/' . NV_EDITOR . '/nv.php';
 
     if ($nv_Request->isset_request('save', 'post')) {
         $rowcontent = [];

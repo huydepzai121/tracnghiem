@@ -1,5 +1,5 @@
 <!-- BEGIN: main -->
-<link href="{NV_STATIC_URL}{NV_EDITORSDIR}/ckeditor/plugins/codesnippet/lib/highlight/styles/github.css" rel="stylesheet">
+<link href="{ASSETS_STATIC_URL}/js/highlight/github.min.css" rel="stylesheet">
 <div class="news_column panel panel-default" itemtype="http://schema.org/NewsArticle" itemscope>
     <div class="panel-body">
         <h1 class="title margin-bottom-lg" itemprop="headline">{DETAIL.title}</h1>
@@ -338,7 +338,7 @@
 </div>
 <!-- END: others -->
 
-<script type="text/javascript" src="{NV_STATIC_URL}{NV_EDITORSDIR}/ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js"></script>
+<script type="text/javascript" src="{ASSETS_STATIC_URL}/js/highlight/highlight.min.js"></script>
 <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 <!-- END: main -->
 <!-- BEGIN: no_permission -->

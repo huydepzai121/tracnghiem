@@ -293,7 +293,7 @@ if (!empty($editors)) {
     foreach ($editors as $edt) {
         $xtpl->assign('EDITOR', [
             'val' => $edt,
-            'sel' => $edt == 'ckeditor' ? ' selected="selected"' : ''
+            'sel' => $edt == 'ckeditor5-classic' ? ' selected="selected"' : ''
         ]);
         $xtpl->parse('add.editor.loop');
     }

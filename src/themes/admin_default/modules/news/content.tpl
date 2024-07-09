@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="{ASSETS_STATIC_URL}/js/jquery-ui/jquery-ui.min.css" />
 <link rel="stylesheet" href="{ASSETS_STATIC_URL}/js/select2/select2.min.css">
 
-<form id="form-news-content" class="form-inline m-bottom confirm-reload" action="{NV_BASE_ADMINURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&amp;{NV_NAME_VARIABLE}={MODULE_NAME}&amp;{NV_OP_VARIABLE}={OP}" enctype="multipart/form-data" method="post" onsubmit="return nv_validForm(this,'{MODULE_DATA}', '{ERROR_BODYTEXT}','{ERROR_CAT}');">
+<form id="form-news-content" class="form-inline m-bottom confirm-reload" action="{NV_BASE_ADMINURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&amp;{NV_NAME_VARIABLE}={MODULE_NAME}&amp;{NV_OP_VARIABLE}={OP}" enctype="multipart/form-data" method="post" data-mdata="{MODULE_DATA}" data-ebodytext="{ERROR_BODYTEXT}" data-ecat="{ERROR_CAT}">
     <div class="row">
         <div class="alert alert-danger" id="show_error" style="display: none"></div>
         <div class="col-sm-24 col-md-18">

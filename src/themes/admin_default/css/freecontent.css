@@ -69,3 +69,17 @@
 .ct-status-disabled:active {
     color: #ededed;
 }
+
+#outer-content-description .ck-editor__editable_inline {
+    height: 300px;
+    overflow-y: auto;
+}
+
+#outer-content-description .ck-source-editing-area {
+    height: 300px;
+}
+
+#outer-content-description .ck-source-editing-area textarea {
+    height: 100%;
+    overflow-y: auto;
+}

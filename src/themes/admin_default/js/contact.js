@@ -84,11 +84,6 @@ $(function() {
 
     $('#feedback-reply form, #feedback-forward form').on('submit', function(e) {
         e.preventDefault();
-        if (typeof CKEDITOR != "undefined") {
-            for (var instanceName in CKEDITOR.instances) {
-                $('#' + instanceName).val(CKEDITOR.instances[instanceName].getData());
-            }
-        }
         var url = $(this).parents('.page').data('url'),
             data = $(this).serialize();
         $.ajax({
@@ -193,11 +188,6 @@ $(function() {
 
     $('body').on('submit', '.department_content, .supporter_content', function(e) {
         e.preventDefault();
-        if (typeof CKEDITOR != "undefined") {
-            for (var instanceName in CKEDITOR.instances) {
-                $('#' + instanceName).val(CKEDITOR.instances[instanceName].getData());
-            }
-        }
         var that = $(this),
             url = that.attr('action'),
             data = that.serialize();
@@ -223,11 +213,6 @@ $(function() {
 
     $('.send-form').on('submit', function(e) {
         e.preventDefault();
-        if (typeof CKEDITOR != "undefined") {
-            for (var instanceName in CKEDITOR.instances) {
-                $('#' + instanceName).val(CKEDITOR.instances[instanceName].getData());
-            }
-        }
         var that = $(this),
             url = that.attr('action'),
             data = that.serialize();

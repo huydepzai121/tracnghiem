@@ -55,7 +55,7 @@
                     </div>
                     <div class="form-group">
                         <label for="content-description" class="col-sm-5 control-label">{LANG.content_description}</label>
-                        <div class="col-sm-19">
+                        <div class="col-sm-19" id="outer-content-description">
                             <textarea name="description" id="content-description" class="form-control txt" data-editor="{EDITOR}" rows="7"></textarea>
                         </div>
                     </div>

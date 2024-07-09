@@ -1369,7 +1369,7 @@ if ($pass_reset_request == 1 or $pass_timeout) {
 }
 
 if (!defined('NV_EDITOR')) {
-    define('NV_EDITOR', 'ckeditor');
+    define('NV_EDITOR', 'ckeditor5-classic');
 }
 require_once NV_ROOTDIR . '/' . NV_EDITORSDIR . '/' . NV_EDITOR . '/nv.php';
 

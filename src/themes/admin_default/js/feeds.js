@@ -1,12 +1,6 @@
 $(function() {
     $('[data-toggle=formSubmit]').on('submit', function(e) {
         e.preventDefault();
-        if ( typeof (CKEDITOR) !== 'undefined') {
-            for ( instance in CKEDITOR.instances ){
-                CKEDITOR.instances[instance].updateElement();
-            }
-        }
-
         var data = $(this).serialize(),
             url = $(this).attr("action"),
             that = $(this);

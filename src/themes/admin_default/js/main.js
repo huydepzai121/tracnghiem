@@ -227,6 +227,19 @@ $(document).ready(function() {
         locationReplace($(this).data("location"))
     });
 
+    // Xử lý ckeditor 4 chung cho các form ajax
+    if (typeof CKEDITOR != "undefined") {
+        $('body').on('submit', 'form', function() {
+            let form = $(this);
+            for (var instanceName in CKEDITOR.instances) {
+                let ele = $('#' + instanceName, form);
+                if (ele.length) {
+                    ele.val(CKEDITOR.instances[instanceName].getData());
+                }
+            }
+        });
+    }
+
     // XSSsanitize
     $('body').on('click', '[type=submit]:not([name],.ck-button-save)', function(e) {
         var form = $(this).parents('form');

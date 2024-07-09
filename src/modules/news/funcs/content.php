@@ -298,34 +298,10 @@ if ($nv_Request->isset_request('contentid,checkss', 'get')) {
         nv_redirect_location($base_url);
     }
 
-    if (defined('NV_EDITOR')) {
-        require_once NV_ROOTDIR . '/' . NV_EDITORSDIR . '/' . NV_EDITOR . '/nv.php';
-    } elseif (!nv_function_exists('nv_aleditor') and file_exists(NV_ROOTDIR . '/' . NV_EDITORSDIR . '/ckeditor/ckeditor.js')) {
-        define('NV_EDITOR', true);
-        define('NV_IS_CKEDITOR', true);
-        $my_head .= '<script' . (defined('NV_SCRIPT_NONCE') ? ' nonce="' . NV_SCRIPT_NONCE . '"' : '') . ' src="' . NV_STATIC_URL . NV_EDITORSDIR . '/ckeditor/ckeditor.js"></script>';
-
-        /**
-         * nv_aleditor()
-         *
-         * @param string $textareaname
-         * @param string $width
-         * @param string $height
-         * @param string $val
-         * @param string $customtoolbar
-         * @return string
-         */
-        function nv_aleditor($textareaname, $width = '100%', $height = '450px', $val = '', $customtoolbar = '')
-        {
-            global $module_data;
-            $return = '<textarea style="width: ' . $width . '; height:' . $height . ';" id="' . $module_data . '_' . $textareaname . '" name="' . $textareaname . '">' . $val . '</textarea>';
-            $return .= '<script' . (defined('NV_SCRIPT_NONCE') ? ' nonce="' . NV_SCRIPT_NONCE . '"' : '') . ">
-            CKEDITOR.replace( '" . $module_data . '_' . $textareaname . "', {" . (!empty($customtoolbar) ? 'toolbar : "' . $customtoolbar . '",' : '') . " width: '" . $width . "',height: '" . $height . "',removePlugins: 'uploadfile,uploadimage'});
-            </script>";
-
-            return $return;
-        }
+    if (!defined('NV_EDITOR')) {
+        define('NV_EDITOR', 'ckeditor5-classic');
     }
+    require_once NV_ROOTDIR . '/' . NV_EDITORSDIR . '/' . NV_EDITOR . '/nv.php';
 
     $catidList = [];
     $sql = 'SELECT catid, title, lev FROM ' . NV_PREFIXLANG . '_' . $module_data . '_cat WHERE status IN (' . implode(',', $global_code_defined['cat_visible_status']) . ') ORDER BY sort ASC';
@@ -629,7 +605,7 @@ if ($nv_Request->isset_request('contentid,checkss', 'get')) {
 
     $rowcontent['bodyhtml'] = htmlspecialchars(nv_editor_br2nl($rowcontent['bodyhtml']));
     if (defined('NV_EDITOR') and nv_function_exists('nv_aleditor')) {
-        $htmlbodyhtml = nv_aleditor('bodyhtml', '100%', '300px', $rowcontent['bodyhtml'], 'Basic');
+        $htmlbodyhtml = nv_aleditor('bodyhtml', '100%', '300px', $rowcontent['bodyhtml']);
     } else {
         $htmlbodyhtml .= '<textarea class="textareaform" name="bodyhtml" id="bodyhtml" cols="60" rows="15">' . $rowcontent['bodyhtml'] . '</textarea>';
     }
