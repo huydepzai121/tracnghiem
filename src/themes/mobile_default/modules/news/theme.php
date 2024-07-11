@@ -1474,6 +1474,11 @@ function content_list($articles, $my_author_detail, $base_url, $generate_page)
         if (!empty($array_row_i['status_note'])) {
             $xtpl->parse('your_articles.news.status_note');
         }
+        if ($array_row_i['status'] != 1 and !defined('NV_IS_MODADMIN')) {
+            $xtpl->parse('your_articles.news.title_text');
+        } else {
+            $xtpl->parse('your_articles.news.title_link');
+        }
 
         $checkss = md5($array_row_i['id'] . NV_CHECK_SESSION);
         $array_link_content = [];

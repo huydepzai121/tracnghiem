@@ -103,7 +103,8 @@ $(function() {
             <a href="{CONTENT.link}" title="{CONTENT.title}" {CONTENT.target_blank}><img  alt="{HOMEIMGALT1}" src="{HOMEIMG1}" width="{IMGWIDTH1}" class="img-thumbnail pull-left imghome" /></a>
             <!-- END: image -->
             <h3>
-                <a href="{CONTENT.link}" title="{CONTENT.title}" {CONTENT.target_blank}>{CONTENT.title}</a>
+                <!-- BEGIN: title_link --><a href="{CONTENT.link}" title="{CONTENT.title}" {CONTENT.target_blank}>{CONTENT.title}</a><!-- END: title_link -->
+                <!-- BEGIN: title_text -->{CONTENT.title}<!-- END: title_text -->
             </h3>
             <div class="text-muted">
                 <ul class="list-unstyled list-inline">
