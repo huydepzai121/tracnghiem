@@ -848,7 +848,8 @@ class Http extends Server
             return false;
         }
 
-        if (isset($parts['path']) and !preg_match('/^[0-9a-z\+\-\_\/\&\=\#\.\,\;\%\\s\!\:]*$/i', $parts['path'])) {
+        // @since 11/07/2024 Chấp nhận @ trong path, ví dụ: https://www.youtube.com/@NewSunriseJSC
+        if (isset($parts['path']) and !preg_match('/^[0-9a-z\+\-\_\/\&\@\=\#\.\,\;\%\\s\!\:]*$/i', $parts['path'])) {
             return false;
         }
 
