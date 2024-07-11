@@ -115,7 +115,7 @@ $(function() {
             <!-- BEGIN: adminlink -->
             <p class="text-right">
                 <!-- BEGIN: edit --><a class="btn btn-primary btn-xs" href="{EDITLINK}"><em class="fa fa-edit"></em> {LANG_GLOBAL.edit}</a><!-- END: edit -->
-                <!-- BEGIN: del --><a class="btn btn-outline-main btn-sm" href="#" data-toggle="author_del_content" data-href="{DELLINK}"><em class="fa fa-trash-o"></em> {LANG_GLOBAL.delete}</a><!-- END: del -->
+                <!-- BEGIN: del --><a class="btn btn-danger btn-xs" href="#" data-toggle="author_del_content" data-href="{DELLINK}"><em class="fa fa-trash-o"></em> {LANG_GLOBAL.delete}</a><!-- END: del -->
             </p>
             <!-- END: adminlink -->
         </div>

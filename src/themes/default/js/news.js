@@ -367,10 +367,19 @@ $(document).ready(function() {
         return $(this).val($(this).val().replace(/[\'\"\<\>\\]/gi, ''))
     });
 
-    // Xóa tin
+    // Admin xóa tin
     $('body').on('click', '[data-toggle=nv_del_content]', function(e) {
         e.preventDefault();
         nv_del_content($(this).data('id'), $(this).data('checkss'), $(this).data('adminurl'), $(this).data('detail'))
+    });
+
+    // Người dùng xóa tin
+    $('body').on('click', '[data-toggle=author_del_content]', function(e) {
+        e.preventDefault();
+        if (!confirm(nv_is_del_confirm[0])) {
+            return;
+        }
+        window.location = $(this).data('href');
     });
 
     if ($('[data-toggle=rating]').length) {
