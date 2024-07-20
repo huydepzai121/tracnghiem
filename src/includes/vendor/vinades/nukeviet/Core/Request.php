@@ -349,7 +349,10 @@ class Request
             $array_keys = array_keys($_COOKIE);
             foreach ($array_keys as $k) {
                 if (!preg_match('/^[a-zA-Z0-9\_]+$/', $k) or is_numeric($k)) {
-                    @setcookie($k, '', NV_CURRENTTIME - 3600);
+                    // Name cannot contain = , ; [space] /t /r /n /013 /014
+                    if (!preg_match('/[\,\=\; \t\r\n\x0D\x0E]+/', $k)) {
+                        setcookie($k, '', NV_CURRENTTIME - 3600);
+                    }
                     unset($_COOKIE[$k]);
                 }
             }
