@@ -1038,27 +1038,37 @@ class Upload
             $return['is_img'] = $this->is_img;
             $return['is_svg'] = $this->is_svg;
             if ($this->is_img) {
-                if (Site::function_exists('exif_read_data')) {
-                    // Check/fix image rotation
-                    // https://stackoverflow.com/questions/34287437/
+                // Check/fix image rotation
+                $orientation = 0;
+                if (Site::class_exists('Imagick')) {
+                    $_img = new \Imagick($savepath . $filename);
+                    $exifProp = $_img->getImageProperties("exif:*");
+                    if (isset($exifProp['exif:Orientation'])) {
+                        $orientation = (int) $exifProp['exif:Orientation'];
+                    }
+                } elseif (Site::function_exists('exif_read_data') and in_array($this->file_extension, ['jpg','jpeg'], true) and IMAGETYPE_JPEG === exif_imagetype($savepath . $filename)) {
                     $exif = exif_read_data($savepath . $filename);
-                    if (!empty($exif['Orientation']) and in_array((int) $exif['Orientation'], [3, 6, 8], true)) {
-                        $image = new Image($savepath . $filename);
-                        switch ($exif['Orientation']) {
-                            case 3:
-                                $image->rotate(180);
-                                break;
-                            case 6:
-                                $image->rotate(90);
-                                break;
-                            case 8:
-                                $image->rotate(270);
-                                break;
-                        }
-                        $image->save($savepath, $filename);
-                        $image->close();
+                    if (!empty($exif['Orientation'])) {
+                        $orientation = (int) $exif['Orientation'];
                     }
                 }
+                if (in_array($orientation, [3, 6, 8], true)) {
+                    $image = new Image($savepath . $filename);
+                    switch ($orientation) {
+                        case 3:
+                            $image->rotate(180);
+                            break;
+                        case 6:
+                            $image->rotate(90);
+                            break;
+                        case 8:
+                            $image->rotate(270);
+                            break;
+                    }
+                    $image->save($savepath, $filename);
+                    $image->close();
+                }
+
                 $return['img_info'] = $this->img_info;
             }
         }
