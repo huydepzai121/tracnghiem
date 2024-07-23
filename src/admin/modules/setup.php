@@ -310,7 +310,7 @@ foreach ($modules_data as $row) {
             $mod['module_file'] = $row['basename'];
             $mod['version'] = preg_replace_callback('/^([0-9a-zA-Z]+\.[0-9a-zA-Z]+\.[0-9a-zA-Z]+)\s+(\d+)$/', 'nv_parse_vers', $row['version']);
             $mod['addtime'] = nv_datetime_format($row['addtime'], 1);
-            $mod['author'] = $row['author'];
+            $mod['author'] = nv_htmlspecialchars($row['author']);
             $mod['note'] = $row['note'];
             $mod['url_setup'] = array_key_exists($row['title'], $modules_for_title) ? '' : NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;setmodule=' . $row['title'] . '&amp;checkss=' . md5('setmodule' . $row['title'] . NV_CHECK_SESSION);
 
