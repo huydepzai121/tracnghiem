@@ -587,7 +587,7 @@ function nv_html_meta_tags($html = true)
  * nv_html_links()
  *
  * @param bool $html
- * @param book $moduleCss
+ * @param bool $moduleCss
  * @return array|string
  */
 function nv_html_links($html = true, $moduleCss = true)
