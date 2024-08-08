@@ -53,6 +53,10 @@ if ($admin_info['level'] == 1) {
 
 // Đánh dấu đã xem tất cả các thông báo
 if ($nv_Request->isset_request('notification_reset', 'post')) {
+    if ($nv_Request->get_title('checksess', 'post', '') !== NV_CHECK_SESSION) {
+        nv_htmlOutput('NO');
+    }
+    nv_insert_logs(NV_LANG_DATA, $module_name, 'READ_ALL_NOTIFICATION', '', $admin_info['userid']);
     $sql = 'UPDATE ' . NV_NOTIFICATION_GLOBALTABLE . ' SET view=1
     WHERE view=0 AND (area = 1 OR area = 2) AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND language=' . $db->quote(NV_LANG_DATA) .
     ' AND ' . $sql_lev_admin;
@@ -85,21 +89,30 @@ if ($nv_Request->isset_request('notification_get', 'post')) {
     nv_jsonOutput(get_unread_notification());
 }
 
-// Xóa một thông báo
+// Xóa một hoặc nhiều thông báo
 if ($nv_Request->isset_request('delete', 'post')) {
     $respon = [
         'error' => 1,
         'data' => []
     ];
-    $id = $nv_Request->get_int('id', 'post', 0);
+    if ($nv_Request->get_title('checksess', 'post', '') !== NV_CHECK_SESSION) {
+        nv_jsonOutput($respon);
+    }
 
-    if ($id) {
+    $id = $nv_Request->get_int('id', 'post', 0);
+    $listid = $nv_Request->get_title('listid', 'post', '');
+    $ids = array_filter(array_unique(array_map('intval', explode(',', $id . ',' . $listid))));
+
+    nv_insert_logs(NV_LANG_DATA, $module_name, 'DELETE_NOTIFICATION', json_encode($ids), $admin_info['userid']);
+
+    foreach ($ids as $id) {
         $sql = 'DELETE FROM ' . NV_NOTIFICATION_GLOBALTABLE . '
         WHERE id=' . $id . ' AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND (area = 1 OR area = 2) AND language=\'' . NV_LANG_DATA . '\' AND ' . $sql_lev_admin;
         if ($db->exec($sql)) {
             $respon['error'] = 0;
         }
     }
+
     $respon['data'] = get_unread_notification();
     nv_jsonOutput($respon);
 }
@@ -111,8 +124,13 @@ if ($nv_Request->isset_request('toggle', 'post')) {
         'data' => [],
         'view' => null
     ];
+    if ($nv_Request->get_title('checksess', 'post', '') !== NV_CHECK_SESSION) {
+        nv_jsonOutput($respon);
+    }
 
     $id = $nv_Request->get_int('id', 'post', 0);
+    $listid = $nv_Request->get_title('listid', 'post', '');
+    $ids = array_filter(array_unique(array_map('intval', explode(',', $id . ',' . $listid))));
     $direct_view = $nv_Request->get_int('direct_view', 'post', -1);
     if ($direct_view == 1 or $direct_view == 0) {
         $view = $direct_view;
@@ -121,7 +139,7 @@ if ($nv_Request->isset_request('toggle', 'post')) {
         $view = 'IF(view=0, 1, 0)';
     }
 
-    if ($id) {
+    foreach ($ids as $id) {
         $sql = 'UPDATE ' . NV_NOTIFICATION_GLOBALTABLE . ' SET view=' . $view . '
         WHERE id=' . $id . ' AND module IN(\'' . implode("', '", $allowed_mods) . '\') AND (area = 1 OR area = 2) AND language=\'' . NV_LANG_DATA . '\' AND ' . $sql_lev_admin;
         if ($db->exec($sql) or $direct_view != -1) {
@@ -155,6 +173,16 @@ if ($last_id > 0) {
 }
 
 $array_data = [];
+$array_search = [
+    'v' => $nv_Request->get_int('v', 'get', 0)
+];
+if ($array_search['v'] < 0 or $array_search['v'] > 2 or $is_ajax) {
+    $array_search['v'] = 0;
+}
+if ($array_search['v']) {
+    $base_url .= '&amp;v=' . $array_search['v'];
+    $where .= ' AND view=' . ($array_search['v'] - 1);
+}
 
 $db->sqlreset()
     ->select('COUNT(*)')
@@ -178,6 +206,7 @@ while ($data = $result->fetch()) {
     if (isset($admin_mods[$data['module']]) or isset($site_mods[$data['module']])) {
         $mod = $data['module'];
         $data['content'] = !empty($data['content']) ? unserialize($data['content']) : '';
+        $data['send_from_id'] = $data['send_from'];
 
         // Hien thi thong bao tu cac module he thong
         if ($data['module'] == 'modules') {
@@ -201,9 +230,8 @@ while ($data = $result->fetch()) {
             }
         }
 
-        // Hien thi tu cac module
+        // Thông báo từ các module ngoài site
         if (isset($site_mods[$data['module']]) and file_exists(NV_ROOTDIR . '/modules/' . $site_mods[$data['module']]['module_file'] . '/notification.php')) {
-            // Hien thi thong bao tu cac module site
             if ($data['send_from'] > 0) {
                 $user = $db->query('SELECT username, first_name, last_name, photo FROM ' . NV_USERS_GLOBALTABLE . ' WHERE userid = ' . $data['send_from'])->fetch();
                 if ($user) {
@@ -236,8 +264,8 @@ while ($data = $result->fetch()) {
     }
 }
 
-// FIXME Dev xong giao diện admin_future thì xử lý lại
-if ($is_ajax and $nv_Request->get_title('template', 'get', '') == 'admin_future') {
+// Danh sách dạng ajax
+if ($is_ajax) {
     $tpl = new NukeViet\Template\NVSmarty();
     $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
     $tpl->assign('LANG', $nv_Lang);
@@ -250,57 +278,18 @@ if ($is_ajax and $nv_Request->get_title('template', 'get', '') == 'admin_future'
     ]);
 }
 
-$xtpl = new XTemplate('notification.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/siteinfo');
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
+// Danh sách đầy đủ
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/notification.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('DATA', $array_data);
+$tpl->assign('DATA_SEARCH', $array_search);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('GENERATE_PAGE', nv_generate_page($base_url, $all_pages, $per_page, $page));
 
-if (!empty($array_data)) {
-    foreach ($array_data as $data) {
-        $data['toggle_title'] = empty($data['view']) ? $nv_Lang->getModule('notification_make_read') : $nv_Lang->getModule('notification_make_unread');
-        if (empty($data['photo'])) {
-            $data['photo'] = NV_STATIC_URL . 'themes/default/images/users/no_avatar.png';
-        }
-
-        $xtpl->assign('DATA', $data);
-
-        if (empty($data['view'])) {
-            $xtpl->parse('main.loop.set_read');
-        } else {
-            $xtpl->parse('main.loop.set_unread');
-            $xtpl->parse('main.loop.read');
-        }
-
-        $xtpl->parse('main.loop');
-    }
-
-    if ($is_ajax) {
-        $contents = $xtpl->text('main.loop');
-    } else {
-        $generate_page = nv_generate_page($base_url, $all_pages, $per_page, $page);
-        if (!empty($generate_page)) {
-            $xtpl->assign('GENERATE_PAGE', $generate_page);
-            $xtpl->parse('main.generate_page');
-        }
-
-        $xtpl->parse('main');
-        $contents = $xtpl->text('main');
-    }
-} elseif ($is_ajax) {
-    $contents = $last_id <= 0 ? $nv_Lang->getModule('notification_empty') : '';
-} else {
-    if ($page != 1) {
-        nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op);
-    }
-
-    $xtpl->parse('empty');
-    $contents = $xtpl->text('empty');
-}
-
-if ($is_ajax) {
-    nv_jsonOutput([
-        'html' => nv_url_rewrite(trim($contents))
-    ]);
-}
+$contents = $tpl->fetch('notification.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

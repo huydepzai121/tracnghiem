@@ -19,7 +19,7 @@
                         <li>
                             <a title="{$LANG->getGlobal('go_clientsector')}" aria-label="{$LANG->getGlobal('go_clientsector')}" href="{$smarty.const.NV_BASE_SITEURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={if empty($SITE_MODS)}{$smarty.const.NV_LANG_DATA}{else}{$GCONFIG.site_lang}{/if}" class="fs-3"><i class="fas fa-home ico-vc"></i></a>
                         </li>
-                        {if not empty($GCONFIG.notification_active)}
+                        {if not empty($GCONFIG.notification_active) and !($MODULE_NAME eq 'siteinfo' and $OP eq 'notification')}
                         <li class="dropdown-center site-noti" id="main-notifications" data-enable="true">
                             <a title="{$LANG->getGlobal('site_info')}" aria-label="{$LANG->getGlobal('site_info')}" href="#" class="fs-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" data-bs-offset="0,11"><i class="fas fa-bell ico-vc"></i><span class="indicator"></span></a>
                             <div class="dropdown-menu dropdown-menu-end pb-0">

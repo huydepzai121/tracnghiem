@@ -65,7 +65,7 @@ $lang_module['log_lang'] = 'Language';
 $lang_module['log_del_error'] = 'An error does not erase';
 $lang_module['log_del_ok'] = 'Well done';
 $lang_module['log_del_confirm'] = 'Are you sure you want to delete?';
-$lang_module['log_View'] = 'View';
+$lang_module['log_view'] = 'View';
 $lang_module['log_del_no_items'] = 'You may choose';
 $lang_module['log_note'] = 'Notes';
 $lang_module['moduleInfo'] = 'Modules Informations';
@@ -159,12 +159,15 @@ $lang_module['update_package_detected'] = 'Detects updated package, the website 
 $lang_module['update_package_delete'] = 'Delete the update package';
 $lang_module['update_package_do'] = 'Update';
 $lang_module['notification'] = 'Notification';
-$lang_module['notification_empty'] = '<p align="center">No Notification!</p>';
+$lang_module['notification_empty'] = 'No Notification!';
 $lang_module['notification_module_auto_deactive'] = 'Module <strong />%s  has stopped operation due to error';
 $lang_module['notification_cronjobs_auto_deactive'] = 'Cronjobs <strong />%s  has stopped operation due to error';
 $lang_module['notification_make_read'] = 'Mark as read';
 $lang_module['notification_make_unread'] = 'Mark as unread';
 $lang_module['notification_email_failure'] = 'Email failed. Subject <strong>%s</strong>, received email <strong>%s</strong>';
+$lang_module['notification_s0'] = 'All status';
+$lang_module['notification_s1'] = 'Unread';
+$lang_module['notification_s2'] = 'Already read';
 $lang_module['server_config_file_changed'] = 'Server config file (%s) changed';
 
 $lang_module['edit_grid'] = 'Edit grid';

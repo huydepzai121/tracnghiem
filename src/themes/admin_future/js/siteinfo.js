@@ -48,7 +48,7 @@ $(document).ready(function() {
         });
     });
 
-    // Xử lý thứ tự khi mở ropdown sửa widget
+    // Xử lý thứ tự khi mở dropdown sửa widget
     $('[data-toggle="widgetSize"]').on('show.bs.dropdown', event => {
         const wId = event.target.dataset.widget;
         const widget = document.getElementById(wId);
@@ -474,6 +474,171 @@ $(document).ready(function() {
                     console.log(xhr, text, err);
                 }
             });
+        });
+    });
+
+    // Action tại trang danh sách thông báo
+    $('[data-toggle="actionNotifications"]').on('click', function(e) {
+        e.preventDefault();
+        var $this = $(this);
+
+        var items = $('[name="idcheck[]"]');
+        if (!items.length) {
+            return false;
+        }
+        var listid = [];
+        items.each(function() {
+            if ($(this).is(':checked')) {
+                listid.push($(this).val());
+            }
+        });
+        if (listid.length < 1) {
+            nvToast(nv_please_check, 'warning');
+            return;
+        }
+        listid = listid.join(',');
+
+        if ($this.data('action') == 1) {
+            // Xóa
+            nvConfirm(nv_is_del_confirm[0], () => {
+                $.ajax({
+                    type: 'POST',
+                    url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                    data: {
+                        delete: 1,
+                        listid: listid,
+                        checksess: $('body').data('checksess')
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.error) {
+                            nvToast(nv_is_del_confirm[2], 'error');
+                            return;
+                        }
+                        location.reload();
+                    },
+                    error: function(xhr, text, err) {
+                        nvToast(text, 'error');
+                        console.log(xhr, text, err);
+                    }
+                });
+            });
+        } else if ($this.data('action') == 2) {
+            // Đánh dấu đã đọc
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    toggle: 1,
+                    direct_view: 1,
+                    listid: listid,
+                    checksess: $('body').data('checksess')
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.error) {
+                        nvToast(nv_is_change_act_confirm[2], 'error');
+                        return;
+                    }
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        } else if ($this.data('action') == 3) {
+            // Đánh dấu chưa đọc
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    toggle: 1,
+                    direct_view: 0,
+                    listid: listid,
+                    checksess: $('body').data('checksess')
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.error) {
+                        nvToast(nv_is_change_act_confirm[2], 'error');
+                        return;
+                    }
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        }
+    });
+
+    // Xóa một thông báo
+    $('[data-toggle="delNotification"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(nv_is_del_confirm[0], () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    delete: 1,
+                    id: btn.data('id'),
+                    checksess: $('body').data('checksess')
+                },
+                success: function(data) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (data.error) {
+                        nvToast(nv_is_del_confirm[2], 'error');
+                        return;
+                    }
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
+
+    // Đánh dấu đọc/chưa đọc một thông báo
+    $('[data-toggle="toggleNotification"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        $.ajax({
+            type: 'POST',
+            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+            data: {
+                toggle: 1,
+                id: btn.data('id'),
+                checksess: $('body').data('checksess')
+            },
+            success: function(data) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                if (data.error) {
+                    nvToast(nv_is_change_act_confirm[2], 'error');
+                    return;
+                }
+                location.reload();
+            },
+            error: function(xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
+            }
         });
     });
 });

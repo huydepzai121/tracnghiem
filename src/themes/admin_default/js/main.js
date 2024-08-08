@@ -430,7 +430,6 @@ $(document).ready(function() {
                 } else {
                     allowed = true;
                 }
-                console.log(allowed);
                 if (allowed) {
                     $(this).stickyTableHeaders({
                         cacheHeaderHeight: true

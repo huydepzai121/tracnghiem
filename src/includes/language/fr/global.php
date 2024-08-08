@@ -407,6 +407,7 @@ $lang_global['sys_mods'] = 'Modules système';
 $lang_global['preview'] = 'Aperçu';
 $lang_global['toggle_checkall'] = 'Tout sélectionner/désélectionner';
 $lang_global['toggle_checksingle'] = 'Sélectionner/désélectionner cette ligne';
+$lang_global['keyword'] = 'Mot-clé';
 $lang_global['country_AD'] = 'Andorre';
 $lang_global['country_AE'] = 'Arabes Unis';
 $lang_global['country_AF'] = 'Afghanistan';

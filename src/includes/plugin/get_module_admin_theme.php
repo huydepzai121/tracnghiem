@@ -24,7 +24,7 @@ nv_add_hook($module_name, 'get_module_admin_theme', $priority, function ($vars) 
     if (($module_info['module_file'] ?? '') == 'news' and in_array($op, ['main'])) {
         return $new_theme;
     }
-    if ($module_name == 'siteinfo' and in_array($op, ['logs', 'php_info_configuration', 'system_info', 'main', 'widget'])) {
+    if ($module_name == 'siteinfo') {
         return $new_theme;
     }
     if ($module_name == 'siteinfo' and $op == 'notification' and ($_GET['ajax'] ?? 0) == 1 and ($_GET['template'] ?? '') == $new_theme) {

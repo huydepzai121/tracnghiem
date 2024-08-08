@@ -407,6 +407,7 @@ $lang_global['sys_mods'] = 'Các module của hệ thống';
 $lang_global['preview'] = 'Xem trước';
 $lang_global['toggle_checkall'] = 'Chọn/bỏ chọn tất cả';
 $lang_global['toggle_checksingle'] = 'Chọn/bỏ chọn dòng này';
+$lang_global['keyword'] = 'Từ khóa';
 $lang_global['country_AD'] = 'Andorra';
 $lang_global['country_AE'] = 'Ả Rập Thống nhất';
 $lang_global['country_AF'] = 'Afghanistan';

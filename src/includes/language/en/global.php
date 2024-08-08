@@ -407,6 +407,7 @@ $lang_global['sys_mods'] = 'System modules';
 $lang_global['preview'] = 'Preview';
 $lang_global['toggle_checkall'] = 'Select/deselect all';
 $lang_global['toggle_checksingle'] = 'Select/deselect this row';
+$lang_global['keyword'] = 'Keyword';
 $lang_global['country_AD'] = 'Andorra';
 $lang_global['country_AE'] = 'United Arab Emirates';
 $lang_global['country_AF'] = 'Afghanistan';

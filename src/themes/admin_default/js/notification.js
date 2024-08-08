@@ -56,9 +56,9 @@ $(document).ready(function() {
         last_id = 0;
 
         // Tìm id thông báo cuối cùng
-        var lNoti = $('#notification_load .notify_item:last');
+        var lNoti = $('#notification_load ul li:last');
         if (lNoti.length == 1) {
-            last_id = $('.body-noti', lNoti).data('id');
+            last_id = lNoti.data('id');
         }
 
         $('#notification_waiting').show();
@@ -76,7 +76,7 @@ $(document).ready(function() {
                 } else {
                     $('#notification_load').append(result.html);
                 }
-                $("abbr.timeago").timeago();
+                $('.notification-info .date').timeago();
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 $('#notification_waiting').hide();
@@ -99,17 +99,18 @@ $(document).ready(function() {
     });
 
     function deleteNoti(target) {
+        var eleBody = target.parent().parent();
         $.ajax({
             type: 'POST',
             url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&nocache=' + new Date().getTime(),
-            data: 'delete=1&id=' + target.data('id'),
+            data: 'delete=1&id=' + eleBody.data('id') + '&checksess=' + $('#notification-area').data('checksess'),
             dataType: 'json',
             success: function(data) {
                 if (data.error) {
                     alert(nv_is_del_confirm[2]);
                     return;
                 }
-                target.parent().parent().remove();
+                eleBody.remove();
                 $('#notification').html(data.data.count_formatted);
                 if (data.data.count < 1) {
                     $('#notification').hide();
@@ -129,27 +130,27 @@ $(document).ready(function() {
     }
 
     function toggleNoti(target) {
+        var eleBody = target.parent().parent();
         $.ajax({
             type: 'POST',
             url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&nocache=' + new Date().getTime(),
-            data: 'toggle=1&id=' + target.data('id'),
+            data: 'toggle=1&id=' + eleBody.data('id') + '&checksess=' + $('#notification-area').data('checksess'),
             dataType: 'json',
             success: function(data) {
                 if (data.error) {
                     alert(nv_is_change_act_confirm[2]);
                     return;
                 }
-                var eleBody = $('.body-noti', target.parent().parent());
                 if (data.view) {
                     // Đang là đã đọc > đánh dấu chưa đọc
-                    $('.fa', target).removeClass('fa-eye-slash fa-eye').addClass('fa-eye-slash');
+                    $('.fa-solid', target).removeClass('fa-eye-slash fa-eye').addClass('fa-eye-slash');
                     target.attr('title', target.data('msg-unread'));
-                    eleBody.addClass('noti-read');
+                    eleBody.removeClass('notification-unread');
                 } else {
                     // Đang là chưa đọc > đánh dấu đã đọc
-                    $('.fa', target).removeClass('fa-eye-slash fa-eye').addClass('fa-eye');
+                    $('.fa-solid', target).removeClass('fa-eye-slash fa-eye').addClass('fa-eye');
                     target.attr('title', target.data('msg-read'));
-                    eleBody.removeClass('noti-read');
+                    eleBody.addClass('notification-unread');
                 }
                 $('#notification').html(data.data.count_formatted);
                 if (data.data.count < 1) {
@@ -174,14 +175,14 @@ $(document).ready(function() {
         }
 
         // Đánh dấu đã đọc, chưa đọc
-        if (target.is('[data-toggle="notitoggle"]')) {
+        if (target.is('.noti-toggle')) {
             e.preventDefault();
             toggleNoti(target);
             return;
         }
 
         // Xóa thông báo
-        if (target.is('[data-toggle="notidelete"]')) {
+        if (target.is('.noti-delete')) {
             e.preventDefault();
             deleteNoti(target);
             return;
@@ -193,7 +194,7 @@ $(document).ready(function() {
             $.ajax({
                 type: 'POST',
                 url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&nocache=' + new Date().getTime(),
-                data: 'notification_reset=1',
+                data: 'notification_reset=1&checksess=' + $('#notification-area').data('checksess'),
                 success: function() {
                     $('#notification-area>a').trigger('click');
                     $('#notification').hide();
@@ -211,12 +212,12 @@ $(document).ready(function() {
             $.ajax({
                 type: 'POST',
                 url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&nocache=' + new Date().getTime(),
-                data: 'toggle=1&direct_view=1&id=' + target.data('id'),
+                data: 'toggle=1&direct_view=1&id=' + target.data('id') + '&checksess=' + $('#notification-area').data('checksess'),
                 success: function() {
                     var btn = $('.ntf-toggle', target.parent());
                     $('.fa', btn).removeClass('fa-eye-slash fa-eye').addClass('fa-eye-slash');
                     btn.attr('title', btn.data('msg-unread'));
-                    target.addClass('noti-read');
+                    target.removeClass('notification-unread');
                     window.location = target.attr('href');
                 }
             });

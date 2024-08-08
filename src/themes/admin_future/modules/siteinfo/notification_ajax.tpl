@@ -22,9 +22,9 @@
         </div>
         <a class="noti-item d-flex p-3 fw-medium" href="{$row.link}">
             <div class="image me-2 rounded-circle overflow-hidden flex-shrink-0">
-                {if $row.send_from gt 0}
+                {if $row.send_from_id gt 0}
                 {if not empty($row.photo)}
-                <img class="d-block" src="$row.photo" alt="{$row.send_from}">
+                <img class="d-block" src="{$row.photo}" alt="{$row.send_from}">
                 {else}
                 <span class="d-block position-relative w-100 h-100"><i class="fa-solid fa-circle-user ico-vc"></i></span>
                 {/if}

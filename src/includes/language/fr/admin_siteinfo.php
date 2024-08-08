@@ -65,7 +65,7 @@ $lang_module['log_lang'] = 'Langue';
 $lang_module['log_del_error'] = 'Impossible de supprimer';
 $lang_module['log_del_ok'] = 'Suppression réussie';
 $lang_module['log_del_confirm'] = 'Êtes vous sur de vouloir supprimer?';
-$lang_module['log_View'] = 'Voir';
+$lang_module['log_view'] = 'Voir';
 $lang_module['log_del_no_items'] = 'Vous n\'avez pas choisi';
 $lang_module['log_note'] = 'Note';
 $lang_module['moduleInfo'] = 'Informations des modules';
@@ -159,12 +159,15 @@ $lang_module['update_package_detected'] = 'Mise à jours disponibles, le site se
 $lang_module['update_package_delete'] = 'Supprimer la mise à jour';
 $lang_module['update_package_do'] = 'Mettre à jour';
 $lang_module['notification'] = 'Notifier';
-$lang_module['notification_empty'] = '<p align="center">Aucune annonce!</p>';
+$lang_module['notification_empty'] = 'Aucune annonce!';
 $lang_module['notification_module_auto_deactive'] = 'Module <strong>%s</strong> s\'arrête d\'exécuter à cause d\'erreur';
 $lang_module['notification_cronjobs_auto_deactive'] = 'Cronjobs <strong>%s</strong> s\'arrête d\'exécuter à cause d\'erreur';
 $lang_module['notification_make_read'] = 'Marquer comme lu';
 $lang_module['notification_make_unread'] = 'Marquer comme non lu';
 $lang_module['notification_email_failure'] = 'E-mail a échoué. Matière <strong>%s</strong>, e-mail reçu <strong>%s</strong>';
+$lang_module['notification_s0'] = 'Tous les statuts';
+$lang_module['notification_s1'] = 'Non lu';
+$lang_module['notification_s2'] = 'Déjà lu';
 $lang_module['server_config_file_changed'] = 'Fichier de configuration du serveur (%s) modifié';
 
 $lang_module['edit_grid'] = 'Modifier la grille';

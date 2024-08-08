@@ -61,11 +61,10 @@ $(document).ready(function() {
             last_id = lNoti.data('id');
         }
 
-        // FIXME đoạn &template=admin_future dùng develop cần bỏ sau này
         $('.loader', ctn).removeClass('d-none');
         $.ajax({
             type: 'GET',
-            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&ajax=1&template=admin_future&last_id=' + last_id + '&nocache=' + new Date().getTime(),
+            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&ajax=1&last_id=' + last_id + '&nocache=' + new Date().getTime(),
             dataType: 'json',
             cache: false,
             success: function(result) {
@@ -114,12 +113,20 @@ $(document).ready(function() {
         $.ajax({
             type: 'POST',
             url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&nocache=' + new Date().getTime(),
-            data: 'notification_reset=1',
-            success: function() {
+            data: {
+                notification_reset: 1,
+                checksess: $('body').data('checksess')
+            },
+            success: function(res) {
+                $('.loader', ctn).addClass('d-none');
+                if (res != 'OK') {
+                    nvToast('Wrong checkesss!!', 'error');
+                    return;
+                }
                 $('.badge', ctn).text('0').data('count', 0);
                 $('.notification', ctn).removeClass('notification-unread');
                 $('.indicator', ctn).removeClass('show');
-                $('.loader', ctn).addClass('d-none');
+
             }
         });
     });
@@ -138,12 +145,16 @@ $(document).ready(function() {
         $.ajax({
             type: 'POST',
             url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&nocache=' + new Date().getTime(),
-            data: 'toggle=1&id=' + noti.data('id'),
+            data: {
+                toggle: 1,
+                id: noti.data('id'),
+                checksess: $('body').data('checksess')
+            },
             dataType: 'json',
             success: function(data) {
                 if (data.error) {
                     icon.removeClass('fa-spinner fa-spin-pulse').addClass(cIcon);
-                    alert(nv_is_change_act_confirm[2]);
+                    nvToast(nv_is_change_act_confirm[2], 'error');
                     return;
                 }
                 if (data.view == 1) {
@@ -185,12 +196,16 @@ $(document).ready(function() {
         $.ajax({
             type: 'POST',
             url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&nocache=' + new Date().getTime(),
-            data: 'delete=1&id=' + noti.data('id'),
+            data: {
+                delete: 1,
+                id: noti.data('id'),
+                checksess: $('body').data('checksess')
+            },
             dataType: 'json',
             success: function(data) {
                 if (data.error) {
                     icon.removeClass('fa-spinner fa-spin-pulse').addClass('fa-trash');
-                    alert(nv_is_del_confirm[2]);
+                    nvToast(nv_is_del_confirm[2], 'error');
                     return;
                 }
                 noti.remove();
@@ -236,12 +251,17 @@ $(document).ready(function() {
             $.ajax({
                 type: 'POST',
                 url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&nocache=' + new Date().getTime(),
-                data: 'toggle=1&direct_view=1&id=' + noti.data('id'),
+                data: {
+                    toggle: 1,
+                    direct_view: 1,
+                    id: noti.data('id'),
+                    checksess: $('body').data('checksess')
+                },
                 dataType: 'json',
                 success: function(data) {
                     $('.loader', ctn).addClass('d-none');
                     if (data.error) {
-                        alert(nv_is_change_act_confirm[2]);
+                        nvToast(nv_is_change_act_confirm[2], 'error');
                         return;
                     }
                     if (data.view == 1) {

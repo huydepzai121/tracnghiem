@@ -3,42 +3,42 @@
     <div class="flex-grow-1 flex-shrink-1">
         <div id="widget-stat-hour" class="widget-chart-290" data-label="{$LANG->getModule('hits')}">
             <div class="data d-none">{$DATA}</div>
-            <div class="row h100 placeholder-glow text-center widget-chart-wait">
+            <div class="row h-100 placeholder-glow text-center widget-chart-wait">
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
                 <div class="col-1">
-                    <div class="bg-secondary-subtle placeholder h100 colholder">&nbsp;</div>
+                    <div class="bg-secondary-subtle placeholder h-100 colholder">&nbsp;</div>
                 </div>
             </div>
         </div>

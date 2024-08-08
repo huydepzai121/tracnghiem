@@ -65,7 +65,7 @@ $lang_module['log_lang'] = 'N.Ngữ';
 $lang_module['log_del_error'] = 'Có lỗi không xóa được';
 $lang_module['log_del_ok'] = 'Đã xóa xong';
 $lang_module['log_del_confirm'] = 'Bạn chắc chắn muốn xóa?';
-$lang_module['log_View'] = 'Xem';
+$lang_module['log_view'] = 'Xem';
 $lang_module['log_del_no_items'] = 'Bạn chưa chọn';
 $lang_module['log_note'] = 'Ghi chú';
 $lang_module['moduleInfo'] = 'Thông tin từ các module';
@@ -159,12 +159,15 @@ $lang_module['update_package_detected'] = 'Phát hiện có gói cập nhật, w
 $lang_module['update_package_delete'] = 'Xóa gói cập nhật';
 $lang_module['update_package_do'] = 'Thực hiện cập nhật';
 $lang_module['notification'] = 'Thông báo';
-$lang_module['notification_empty'] = '<p align="center">Chưa có thông báo!</p>';
+$lang_module['notification_empty'] = 'Chưa có thông báo!';
 $lang_module['notification_module_auto_deactive'] = 'Module <strong>%s</strong> đã ngưng hoạt động do lỗi';
 $lang_module['notification_cronjobs_auto_deactive'] = 'Cronjobs <strong>%s</strong> đã ngưng hoạt động do lỗi';
-$lang_module['notification_make_read'] = 'Đánh dấu đã đọc';
-$lang_module['notification_make_unread'] = 'Đánh dấu chưa đọc';
+$lang_module['notification_make_read'] = 'Đánh dấu đã xem';
+$lang_module['notification_make_unread'] = 'Đánh dấu chưa xem';
 $lang_module['notification_email_failure'] = 'Gửi email thất bại. Tiêu đề <strong>%s</strong>, email nhận <strong>%s</strong>';
+$lang_module['notification_s0'] = 'Tất cả trạng thái';
+$lang_module['notification_s1'] = 'Chưa xem';
+$lang_module['notification_s2'] = 'Đã xem';
 $lang_module['server_config_file_changed'] = 'Tập tin cấu hình cho máy chủ web (%s) đã thay đổi';
 
 $lang_module['edit_grid'] = 'Chỉnh sửa giao diện';

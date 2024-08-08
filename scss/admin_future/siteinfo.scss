@@ -97,6 +97,35 @@ $widget-couter-icon-size: 3rem;
     }
 }
 
-.h100 {
-    height: 100%;
+.notilist-items {
+    td:first-child {
+        border-left-width: 0.1875rem;
+    }
+
+    .item-unread {
+        border-left: 0.1875rem var(--bs-primary) solid;
+    }
+
+    .image {
+        width: $notification-image-size;
+        height: $notification-image-size;
+
+        i {
+            font-size: $notification-image-size;
+        }
+
+        img {
+            object-position: center;
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+    }
 }
+
+.notilist-head {
+    th:first-child {
+        border-left-width: 0.1875rem;
+    }
+}
+
