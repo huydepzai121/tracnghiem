@@ -119,6 +119,7 @@ $lang_module['adminip_edit'] = 'Edit';
 $lang_module['adminip_delete'] = 'Delete';
 $lang_module['adminip_error_ip'] = 'Please enter IPs allowed to access Administration';
 $lang_module['adminip_error_validip'] = 'Invalid IP';
+$lang_module['adminur_exists'] = 'This account has been used';
 $lang_module['title_username'] = 'Manage firewall account';
 $lang_module['admfirewall'] = 'Check firewall';
 $lang_module['block_admin_ip'] = 'Check IP to access to administration area';

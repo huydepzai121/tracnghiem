@@ -17,15 +17,46 @@ class InstallCest
 {
     public function _before(AcceptanceTester $I)
     {
+        // Xóa để cài đặt site mới
+        if (is_file(NV_ROOTDIR . '/config.php')) {
+            unlink(NV_ROOTDIR . '/config.php');
+        }
+
+        // Xóa error log
+        $files = scandir(NV_ROOTDIR . '/data/logs/error_logs');
+        if (!empty($files)) {
+            foreach ($files as $file) {
+                if (preg_match('/\.log$/i', $file)) {
+                    unlink(NV_ROOTDIR . '/data/logs/error_logs/' . $file);
+                }
+            }
+        }
+        $files = scandir(NV_ROOTDIR . '/data/logs/error_logs/tmp');
+        if (!empty($files)) {
+            foreach ($files as $file) {
+                if (preg_match('/\.log$/i', $file)) {
+                    unlink(NV_ROOTDIR . '/data/logs/error_logs/tmp/' . $file);
+                }
+            }
+        }
+
+        // Xóa file config_ini
+        $files = scandir(NV_ROOTDIR . '/data/config');
+        if (!empty($files)) {
+            foreach ($files as $file) {
+                if (preg_match('/^config\_ini\.(.*?)\.php$/i', $file)) {
+                    unlink(NV_ROOTDIR . '/data/config/' . $file);
+                }
+            }
+        }
     }
 
     public function installStep1(AcceptanceTester $I)
     {
         $I->wantTo('Install NukeViet for testing');
 
-        $domain = ($_ENV['HTTPS'] == 'on' ? 'https://' : 'http://') . $_ENV['HTTP_HOST'];
-
-        $I->amOnUrl($domain);
+        //$domain = ($_ENV['HTTPS'] == 'on' ? 'https://' : 'http://') . $_ENV['HTTP_HOST'];
+        $I->amOnUrl($I->getDomain());
         $I->amOnPage('/install/index.php');
         $I->seeElement('#lang');
 

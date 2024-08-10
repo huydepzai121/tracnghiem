@@ -1,11 +1,12 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Support;
 
 /**
  * Inherited Methods
+ *
  * @method void wantTo($text)
  * @method void wantToTest($text)
  * @method void execute($callable)
@@ -18,12 +19,45 @@ namespace Tests\Support;
  * @method void pause($vars = [])
  *
  * @SuppressWarnings(PHPMD)
-*/
+ */
 class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
     /**
-     * Define custom actions here
+     * @param string $username
+     * @param string $password
      */
+    public function login(?string $username = null, ?string $password = null)
+    {
+        $I = $this;
+
+        if ($I->loadSessionSnapshot('adminLogin')) {
+            $I->comment('Already logged in!');
+            return;
+        }
+
+        $I->wantTo('Open admin login page');
+
+        //$domain = ($_ENV['HTTPS'] == 'on' ? 'https://' : 'http://') . $_ENV['HTTP_HOST'];
+        $I->amOnUrl($this->getDomain());
+        $I->amOnPage('/admin/index.php');
+        $I->seeElement('#nv_login');
+
+        $username = $username ?? $_ENV['NV_USERNAME'];
+        $password = $password ?? $_ENV['NV_PASSWORD'];
+
+        $I->fillField(['name' => 'nv_login'], $username);
+        $I->fillField(['name' => 'nv_password'], $password);
+
+        $I->click('[type="submit"]');
+        $I->waitForText('Bạn đã đăng nhập thành công', 4);
+
+        $I->saveSessionSnapshot('adminLogin');
+    }
+
+    public function getDomain()
+    {
+        return ($_ENV['HTTPS'] == 'on' ? 'https://' : 'http://') . $_ENV['HTTP_HOST'];
+    }
 }

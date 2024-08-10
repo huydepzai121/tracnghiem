@@ -119,6 +119,7 @@ $lang_module['adminip_edit'] = 'Éditer';
 $lang_module['adminip_delete'] = 'Supprimer';
 $lang_module['adminip_error_ip'] = 'Saisissez IP autorisé de connecter à l\'administration';
 $lang_module['adminip_error_validip'] = 'Erreur: IP invalide';
+$lang_module['adminur_exists'] = 'Ce compte est déjà utilisé';
 $lang_module['title_username'] = 'Gestion de compte Parefeu de l\'Administration';
 $lang_module['admfirewall'] = 'Contrôler le Parefeu de l\'Administration';
 $lang_module['block_admin_ip'] = 'Vérifier IP lors de la connexion de l\'Administration';
