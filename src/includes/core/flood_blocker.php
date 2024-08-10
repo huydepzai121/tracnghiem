@@ -90,7 +90,6 @@ if (!$ip_exclusion) {
             include NV_ROOTDIR . '/includes/header.php';
             $xtpl->out('main');
             include NV_ROOTDIR . '/includes/footer.php';
-            exit();
         }
         trigger_error($nv_Lang->getGlobal('flood_info1'), 256);
     }

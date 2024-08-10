@@ -2592,7 +2592,12 @@ function nv_change_buffer($buffer)
         $buffer = preg_replace('/(<body[^>]*>)/', '$1' . PHP_EOL . '<' . $script . '>if(window.top!==window.self){document.write="";window.top.location=window.self.location;setTimeout(function(){document.body.innerHTML=""},1);window.self.onload=function(){document.body.innerHTML=""}};</script>', $buffer, 1);
     }
 
-    if (defined('NV_SYSTEM')) {
+    /**
+     * Bên ngoài site và các khu vực được load sau định nghĩa NV_MAIN_DOMAIN thực hiện các thao tác này
+     * Tránh lỗi khi chưa được load đến NV_MAIN_DOMAIN đã chạy hàm nv_change_buffer
+     * @link https://github.com/nukeviet/nukeviet/issues/3779
+     */
+    if (defined('NV_SYSTEM') and defined('NV_MAIN_DOMAIN')) {
         if ($client_info['is_bot'] or stripos(NV_USER_AGENT, 'google') !== false) {
             //  Cung cấp tên trang web cho Google Tìm kiếm
             // https://developers.google.com/search/docs/appearance/site-names?hl=vi#json-ld
