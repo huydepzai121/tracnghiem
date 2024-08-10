@@ -80,4 +80,72 @@ $(function() {
             $('#ip6_mask').removeClass('d-none');
         }
     });
+
+    // Thay đổi quyền sử dụng các module admin
+    $('[data-toggle="cAdnMod"]').on('change', function() {
+        let btn = $(this);
+        if (btn.is(':disabled')) {
+            return;
+        }
+        let checked = btn.is(':checked');
+        btn.prop('disabled', true);
+        $.ajax({
+            type: 'POST',
+            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+            data: {
+                changact: btn.data('level'),
+                mid: btn.data('id'),
+                checkss: btn.data('checkss')
+            },
+            dataType: 'json',
+            success: function(data) {
+                btn.prop('disabled', false);
+                if (data.error) {
+                    nvToast(data.message, 'error');
+                    btn.prop('checked', !checked);
+                }
+            },
+            error: function(xhr, text, err) {
+                btn.prop('disabled', false);
+                btn.prop('checked', !checked);
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
+
+    // Thay đổi thứ tự các module admin
+    $('[data-toggle="wAdnMod"]').on('change', function() {
+        let btn = $(this);
+        if (btn.is(':disabled')) {
+            return;
+        }
+        let weight = btn.val();
+        btn.prop('disabled', true);
+        $.ajax({
+            type: 'POST',
+            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+            data: {
+                changeweight: btn.data('id'),
+                new_vid: weight,
+                checkss: btn.data('checkss')
+            },
+            dataType: 'json',
+            success: function(data) {
+                btn.prop('disabled', false);
+                if (data.error) {
+                    nvToast(data.message, 'error');
+                    btn.val(btn.data('current'));
+                    return;
+                }
+                location.reload();
+            },
+            error: function(xhr, text, err) {
+                btn.prop('disabled', false);
+                btn.val(btn.data('current'));
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
 });

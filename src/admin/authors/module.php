@@ -13,89 +13,84 @@ if (!defined('NV_IS_FILE_AUTHORS')) {
     exit('Stop!!!');
 }
 
+$page_title = $nv_Lang->getModule('module_admin');
+
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
-if (defined('NV_IS_AJAX')) {
-    if ($checkss == $nv_Request->get_string('checkss', 'post')) {
-        if ($nv_Request->isset_request('changeweight', 'post')) {
-            $mid = $nv_Request->get_int('changeweight', 'post', 0);
-            $new_vid = $nv_Request->get_int('new_vid', 'post', 0);
+if (defined('NV_IS_AJAX') and $checkss == $nv_Request->get_string('checkss', 'post')) {
+    // Thay đổi thứ tự
+    if ($nv_Request->isset_request('changeweight', 'post')) {
+        $respon = [
+            'error' => 0,
+            'message' => '',
+        ];
 
-            $query = 'SELECT mid FROM ' . NV_AUTHORS_GLOBALTABLE . '_module WHERE mid!=' . $mid . ' ORDER BY weight ASC';
-            $result = $db->query($query);
-            $weight = 0;
-            while ($row = $result->fetch()) {
+        $mid = $nv_Request->get_int('changeweight', 'post', 0);
+        $new_vid = $nv_Request->get_int('new_vid', 'post', 0);
+
+        $query = 'SELECT mid FROM ' . NV_AUTHORS_GLOBALTABLE . '_module WHERE mid!=' . $mid . ' ORDER BY weight ASC';
+        $result = $db->query($query);
+        $weight = 0;
+        while ($row = $result->fetch()) {
+            ++$weight;
+            if ($weight == $new_vid) {
                 ++$weight;
-                if ($weight == $new_vid) {
-                    ++$weight;
-                }
-                $db->query('UPDATE ' . NV_AUTHORS_GLOBALTABLE . '_module SET weight=' . $weight . ' WHERE mid=' . $row['mid']);
             }
-            $db->query('UPDATE ' . NV_AUTHORS_GLOBALTABLE . '_module SET weight=' . $new_vid . ' WHERE mid=' . $mid);
-            $nv_Cache->delMod('authors');
-        } elseif ($nv_Request->isset_request('changact', 'post')) {
-            $mid = $nv_Request->get_int('mid', 'post', 0);
-            $act = $nv_Request->get_int('changact', 'post', 1);
-            $query = 'SELECT * FROM ' . NV_AUTHORS_GLOBALTABLE . '_module WHERE mid=' . $mid;
-            $row = $db->query($query)->fetch();
-            if (!empty($row)) {
-                $save = true;
-                if ($act == 3 and ($row['module'] == 'database' or $row['module'] == 'settings' or $row['module'] == 'site')) {
-                    $save = false;
-                } elseif ($act == 1 and ($row['module'] == 'authors' or $row['module'] == 'siteinfo')) {
-                    $save = false;
-                }
-
-                if ($save) {
-                    $act_val = ($row['act_' . $act]) ? 0 : 1;
-                    $checksum = md5($row['module'] . '#' . $row['act_1'] . '#' . $row['act_2'] . '#' . $row['act_3'] . '#' . $global_config['sitekey']);
-                    $db->query('UPDATE ' . NV_AUTHORS_GLOBALTABLE . '_module SET act_' . $act . " = '" . $act_val . "', checksum = '" . $checksum . "' WHERE mid = " . $mid);
-                    $nv_Cache->delMod('authors');
-                }
-            }
-            exit('OK');
+            $db->query('UPDATE ' . NV_AUTHORS_GLOBALTABLE . '_module SET weight=' . $weight . ' WHERE mid=' . $row['mid']);
         }
+        $db->query('UPDATE ' . NV_AUTHORS_GLOBALTABLE . '_module SET weight=' . $new_vid . ' WHERE mid=' . $mid);
+        $nv_Cache->delMod('authors');
+
+        nv_jsonOutput($respon);
+    }
+
+    // Thay đổi quyền sử dụng
+    if ($nv_Request->isset_request('changact', 'post')) {
+        $mid = $nv_Request->get_int('mid', 'post', 0);
+        $act = $nv_Request->get_int('changact', 'post', 1);
+        $query = 'SELECT * FROM ' . NV_AUTHORS_GLOBALTABLE . '_module WHERE mid=' . $mid;
+        $row = $db->query($query)->fetch();
+
+        $respon = [
+            'error' => 1,
+            'message' => 'Not allow!!!',
+        ];
+
+        if (!empty($row)) {
+            $save = true;
+            if ($act == 3 and ($row['module'] == 'database' or $row['module'] == 'settings' or $row['module'] == 'site')) {
+                $save = false;
+            } elseif ($act == 1 and ($row['module'] == 'authors' or $row['module'] == 'siteinfo')) {
+                $save = false;
+            }
+
+            if ($save) {
+                $act_val = ($row['act_' . $act]) ? 0 : 1;
+                $checksum = md5($row['module'] . '#' . $row['act_1'] . '#' . $row['act_2'] . '#' . $row['act_3'] . '#' . $global_config['sitekey']);
+                $db->query('UPDATE ' . NV_AUTHORS_GLOBALTABLE . '_module SET act_' . $act . " = '" . $act_val . "', checksum = '" . $checksum . "' WHERE mid = " . $mid);
+                $nv_Cache->delMod('authors');
+                $respon['error'] = 0;
+            }
+        }
+
+        nv_jsonOutput($respon);
     }
 }
 
-$xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/module.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
 
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('CHECKSS', $checkss);
-
-$a = 0;
 $rows = $db->query('SELECT * FROM ' . NV_AUTHORS_GLOBALTABLE . '_module ORDER BY weight ASC')->fetchAll();
 $numrows = sizeof($rows);
-foreach ($rows as $row) {
-    if ($row['module'] == 'siteinfo') {
-        continue;
-    }
-    for ($i = 1; $i <= $numrows; ++$i) {
-        $xtpl->assign('WEIGHT', ['key' => $i, 'selected' => ($i == $row['weight']) ? ' selected="selected"' : '']);
-        $xtpl->parse('main.loop.weight');
-    }
-    $row['custom_title'] = $nv_Lang->existsGlobal($row['lang_key']) ? $nv_Lang->getGlobal($row['lang_key']) : '';
-    $chang_act = [];
-    for ($i = 1; $i <= 3; ++$i) {
-        $chang_act[$i] = ($row['act_' . $i]) ? ' checked="checked"' : '';
-        if ($i == 3 and ($row['module'] == 'database' or $row['module'] == 'settings' or $row['module'] == 'site')) {
-            $chang_act[$i] .= ' disabled="disabled"';
-        } elseif ($i == 1 and $row['module'] == 'authors') {
-            $chang_act[$i] .= ' disabled="disabled"';
-        }
-    }
-    $xtpl->assign('ROW', $row);
-    $xtpl->assign('CHANG_ACT', $chang_act);
 
-    $xtpl->parse('main.loop');
-}
+$tpl->assign('ARRAY', $rows);
+$tpl->assign('NUMROWS', $numrows);
+$tpl->assign('CHECKSS', $checkss);
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('module.tpl');
 
 if (!defined('NV_IS_AJAX')) {
-    $page_title = $nv_Lang->getModule('module_admin');
     $contents = nv_admin_theme($contents);
 }
 
