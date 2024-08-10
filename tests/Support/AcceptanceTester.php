@@ -39,9 +39,7 @@ class AcceptanceTester extends \Codeception\Actor
 
         $I->wantTo('Open admin login page');
 
-        //$domain = ($_ENV['HTTPS'] == 'on' ? 'https://' : 'http://') . $_ENV['HTTP_HOST'];
-        $I->amOnUrl($this->getDomain());
-        $I->amOnPage('/admin/index.php');
+        $I->amOnUrl($this->getDomain() . '/admin/index.php');
         $I->seeElement('#nv_login');
 
         $username = $username ?? $_ENV['NV_USERNAME'];

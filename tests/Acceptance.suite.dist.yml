@@ -3,7 +3,7 @@ actor: AcceptanceTester
 modules:
     enabled:
         - WebDriver:
-            url: http://localhost
+            url: 'about:blank'
             browser: chrome # 'chrome' or 'firefox'
 
 step_decorators:

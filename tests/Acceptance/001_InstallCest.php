@@ -55,9 +55,7 @@ class InstallCest
     {
         $I->wantTo('Install NukeViet for testing');
 
-        //$domain = ($_ENV['HTTPS'] == 'on' ? 'https://' : 'http://') . $_ENV['HTTP_HOST'];
-        $I->amOnUrl($I->getDomain());
-        $I->amOnPage('/install/index.php');
+        $I->amOnUrl($I->getDomain() . '/install/index.php');
         $I->seeElement('#lang');
 
         // Step 1
