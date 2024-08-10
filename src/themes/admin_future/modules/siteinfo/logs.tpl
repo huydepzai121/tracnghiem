@@ -16,13 +16,13 @@
                 <div class="col-6 col-md-3 flex-xxl-fill">
                     <div class="input-group flex-nowrap">
                         <input type="text" name="from" value="{$SEARCH.from}" class="form-control datepicker" placeholder="{$LANG->getModule('filter_from')}" aria-label="{$LANG->getModule('filter_from')}" aria-describedby="element_from_btn" autocomplete="off">
-                        <button class="btn btn-secondary" type="button" id="element_from_btn" aria-label="{$LANG->getModule('filter_from')}"><i class="fa-regular fa-calendar"></i></button>
+                        <button class="btn btn-secondary" type="button" id="element_from_btn" data-toggle="focusDate" aria-label="{$LANG->getModule('filter_from')}"><i class="fa-regular fa-calendar"></i></button>
                     </div>
                 </div>
                 <div class="col-6 col-md-3 flex-xxl-fill">
                     <div class="input-group flex-nowrap">
                         <input type="text" name="to" value="{$SEARCH.to}" class="form-control datepicker" placeholder="{$LANG->getModule('filter_to')}" aria-label="{$LANG->getModule('filter_to')}" aria-describedby="element_to_btn" autocomplete="off">
-                        <button class="btn btn-secondary" type="button" id="element_to_btn" aria-label="{$LANG->getModule('filter_to')}"><i class="fa-regular fa-calendar"></i></button>
+                        <button class="btn btn-secondary" type="button" id="element_to_btn" data-toggle="focusDate" aria-label="{$LANG->getModule('filter_to')}"><i class="fa-regular fa-calendar"></i></button>
                     </div>
                 </div>
                 <div class="col-md-3 col-xxl-2">

@@ -7,7 +7,7 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-$(document).ready(function() {
+$(function() {
     // Xóa gói cập nhật
     $('[data-toggle="deleteUpdPkg"]').on('click', function(e) {
         e.preventDefault();
@@ -376,12 +376,17 @@ $(document).ready(function() {
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,
-            buttonText: '{LANG.select}',
             showButtonPanel: true,
             showOn: 'focus',
             isRTL: $('html').attr('dir') == 'rtl'
         });
     }
+
+    // Nút chọn ngày tháng
+    $('[data-toggle="focusDate"]').on('click', function(e) {
+        e.preventDefault();
+        $('input', $(this).parent()).focus();
+    });
 
     // Xóa 1 dòng log
     $('[data-toggle="logDelOne"]').on('click', function(e) {

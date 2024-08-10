@@ -119,6 +119,7 @@ $lang_module['adminip_edit'] = 'Sửa địa chỉ IP';
 $lang_module['adminip_delete'] = 'Xóa';
 $lang_module['adminip_error_ip'] = 'Hãy nhập Ip được truy cập khu vực quản trị ';
 $lang_module['adminip_error_validip'] = 'Lỗi: Bạn cần nhập IP đúng chuẩn';
+$lang_module['adminur_exists'] = 'Tài khoản này đã được sử dụng';
 $lang_module['title_username'] = 'Quản lý tài khoản tường lửa khu vực admin';
 $lang_module['admfirewall'] = 'Kiểm tra tường lửa cho khu vực admin';
 $lang_module['block_admin_ip'] = 'Kiểm tra IP khi truy cập khu vực admin';

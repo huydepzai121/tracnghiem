@@ -21,6 +21,10 @@ nv_add_hook($module_name, 'get_module_admin_theme', $priority, function ($vars) 
     $op = $vars[3];
 
     $new_theme = 'admin_future';
+
+    if ($module_name == 'authors' and in_array($op, ['config'])) {
+        return $new_theme;
+    }
     if (($module_info['module_file'] ?? '') == 'news' and in_array($op, ['main'])) {
         return $new_theme;
     }
