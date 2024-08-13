@@ -31,13 +31,46 @@ if ($nv_Request->get_int('result', 'get', 0)) {
     if (!is_array($session_files)) {
         $session_files = [];
     }
-    if (empty($session_files)) {
+    if (empty($session_files) or !defined('NV_IS_GODADMIN')) {
         nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
     }
 
-    $nv_Request->unset_request('nv_admin_profile', 'session');
-    nv_admin_add_result($session_files);
-    exit();
+    //$nv_Request->unset_request('nv_admin_profile', 'session');
+    $page_title = $nv_Lang->getModule('nv_admin_add_result');
+
+    $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/add-result.tpl');
+    $tpl = new \NukeViet\Template\NVSmarty();
+    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+    $tpl->assign('LANG', $nv_Lang);
+
+    $lev = ($session_files['lev'] == 2) ? $nv_Lang->getGlobal('level2') : $nv_Lang->getGlobal('level3');
+    $lev_expired = !empty($session_files['lev_expired']) ? $session_files['lev_expired'] : $nv_Lang->getModule('unlimited');
+
+    $array = [
+        'admin_id' => $session_files['admin_id'],
+        'lev' => $lev,
+        'modules' => $session_files['modules'],
+        'lev_expired' => $lev_expired
+    ];
+    if ($session_files['downgrade_to_modadmin']) {
+        $inf = !empty($session_files['after_modules']) ? ': ' . $session_files['after_modules'] : '';
+        $array['after_exp_action'] = $nv_Lang->getModule('downgrade_to_modadmin') . $inf;
+    }
+    $array['position'] = $session_files['position'];
+    $array['editor'] = (!empty($session_files['editor']) ? $session_files['editor'] : $nv_Lang->getModule('not_use'));
+    $array['allow_files_type'] = (!empty($session_files['allow_files_type']) ? implode(', ', $session_files['allow_files_type']) : $nv_Lang->getGlobal('no'));
+    $array['allow_modify_files'] = ($session_files['allow_modify_files'] ? $nv_Lang->getGlobal('yes') : $nv_Lang->getGlobal('no'));
+    $array['allow_create_subdirectories'] = ($session_files['allow_create_subdirectories'] ? $nv_Lang->getGlobal('yes') : $nv_Lang->getGlobal('no'));
+    $array['allow_modify_subdirectories'] = ($session_files['allow_modify_subdirectories'] ? $nv_Lang->getGlobal('yes') : $nv_Lang->getGlobal('no'));
+
+    $tpl->assign('DATA', $array);
+    $tpl->assign('MODULE_NAME', $module_name);
+
+    $contents = $tpl->fetch('add-result.tpl');
+
+    include NV_ROOTDIR . '/includes/header.php';
+    echo nv_admin_theme($contents);
+    include NV_ROOTDIR . '/includes/footer.php';
 }
 
 if ($global_config['max_user_admin'] > 0) {
@@ -73,8 +106,14 @@ foreach ($global_config['setup_langs'] as $l) {
 
 // Lưu vào CSDL thông tin admin mới
 if ($nv_Request->get_int('save', 'post', 0)) {
+    $respon = [
+        'status' => 'error',
+        'mess' => '',
+    ];
+
     if ($checkss != $nv_Request->get_string('checkss', 'post')) {
-        nv_htmlOutput('Error Session, Please close the browser and try again');
+        $respon['mess'] = 'Error Session, Please close the browser and try again';
+        nv_jsonOutput($respon);
     }
     $userid = $nv_Request->get_title('userid', 'post', 0);
     $md5username = nv_md5safe($userid);
@@ -85,37 +124,46 @@ if ($nv_Request->get_int('save', 'post', 0)) {
     }
     [$userid, $username, $active, $_group_id, $_in_groups] = $db->query($sql)->fetch(3);
     if (empty($userid)) {
-        nv_htmlOutput($nv_Lang->getModule('add_error_choose'));
+        $respon['input'] = 'userid';
+        $respon['mess'] = $nv_Lang->getModule('add_error_choose');
+        nv_jsonOutput($respon);
     }
 
     $sql = 'SELECT COUNT(*) FROM ' . NV_AUTHORS_GLOBALTABLE . ' WHERE admin_id=' . $userid;
     $count = $db->query($sql)->fetchColumn();
     if ($count) {
-        nv_htmlOutput($nv_Lang->getModule('add_error_exist'));
+        $respon['input'] = 'userid';
+        $respon['mess'] = $nv_Lang->getModule('add_error_exist');
+        nv_jsonOutput($respon);
     }
 
     if (empty($userid)) {
-        nv_htmlOutput($nv_Lang->getModule('add_error_notexist'));
+        $respon['input'] = 'userid';
+        $respon['mess'] = $nv_Lang->getModule('add_error_notexist');
+        nv_jsonOutput($respon);
     }
 
     if (empty($active)) {
-        nv_htmlOutput($nv_Lang->getModule('username_noactive', $username));
+        $respon['input'] = 'userid';
+        $respon['mess'] = $nv_Lang->getModule('username_noactive', $username);
+        nv_jsonOutput($respon);
     }
 
     $position = $nv_Request->get_title('position', 'post', '', 1);
     if (empty($position)) {
-        nv_htmlOutput($nv_Lang->getModule('position_incorrect'));
+        $respon['input'] = 'position';
+        $respon['mess'] = $nv_Lang->getModule('position_incorrect');
+        nv_jsonOutput($respon);
     }
 
     $lev_expired = $nv_Request->get_title('lev_expired', 'post', '');
     $lev_expired_sql = 0;
     if (!empty($lev_expired)) {
         $lev_expired_sql = nv_d2u_post($lev_expired, 23, 59, 59);
-        if (empty($lev_expired_sql)) {
-            nv_htmlOutput($nv_Lang->getModule('lev_expired_error'));
-        }
-        if ($lev_expired_sql <= NV_CURRENTTIME) {
-            nv_htmlOutput($nv_Lang->getModule('lev_expired_error'));
+        if (empty($lev_expired_sql) or $lev_expired_sql <= NV_CURRENTTIME) {
+            $respon['input'] = 'lev_expired';
+            $respon['mess'] = $nv_Lang->getModule('lev_expired_error');
+            nv_jsonOutput($respon);
         }
     }
 
@@ -261,10 +309,14 @@ if ($nv_Request->get_int('save', 'post', 0)) {
             $inf .= '<br/>' . $nv_Lang->getModule('after_exp_action') . ': ' . $nv_Lang->getModule('downgrade_to_modadmin') . (!empty($ss_after_modules) ? ': ' . implode(', ', $ss_after_modules) : '');
         }
         nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('menuadd'), $inf, $admin_info['userid']);
-        nv_htmlOutput('OK');
-    } else {
-        nv_htmlOutput($nv_Lang->getModule('add_error_diff'));
+
+        $respon['redirect'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=add&result=1&checksess=' . NV_CHECK_SESSION;
+        $respon['status'] = 'OK';
+        nv_jsonOutput($respon);
     }
+
+    $respon['mess'] = $nv_Lang->getModule('add_error_diff');
+    nv_jsonOutput($respon);
 }
 
 $userid = $nv_Request->get_title('userid', 'get');
@@ -272,66 +324,24 @@ $userid = $nv_Request->get_title('userid', 'get');
 //filtersql
 $filtersql = ' userid NOT IN (SELECT admin_id FROM ' . NV_AUTHORS_GLOBALTABLE . ')';
 
-// Parse content
-$xtpl = new XTemplate('add.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('RESULT_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=add&result=1&checksess=' . NV_CHECK_SESSION);
-$xtpl->assign('FILTERSQL', $crypt->encrypt($filtersql, NV_CHECK_SESSION));
-$xtpl->assign('ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=add');
-$xtpl->assign('CHECKSS', $checkss);
-$xtpl->assign('USERID', $userid ?: '');
-$xtpl->assign('DATE_FORMAT', nv_region_config('jsdate_post'));
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/add.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('OP', $op);
+$tpl->assign('MODULE_NAME', $module_name);
 
-foreach ($adminThemes as $_admin_theme) {
-    $xtpl->assign('THEME_NAME', $_admin_theme);
-    $xtpl->parse('add.admin_theme');
-}
+$tpl->assign('CHECKSS', $checkss);
+$tpl->assign('FILTERSQL', $crypt->encrypt($filtersql, NV_CHECK_SESSION));
+$tpl->assign('ADMINTHEMES', $adminThemes);
+$tpl->assign('EDITORS', $editors);
+$tpl->assign('GCONFIG', $global_config);
+$tpl->assign('ALLMODS', $allmods);
+$tpl->assign('LANGUAGE_ARRAY', $language_array);
+$tpl->assign('DATE_FORMAT', nv_region_config('jsdate_post'));
+$tpl->assign('USERID', $userid ?: '');
 
-if (!empty($editors)) {
-    foreach ($editors as $edt) {
-        $xtpl->assign('EDITOR', [
-            'val' => $edt,
-            'sel' => $edt == 'ckeditor5-classic' ? ' selected="selected"' : ''
-        ]);
-        $xtpl->parse('add.editor.loop');
-    }
-    $xtpl->parse('add.editor');
-}
-
-if (!empty($global_config['file_allowed_ext'])) {
-    foreach ($global_config['file_allowed_ext'] as $tp) {
-        $xtpl->assign('TP', $tp);
-        $xtpl->parse('add.allow_files_type.loop');
-    }
-    $xtpl->parse('add.allow_files_type');
-}
-
-foreach ($allmods as $lg => $mds) {
-    $xtpl->assign('LANG_MODS', ['code' => $lg, 'name' => $language_array[$lg]['name']]);
-    foreach ($mds as $mod => $dts) {
-        $xtpl->assign('MOD_VALUE', $mod);
-        $xtpl->assign('CUSTOM_TITLE', $dts['custom_title']);
-        $xtpl->parse('add.lang_mods.lev_loop');
-    }
-    $xtpl->parse('add.lang_mods');
-
-    foreach ($mds as $mod => $dts) {
-        $xtpl->assign('MOD_VALUE', $mod);
-        $xtpl->assign('CUSTOM_TITLE', $dts['custom_title']);
-        $xtpl->parse('add.show_lev_2_2.lang_after_mods.lev_loop2');
-    }
-    $xtpl->parse('add.show_lev_2_2.lang_after_mods');
-}
-
-if (defined('NV_IS_GODADMIN')) {
-    $xtpl->parse('add.show_lev_2');
-    $xtpl->parse('add.show_lev_2_2');
-}
-
-$xtpl->parse('add');
-$contents = $xtpl->text('add');
+$contents = $tpl->fetch('add.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

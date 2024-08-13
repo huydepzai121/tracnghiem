@@ -36,14 +36,11 @@ $array_url_instruction['config'] = 'https://wiki.nukeviet.vn/nukeviet4:admin:use
 function nv_admin_add_result($result)
 {
     global $module_name, $nv_Lang, $page_title, $global_config;
-    if (!defined('NV_IS_GODADMIN')) {
-        nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
-    }
+
     //parse content
     $xtpl = new XTemplate('add.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/authors');
 
-    $lev = ($result['lev'] == 2) ? $nv_Lang->getGlobal('level2') : $nv_Lang->getGlobal('level3');
-    $lev_expired = !empty($result['lev_expired']) ? $result['lev_expired'] : $nv_Lang->getModule('unlimited');
+
     $contents = [];
     $contents['admin_id'] = $result['admin_id'];
     $contents['title'] = $nv_Lang->getModule('nv_admin_add_title');
@@ -80,7 +77,7 @@ function nv_admin_add_result($result)
     $xtpl->assign('HOME_HREF', $contents['go_home'][1]);
     $xtpl->assign('HOME', $contents['go_home'][0]);
 
-    $page_title = $nv_Lang->getModule('nv_admin_add_result');
+
 
     $xtpl->parse('add_result');
     $contents = $xtpl->text('add_result');

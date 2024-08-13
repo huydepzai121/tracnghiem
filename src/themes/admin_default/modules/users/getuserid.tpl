@@ -122,6 +122,11 @@
     //<![CDATA[
     function nv_close_pop(userid) {
         $("#{AREA}", opener.document).val(userid);
+        const element = window.opener.document.getElementById('{AREA}');
+        if (element) {
+            element.focus();
+            element.dispatchEvent(new Event('change'));
+        }
         window.close();
     }
     //]]>

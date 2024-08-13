@@ -828,12 +828,19 @@ $(document).ready(function() {
     if (formAj.length > 0) {
         $('select', formAj).on('change keyup', function() {
             $(this).removeClass('is-invalid is-valid');
+            if ($(this).parent().is('.input-group')) {
+                $(this).parent().removeClass('is-invalid is-valid');
+            }
         });
         $('[type="text"], textarea', formAj).on('change keyup', function() {
+            let pr = $(this).parent();
+            let prAlso = $(this).parent().is('.input-group');
             if (trim($(this).val()) == '' && $(this).is('.required')) {
                 $(this).addClass('is-invalid');
+                (prAlso && pr.addClass('is-invalid'));
             } else {
                 $(this).removeClass('is-invalid is-valid');
+                (prAlso && pr.removeClass('is-invalid is-valid'));
             }
         });
     }
@@ -842,7 +849,11 @@ $(document).ready(function() {
         e.preventDefault();
 
         if ($('.is-invalid:visible', this).length > 0) {
-            $('.is-invalid:visible:first', this).focus();
+            let ipt = $('.is-invalid:visible:first', this);
+            if (ipt.is('.input-group')) {
+                ipt = $('input:first', ipt);
+            }
+            ipt.focus();
             return;
         }
 
@@ -865,56 +876,67 @@ $(document).ready(function() {
             type: 'POST',
             data: data,
             cache: false,
-            dataType: "json"
-        }).done(function(a) {
-            if (a.status == 'NO' || a.status == 'no' || a.status == 'error') {
-                $('input, textarea, select, button', that).prop('disabled', false);
-                if (a.tab) {
-                    bootstrap.Tab.getOrCreateInstance(document.getElementById(a.tab)).show();
+            dataType: "json",
+            success: function(a) {
+                if (a.status == 'NO' || a.status == 'no' || a.status == 'error') {
+                    $('input, textarea, select, button', that).prop('disabled', false);
+                    if (a.tab) {
+                        bootstrap.Tab.getOrCreateInstance(document.getElementById(a.tab)).show();
+                    }
+                    if (a.input) {
+                        let ele = $('[name^=' + a.input + ']', that);
+                        if (ele.length) {
+                            let pr = ele.parent();
+                            if (pr.is('.input-group')) {
+                                pr.addClass('is-invalid');
+                                pr = pr.parent();
+                            }
+                            $('.invalid-feedback', pr).html(a.mess);
+                            ele.addClass('is-invalid').focus();
+                            return;
+                        }
+                    }
+                    nvToast(a.mess, 'error');
+                    return;
                 }
-                if (a.input) {
-                    let ele = $('[name^=' + a.input + ']', that);
-                    if (ele.length) {
-                        $('.invalid-feedback', ele.parent()).html(a.mess);
-                        ele.addClass('is-invalid').focus();
-                        return;
+
+                if (a.status == 'OK' || a.status == 'ok' || a.status == 'success') {
+                    if ('function' === typeof callback) {
+                        callback();
+                    } else if ('string' == typeof callback && "function" === typeof window[callback]) {
+                        window[callback]();
+                    }
+                    let timeout = 0;
+                    if (a.mess) {
+                        nvToast(a.mess, 'success');
+                        timeout = 2000;
+                    }
+                    if (a.redirect) {
+                        setTimeout(() => {
+                            window.location.href = a.redirect;
+                        }, timeout);
+                    } else if (a.refresh) {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, timeout);
+                    } else {
+                        setTimeout(() => {
+                            $('input, textarea, select, button', that).prop('disabled', false);
+                            if (typeof(CKEDITOR) !== 'undefined') {
+                                for (instance in CKEDITOR.instances) {
+                                    CKEDITOR.instances[instance].setReadOnly(false)
+                                }
+                            }
+                        }, 1000);
                     }
                 }
-                nvToast(a.mess, 'error');
-                return;
+            },
+            error: function(xhr, text, err) {
+                $('input, textarea, select, button', that).prop('disabled', false);
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
             }
-
-            if (a.status == 'OK' || a.status == 'ok' || a.status == 'success') {
-                if ('function' === typeof callback) {
-                    callback();
-                } else if ('string' == typeof callback && "function" === typeof window[callback]) {
-                    window[callback]();
-                }
-                let timeout = 0;
-                if (a.mess) {
-                    nvToast(a.mess, 'success');
-                    timeout = 2000;
-                }
-                if (a.redirect) {
-                    setTimeout(() => {
-                        window.location.href = a.redirect;
-                    }, timeout);
-                } else if (a.refresh) {
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, timeout);
-                } else {
-                    setTimeout(() => {
-                        $('input, textarea, select, button', that).prop('disabled', false);
-                        if (typeof(CKEDITOR) !== 'undefined') {
-                            for (instance in CKEDITOR.instances) {
-                                CKEDITOR.instances[instance].setReadOnly(false)
-                            }
-                        }
-                    }, 1000);
-                }
-            }
-        })
+        });
     });
 
     // Chỉ cho gõ ký tự dạng số ở input có class number

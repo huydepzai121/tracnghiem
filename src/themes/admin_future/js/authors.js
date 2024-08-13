@@ -27,6 +27,12 @@ $(function() {
         $('input', $(this).parent()).focus();
     });
 
+    // Nút xóa ngày tháng
+    $('[data-toggle="clearDate"]').on('click', function(e) {
+        e.preventDefault();
+        $('input', $(this).parent()).val('');
+    });
+
     // Cuộn trang đến element
     let autoScroll = $('[data-toggle="autoScroll"]');
     if (autoScroll.length == 1) {
@@ -147,5 +153,65 @@ $(function() {
                 console.log(xhr, text, err);
             }
         });
+    });
+
+    // Chọn thành viên để thêm quản trị
+    $('#element_userid_btn').on('click', function() {
+        nv_open_browse(script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=users&' + nv_fc_variable + '=getuserid&area=element_userid&return=username&filtersql=' + $(this).data('filtersql'), 'NVImg', 850, 500, 'resizable=no,scrollbars=no,toolbar=no,location=no,status=no');
+    });
+
+    // Chọn hết các module khi thêm/sửa quản trị
+    $('[data-toggle=checkall]').on('click', function() {
+        var obj = $(this).parents('[data-toggle=checklist]');
+        $('[data-toggle=checkitem]', obj).prop("checked", $(this).data('check-value'));
+    });
+
+    // Thay đổi quyền hạn người quản trị khi thêm/sửa quản trị
+    $('[data-toggle="authorLev"]').on('change', function() {
+        var lev_expired = $('[name=lev_expired]').val();
+
+        if ($(this).attr('value') == '2') {
+            $('#modslist').slideUp(150);
+            $('#modslist input').prop('disabled', true);
+            if (lev_expired != '') {
+                $('#after_exp_action input').prop('disabled', false);
+                $('#after_exp_action').slideDown(150);
+            } else {
+                $('#after_exp_action').slideUp(150);
+                $('#after_exp_action input').prop('disabled', true);
+            }
+        } else {
+            $('#modslist input').prop('disabled', false);
+            $('#modslist').slideDown(150);
+            if ($('#after_exp_action').length) {
+                $('#after_exp_action').hide();
+                $('#after_exp_action input').prop('disabled', true);
+            }
+        }
+    });
+
+    // Xử khi khi thêm/sửa quản trị nút hạ cấp khi hết thời gian
+    $('[name=downgrade_to_modadmin]').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('#modslist2 input').prop('disabled', false);
+            $('#modslist2').slideDown(150);
+        } else {
+            $('#modslist2').slideUp(150);
+            $('#modslist2 input').prop('disabled', true);
+        }
+    });
+
+    $('[name=lev_expired]').on('change', function() {
+        var lev_expired = $(this).val(),
+            lev = $('[name=lev]:checked').val();
+        if ($('#after_exp_action').length) {
+            if (lev == 2 && lev_expired != '') {
+                $('#after_exp_action input').prop('disabled', false);
+                $('#after_exp_action').slideDown(150);
+            } else {
+                $('#after_exp_action').slideUp(150);
+                $('#after_exp_action input').prop('disabled', true);
+            }
+        }
     });
 });
