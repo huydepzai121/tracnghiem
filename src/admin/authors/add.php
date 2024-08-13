@@ -35,7 +35,7 @@ if ($nv_Request->get_int('result', 'get', 0)) {
         nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
     }
 
-    //$nv_Request->unset_request('nv_admin_profile', 'session');
+    $nv_Request->unset_request('nv_admin_profile', 'session');
     $page_title = $nv_Lang->getModule('nv_admin_add_result');
 
     $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/add-result.tpl');

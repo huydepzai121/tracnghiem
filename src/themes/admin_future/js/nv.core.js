@@ -45,7 +45,7 @@ const nvToast = (text, level, halign, valign) => {
     $('.toast-items', toasts).append(`
     <div data-id="` + id + `" id="toast-` + id + `" class="toast align-items-center ` + level + ` border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
-            <div class="toast-body">` + text + `</div>
+            <div class="toast-body text-break">` + text + `</div>
             <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="` + nv_close + `"></button>
         </div>
     </div>`);
@@ -832,7 +832,7 @@ $(document).ready(function() {
                 $(this).parent().removeClass('is-invalid is-valid');
             }
         });
-        $('[type="text"], textarea', formAj).on('change keyup', function() {
+        $('[type="text"], [type="password"], [type="number"], [type="email"], textarea', formAj).on('change keyup', function() {
             let pr = $(this).parent();
             let prAlso = $(this).parent().is('.input-group');
             if (trim($(this).val()) == '' && $(this).is('.required')) {
@@ -908,8 +908,8 @@ $(document).ready(function() {
                     }
                     let timeout = 0;
                     if (a.mess) {
-                        nvToast(a.mess, 'success');
-                        timeout = 2000;
+                        nvToast(a.mess, a.warning ? 'warning' : 'success');
+                        timeout = a.timeout ? a.timeout : 2000;
                     }
                     if (a.redirect) {
                         setTimeout(() => {
@@ -924,7 +924,7 @@ $(document).ready(function() {
                             $('input, textarea, select, button', that).prop('disabled', false);
                             if (typeof(CKEDITOR) !== 'undefined') {
                                 for (instance in CKEDITOR.instances) {
-                                    CKEDITOR.instances[instance].setReadOnly(false)
+                                    CKEDITOR.instances[instance].setReadOnly(false);
                                 }
                             }
                         }, 1000);

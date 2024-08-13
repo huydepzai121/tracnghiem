@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_AUTHORS')) {
     exit('Stop!!!');
 }
 
+$page_title = $nv_Lang->getModule('nv_admin_del');
+
 if (!defined('NV_IS_SPADMIN')) {
     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
 }
@@ -65,183 +67,172 @@ $row_user = $db->query($sql)->fetch();
 
 $action_account = $nv_Request->get_int('action_account', 'post', 0);
 $action_account = (isset($array_action_account[$action_account])) ? $action_account : 0;
-$error = '';
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_id);
+
 if ($nv_Request->get_title('checkss', 'post') == $checkss) {
+    $respon = [
+        'status' => 'error',
+        'mess' => '',
+    ];
+
     $sendmail = $nv_Request->get_int('sendmail', 'post', 0);
     $reason = $nv_Request->get_title('reason', 'post', '', 1);
     $adminpass = $nv_Request->get_title('adminpass_iavim', 'post');
 
     if (empty($adminpass)) {
-        $error = $nv_Lang->getGlobal('admin_password_empty');
-    } elseif (!nv_checkAdmpass($adminpass)) {
-        $error = $nv_Lang->getGlobal('adminpassincorrect', $adminpass);
-        $adminpass = '';
-    } else {
-        if ($row['lev'] == 3) {
-            foreach ($global_config['setup_langs'] as $l) {
-                $is_delCache = false;
-                $_site_mods = nv_site_mods($l);
-                $array_keys = array_keys($_site_mods);
-                foreach ($array_keys as $mod) {
-                    if (!empty($mod)) {
-                        if (!empty($_site_mods[$mod]['admins'])) {
-                            $admins = array_map('intval', explode(',', $_site_mods[$mod]['admins']));
-                            if (in_array($admin_id, $admins, true)) {
-                                $admins = array_diff($admins, [$admin_id]);
-                                $admins = implode(',', $admins);
+        $respon['input'] = 'adminpass_iavim';
+        $respon['mess'] = $nv_Lang->getGlobal('admin_password_empty');
+        nv_jsonOutput($respon);
+    }
+    if (!nv_checkAdmpass($adminpass)) {
+        $respon['input'] = 'adminpass_iavim';
+        $respon['mess'] = $nv_Lang->getGlobal('adminpassincorrect', $adminpass);
+        nv_jsonOutput($respon);
+    }
 
-                                $sth = $db->prepare('UPDATE ' . $db_config['prefix'] . '_' . $l . '_modules SET admins= :admins WHERE title= :mod');
-                                $sth->bindParam(':admins', $admins, PDO::PARAM_STR);
-                                $sth->bindParam(':mod', $mod, PDO::PARAM_STR);
-                                $sth->execute();
+    if ($row['lev'] == 3) {
+        foreach ($global_config['setup_langs'] as $l) {
+            $is_delCache = false;
+            $_site_mods = nv_site_mods($l);
+            $array_keys = array_keys($_site_mods);
+            foreach ($array_keys as $mod) {
+                if (!empty($mod)) {
+                    if (!empty($_site_mods[$mod]['admins'])) {
+                        $admins = array_map('intval', explode(',', $_site_mods[$mod]['admins']));
+                        if (in_array($admin_id, $admins, true)) {
+                            $admins = array_diff($admins, [$admin_id]);
+                            $admins = implode(',', $admins);
 
-                                $is_delCache = true;
-                            }
+                            $sth = $db->prepare('UPDATE ' . $db_config['prefix'] . '_' . $l . '_modules SET admins= :admins WHERE title= :mod');
+                            $sth->bindParam(':admins', $admins, PDO::PARAM_STR);
+                            $sth->bindParam(':mod', $mod, PDO::PARAM_STR);
+                            $sth->execute();
+
+                            $is_delCache = true;
                         }
                     }
                 }
-                if ($is_delCache) {
-                    $nv_Cache->delMod('modules', $l);
-                }
+            }
+            if ($is_delCache) {
+                $nv_Cache->delMod('modules', $l);
             }
         }
-
-        $db->query('DELETE FROM ' . NV_AUTHORS_GLOBALTABLE . ' WHERE admin_id = ' . $admin_id);
-        $db->query('DELETE FROM ' . NV_AUTHORS_GLOBALTABLE . '_vars WHERE admin_id = ' . $admin_id);
-
-        if ($action_account == 1) {
-            $db->query('UPDATE ' . NV_USERS_GLOBALTABLE . ' SET active=0 WHERE userid=' . $admin_id);
-        } elseif ($action_account == 2) {
-            try {
-                $db->query('UPDATE ' . NV_GROUPS_GLOBALTABLE . ' SET numbers = numbers-1 WHERE group_id IN (SELECT group_id FROM ' . NV_GROUPS_GLOBALTABLE . '_users WHERE userid=' . $admin_id . ' AND approved = 1)');
-            } catch (PDOException $e) {
-                trigger_error(print_r($e, true));
-            }
-            $db->query('DELETE FROM ' . NV_GROUPS_GLOBALTABLE . '_users WHERE userid=' . $admin_id);
-            $db->query('DELETE FROM ' . NV_USERS_GLOBALTABLE . '_openid WHERE userid=' . $admin_id);
-            $db->query('DELETE FROM ' . NV_USERS_GLOBALTABLE . '_info WHERE userid=' . $admin_id);
-            $db->query('DELETE FROM ' . NV_USERS_GLOBALTABLE . ' WHERE userid=' . $admin_id);
-            if (!empty($row_user['photo']) and is_file(NV_ROOTDIR . '/' . $row_user['photo'])) {
-                @nv_deletefile(NV_ROOTDIR . '/' . $row_user['photo']);
-            }
-            // Xóa API
-            $db->query('DELETE FROM ' . $db_config['prefix'] . '_api_role_credential WHERE userid=' . $admin_id);
-        }
-
-        if ($action_account != 2) {
-            // Xóa API cho admin
-            $db->sqlreset()
-                ->select('COUNT(*)')
-                ->from($db_config['prefix'] . '_api_role_credential tb1')
-                ->join('INNER JOIN ' . $db_config['prefix'] . '_api_role tb2 ON (tb2.role_id =tb1.role_id)')
-                ->where('tb1.userid = ' . $admin_id . " AND tb2.role_object='admin'");
-            $count = $db->query($db->sql())
-                ->fetchColumn();
-            if ($count) {
-                $db->select('tb1.id');
-                $result = $db->query($db->sql());
-                $credential_ids = [];
-                while ($row = $result->fetch()) {
-                    $credential_ids[] = $row['id'];
-                }
-
-                $credential_ids = implode(', ', $credential_ids);
-                $db->query('DELETE FROM ' . $db_config['prefix'] . '_api_role_credential WHERE id IN (' . $credential_ids . ') AND userid=' . $admin_id);
-            }
-
-            nv_groups_del_user($row['lev'], $admin_id);
-
-            // Cập nhật lại nhóm nếu không xóa tài khoản
-            if ($row_user['group_id'] == $row['lev']) {
-                // Nếu nhóm mặc định là quản trị này thì chuyển về thành viên chính thức
-                $row_user['group_id'] = 4;
-            }
-            $row_user['in_groups'] = explode(',', $row_user['in_groups']);
-            $row_user['in_groups'] = array_diff($row_user['in_groups'], [$row['lev']]);
-            $row_user['in_groups'] = array_filter(array_unique(array_map('trim', $row_user['in_groups'])));
-            $row_user['in_groups'] = empty($row_user['in_groups']) ? '' : implode(',', $row_user['in_groups']);
-
-            $sql = 'UPDATE ' . NV_USERS_GLOBALTABLE . ' SET group_id=' . $row_user['group_id'] . ', in_groups=' . $db->quote($row_user['in_groups']) . ' WHERE userid=' . $admin_id;
-            $db->query($sql);
-        }
-        nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('nv_admin_del'), 'Username: ' . $row_user['username'] . ', ' . $array_action_account[$action_account], $admin_info['userid']);
-
-        $db->query('OPTIMIZE TABLE ' . NV_AUTHORS_GLOBALTABLE);
-
-        if ($sendmail) {
-            $maillang = NV_LANG_INTERFACE;
-            if (!empty($row_user['language']) and in_array($row_user['language'], $global_config['setup_langs'], true)) {
-                if ($row_user['language'] != NV_LANG_INTERFACE) {
-                    $maillang = $row_user['language'];
-                }
-            } elseif (NV_LANG_DATA != NV_LANG_INTERFACE) {
-                $maillang = NV_LANG_DATA;
-            }
-
-            $send_data = [[
-                'to' => $row_user['email'],
-                'data' => [
-                    'lang' => $maillang,
-                    'time' => NV_CURRENTTIME,
-                    'note' => $reason,
-                    'email' => $admin_info['view_mail'] ? $admin_info['email'] : $global_config['site_email'],
-                    'sig' => (!empty($admin_info['sig']) ? $admin_info['sig'] : 'All the best'),
-                    'position' => $admin_info['position'],
-                    'username' => $admin_info['username']
-                ]
-            ]];
-            $send = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_AUTHOR_DELETE, $send_data, $maillang);
-            if (!$send) {
-                $page_title = $nv_Lang->getGlobal('error_info_caption');
-
-                include NV_ROOTDIR . '/includes/header.php';
-                echo nv_admin_theme($nv_Lang->getGlobal('error_sendmail_admin') . '<meta http-equiv="refresh" content="10;URL=' . NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '" />');
-                include NV_ROOTDIR . '/includes/footer.php';
-            }
-        }
-        nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
     }
-} else {
-    $sendmail = 1;
-    $reason = $adminpass = '';
+
+    $db->query('DELETE FROM ' . NV_AUTHORS_GLOBALTABLE . ' WHERE admin_id = ' . $admin_id);
+    $db->query('DELETE FROM ' . NV_AUTHORS_GLOBALTABLE . '_vars WHERE admin_id = ' . $admin_id);
+
+    if ($action_account == 1) {
+        $db->query('UPDATE ' . NV_USERS_GLOBALTABLE . ' SET active=0 WHERE userid=' . $admin_id);
+    } elseif ($action_account == 2) {
+        try {
+            $db->query('UPDATE ' . NV_GROUPS_GLOBALTABLE . ' SET numbers = numbers-1 WHERE group_id IN (SELECT group_id FROM ' . NV_GROUPS_GLOBALTABLE . '_users WHERE userid=' . $admin_id . ' AND approved = 1)');
+        } catch (PDOException $e) {
+            trigger_error(print_r($e, true));
+        }
+        $db->query('DELETE FROM ' . NV_GROUPS_GLOBALTABLE . '_users WHERE userid=' . $admin_id);
+        $db->query('DELETE FROM ' . NV_USERS_GLOBALTABLE . '_openid WHERE userid=' . $admin_id);
+        $db->query('DELETE FROM ' . NV_USERS_GLOBALTABLE . '_info WHERE userid=' . $admin_id);
+        $db->query('DELETE FROM ' . NV_USERS_GLOBALTABLE . ' WHERE userid=' . $admin_id);
+        if (!empty($row_user['photo']) and is_file(NV_ROOTDIR . '/' . $row_user['photo'])) {
+            @nv_deletefile(NV_ROOTDIR . '/' . $row_user['photo']);
+        }
+        // Xóa API
+        $db->query('DELETE FROM ' . $db_config['prefix'] . '_api_role_credential WHERE userid=' . $admin_id);
+    }
+
+    if ($action_account != 2) {
+        // Xóa API cho admin
+        $db->sqlreset()
+            ->select('COUNT(*)')
+            ->from($db_config['prefix'] . '_api_role_credential tb1')
+            ->join('INNER JOIN ' . $db_config['prefix'] . '_api_role tb2 ON (tb2.role_id =tb1.role_id)')
+            ->where('tb1.userid = ' . $admin_id . " AND tb2.role_object='admin'");
+        $count = $db->query($db->sql())
+            ->fetchColumn();
+        if ($count) {
+            $db->select('tb1.id');
+            $result = $db->query($db->sql());
+            $credential_ids = [];
+            while ($row = $result->fetch()) {
+                $credential_ids[] = $row['id'];
+            }
+
+            $credential_ids = implode(', ', $credential_ids);
+            $db->query('DELETE FROM ' . $db_config['prefix'] . '_api_role_credential WHERE id IN (' . $credential_ids . ') AND userid=' . $admin_id);
+        }
+
+        nv_groups_del_user($row['lev'], $admin_id);
+
+        // Cập nhật lại nhóm nếu không xóa tài khoản
+        if ($row_user['group_id'] == $row['lev']) {
+            // Nếu nhóm mặc định là quản trị này thì chuyển về thành viên chính thức
+            $row_user['group_id'] = 4;
+        }
+        $row_user['in_groups'] = explode(',', $row_user['in_groups']);
+        $row_user['in_groups'] = array_diff($row_user['in_groups'], [$row['lev']]);
+        $row_user['in_groups'] = array_filter(array_unique(array_map('trim', $row_user['in_groups'])));
+        $row_user['in_groups'] = empty($row_user['in_groups']) ? '' : implode(',', $row_user['in_groups']);
+
+        $sql = 'UPDATE ' . NV_USERS_GLOBALTABLE . ' SET group_id=' . $row_user['group_id'] . ', in_groups=' . $db->quote($row_user['in_groups']) . ' WHERE userid=' . $admin_id;
+        $db->query($sql);
+    }
+    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('nv_admin_del'), 'Username: ' . $row_user['username'] . ', ' . $array_action_account[$action_account], $admin_info['userid']);
+
+    $db->query('OPTIMIZE TABLE ' . NV_AUTHORS_GLOBALTABLE);
+
+    if ($sendmail) {
+        $maillang = NV_LANG_INTERFACE;
+        if (!empty($row_user['language']) and in_array($row_user['language'], $global_config['setup_langs'], true)) {
+            if ($row_user['language'] != NV_LANG_INTERFACE) {
+                $maillang = $row_user['language'];
+            }
+        } elseif (NV_LANG_DATA != NV_LANG_INTERFACE) {
+            $maillang = NV_LANG_DATA;
+        }
+
+        $send_data = [[
+            'to' => $row_user['email'],
+            'data' => [
+                'lang' => $maillang,
+                'time' => NV_CURRENTTIME,
+                'note' => $reason,
+                'email' => $admin_info['view_mail'] ? $admin_info['email'] : $global_config['site_email'],
+                'sig' => (!empty($admin_info['sig']) ? $admin_info['sig'] : 'All the best'),
+                'position' => $admin_info['position'],
+                'username' => $admin_info['username']
+            ]
+        ]];
+        $send = nv_sendmail_from_template(NukeViet\Template\Email\Tpl::E_AUTHOR_DELETE, $send_data, $maillang);
+        if (!$send) {
+            $respon['redirect'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name;
+            $respon['status'] = 'OK';
+            $respon['warning'] = 1;
+            $respon['timeout'] = 5000;
+            $respon['mess'] = $nv_Lang->getGlobal('error_sendmail_admin');
+            nv_jsonOutput($respon);
+        }
+    }
+
+    $respon['redirect'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name;
+    $respon['status'] = 'OK';
+    nv_jsonOutput($respon);
 }
 
-$contents = [];
-$contents['is_error'] = (!empty($error)) ? 1 : 0;
-$contents['title'] = (!empty($error)) ? $error : $nv_Lang->getModule('delete_sendmail_info', $row_user['username']);
-$contents['action'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=del&amp;admin_id=' . $admin_id;
-$contents['sendmail'] = $sendmail;
-$contents['admin_password'] = [$nv_Lang->getGlobal('admin_password'), $adminpass];
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/del.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('CHECKSS', $checkss);
+$tpl->assign('OP', $op);
+$tpl->assign('MODULE_NAME', $module_name);
 
-$page_title = $nv_Lang->getModule('nv_admin_del');
+$tpl->assign('ADMIN_ID', $admin_id);
+$tpl->assign('USER', $row_user);
+$tpl->assign('LIST_ACTION_ACCOUNT', $array_action_account);
+$tpl->assign('ACTION_ACCOUNT', $action_account);
 
-// Parse content
-$xtpl = new XTemplate('del.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-
-$class = $contents['is_error'] ? 'class="alert alert-danger"' : 'class="alert alert-info"';
-
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('CHECKSS', $checkss);
-
-$xtpl->assign('CLASS', $contents['is_error'] ? 'class="alert alert-danger"' : 'class="alert alert-info"');
-$xtpl->assign('TITLE', $contents['title']);
-$xtpl->assign('ACTION', $contents['action']);
-$xtpl->assign('CHECKED', $contents['sendmail'] ? ' checked="checked"' : '');
-
-$xtpl->assign('REASON', $reason);
-
-$xtpl->assign('ADMIN_PASSWORD0', $contents['admin_password'][0]);
-$xtpl->assign('ADMIN_PASSWORD1', $contents['admin_password'][1]);
-foreach ($array_action_account as $key => $value) {
-    $xtpl->assign('ACTION_ACCOUNT_KEY', $key);
-    $xtpl->assign('ACTION_ACCOUNT_CHECK', ($key == $action_account) ? ' checked="checked"' : '');
-    $xtpl->assign('ACTION_ACCOUNT_TITLE', $value);
-    $xtpl->parse('del.action_account');
-}
-
-$xtpl->parse('del');
-$contents = $xtpl->text('del');
+$contents = $tpl->fetch('del.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

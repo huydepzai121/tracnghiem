@@ -7,22 +7,6 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-function nv_admin_add_result(form_id, go, tp) {
-    var formid = document.getElementById(form_id);
-    var input_go = document.getElementById(go);
-    input_go.value = (tp == 2) ? "sendmail" : "savefile";
-    formid.submit();
-    return false;
-}
-
-function nv_admin_edit_result(form_id, go, tp) {
-    var formid = document.getElementById(form_id);
-    var input_go = document.getElementById(go);
-    input_go.value = (tp == 2) ? "sendmail" : "savefile";
-    formid.submit();
-    return false;
-}
-
 function nv_chang_weight(mid) {
     var nv_timer = nv_settimeout_disable('id_weight_' + mid, 5000);
     var new_vid = $("#id_weight_" + mid).val();

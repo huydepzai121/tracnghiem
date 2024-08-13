@@ -190,7 +190,7 @@ $(function() {
         }
     });
 
-    // Xử khi khi thêm/sửa quản trị nút hạ cấp khi hết thời gian
+    // Xử lí khi khi thêm/sửa quản trị nút hạ cấp khi hết thời gian
     $('[name=downgrade_to_modadmin]').on('change', function() {
         if ($(this).is(':checked')) {
             $('#modslist2 input').prop('disabled', false);
@@ -200,7 +200,6 @@ $(function() {
             $('#modslist2 input').prop('disabled', true);
         }
     });
-
     $('[name=lev_expired]').on('change', function() {
         var lev_expired = $(this).val(),
             lev = $('[name=lev]:checked').val();
@@ -213,5 +212,76 @@ $(function() {
                 $('#after_exp_action input').prop('disabled', true);
             }
         }
+    });
+
+    // Xóa hết oauth của quản trị
+    $('[data-toggle="truncate2step"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(nv_is_del_confirm[0], () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    admin_id: btn.data('userid'),
+                    delall: $('body').data('checksess')
+                },
+                dataType: 'json',
+                success: function(data) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (data.error) {
+                        nvToast(data.message, 'error');
+                        return;
+                    }
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
+
+    // Xóa một oauth của quản trị
+    $('[data-toggle="del2step"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(nv_is_del_confirm[0], () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    id: btn.data('id'),
+                    admin_id: btn.data('userid'),
+                    del: $('body').data('checksess')
+                },
+                dataType: 'json',
+                success: function(data) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (data.error) {
+                        nvToast(data.message, 'error');
+                        return;
+                    }
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
     });
 });

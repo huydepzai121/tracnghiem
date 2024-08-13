@@ -13,7 +13,7 @@ if (!defined('NV_IS_FILE_AUTHORS')) {
     exit('Stop!!!');
 }
 
-$admin_id = $nv_Request->get_absint('admin_id', 'get', $admin_info['admin_id']);
+$admin_id = $nv_Request->get_absint('admin_id', 'get,post', $admin_info['admin_id']);
 
 $sql = 'SELECT * FROM ' . NV_AUTHORS_GLOBALTABLE . ' WHERE admin_id=' . $admin_id;
 $row = $db->query($sql)->fetch();
@@ -63,19 +63,18 @@ if (
 
 $page_title = $nv_Lang->getModule('2step_manager') . ': ' . $row_user['username'];
 
-$xtpl = new XTemplate('2step.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/authors');
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('USERID', $row['admin_id']);
-$xtpl->assign('TOKEND', NV_CHECK_SESSION);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/2step.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->registerPlugin('modifier', 'datetime_format', 'nv_datetime_format');
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('OP', $op);
+$tpl->assign('MODULE_NAME', $module_name);
 
-if (empty($row_user['active2step'])) {
-    // Xác thực 2 bước bằng ứng dụng đang tắt
-    $xtpl->parse('main.code_off');
-} else {
-    // Xác thực 2 bước bằng ứng dụng đang bật
-    $xtpl->parse('main.code_on');
-}
+$tpl->assign('USER', $row_user);
+$tpl->assign('ADMIN', $row);
+$tpl->assign('ADMIN_INFO', $admin_info);
+$tpl->assign('MANAGER_USER_2STEP', $manager_user_2step);
 
 if ($row['admin_id'] == $admin_info['admin_id']) {
     // Xác định các cổng Oauth hỗ trợ
@@ -145,33 +144,13 @@ if ($row['admin_id'] == $admin_info['admin_id']) {
                     nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_AUTHOR_2STEP_ADD, $send_data, $maillang);
 
                     nv_insert_logs(NV_LANG_DATA, $module_name, 'LOG_ADD_OAUTH', $opt . ': ' . $oauthid, $admin_info['userid']);
-                    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op);
+                    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&amp;admin_id=' . $admin_id);
                 }
             }
         }
     }
 
-    // Nếu là bản thân thì hiển thị link quản lý
-    $xtpl->assign('CODE_SELF_MANAGER', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=two-step-verification');
-    $xtpl->parse('main.code_self_manager');
-
-    // Thêm Oauth từ các server
-    if (isset($server_allowed['facebook'])) {
-        $xtpl->assign('LINK_FACEBOOK', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=2step&amp;auth=facebook');
-        $xtpl->parse('main.add_facebook');
-    }
-    if (isset($server_allowed['google'])) {
-        $xtpl->assign('LINK_GOOGLE', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=2step&amp;auth=google');
-        $xtpl->parse('main.add_google');
-    }
-    if (isset($server_allowed['zalo'])) {
-        $xtpl->assign('LINK_ZALO', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=2step&amp;auth=zalo');
-        $xtpl->parse('main.add_zalo');
-    }
-} elseif ($manager_user_2step and !empty($row_user['active2step'])) {
-    // Quản lý 2 bước của tài khoản khác đang bật xác thực
-    $xtpl->assign('CODE_MANAGER', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=users&amp;' . NV_OP_VARIABLE . '=edit_2step&amp;userid=' . $row_user['userid']);
-    $xtpl->parse('main.code_manager');
+    $tpl->assign('SERVER_ALLOWED', $server_allowed);
 }
 
 // Danh sách các cổng xác thực
@@ -220,7 +199,10 @@ if ($nv_Request->get_title('delall', 'post', '') === NV_CHECK_SESSION) {
     nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_AUTHOR_2STEP_TRUNCATE, $send_data, $maillang);
 
     nv_insert_logs(NV_LANG_DATA, $module_name, 'LOG_TRUNCATE_OAUTH', 'AID ' . $row['admin_id'], $admin_info['userid']);
-    nv_htmlOutput('OK');
+    nv_jsonOutput([
+        'error' => 0,
+        'message' => ''
+    ]);
 }
 
 // Xóa một tài khoản
@@ -229,9 +211,15 @@ if ($nv_Request->get_title('del', 'post', '') === NV_CHECK_SESSION) {
         exit('Wrong URL');
     }
 
+    $respon = [
+        'error' => 1,
+        'message' => 'Error!!!'
+    ];
+
     $id = $nv_Request->get_absint('id', 'post', 0);
     if (!isset($array_oauth[$id])) {
-        nv_htmlOutput('NO');
+        $respon['message'] = 'No Oauth ID';
+        nv_jsonOutput($respon);
     }
 
     $sql = 'DELETE FROM ' . NV_AUTHORS_GLOBALTABLE . '_oauth WHERE admin_id=' . $row['admin_id'] . ' AND id=' . $id;
@@ -264,30 +252,14 @@ if ($nv_Request->get_title('del', 'post', '') === NV_CHECK_SESSION) {
     nv_sendmail_template_async(NukeViet\Template\Email\Tpl::E_AUTHOR_2STEP_DEL, $send_data, $maillang);
 
     nv_insert_logs(NV_LANG_DATA, $module_name, 'LOG_DELETE_OAUTH', 'AID ' . $row['admin_id'] . ': ' . $array_oauth[$id]['oauth_server'] . '|' . $array_oauth[$id]['oauth_email'], $admin_info['userid']);
-    nv_htmlOutput('OK');
+    $respon['error'] = 0;
+    nv_jsonOutput($respon);
 }
 
-if (empty($array_oauth)) {
-    $xtpl->parse('main.oauth_empty');
-} else {
-    foreach ($array_oauth as $oauth) {
-        $oauth['email_or_id'] = !empty($oauth['oauth_email']) ? $oauth['oauth_email'] : $oauth['oauth_id'];
-        $oauth['addtime'] = nv_datetime_format($oauth['addtime'], 1);
-        $xtpl->assign('OAUTH', $oauth);
-        $xtpl->parse('main.oauth_data.oauth');
-    }
+$tpl->assign('OAUTHS', $array_oauth);
+$tpl->assign('ERROR', $error);
 
-    $xtpl->parse('main.oauth_data');
-    $xtpl->parse('main.delete_btn');
-}
-
-if (!empty($error)) {
-    $xtpl->assign('ERROR', $error);
-    $xtpl->parse('main.error');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('2step.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
