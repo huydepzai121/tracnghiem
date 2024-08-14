@@ -13,14 +13,12 @@ if (!defined('NV_IS_FILE_DATABASE')) {
     exit('Stop!!!');
 }
 
+$page_title = $nv_Lang->getModule('file_backup');
+
 $log_dir = NV_ROOTDIR . '/' . NV_LOGS_DIR . '/dump_backup';
 if ($global_config['idsite']) {
     $log_dir .= '/' . $global_config['site_dir'];
 }
-
-$xtpl = new XTemplate('files.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 
 $array_content = [];
 $files = scandir($log_dir);
@@ -75,44 +73,42 @@ if ($nv_Request->isset_request('delbackup,index,checkss', 'get')) {
     $index = $nv_Request->get_absint('index', 'get', 0);
     $checkss = $nv_Request->get_title('checkss', 'get', '');
 
+    $respon = [
+        'error' => 1,
+        'message' => 'Wrong Session or Data!!!'
+    ];
+
     if (isset($array_content[$filetime], $array_content[$filetime][$index]) and md5($filetime . $index . NV_CHECK_SESSION) === $checkss) {
         $file = $array_content[$filetime][$index];
         nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getGlobal('delete') . ' ' . $nv_Lang->getModule('file_backup'), 'File name: ' . basename($file['path']), $admin_info['userid']);
         nv_deletefile($file['path']);
-        nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&rand=' . nv_genpass());
+
+        $respon['error'] = 0;
     }
 
-    nv_info_die($nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_content'), 403);
+    nv_jsonOutput($respon);
 }
 
 krsort($array_content);
-
-$stt = 0;
 foreach ($array_content as $filetime => $files) {
     krsort($files);
-
     foreach ($files as $file_index => $file) {
-        $link_getfile = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;getbackup=' . $filetime . '&amp;index=' . $file_index . '&amp;checkss=' . md5($filetime . $file_index . NV_CHECK_SESSION);
-        $link_delete = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;delbackup=' . $filetime . '&amp;index=' . $file_index . '&amp;checkss=' . md5($filetime . $file_index . NV_CHECK_SESSION);
-
-        $xtpl->assign('ROW', [
-            'stt' => ++$stt,
-            'name' => $file['name'],
-            'filesize' => nv_convertfromBytes($file['filesize']),
-            'filetime' => nv_datetime_format($filetime, 0, 0),
-            'link_getfile' => $link_getfile,
-            'link_delete' => $link_delete
-        ]);
-
-        $xtpl->parse('main.loop');
+        $files[$file_index]['checkss'] = md5($filetime . $file_index . NV_CHECK_SESSION);
     }
+    $array_content[$filetime] = $files;
 }
 
-$xtpl->assign('BACKUPNOW', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=download&amp;checkss=' . NV_CHECK_SESSION);
-$page_title = $nv_Lang->getModule('file_backup');
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/files.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->registerPlugin('modifier', 'displaySize', 'nv_convertfromBytes');
+$tpl->registerPlugin('modifier', 'displayTime', 'nv_datetime_format');
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('ARRAY', $array_content);
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('files.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

@@ -74,6 +74,7 @@ $lang_module['dump_backup_ext'] = 'File extension';
 $lang_module['dump_interval'] = 'Repeat following jobs';
 $lang_module['dump_backup_day'] = 'Time to save database files backup';
 $lang_module['file_backup'] = 'Backups';
+$lang_module['file_backup_empty'] = 'No data backup files yet';
 $lang_module['file_nb'] = 'No.';
 $lang_module['file_name'] = 'File name';
 $lang_module['file_time'] = 'Time';

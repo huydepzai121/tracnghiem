@@ -20,6 +20,7 @@ $array_config_global = [];
 $array_config_global['dump_backup_day'] = $global_config['dump_backup_day'];
 $array_config_global['dump_backup_ext'] = $global_config['dump_backup_ext'];
 $array_config_global['dump_interval'] = $global_config['dump_interval'];
+$array_config_global['dump_autobackup'] = $global_config['dump_autobackup'];
 
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
 if ($checkss == $nv_Request->get_string('checkss', 'post')) {
@@ -43,43 +44,26 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     }
 
     nv_save_file_config_global();
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&rand=' . nv_genpass());
+
+    nv_jsonOutput([
+        'status' => 'success',
+        'mess' => $nv_Lang->getGlobal('save_success'),
+        'redirect' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&rand=' . nv_genpass()
+    ]);
 }
 
-$array_config_global['dump_autobackup'] = ($global_config['dump_autobackup']) ? ' checked="checked"' : '';
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/setting.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('CHECKSS', $checkss);
+$tpl->assign('DATA', $array_config_global);
+$tpl->assign('SQL_EXTS', $array_sql_ext);
 
-$xtpl = new XTemplate('setting.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-$xtpl->assign('OP', $op);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('DATA', $array_config_global);
-$xtpl->assign('CHECKSS', $checkss);
-
-foreach ($array_sql_ext as $ext_i) {
-    $xtpl->assign('BACKUPEXTSELECTED', ($ext_i == $array_config_global['dump_backup_ext']) ? ' selected="selected"' : '');
-    $xtpl->assign('BACKUPEXTVALUE', $ext_i);
-    $xtpl->parse('main.dump_backup_ext');
-}
-
-for ($index = 1; $index < 11; ++$index) {
-    $xtpl->assign('BACKUPDAYSELECTED', ($index == $array_config_global['dump_interval']) ? ' selected="selected"' : '');
-    $xtpl->assign('BACKUPDAYVALUE', $index);
-    $xtpl->parse('main.dump_interval');
-}
-
-for ($index = 2; $index < 100; ++$index) {
-    $xtpl->assign('BACKUPDAYSELECTED', ($index == $array_config_global['dump_backup_day']) ? ' selected="selected"' : '');
-    $xtpl->assign('BACKUPDAYVALUE', $index);
-    $xtpl->parse('main.dump_backup_day');
-}
-
-$xtpl->parse('main');
-$content = $xtpl->text('main');
+$contents = $tpl->fetch('setting.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
-echo nv_admin_theme($content);
+echo nv_admin_theme($contents);
 include NV_ROOTDIR . '/includes/footer.php';

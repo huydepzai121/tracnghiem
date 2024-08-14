@@ -410,6 +410,7 @@ $lang_global['toggle_checksingle'] = 'Chọn/bỏ chọn dòng này';
 $lang_global['keyword'] = 'Từ khóa';
 $lang_global['at'] = 'Lúc';
 $lang_global['by'] = 'Bởi';
+$lang_global['function'] = 'Chức năng';
 $lang_global['country_AD'] = 'Andorra';
 $lang_global['country_AE'] = 'Ả Rập Thống nhất';
 $lang_global['country_AF'] = 'Afghanistan';

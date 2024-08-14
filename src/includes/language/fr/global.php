@@ -410,6 +410,7 @@ $lang_global['toggle_checksingle'] = 'Sélectionner/désélectionner cette ligne
 $lang_global['keyword'] = 'Mot-clé';
 $lang_global['at'] = 'À';
 $lang_global['by'] = 'Par';
+$lang_global['function'] = 'Fonction';
 $lang_global['country_AD'] = 'Andorre';
 $lang_global['country_AE'] = 'Arabes Unis';
 $lang_global['country_AF'] = 'Afghanistan';

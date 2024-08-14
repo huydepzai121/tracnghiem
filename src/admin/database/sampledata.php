@@ -318,39 +318,26 @@ if (file_exists($file_data_tmp)) {
     nv_deletefile($file_data_tmp);
 }
 
-$xtpl = new XTemplate('sampledata.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-
-$error = '';
 $files = nv_scandir(NV_ROOTDIR . '/install/samples', '/^data\_([a-z0-9]+)\.php$/');
 $array = [];
-
 foreach ($files as $file) {
-    $array[] = [
+    $row = [
         'title' => substr(substr($file, 5), 0, -4),
-        'creattime' => nv_datetime_format(filemtime(NV_ROOTDIR . '/install/samples/' . $file), 1),
+        'creattime' => nv_datetime_format(filemtime(NV_ROOTDIR . '/install/samples/' . $file), 1)
     ];
+    $row['checkss'] = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $row['title']);
+    $array[] = $row;
 }
 
-if (empty($error)) {
-    $xtpl->parse('main.info');
-} else {
-    $xtpl->parse('main.error');
-}
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/sampledata.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('DATA', $array);
 
-if (empty($array)) {
-    $xtpl->parse('main.empty');
-} else {
-    foreach ($array as $row) {
-        $row['checkss'] = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $row['title']);
-        $xtpl->assign('ROW', $row);
-        $xtpl->parse('main.data.loop');
-    }
-    $xtpl->parse('main.data');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('sampledata.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
