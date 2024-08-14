@@ -82,7 +82,6 @@ $lang_module['suspend_info_yes'] = 'Danh sách các lần đình chỉ hoạt đ
 $lang_module['suspend_start'] = 'Bắt đầu';
 $lang_module['suspend_end'] = 'Kết thúc';
 $lang_module['suspend_reason'] = 'Lý do đình chỉ';
-$lang_module['suspend_info'] = 'Vào: %1$s<br />Bởi: %2$s';
 $lang_module['suspend0'] = 'Khôi phục hoạt động';
 $lang_module['suspend1'] = 'Đình chỉ hoạt động';
 $lang_module['clean_history'] = 'Xóa lịch sử';

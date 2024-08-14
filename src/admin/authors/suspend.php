@@ -64,6 +64,7 @@ if ($allow_change and $nv_Request->get_int('save', 'post', 0)) {
     $new_reason = (!empty($new_suspend)) ? $nv_Request->get_title('new_reason', 'post', '', 1) : '';
     if (!empty($new_suspend) and empty($new_reason)) {
         nv_jsonOutput([
+            'input' => 'new_reason',
             'status' => 'error',
             'mess' => $nv_Lang->getModule('susp_reason_empty')
         ]);
@@ -169,51 +170,23 @@ if (!empty($susp_reason)) {
 
 $page_title = $nv_Lang->getModule('nv_admin_chg_suspend', $row_user['username']);
 
-// Parse content
-$xtpl = new XTemplate('suspend.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('SUSPEND_STATUS', $nv_Lang->getModule('suspend_status' . $old_suspend));
-$xtpl->assign('CHECKSS', $checkss);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/suspend.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->registerPlugin('modifier', 'datetime_format', 'nv_datetime_format');
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('OP', $op);
+$tpl->assign('MODULE_NAME', $module_name);
 
-if (empty($susp_reason)) {
-    $xtpl->assign('SUSPEND_INFO', $nv_Lang->getModule('suspend_info_empty', $row_user['username']));
-    $xtpl->parse('suspend.suspend_info');
-} else {
-    $xtpl->assign('SUSPEND_INFO', $nv_Lang->getModule('suspend_info_yes'));
-    foreach ($susp_reason as $vals) {
-        $xtpl->assign('VALUE0', $nv_Lang->getModule('suspend_info', nv_datetime_format($vals['starttime']), $ads[$vals['start_admin']]));
-        $xtpl->assign('VALUE1', !empty($vals['endtime']) ? $nv_Lang->getModule('suspend_info', nv_datetime_format($vals['endtime']), $ads[$vals['end_admin']]) : '');
-        $xtpl->assign('VALUE2', $vals['info']);
+$tpl->assign('OLD_SUSPEND', $old_suspend);
+$tpl->assign('NEW_SUSPEND', $new_suspend);
+$tpl->assign('CHECKSS', $checkss);
+$tpl->assign('SUSP_REASON', $susp_reason);
+$tpl->assign('USER', $row_user);
+$tpl->assign('ALLOW_CHANGE', $allow_change);
+$tpl->assign('ADMINS', $ads);
 
-        if (empty($vals['endtime'])) {
-            $xtpl->parse('suspend.suspend_info1.loop.active');
-        } else {
-            $xtpl->parse('suspend.suspend_info1.loop.inactive');
-            $xtpl->parse('suspend.suspend_info1.loop.inactive2');
-        }
-        $xtpl->parse('suspend.suspend_info1.loop');
-    }
-    $xtpl->parse('suspend.suspend_info1');
-    $xtpl->parse('suspend.suspend_info2');
-}
-
-if ($allow_change) {
-    $xtpl->assign('NEW_SUSPEND_CAPTION', $nv_Lang->getModule('chg_is_suspend' . $new_suspend));
-    $xtpl->assign('ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=suspend&amp;admin_id=' . $admin_id);
-
-    if (!empty($new_suspend)) {
-        $xtpl->parse('suspend.change_suspend.new_reason');
-    }
-
-    if (defined('NV_IS_GODADMIN') and (($new_suspend and !empty($susp_reason)) or (empty($new_suspend) and sizeof($susp_reason) >= 1))) {
-        $xtpl->parse('suspend.change_suspend.clean_history');
-    }
-    $xtpl->parse('suspend.change_suspend');
-}
-
-$xtpl->parse('suspend');
-$contents = $xtpl->text('suspend');
+$contents = $tpl->fetch('suspend.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

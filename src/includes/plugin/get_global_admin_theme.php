@@ -22,13 +22,10 @@ nv_add_hook($module_name, 'get_global_admin_theme', $priority, function ($vars) 
 
     $new_theme = 'admin_future';
 
-    if ($module_name == 'authors' and in_array($op, ['2step', 'main', 'del', 'edit', 'add', 'module', 'config'])) {
-        return $new_theme;
-    }
     if (($module_info['module_file'] ?? '') == 'news' and in_array($op, ['main'])) {
         return $new_theme;
     }
-    if ($module_name == 'siteinfo') {
+    if (in_array($module_name, ['siteinfo', 'authors'])) {
         return $new_theme;
     }
     if ($module_name == 'modules' and in_array($op, ['edit'])) {

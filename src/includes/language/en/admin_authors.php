@@ -82,7 +82,6 @@ $lang_module['suspend_info_yes'] = 'List of times to suspend the operation of th
 $lang_module['suspend_start'] = 'Start';
 $lang_module['suspend_end'] = 'Finish';
 $lang_module['suspend_reason'] = 'Suspending reason';
-$lang_module['suspend_info'] = 'At: %1$s<br />By: %2$s';
 $lang_module['suspend0'] = 'Reactive';
 $lang_module['suspend1'] = 'Suspend';
 $lang_module['clean_history'] = 'Clear History';

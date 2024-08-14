@@ -82,7 +82,6 @@ $lang_module['suspend_info_yes'] = 'La liste des suspensions d\'activité';
 $lang_module['suspend_start'] = 'Commencer';
 $lang_module['suspend_end'] = 'Terminer';
 $lang_module['suspend_reason'] = 'Raison de suspension';
-$lang_module['suspend_info'] = 'À: %1$s<br />Par: %2$s';
 $lang_module['suspend0'] = 'Rétablir l\'activité';
 $lang_module['suspend1'] = 'Suspendre l\'activité';
 $lang_module['clean_history'] = 'Supprimer l\'historique';
