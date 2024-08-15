@@ -3,7 +3,7 @@
 <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/language/jquery.ui.datepicker-{$smarty.const.NV_LANG_INTERFACE}.js"></script>
 <div class="card border-primary border-3 border-bottom-0 border-start-0 border-end-0 mb-4">
     <div class="card-body pt-4">
-        <form method="post" action="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}" novalidate>
+        <form method="post" action="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}" novalidate>
             <div class="row mb-3">
                 <div class="col-12 col-sm-7 col-lg-6 col-xxl-5 offset-sm-4">
                     <div class="form-check form-switch">
@@ -115,7 +115,7 @@
         {/if}
         <div class="card border-primary border-3 border-bottom-0 border-start-0 border-end-0 mb-4 mb-xxl-0"{if $FIREWALLDATA.uid and !$ERROR_USER} data-toggle="autoScroll"{/if}>
             <div class="card-body pt-4">
-                <form method="post" action="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}" novalidate>
+                <form method="post" action="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}" novalidate>
                     <div class="row mb-3">
                         <label for="elementfw_username" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getGlobal('username')} <span class="text-danger">(*)</span></label>
                         <div class="col-12 col-sm-8 col-lg-6">
@@ -208,7 +208,7 @@
         {/if}
         <div class="card border-primary border-3 border-bottom-0 border-start-0 border-end-0"{if $IPDATA.cid and !$ERROR_IP} data-toggle="autoScroll"{/if}>
             <div class="card-body pt-4">
-                <form method="post" action="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}" novalidate>
+                <form method="post" action="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}" novalidate>
                     <div class="row mb-3">
                         <label for="ipt_ip_version" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('ip_version')}</label>
                         <div class="col-12 col-sm-8 col-lg-6">

@@ -5,7 +5,7 @@
 {else}
 <div class="card">
     <div class="card-body">
-        <form action="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php" method="get" class="form-inline">
+        <form action="{$smarty.const.NV_BASE_ADMINURL}index.php" method="get" class="form-inline">
             <input type="hidden" name="{$smarty.const.NV_LANG_VARIABLE}" value="{$smarty.const.NV_LANG_DATA}">
             <input type="hidden" name="{$smarty.const.NV_NAME_VARIABLE}" value="{$MODULE_NAME}">
             <input type="hidden" name="{$smarty.const.NV_OP_VARIABLE}" value="{$OP}">

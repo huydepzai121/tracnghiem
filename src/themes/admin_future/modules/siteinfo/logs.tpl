@@ -5,7 +5,7 @@
 <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/language/jquery.ui.datepicker-{$smarty.const.NV_LANG_INTERFACE}.js"></script>
 <div class="card">
     <div class="card-body">
-        <form method="get" action="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php">
+        <form method="get" action="{$smarty.const.NV_BASE_ADMINURL}index.php">
             <input type="hidden" name="{$smarty.const.NV_LANG_VARIABLE}" value="{$smarty.const.NV_LANG_DATA}">
             <input type="hidden" name="{$smarty.const.NV_NAME_VARIABLE}" value="{$MODULE_NAME}">
             <input type="hidden" name="{$smarty.const.NV_OP_VARIABLE}" value="{$OP}">
@@ -96,8 +96,8 @@
                         </td>
                         <td>{$row.lang}</td>
                         <td>{$row.custom_title}</td>
-                        <td>{$row.name_key}</td>
-                        <td>{$row.note_action}</td>
+                        <td class="text-break">{$row.name_key}</td>
+                        <td class="text-break">{$row.note_action}</td>
                         <td>{$row.username}</td>
                         <td>{$row.time}</td>
                         {if $ALLOWED_DELETE}

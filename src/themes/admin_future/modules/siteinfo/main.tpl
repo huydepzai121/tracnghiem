@@ -2,9 +2,13 @@
 <div class="card text-bg-primary mb-4" id="notice-update-package">
     <div class="card-body text-center">
         <p class="mb-2">{$LANG->getModule('update_package_detected')}</p>
-        <div>
-            <a href="{$smarty.const.NV_BASE_SITEURL}install/update.php" class="btn btn-secondary btn-space"><i class="fa-solid fa-arrow-up-from-bracket text-primary"></i> {$LANG->getModule('update_package_do')}</a>
-            <a href="#" class="btn btn-secondary btn-space" data-toggle="deleteUpdPkg" data-checksess="{$smarty.const.NV_CHECK_SESSION}"><i class="fa-solid fa-trash text-danger" data-icon="fa-trash"></i> {$LANG->getModule('update_package_delete')}</a>
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{$smarty.const.NV_BASE_SITEURL}install/update.php" class="btn btn-secondary"><i class="fa-solid fa-arrow-up-from-bracket text-primary"></i> {$LANG->getModule('update_package_do')}</a>
+            </div>
+            <div class="col-auto">
+                <a href="#" class="btn btn-secondary" data-toggle="deleteUpdPkg" data-checksess="{$smarty.const.NV_CHECK_SESSION}"><i class="fa-solid fa-trash text-danger" data-icon="fa-trash"></i> {$LANG->getModule('update_package_delete')}</a>
+            </div>
         </div>
     </div>
 </div>

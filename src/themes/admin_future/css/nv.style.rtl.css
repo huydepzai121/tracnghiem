@@ -26172,13 +26172,9 @@ html:not([data-bs-theme=dark]) .btn-default {
   --bs-btn-active-bg: #d5d5d5;
   --bs-btn-active-border-color: #ced4da;
   --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
-  --bs-btn-disabled-color: #f9f9f9;
+  --bs-btn-disabled-color: #495057;
   --bs-btn-disabled-bg: #d5d5d5;
   --bs-btn-disabled-border-color: #ced4da;
-}
-
-.btn-space {
-  margin: 0.5rem;
 }
 
 .site-toasts {

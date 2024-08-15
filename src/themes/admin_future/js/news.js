@@ -244,4 +244,325 @@ $(function() {
             });
         });
     });
+
+    // Xóa 1 tag
+    $('[data-toggle=nv_del_tag]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(nv_is_del_confirm[0], () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    checkss: $('body').data('checksess'),
+                    del_tid: btn.data('tid')
+                },
+                dataType: 'json',
+                cache: false,
+                success: function(respon) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (!respon.success) {
+                        nvToast(respon.text, 'error');
+                        return;
+                    }
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
+
+    // Xóa nhiều tag
+    $('[data-toggle=nv_del_check_tags]').on('click', function(e) {
+        e.preventDefault();
+
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+
+        let listid = [];
+        $('[data-toggle="checkSingle"][data-type="tag"]:checked').each(function() {
+            listid.push($(this).val());
+        });
+        if (listid.length < 1)  {
+            nvAlert(nv_please_check);
+            return;
+        }
+        listid = listid.join(',');
+        nvConfirm(nv_is_del_confirm[0], () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    checkss: $('body').data('checksess'),
+                    del_listid: listid
+                },
+                dataType: 'json',
+                cache: false,
+                success: function(respon) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (!respon.success) {
+                        nvToast(respon.text, 'error');
+                        return;
+                    }
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
+
+    // Xử lý thêm nhiều tag
+    let mdTagMulti = $('#mdTagMulti');
+    if (mdTagMulti.length) {
+        mdTagMulti.on('hidden.bs.modal', function() {
+            $('[name="mtitle"]', mdTagMulti).val('');
+        });
+    }
+
+    // Xử lý thêm sửa 1 tag
+    let mdTagSingle = $('#mdTagSingle');
+    if (mdTagSingle.length) {
+        $('[data-toggle="titlelength"]', mdTagSingle).html($('[name="title"]', mdTagSingle).val().length);
+        $('[name="title"]', mdTagSingle).bind("keyup paste", function() {
+            $('[data-toggle="titlelength"]', mdTagSingle).html($(this).val().length);
+        });
+
+        $('[data-toggle="descriptionlength"]', mdTagSingle).html($('[name="description"]', mdTagSingle).val().length);
+        $('[name="description"]', mdTagSingle).bind("keyup paste", function() {
+            $('[data-toggle="descriptionlength"]', mdTagSingle).html($(this).val().length);
+        });
+
+        function cleanFormTag() {
+            $('.is-invalid', mdTagSingle).removeClass('is-invalid');
+            $('.is-valid', mdTagSingle).removeClass('is-valid');
+
+            $('[name="tid"]', mdTagSingle).val('0');
+            $('[name="keywords"]', mdTagSingle).val('');
+            $('[name="title"]', mdTagSingle).val('');
+            $('[name="description"]', mdTagSingle).val('');
+            $('[name="image"]', mdTagSingle).val('');
+            $('[data-toggle="titlelength"]', mdTagSingle).text('0');
+            $('[data-toggle="descriptionlength"]', mdTagSingle).text('0');
+            $('[data-toggle="selectfile"]', mdTagSingle).data('currentpath', $('[data-toggle="selectfile"]', mdTagSingle).data('path'));
+        }
+
+        $('[data-toggle=add_tags]').on('click', function(e) {
+            e.preventDefault();
+            let btn = $(this);
+            let icon = $('i', btn);
+            if (icon.length && icon.is('.fa-spinner')) {
+                return;
+            }
+            let md = bootstrap.Modal.getOrCreateInstance(mdTagSingle[0]);
+
+            $('.modal-title', mdTagSingle).text(btn.data('mtitle'));
+            if (btn.data('fc') == 'editTag') {
+                icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+                $.ajax({
+                    type: 'POST',
+                    url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                    data: {
+                        checkss: $('body').data('checksess'),
+                        loadEditTag: 1,
+                        tid: btn.data('tid')
+                    },
+                    dataType: 'json',
+                    cache: false,
+                    success: function(respon) {
+                        icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                        if (!respon.success) {
+                            nvToast(respon.text, 'error');
+                            return;
+                        }
+                        $('[name="tid"]', mdTagSingle).val(btn.data('tid'));
+                        $('[name="keywords"]', mdTagSingle).val(respon.data.keywords);
+                        $('[name="title"]', mdTagSingle).val(respon.data.title);
+                        $('[name="description"]', mdTagSingle).val(respon.data.description);
+                        $('[name="image"]', mdTagSingle).val(respon.data.image);
+                        $('[data-toggle="selectfile"]', mdTagSingle).data('currentpath', respon.data.currentpath);
+
+                        $('[name="title"]', mdTagSingle).trigger('keyup');
+                        $('[name="description"]', mdTagSingle).trigger('keyup');
+
+                        md.show();
+                    },
+                    error: function(xhr, text, err) {
+                        icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                        nvToast(text, 'error');
+                        console.log(xhr, text, err);
+                    }
+                });
+                return;
+            }
+            cleanFormTag();
+            md.show();
+        });
+    }
+
+    // Xử lý thêm nhiều tag
+    let mdTagLinks = $('#mdTagLinks');
+    if (mdTagLinks.length) {
+        mdTagLinks.on('hidden.bs.modal', function() {
+            $('.modal-body', mdTagLinks).html('');
+        });
+
+        let md = bootstrap.Modal.getOrCreateInstance(mdTagLinks[0]);
+
+        $('[data-toggle=link_tags]').on('click', function(e) {
+            e.preventDefault();
+            let btn = $(this);
+            let icon = $('i', btn);
+            if (icon.is('.fa-spinner')) {
+                return;
+            }
+            $('[data-toggle="tags_id_check_del"]', mdTagLinks).data('tid', btn.data('tid'));
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    checkss: $('body').data('checksess'),
+                    tid: btn.data('tid'),
+                    tagLinks: 1
+                },
+                dataType: 'json',
+                cache: false,
+                success: function(respon) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (!respon.success) {
+                        nvToast(respon.text, 'error');
+                        return;
+                    }
+                    $('.modal-body', mdTagLinks).html(respon.html);
+                    md.show();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+
+        mdTagLinks.delegate('[data-toggle="tag_keyword_edit"]', 'click', function(e) {
+            e.preventDefault();
+
+            let item = $('[data-item="' + $(this).data('id') + '"]', mdTagLinks);
+            $('.show-keywords', item).addClass('d-none');
+            $('.edit-keywords', item).removeClass('d-none');
+        });
+
+        mdTagLinks.delegate('[data-toggle="tag_keyword_close"]', 'click', function(e) {
+            e.preventDefault();
+
+            let item = $('[data-item="' + $(this).data('id') + '"]', mdTagLinks);
+            $('.show-keywords', item).removeClass('d-none');
+            $('.edit-keywords', item).addClass('d-none');
+        });
+
+        mdTagLinks.delegate('[data-toggle="keyword_change"]', 'click', function(e) {
+            e.preventDefault();
+            let btn = $(this);
+            let icon = $('i', btn);
+            if (icon.is('.fa-spinner')) {
+                return;
+            }
+            let item = $('[data-item="' + btn.data('id') + '"]', mdTagLinks);
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    checkss: $('body').data('checksess'),
+                    id: btn.data('id'),
+                    tid: btn.data('tid'),
+                    keyword: $('[name="keyword"]', item).val(),
+                    keywordEdit: 1
+                },
+                dataType: 'json',
+                cache: false,
+                success: function(respon) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (!respon.success) {
+                        nvToast(respon.text, 'error');
+                        return;
+                    }
+
+                    $('[data-toggle="badgeKeyword"]', item).removeClass('text-bg-success text-bg-warning').addClass('text-bg-success').html('<i class="fa-solid fa-check"></i> ' + respon.keyword);
+                    $('.show-keywords', item).removeClass('d-none');
+                    $('.edit-keywords', item).addClass('d-none');
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+
+        mdTagLinks.delegate('[data-toggle=tags_id_check_del]', 'click', function(e) {
+            e.preventDefault();
+
+            let btn = $(this);
+            let icon = $('i', btn);
+            if (icon.is('.fa-spinner')) {
+                return;
+            }
+
+            let listid = [];
+            $('[data-toggle="checkSingle"][data-type="link"]:checked').each(function() {
+                listid.push($(this).val());
+            });
+            if (listid.length < 1)  {
+                nvAlert(nv_please_check);
+                return;
+            }
+            listid = listid.join(',');
+            nvConfirm(nv_is_del_confirm[0], () => {
+                icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+                $.ajax({
+                    type: 'POST',
+                    url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                    data: {
+                        checkss: $('body').data('checksess'),
+                        tagsIdDel: 1,
+                        ids: listid,
+                        tid: btn.data('tid')
+                    },
+                    dataType: 'json',
+                    cache: false,
+                    success: function(respon) {
+                        icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                        if (!respon.success) {
+                            nvToast(respon.text, 'error');
+                            return;
+                        }
+                        location.reload();
+                    },
+                    error: function(xhr, text, err) {
+                        icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                        nvToast(text, 'error');
+                        console.log(xhr, text, err);
+                    }
+                });
+            });
+        });
+    }
 });

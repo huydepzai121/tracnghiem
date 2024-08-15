@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
+$page_title = $nv_Lang->getModule('tags_manage');
+
 // Lấy tags từ nội dung bài viết
 if ($nv_Request->isset_request('getTagsFromContent', 'post')) {
     $content = $nv_Request->get_title('content', 'post', '');
@@ -20,47 +22,58 @@ if ($nv_Request->isset_request('getTagsFromContent', 'post')) {
     nv_jsonOutput($tags);
 }
 
+$checkss = $nv_Request->get_string('checkss', 'post', '');
+
 // Xóa các liên kết
 if ($nv_Request->isset_request('tagsIdDel', 'post')) {
     $tid = $nv_Request->get_int('tid', 'post', 0);
     $ids = $nv_Request->get_title('ids', 'post', '');
-    if (!empty($ids) and !empty($tid)) {
+
+    $respon = [
+        'success' => 0,
+        'text' => 'Error session!!!'
+    ];
+
+    if (!empty($ids) and !empty($tid) and $checkss === NV_CHECK_SESSION) {
+        nv_insert_logs(NV_LANG_DATA, $module_name, 'DEL_TAG_IDS', $tid . ': ' . $ids, $admin_info['userid']);
+
         $ids = preg_replace('/[^0-9\,]+/', '', $ids);
         $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id WHERE tid = ' . $tid . ' AND id IN (' . $ids . ')');
 
         $num = $db->query('SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id where tid=' . $tid)->fetchColumn();
         $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags SET numnews=' . $num . ' WHERE tid=' . $tid);
+
+        $respon['success'] = 1;
     }
 
-    exit('ok');
-}
-
-// Xóa tất cả liên kết
-if ($nv_Request->isset_request('tagsIdAllDel', 'post')) {
-    $tid = $nv_Request->get_int('tid', 'post', 0);
-    if (!empty($tid)) {
-        $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id WHERE tid = ' . $tid);
-        $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags SET numnews=0 WHERE tid=' . $tid);
-    }
-
-    exit('ok');
+    nv_jsonOutput($respon);
 }
 
 // Sửa keyword
 if ($nv_Request->isset_request('keywordEdit', 'post')) {
+    $respon = [
+        'success' => 0,
+        'text' => 'Error session!!!'
+    ];
+
     $id = $nv_Request->get_int('id', 'post', 0);
     $tid = $nv_Request->get_int('tid', 'post', 0);
     $keyword = $nv_Request->get_title('keyword', 'post', '');
-    if (!empty($keyword)) {
+    if (!empty($keyword) and $checkss === NV_CHECK_SESSION) {
+        nv_insert_logs(NV_LANG_DATA, $module_name, 'EDIT_TAGID_KEYWORD', $tid . '-' . $id . ': ' . $keyword, $admin_info['userid']);
+
         $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id SET keyword = :keyword WHERE id=' . $id . ' AND tid =' . $tid);
         $sth->bindParam(':keyword', $keyword, PDO::PARAM_STR);
         $sth->execute();
+
+        $respon['success'] = 1;
+        $respon['keyword'] = $keyword;
+        nv_jsonOutput($respon);
     }
 
-    exit('ok');
+    nv_jsonOutput($respon);
 }
 
-$checkss = $nv_Request->get_string('checkss', 'post', '');
 // Xóa nhiều tags
 if ($nv_Request->isset_request('del_listid', 'post')) {
     $del_listid = $nv_Request->get_string('del_listid', 'post', '');
@@ -68,26 +81,52 @@ if ($nv_Request->isset_request('del_listid', 'post')) {
     $del_listid = array_filter($del_listid);
     if (!empty($del_listid) and NV_CHECK_SESSION == $checkss) {
         $del_listid = implode(',', $del_listid);
+        nv_insert_logs(NV_LANG_DATA, $module_name, 'DEL_TAGS', $del_listid, $admin_info['userid']);
+
         $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags WHERE tid IN (' . $del_listid . ')');
         $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id WHERE tid IN (' . $del_listid . ')');
+
+        nv_jsonOutput([
+            'success' => 1,
+            'text' => ''
+        ]);
     }
 
-    exit('ok');
+    nv_jsonOutput([
+        'success' => 0,
+        'text' => 'Wrong session or no tag IDs!'
+    ]);
 }
 
 // Xóa tag
 if ($nv_Request->isset_request('del_tid', 'post')) {
     $tid = $nv_Request->get_int('del_tid', 'post', 0);
+
     if (!empty($tid) and NV_CHECK_SESSION == $checkss) {
+        nv_insert_logs(NV_LANG_DATA, $module_name, 'DEL_TAG', $tid, $admin_info['userid']);
+
         $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags WHERE tid=' . $tid);
         $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id WHERE tid=' . $tid);
+
+        nv_jsonOutput([
+            'success' => 1,
+            'text' => ''
+        ]);
     }
 
-    exit('ok');
+    nv_jsonOutput([
+        'success' => 0,
+        'text' => 'Wrong session or no tag ID!'
+    ]);
 }
 
 // Thêm nhiều tags
 if ($nv_Request->isset_request('savetag', 'post')) {
+    $respon = [
+        'status' => 'error',
+        'mess' => 'Error!!!',
+    ];
+
     $title = $nv_Request->get_textarea('mtitle', '', NV_ALLOWED_HTML_TAGS, true);
     $list_tag = explode('<br />', strip_tags($title, '<br>'));
     $added = [];
@@ -112,12 +151,17 @@ if ($nv_Request->isset_request('savetag', 'post')) {
     }
 
     if (empty($added)) {
-        exit($nv_Lang->getModule('add_multi_tags_empty'));
+        $respon['mess'] = $nv_Lang->getModule('add_multi_tags_empty');
+        nv_jsonOutput($respon);
     }
     $added = implode('; ', $added);
     $aliases = implode('; ', $aliases);
     nv_insert_logs(NV_LANG_DATA, $module_name, 'add_multi_tags', $aliases, $admin_info['userid']);
-    exit($nv_Lang->getModule('add_multi_tags') . ': ' . $added);
+
+    $respon['status'] = 'success';
+    $respon['mess'] = $nv_Lang->getModule('add_multi_tags') . ': ' . $added;
+    $respon['refresh'] = 1;
+    nv_jsonOutput($respon);
 }
 
 // Thêm tag hoặc sửa tag
@@ -128,8 +172,7 @@ if ($nv_Request->isset_request('savecat', 'post')) {
         if (!$num) {
             nv_jsonOutput([
                 'status' => 'error',
-                'input' => 'tid',
-                'message' => $nv_Lang->getModule('error_tag_tid')
+                'mess' => $nv_Lang->getModule('error_tag_tid')
             ]);
         }
     }
@@ -139,7 +182,7 @@ if ($nv_Request->isset_request('savecat', 'post')) {
         nv_jsonOutput([
             'status' => 'error',
             'input' => 'keywords',
-            'message' => $nv_Lang->getModule('error_tag_keywords')
+            'mess' => $nv_Lang->getModule('error_tag_keywords')
         ]);
     }
     $dbexist = false;
@@ -150,7 +193,7 @@ if ($nv_Request->isset_request('savecat', 'post')) {
         nv_jsonOutput([
             'status' => 'error',
             'input' => 'keywords',
-            'message' => $nv_Lang->getModule('error_tag_keywords_exist')
+            'mess' => $nv_Lang->getModule('error_tag_keywords_exist')
         ]);
     }
 
@@ -159,7 +202,7 @@ if ($nv_Request->isset_request('savecat', 'post')) {
         nv_jsonOutput([
             'status' => 'error',
             'input' => 'title',
-            'message' => $nv_Lang->getModule('error_tag_title')
+            'mess' => $nv_Lang->getModule('error_tag_title')
         ]);
     }
 
@@ -192,114 +235,100 @@ if ($nv_Request->isset_request('savecat', 'post')) {
 
         nv_insert_logs(NV_LANG_DATA, $module_name, $msg_lg, $alias, $admin_info['userid']);
         nv_jsonOutput([
-            'status' => 'ok'
+            'status' => 'ok',
+            'mess' => $nv_Lang->getModule('content_saveok'),
+            'refresh' => 1
         ]);
-    } catch (PDOException $e) {
+    } catch (Throwable $e) {
+        trigger_error(print_r($e, true));
         nv_jsonOutput([
             'status' => 'error',
-            'input' => '',
-            'message' => $nv_Lang->getModule('errorsave')
+            'mess' => $nv_Lang->getModule('errorsave')
         ]);
     }
 }
 
 // Danh sách liên kết
 if ($nv_Request->isset_request('tagLinks', 'post')) {
+    $respon = [
+        'success' => 0,
+        'text' => 'Error!!!',
+        'html' => ''
+    ];
+    if (NV_CHECK_SESSION !== $checkss) {
+        $respon['text'] = 'Wrong session!!!';
+        nv_jsonOutput($respon);
+    }
+
     $tid = $nv_Request->get_int('tid', 'post', 0);
     [$tid, $keywords] = $db_slave->query('SELECT tid, keywords FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags where tid=' . $tid)->fetch(3);
     if (empty($tid)) {
-        exit('');
+        $respon['text'] = 'Tag not exists!!!';
+        nv_jsonOutput($respon);
     }
     $keywords = explode(',', $keywords);
     $keywords = array_map('trim', $keywords);
 
-    $sql = 'SELECT a.id, a.keyword, b.catid, b.title, b.alias FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id a, ' . NV_PREFIXLANG . '_' . $module_data . '_rows b WHERE a.tid=' . $tid . ' AND a.id=b.id';
+    $sql = 'SELECT a.id, a.keyword, b.catid, b.title, b.alias FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id a,
+    ' . NV_PREFIXLANG . '_' . $module_data . '_rows b WHERE a.tid=' . $tid . ' AND a.id=b.id';
     $result = $db_slave->query($sql);
 
-    $xtpl = new XTemplate('tags.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    $xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-    $xtpl->assign('TID', $tid);
-
+    $array = [];
     while ($row = $result->fetch()) {
         $row['url'] = nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$row['catid']]['alias'] . '/' . $row['alias'] . '-' . $row['id'] . $global_config['rewrite_exturl'], true);
-        $xtpl->assign('ROW', $row);
-
-        if (!in_array($row['keyword'], $keywords, true)) {
-            $xtpl->parse('taglinks.loop.invalid');
-        }
-
-        foreach ($keywords as $ks) {
-            $xtpl->assign('KEYS', [
-                'val' => $ks,
-                'sel' => $ks == $row['keyword'] ? ' selected="selected"' : ''
-            ]);
-            $xtpl->parse('taglinks.loop.keyword');
-        }
-        $xtpl->parse('taglinks.loop');
+        $array[] = $row;
     }
 
-    $xtpl->parse('taglinks');
-    $contents = $xtpl->text('taglinks');
+    $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/tags-link.tpl');
+    $tpl = new \NukeViet\Template\NVSmarty();
+    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+    $tpl->registerPlugin('modifier', 'nv_number_format', 'nv_number_format');
+    $tpl->assign('LANG', $nv_Lang);
+    $tpl->assign('MODULE_NAME', $module_name);
+    $tpl->assign('OP', $op);
+    $tpl->assign('DATA', $array);
 
-    echo $contents;
-    exit();
+    $tpl->assign('TID', $tid);
+    $tpl->assign('KEYWORDS', $keywords);
+
+    $respon['success'] = 1;
+    $respon['html'] = $tpl->fetch('tags-link.tpl');
+    nv_jsonOutput($respon);
 }
 
-// Xuất form thêm nhiều tags
-if ($nv_Request->isset_request('addMultiTags', 'post')) {
-    $xtpl = new XTemplate('tags.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    $xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-
-    $xtpl->parse('add_multi_tags');
-    $contents = $xtpl->text('add_multi_tags');
-
-    echo $contents;
-    exit();
-}
-
-// Xuất form thêm hoặc sửa tags
-if ($nv_Request->isset_request('addTag', 'post') or $nv_Request->isset_request('editTag', 'post')) {
-    $tid = 0;
-    $title = $description = $image = $keywords = '';
-
-    if ($nv_Request->isset_request('editTag', 'post')) {
-        $tid = $nv_Request->get_int('tid', 'post', 0);
-        [$tid, $title, $description, $image, $keywords] = $db_slave->query('SELECT tid, title, description, image, keywords FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags where tid=' . $tid)->fetch(3);
-        if (empty($tid)) {
-            exit('');
-        }
+// Lấy thông tin tag để sửa
+if ($nv_Request->isset_request('loadEditTag', 'post')) {
+    $respon = [
+        'success' => 0,
+        'text' => 'Error!!!'
+    ];
+    if (NV_CHECK_SESSION !== $checkss) {
+        $respon['text'] = 'Wrong session!!!';
+        nv_jsonOutput($respon);
     }
 
-    $nv_Lang->setGlobal('title_suggest_max', $nv_Lang->getGlobal('length_suggest_max', 65));
-    $nv_Lang->setGlobal('description_suggest_max', $nv_Lang->getGlobal('length_suggest_max', 160));
-
-    $xtpl = new XTemplate('tags.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    $xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-    $xtpl->assign('TID', $tid);
-    $xtpl->assign('TITLE', $title);
-    $xtpl->assign('KEYWORDS', $keywords);
-    $xtpl->assign('DESCRIPTION', nv_htmlspecialchars(nv_br2nl($description)));
+    $tid = $nv_Request->get_int('tid', 'post', 0);
+    [$tid, $title, $description, $image, $keywords] = $db_slave->query('SELECT tid, title, description, image, keywords FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags where tid=' . $tid)->fetch(3);
+    if (empty($tid)) {
+        $respon['text'] = 'Tag not exists!!!';
+        nv_jsonOutput($respon);
+    }
 
     $currentpath = NV_UPLOADS_DIR . '/' . $module_upload;
     if (!empty($image) and file_exists(NV_UPLOADS_REAL_DIR . '/' . $module_upload . '/' . $image)) {
         $image = NV_BASE_SITEURL . NV_UPLOADS_DIR . '/' . $module_upload . '/' . $image;
         $currentpath = dirname($image);
     }
-    $xtpl->assign('IMAGE', $image);
-    $xtpl->assign('UPLOAD_CURRENT', $currentpath);
-    $xtpl->assign('UPLOAD_PATH', NV_UPLOADS_DIR . '/' . $module_upload);
 
-    $xtpl->parse('add_tag');
-    $contents = $xtpl->text('add_tag');
-
-    echo $contents;
-    exit();
+    $respon['success'] = 1;
+    $respon['data'] = [
+        'currentpath' => $currentpath,
+        'title' => nv_unhtmlspecialchars($title),
+        'description' => nv_unhtmlspecialchars(nv_br2nl($description)),
+        'keywords' => nv_unhtmlspecialchars($keywords),
+        'image' => nv_unhtmlspecialchars($image)
+    ];
+    nv_jsonOutput($respon);
 }
 
 // Mặc định hiển thị danh sách tags
@@ -319,7 +348,7 @@ if ($incomplete === true) {
 }
 
 $q = $nv_Request->get_title('q', 'get', '');
-if (nv_strlen($q) > 2) {
+if (nv_strlen($q) >= 2) {
     $where[] = "keywords LIKE '%" . $db_slave->dblikeescape($q) . "%'";
     $base_url .= '&amp;q=' . urlencode($q);
 }
@@ -335,85 +364,53 @@ $sth = $db_slave->prepare($db_slave->sql());
 $sth->execute();
 $num_items = $sth->fetchColumn();
 
+$db_slave->sqlreset()
+->select('*')
+->from(NV_PREFIXLANG . '_' . $module_data . '_tags')
+->where($where)
+->order('title ASC')
+->limit($per_page)
+->offset(($page - 1) * $per_page);
+
+$sth = $db_slave->prepare($db_slave->sql());
+$sth->execute();
+
+$array = [];
+while ($row = $sth->fetch()) {
+    $row['link'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['tag'] . '/' . $row['alias'];
+
+    if (empty($row['title'])) {
+        $row['title'] = nv_ucfirst($row['keywords']);
+        $sths = $db_slave->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags SET title = :title WHERE tid =' . $row['tid']);
+        $sths->bindParam(':title', $row['title'], PDO::PARAM_STR);
+        $sths->execute();
+    }
+    $array[] = $row;
+}
+$sth->closeCursor();
+
+$generate_page = nv_generate_page($base_url, $num_items, $per_page, $page);
+
 $nv_Lang->setGlobal('title_suggest_max', $nv_Lang->getGlobal('length_suggest_max', 65));
 $nv_Lang->setGlobal('description_suggest_max', $nv_Lang->getGlobal('length_suggest_max', 160));
 
-$xtpl = new XTemplate('tags.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-$xtpl->assign('ALL_LINK', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-$xtpl->assign('COMPLETE_LINK', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;complete=1');
-$xtpl->assign('INCOMPLETE_LINK', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;incomplete=1');
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . ($incomplete === true ? '&amp;incomplete=1' : ($complete === true ? '&amp;complete=1' : '')));
-$xtpl->assign('Q', $q);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/tags.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->registerPlugin('modifier', 'nv_number_format', 'nv_number_format');
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-if ($incomplete) {
-    $xtpl->parse('main.incomplete_link');
-    $caption = $nv_Lang->getModule('tags_incomplete_link');
-} elseif ($complete) {
-    $xtpl->parse('main.complete_link');
-    $caption = $nv_Lang->getModule('tags_complete_link');
-} else {
-    $xtpl->parse('main.all_link');
-    $caption = $nv_Lang->getModule('tags_all_link');
-}
+$tpl->assign('INCOMPLETE', $incomplete);
+$tpl->assign('COMPLETE', $complete);
+$tpl->assign('Q', $q);
+$tpl->assign('NUM_ITEMS', $num_items);
+$tpl->assign('DATA', $array);
+$tpl->assign('PAGINATION', $generate_page);
+$tpl->assign('UPLOAD_PATH', NV_UPLOADS_DIR . '/' . $module_upload);
 
-if ($num_items) {
-    $xtpl->assign('LIST_CAPTION', $caption . ': ' . $num_items);
-
-    $db_slave->sqlreset()
-        ->select('*')
-        ->from(NV_PREFIXLANG . '_' . $module_data . '_tags')
-        ->where($where)
-        ->order('title ASC')
-        ->limit($per_page)
-        ->offset(($page - 1) * $per_page);
-
-    $sth = $db_slave->prepare($db_slave->sql());
-    $sth->execute();
-
-    $number = 0;
-    while ($row = $sth->fetch()) {
-        $row['number'] = ++$number;
-        $row['link'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['tag'] . '/' . $row['alias'];
-        $row['url_edit'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;tid=' . $row['tid'] . ($incomplete === true ? '&amp;incomplete=1' : '') . '#edit';
-        if (empty($row['title'])) {
-            $row['title'] = nv_ucfirst($row['keywords']);
-            $sths = $db_slave->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags SET title = :title WHERE tid =' . $row['tid']);
-            $sths->bindParam(':title', $row['title'], PDO::PARAM_STR);
-            $sths->execute();
-        }
-        $xtpl->assign('ROW', $row);
-
-        if (empty($row['description'])) {
-            $xtpl->parse('main.show_list.loop.incomplete');
-        } else {
-            $xtpl->parse('main.show_list.loop.complete');
-        }
-
-        if (empty($row['numnews'])) {
-            $xtpl->parse('main.show_list.loop.nolink');
-        }
-
-        $xtpl->parse('main.show_list.loop');
-    }
-    $sth->closeCursor();
-
-    $generate_page = nv_generate_page($base_url, $num_items, $per_page, $page);
-    if (!empty($generate_page)) {
-        $xtpl->assign('GENERATE_PAGE', $generate_page);
-        $xtpl->parse('main.show_list.generate_page');
-    }
-
-    $xtpl->parse('main.show_list');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
-
-$page_title = $nv_Lang->getModule('tags_manage');
+$contents = $tpl->fetch('tags.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

@@ -11,20 +11,20 @@
                     <div class="ms-2">
                         <div class="btn-group btn-group-sm" role="group" aria-label="{$LANG->getModule('funcs')}">
                             {if not empty($admin.funcs.edit)}
-                            <a class="btn btn-secondary" href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=edit&amp;admin_id={$admin.admin_id}"><i class="fa-solid fa-pen"></i> {$LANG->getGlobal('edit')}</a>
+                            <a class="btn btn-secondary" href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=edit&amp;admin_id={$admin.admin_id}"><i class="fa-solid fa-pen"></i> {$LANG->getGlobal('edit')}</a>
                             {/if}
                             {if not empty($admin.funcs.del)}
-                            <a class="btn btn-secondary" href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=del&amp;admin_id={$admin.admin_id}"><i class="fa-solid fa-trash text-danger"></i> {$LANG->getGlobal('delete')}</a>
+                            <a class="btn btn-secondary" href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=del&amp;admin_id={$admin.admin_id}"><i class="fa-solid fa-trash text-danger"></i> {$LANG->getGlobal('delete')}</a>
                             {/if}
                             {if not empty($admin.funcs.2step) or not empty($admin.funcs.chg_is_suspend)}
                             <div class="btn-group btn-group-sm" role="group">
                                 <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
                                 <ul class="dropdown-menu">
                                     {if not empty($admin.funcs.2step)}
-                                    <li><a class="dropdown-item" href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=2step&amp;admin_id={$admin.admin_id}"><i class="fa-solid fa-key fa-fw text-center"></i> {$LANG->getModule('2step_manager')}</a></li>
+                                    <li><a class="dropdown-item" href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=2step&amp;admin_id={$admin.admin_id}"><i class="fa-solid fa-key fa-fw text-center"></i> {$LANG->getModule('2step_manager')}</a></li>
                                     {/if}
                                     {if not empty($admin.funcs.chg_is_suspend)}
-                                    <li><a class="dropdown-item" href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=suspend&amp;admin_id={$admin.admin_id}"><i class="fa-solid fa-ban text-danger fa-fw text-center"></i> {$LANG->getModule('chg_is_suspend2')}</a></li>
+                                    <li><a class="dropdown-item" href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=suspend&amp;admin_id={$admin.admin_id}"><i class="fa-solid fa-ban text-danger fa-fw text-center"></i> {$LANG->getModule('chg_is_suspend2')}</a></li>
                                     {/if}
                                 </ul>
                             </div>

@@ -1,5 +1,7 @@
 <?php
 
+use NukeViet\Module\news\Shared\Posts;
+
 /**
  * NukeViet Content Management System
  * @version 4.x
@@ -992,6 +994,21 @@ foreach ($array_list_action as $action_i => $title_i) {
 }
 $tpl->assign('ACTIONS', $actions);
 $tpl->assign('MCONFIG', $module_config[$module_name]);
+$tpl->assign('STATUS_INDICATOR', [
+    '----' => 'locking',
+    Posts::STATUS_DEACTIVE => 'deactive',
+    Posts::STATUS_DRAFT => 'draft',
+    Posts::STATUS_EXPIRED => 'expired',
+    Posts::STATUS_LOCKING => 'locking',
+    Posts::STATUS_PUBLISH => 'publish',
+    Posts::STATUS_PUBLISH_CHECKING => 'publish-checking',
+    Posts::STATUS_PUBLISH_REJECT => 'publish-reject',
+    Posts::STATUS_PUBLISH_TRANSFER => 'publish-transfer',
+    Posts::STATUS_REVIEW_REJECT => 'review-reject',
+    Posts::STATUS_REVIEW_TRANSFER => 'review-transfer',
+    Posts::STATUS_REVIEWING => 'reviewing',
+    Posts::STATUS_WAITING => 'waiting'
+]);
 
 // Xử lý các bài viết trước khi đưa ra giao diện
 $loadhistory = $nv_Request->get_absint('loadhistory', 'get', 0);

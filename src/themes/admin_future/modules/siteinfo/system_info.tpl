@@ -67,7 +67,7 @@
                         <div class="col-5 fw-medium">{$LANG->getModule('version')}</div>
                         <div class="col-7">
                             {$GCONFIG.version}{if not empty($smarty.const.NV_IS_GODADMIN)}
-                            <a href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}=webtools&amp;{$smarty.const.NV_OP_VARIABLE}=checkupdate">{$LANG->getModule('checkversion')}</a>
+                            <a href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}=webtools&amp;{$smarty.const.NV_OP_VARIABLE}=checkupdate">{$LANG->getModule('checkversion')}</a>
                             {/if}
                         </div>
                     </div>

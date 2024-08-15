@@ -4,7 +4,7 @@
 <div role="alert" class="alert alert-info">{$LANG->getModule('nv_admin_add_info')}</div>
 <div class="card border-primary border-3 border-bottom-0 border-start-0 border-end-0">
     <div class="card-body pt-4">
-        <form class="ajax-submit" method="post" action="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}" novalidate>
+        <form class="ajax-submit" method="post" action="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}" novalidate>
             <div class="row mb-3">
                 <label for="element_userid" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('add_user')} <span class="text-danger">(*)</span></label>
                 <div class="col-12 col-sm-8 col-lg-6 col-xxl-5">

@@ -2,7 +2,7 @@
 <script src="{$smarty.const.ASSETS_STATIC_URL}/js/select2/i18n/{$smarty.const.NV_LANG_INTERFACE}.js"></script>
 <div class="card border-primary border-3 border-bottom-0 border-start-0 border-end-0">
     <div class="card-body pt-4">
-        <form method="post" class="ajax-submit" action="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;mod={$DATA.title}" novalidate>
+        <form method="post" class="ajax-submit" action="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;mod={$DATA.title}" novalidate>
             <div class="row mb-3">
                 <div class="offset-sm-3 col-sm-9">
                     {$LANG->getGlobal('required')}

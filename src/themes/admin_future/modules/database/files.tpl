@@ -1,6 +1,6 @@
 <div class="card mb-4">
     <div class="card-body">
-        <a class="btn btn-primary" href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=download&amp;checkss={$smarty.const.NV_CHECK_SESSION}"><i class="fa-solid fa-download"></i> {$LANG->getModule('download_now')}</a>
+        <a class="btn btn-primary" href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=download&amp;checkss={$smarty.const.NV_CHECK_SESSION}"><i class="fa-solid fa-download"></i> {$LANG->getModule('download_now')}</a>
     </div>
 </div>
 {if empty($ARRAY)}
@@ -30,8 +30,8 @@
                         <td>{$file.filesize|displaySize}</td>
                         <td>{$filetime|displayTime:0:0}</td>
                         <td class="text-end text-nowrap">
-                            <a href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;getbackup={$filetime}&amp;index={$file_index}&amp;checkss={$file.checkss}" class="btn btn-sm btn-secondary"><i class="fa-solid fa-download"></i> {$LANG->getModule('download')}</a>
-                            <a href="#" data-toggle="delBackup" data-url="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;delbackup={$filetime}&amp;index={$file_index}&amp;checkss={$file.checkss}" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash" data-icon="fa-trash"></i> {$LANG->getGlobal('delete')}</a>
+                            <a href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;getbackup={$filetime}&amp;index={$file_index}&amp;checkss={$file.checkss}" class="btn btn-sm btn-secondary"><i class="fa-solid fa-download"></i> {$LANG->getModule('download')}</a>
+                            <a href="#" data-toggle="delBackup" data-url="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;delbackup={$filetime}&amp;index={$file_index}&amp;checkss={$file.checkss}" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash" data-icon="fa-trash"></i> {$LANG->getGlobal('delete')}</a>
                         </td>
                     </tr>
                     {/foreach}

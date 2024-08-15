@@ -59,7 +59,7 @@
         <div class="fs-5 fw-medium">{$LANG->getModule("chg_is_suspend`$NEW_SUSPEND`")}</div>
     </div>
     <div class="card-body pt-4 bg-body">
-        <form method="post" class="ajax-submit" action="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;admin_id={$USER.userid}" novalidate>
+        <form method="post" class="ajax-submit" action="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;admin_id={$USER.userid}" novalidate>
             {if $NEW_SUSPEND}
             <div class="row mb-3">
                 <label for="element_new_reason" class="col-12 col-sm-3 col-form-label text-sm-end">{$LANG->getModule('suspend_reason')} <span class="text-danger">(*)</span></label>

@@ -67,7 +67,7 @@
                     </button>
                     <ul class="dropdown-menu">
                         {foreach from=$SERVER_ALLOWED key=key item=value}
-                        <li><a class="dropdown-item" href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=2step&amp;auth={$key}">{$LANG->getModule("2step_add_`$key`")}</a></li>
+                        <li><a class="dropdown-item" href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=2step&amp;auth={$key}">{$LANG->getModule("2step_add_`$key`")}</a></li>
                         {/foreach}
                     </ul>
                 </div>

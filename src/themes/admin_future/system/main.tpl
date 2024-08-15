@@ -2,10 +2,10 @@
 <header class="header-outer border-bottom">
     <div class="header-inner d-flex">
         <div class="site-brand text-center ms-2 ms-md-0">
-            <a class="logo" href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}">
+            <a class="logo" href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}">
                 <img src="{$smarty.const.NV_BASE_SITEURL}themes/{$ADMIN_INFO.admin_theme}/images/logo.png" alt="{$GCONFIG.site_name}">
             </a>
-            <a class="logo-sm" href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}">
+            <a class="logo-sm" href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}">
                 <img src="{$smarty.const.NV_BASE_SITEURL}themes/{$ADMIN_INFO.admin_theme}/images/logo-sm.png" alt="{$GCONFIG.site_name}">
             </a>
         </div>
@@ -34,7 +34,7 @@
                                     <div class="loader position-absolute bottom-0 start-50 translate-middle-x d-none"><i class="fa-solid fa-spinner fa-spin-pulse"></i></div>
                                 </div>
                                 <div class="noti-footer border-top d-flex flex-nowrap">
-                                    <a class="w-50 fw-medium border-end text-center text-truncate p-2" href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}=siteinfo&amp;{$smarty.const.NV_OP_VARIABLE}=notification">{$LANG->getGlobal('view_all')}</a>
+                                    <a class="w-50 fw-medium border-end text-center text-truncate p-2" href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}=siteinfo&amp;{$smarty.const.NV_OP_VARIABLE}=notification">{$LANG->getGlobal('view_all')}</a>
                                     <a class="w-50 fw-medium text-center text-truncate p-2 markall" href="#">{$LANG->getGlobal('mark_read_all')}</a>
                                 </div>
                             </div>
@@ -51,9 +51,9 @@
                                             {assign var=submenu value=submenu($mname) nocache}
                                             <div class="col-md-3 col-sm-6">
                                                 <ul class="list-unstyled mb-4">
-                                                    <li class="fs-4 fw-medium mb-2 border-bottom pb-1"><a href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$mname}">{$mvalue.custom_title}</a></li>
+                                                    <li class="fs-4 fw-medium mb-2 border-bottom pb-1"><a href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$mname}">{$mvalue.custom_title}</a></li>
                                                     {foreach from=$submenu key=mop item=mopname}
-                                                    <li class="mb-1"><a href="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$mname}&amp;{$smarty.const.NV_OP_VARIABLE}={$mop}">{$mopname}</a></li>
+                                                    <li class="mb-1"><a href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$mname}&amp;{$smarty.const.NV_OP_VARIABLE}={$mop}">{$mopname}</a></li>
                                                     {/foreach}
                                                 </ul>
                                             </div>

@@ -6,7 +6,7 @@
 <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/clipboard/clipboard.min.js"></script>
 <div class="card">
     <div class="card-body">
-        <form method="get" action="{$smarty.const.NV_BASE_SITEURL}{$smarty.const.NV_ADMINDIR}/index.php" id="form-search-post">
+        <form method="get" action="{$smarty.const.NV_BASE_ADMINURL}index.php" id="form-search-post">
             <input type="hidden" name="{$smarty.const.NV_LANG_VARIABLE}" value="{$smarty.const.NV_LANG_DATA}">
             <input type="hidden" name="{$smarty.const.NV_NAME_VARIABLE}" value="{$MODULE_NAME}">
             <div class="row g-3 flex-xl-nowrap">
@@ -107,7 +107,7 @@
         </form>
     </div>
     <div class="card-body">
-        <div class="table-responsive-lg table-card" id="list-items">
+        <div class="table-responsive-lg table-card" id="list-news-items">
             <table class="table table-striped align-middle table-sticky mb-0">
                 <thead class="text-muted">
                     <tr>
@@ -149,7 +149,7 @@
                 <tbody>
                     {foreach from=$DATA key=key item=row}
                     <tr>
-                        <td>
+                        <td class="indicator-{$STATUS_INDICATOR[$row.status_id] ?? $STATUS_INDICATOR['----']}">
                             <input type="checkbox" data-toggle="checkSingle" value="{$row.id}" class="form-check-input m-0 align-middle" aria-label="{$LANG->getGlobal('toggle_checksingle')}"{if $row.is_locked} disabled{/if}>
                         </td>
                         <td>
@@ -215,7 +215,7 @@
                         <option value="{$action.value}">{$action.title}</option>
                         {/foreach}
                     </select>
-                    <button class="btn btn-primary" type="button" id="element_action_btn" data-toggle="actionArticle" data-ctn="#list-items">{$LANG->getModule('action')}</button>
+                    <button class="btn btn-primary" type="button" id="element_action_btn" data-toggle="actionArticle" data-ctn="#list-news-items">{$LANG->getModule('action')}</button>
                 </div>
             </div>
             <div class="pagination-wrap">
