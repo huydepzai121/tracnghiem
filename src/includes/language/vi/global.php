@@ -411,6 +411,7 @@ $lang_global['keyword'] = 'Từ khóa';
 $lang_global['at'] = 'Lúc';
 $lang_global['by'] = 'Bởi';
 $lang_global['function'] = 'Chức năng';
+$lang_global['wait_page_load'] = 'Đang tải dữ liệu, vui lòng đợi...';
 $lang_global['country_AD'] = 'Andorra';
 $lang_global['country_AE'] = 'Ả Rập Thống nhất';
 $lang_global['country_AF'] = 'Afghanistan';

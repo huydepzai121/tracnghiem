@@ -13,6 +13,8 @@ if (!defined('NV_IS_FILE_DATABASE')) {
     exit('Stop!!!');
 }
 
+$page_title = $nv_Lang->getModule('save_data');
+
 $tables = $nv_Request->get_array('tables', 'post', []);
 $type = $nv_Request->get_title('type', 'post', '');
 $ext = $nv_Request->get_title('ext', 'post', '');
@@ -48,25 +50,21 @@ $contents['filename'] = $log_dir . '/' . $file_name;
 include NV_ROOTDIR . '/includes/core/dump.php';
 $result = nv_dump_save($contents);
 
-$xtpl = new XTemplate('save.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-
-if (empty($result)) {
-    $xtpl->assign('ERROR', $nv_Lang->getModule('save_error', NV_LOGS_DIR . '/dump_backup'));
-    $xtpl->parse('main.error');
-} else {
+if (!empty($result)) {
     $file = explode('_', $file_name);
     nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('savefile'), 'File name: ' . end($file), $admin_info['userid']);
-
-    $xtpl->assign('LINK_VIEW', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=file');
-
-    $xtpl->parse('main.result');
 }
 
-$page_title = $nv_Lang->getModule('save_data');
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/save.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$tpl->assign('SAVE_STATUS', $result);
+
+$contents = $tpl->fetch('save.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

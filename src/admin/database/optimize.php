@@ -20,6 +20,10 @@ if (empty($tables)) {
 } else {
     $tables = explode(',', $tables);
 }
+$checkss = $nv_Request->get_title('checkss', 'post', '');
+if ($checkss !== NV_CHECK_SESSION) {
+    nv_htmlOutput('Wrong session!!!');
+}
 
 nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('optimize'), '', $admin_info['userid']);
 

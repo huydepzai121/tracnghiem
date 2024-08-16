@@ -1,7 +1,5 @@
 <?php
 
-use NukeViet\Module\news\Shared\Posts;
-
 /**
  * NukeViet Content Management System
  * @version 4.x
@@ -14,6 +12,8 @@ use NukeViet\Module\news\Shared\Posts;
 if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
+
+use NukeViet\Module\news\Shared\Posts;
 
 $page_title = $nv_Lang->getModule('content_list');
 

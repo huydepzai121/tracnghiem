@@ -411,6 +411,7 @@ $lang_global['keyword'] = 'Mot-clé';
 $lang_global['at'] = 'À';
 $lang_global['by'] = 'Par';
 $lang_global['function'] = 'Fonction';
+$lang_global['wait_page_load'] = 'Chargement de la page, veuillez patienter...';
 $lang_global['country_AD'] = 'Andorre';
 $lang_global['country_AE'] = 'Arabes Unis';
 $lang_global['country_AF'] = 'Afghanistan';
