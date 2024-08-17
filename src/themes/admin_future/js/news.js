@@ -24,7 +24,6 @@ $(function() {
             changeMonth: true,
             changeYear: true,
             showOtherMonths: true,
-            buttonText: '{LANG.select}',
             showButtonPanel: true,
             showOn: 'focus',
             isRTL: $('html').attr('dir') == 'rtl'

@@ -485,7 +485,7 @@ $(document).ready(function() {
     }
 
     // Thanh cuộn menu trái nếu màn hình lớn
-    if (!$.isSm()) {
+    if (!$.isSm() && lBar.length) {
         nvLBarScroller = new PerfectScrollbar(nvLBarScroll[0], {
             wheelPropagation: false
         });
@@ -500,6 +500,9 @@ $(document).ready(function() {
     $(window).resize(function() {
         if (lBarTimer) {
             clearTimeout(lBarTimer);
+        }
+        if (!lBar.length) {
+            return;
         }
         lBarTimer = setTimeout(() => {
             if (isCollapsibleLeftSidebar() && !$.isSm()) {

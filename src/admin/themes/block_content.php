@@ -14,11 +14,26 @@ if (!defined('NV_IS_FILE_THEMES')) {
 }
 
 // AJAX load danh sách block của module
-if ($nv_Request->isset_request('loadBlocks, bid', 'get')) {
-    $module = $nv_Request->get_string('loadBlocks', 'get', '');
-    $bid = $nv_Request->get_int('bid', 'get', 0);
-    $selectthemes = $nv_Request->get_string('selectthemes', 'get', $global_config['site_theme']);
-    nv_htmlOutput(loadblock($module, $bid, $selectthemes));
+if ($nv_Request->isset_request('loadBlocks, bid', 'post')) {
+    if (!defined('NV_IS_AJAX')) {
+        nv_htmlOutput('Wrong ajax!');
+    }
+    $respon = [
+        'error' => 1,
+        'text' => 'Wrong session!!!'
+    ];
+    if ($nv_Request->get_title('checkss', 'post', '') !== NV_CHECK_SESSION) {
+        nv_jsonOutput($respon);
+    }
+
+    $module = $nv_Request->get_string('loadBlocks', 'post', '');
+    $bid = $nv_Request->get_int('bid', 'post', 0);
+    $selectthemes = $nv_Request->get_string('selectthemes', 'post', $global_config['site_theme']);
+
+    $respon['error'] = 0;
+    $respon['html'] = loadblock($module, $bid, $selectthemes);
+
+    nv_jsonOutput($respon);
 }
 
 $functionid = $nv_Request->get_int('func', 'get');
@@ -29,6 +44,7 @@ if (!(preg_match($global_config['check_theme'], $selectthemes) or preg_match($gl
     nv_error404();
 }
 
+$page_title = $nv_Lang->getModule('blocks') . ': ' . $nv_Lang->getModule('theme', $selectthemes);
 $dtime_types = ['regular', 'specific', 'daily', 'weekly', 'monthly', 'yearly'];
 
 $row = [
@@ -63,11 +79,26 @@ if ($row['bid'] > 0) {
     $is_add = false;
 }
 
-// AJAX lấy thông tin hiển thị
+// AJAX lấy thông tin hiển thị theo thời gian
 if ($nv_Request->isset_request('get_dtime_details', 'post')) {
+    if (!defined('NV_IS_AJAX')) {
+        nv_htmlOutput('Wrong ajax!');
+    }
+    $respon = [
+        'error' => 1,
+        'text' => 'Wrong session!!!'
+    ];
+    if ($nv_Request->get_title('checkss', 'post', '') !== NV_CHECK_SESSION) {
+        nv_jsonOutput($respon);
+    }
+
     $dtime_type = $nv_Request->get_title('get_dtime_details', 'post');
     !in_array($dtime_type, $dtime_types, true) && $dtime_type = 'regular';
-    nv_htmlOutput(get_dtime_details($dtime_type, $row['dtime_details']));
+
+    $respon['error'] = 0;
+    $respon['html'] = get_dtime_details($dtime_type, $row['dtime_details']);
+
+    nv_jsonOutput($respon);
 }
 
 $groups_list = nv_groups_list();
@@ -510,132 +541,69 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     ]);
 }
 
-$xtpl = new XTemplate('block_content.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('PAGE_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;selectthemes=' . $selectthemes . (!empty($blockredirect) ? '&amp;=blockredirect' . $blockredirect : ''));
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-$xtpl->assign('THEME', $nv_Lang->getModule('theme', ucfirst($selectthemes)));
-$xtpl->assign('PAGE_TITLE', $row['bid'] != 0 ? $nv_Lang->getModule('block_edit') : $nv_Lang->getModule('block_add'));
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/block-content.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('TEMPLATE', $template);
 
-$groups_view = array_map('intval', explode(',', $row['groups_view']));
+$row['link'] = nv_htmlspecialchars($row['link']);
+$row['checkss'] = $checkss;
+$row['active_device'] = !empty($row['active']) ? array_map('intval', explode(',', $row['active'])) : [];
+$row['groups_view'] = array_map('intval', explode(',', $row['groups_view']));
+$row['block_global'] = preg_match('/^global\.([a-zA-Z0-9\-\_\.]+)\.php$/', $row['file_name']);
 
-$sql = 'SELECT func_id, func_custom_name, in_module FROM ' . NV_MODFUNCS_TABLE . ' WHERE show_func=1 ORDER BY in_module ASC, subweight ASC';
-$func_result = $db->query($sql);
-$aray_mod_func = [];
-while ([$id_i, $func_custom_name_i, $in_module_i] = $func_result->fetch(3)) {
-    $aray_mod_func[$in_module_i][] = ['id' => $id_i, 'func_custom_name' => $func_custom_name_i];
+$tpl->assign('SELECTTHEMES', $selectthemes);
+$tpl->assign('BLOCKREDIRECT', $blockredirect);
+$tpl->assign('ROW', $row);
+
+$list_modules = [];
+$sql = 'SELECT title, custom_title FROM ' . NV_MODULES_TABLE . (!NV_DEBUG ? ' WHERE act = 1' : '') . ' ORDER BY weight ASC';
+$result = $db->query($sql);
+while ($row_i = $result->fetch()) {
+    $list_modules[] = [
+        'value' => $row_i['title'],
+        'title' => $row_i['custom_title']
+    ];
 }
+$result->closeCursor();
+
+$templ_list = nv_scandir(NV_ROOTDIR . '/themes/' . $selectthemes . '/layout', '/^block\.([a-zA-Z0-9\-\_]+)\.tpl$/');
+$templ_list = preg_replace('/^block\.([a-zA-Z0-9\-\_]+)\.tpl$/', '\\1', $templ_list);
 
 // Load position file
 $xml = @simplexml_load_file(NV_ROOTDIR . '/themes/' . $selectthemes . '/config.ini') or nv_info_die($nv_Lang->getGlobal('error_404_title'), $nv_Lang->getModule('block_error_fileconfig_title'), $nv_Lang->getModule('block_error_fileconfig_content'), 404);
 $xmlpositions = $xml->xpath('positions');
 $positions = $xmlpositions[0]->position;
 
-$xtpl->assign('SELECTTHEMES', $selectthemes);
-$xtpl->assign('BLOCKREDIRECT', $blockredirect);
-$xtpl->assign('THEME_SELECTED', ($row['module'] == 'theme') ? ' selected="selected"' : '');
-
-$sql = 'SELECT title, custom_title FROM ' . NV_MODULES_TABLE . (!NV_DEBUG ? ' WHERE act = 1' : '') . ' ORDER BY weight ASC';
-$result = $db->query($sql);
-while ($row_i = $result->fetch()) {
-    $xtpl->assign('MODULE', [
-        'key' => $row_i['title'],
-        'selected' => ($row_i['title'] == $row['module']) ? ' selected="selected"' : '',
-        'title' => $row_i['custom_title']]);
-    $xtpl->parse('main.module');
-}
-
-$blocklist = loadblock($row['module'], $row['bid'], $selectthemes);
-$xtpl->assign('BLOCKLIST', $blocklist);
-
-foreach ($dtime_types as $key) {
-    $xtpl->assign('DTIME_TYPE', [
-        'key' => $key,
-        'sel' => $key == $row['dtime_type'] ? ' selected="selected"' : '',
-        'title' => $nv_Lang->getModule('dtime_type_' . $key)
-    ]);
-    $xtpl->parse('main.dtime_type');
-}
+$tpl->assign('POSITIONS', $positions);
+$tpl->assign('LIST_TEMPLATES', $templ_list);
+$tpl->assign('LIST_MODULES', $list_modules);
+$tpl->assign('BLOCKLIST', loadblock($row['module'], $row['bid'], $selectthemes));
+$tpl->assign('DTIME_TYPES', $dtime_types);
+$tpl->assign('GROUPS_LIST', $groups_list);
 
 $dtime_details = get_dtime_details($row['dtime_type'], $row['dtime_details']);
-$xtpl->assign('DTIME_DETAILS', $dtime_details);
+$tpl->assign('DTIME_DETAILS', $dtime_details);
 
-$row['link'] = nv_htmlspecialchars($row['link']);
-$row['checkss'] = $checkss;
-$row['is_act'] = $row['act'] ? ' checked="checked"' : '';
-$row['is_deact'] = $row['act'] ? '' : ' checked="checked"';
-
-$xtpl->assign('ROW', $row);
-
-$templ_list = nv_scandir(NV_ROOTDIR . '/themes/' . $selectthemes . '/layout', '/^block\.([a-zA-Z0-9\-\_]+)\.tpl$/');
-$templ_list = preg_replace('/^block\.([a-zA-Z0-9\-\_]+)\.tpl$/', '\\1', $templ_list);
-
-foreach ($templ_list as $value) {
-    if (!empty($value) and $value != 'default') {
-        $xtpl->assign('TEMPLATE', [
-            'key' => $value,
-            'selected' => ($row['template'] == $value) ? ' selected="selected"' : '',
-            'title' => $value]);
-        $xtpl->parse('main.template');
-    }
-}
-
-$active_device = !empty($row['active']) ? array_map('intval', explode(',', $row['active'])) : [];
-for ($i = 1; $i <= 4; ++$i) {
-    $xtpl->assign('ACTIVE_DEVICE', [
-        'key' => $i,
-        'checked' => (in_array($i, $active_device, true)) ? ' checked="checked"' : '',
-        'title' => $nv_Lang->getModule('show_device_' . $i)
-    ]);
-    $xtpl->parse('main.active_device');
-}
-
-for ($i = 0, $count = sizeof($positions); $i < $count; ++$i) {
-    $xtpl->assign('POSITION', [
-        'key' => (string) $positions[$i]->tag,
-        'selected' => ($row['position'] == $positions[$i]->tag) ? ' selected="selected"' : '',
-        'title' => (string) $positions[$i]->name]);
-    $xtpl->parse('main.position');
-}
-
-foreach ($groups_list as $group_id => $grtl) {
-    $xtpl->assign('GROUPS_LIST', [
-        'key' => $group_id,
-        'selected' => (in_array((int) $group_id, $groups_view, true)) ? ' checked="checked"' : '',
-        'title' => $grtl]);
-    $xtpl->parse('main.groups_list');
-}
-
-if ($row['bid'] != 0) {// Tach ra va tao nhom moi
+if (!empty($row['bid'])) {
     $blocks_num = $db->query('SELECT COUNT(*) FROM ' . NV_BLOCKS_TABLE . '_weight WHERE bid=' . $row['bid'])->fetchColumn();
-    $xtpl->assign('BLOCKS_NUM', $nv_Lang->getModule('block_groupbl', $row['bid'], $blocks_num));
-
-    $xtpl->parse('main.edit');
+    $tpl->assign('BLOCKS_NUM', nv_number_format($blocks_num));
 }
 
-$add_block_module = [1 => $nv_Lang->getModule('add_block_all_module'), 0 => $nv_Lang->getModule('add_block_select_module')];
-
-$i = 1;
-foreach ($add_block_module as $b_key => $b_value) {
-    $showsdisplay = (!preg_match('/^global\.([a-zA-Z0-9\-\_\.]+)\.php$/', $row['file_name']) and $b_key == 1) ? ' style="display:none"' : '';
-
-    $xtpl->assign('I', $i);
-    $xtpl->assign('SHOWSDISPLAY', $showsdisplay);
-    $xtpl->assign('B_KEY', $b_key);
-    $xtpl->assign('B_VALUE', $b_value);
-    $xtpl->assign('CK', ($row['all_func'] == $b_key) ? ' checked="checked"' : '');
-
-    $xtpl->parse('main.add_block_module');
-    ++$i;
+$sql = 'SELECT func_id, func_custom_name, in_module FROM ' . NV_MODFUNCS_TABLE . ' WHERE show_func=1 ORDER BY in_module ASC, subweight ASC';
+$func_result = $db->query($sql);
+$aray_mod_func = [];
+while ([$id_i, $func_custom_name_i, $in_module_i] = $func_result->fetch(3)) {
+    $aray_mod_func[$in_module_i][] = [
+        'id' => $id_i,
+        'func_custom_name' => $func_custom_name_i
+    ];
 }
-
-$xtpl->assign('SHOWS_ALL_FUNC', ((int) ($row['all_func'])) ? ' style="display:none" ' : '');
 
 $func_list = [];
-
 if ($row['bid']) {
     $result_func = $db->query('SELECT func_id FROM ' . NV_BLOCKS_TABLE . '_weight WHERE bid=' . $row['bid']);
     while ([$func_inlist] = $result_func->fetch(3)) {
@@ -645,36 +613,36 @@ if ($row['bid']) {
 
 $sql = 'SELECT title, custom_title FROM ' . NV_MODULES_TABLE . (!NV_DEBUG ? ' WHERE act = 1' : '') . ' ORDER BY weight ASC';
 $result = $db->query($sql);
+
+$mod_funcs = [];
 while ([$m_title, $m_custom_title] = $result->fetch(3)) {
     if (isset($aray_mod_func[$m_title]) and sizeof($aray_mod_func[$m_title]) > 0) {
-        $i = 0;
-        foreach ($aray_mod_func[$m_title] as $aray_mod_func_i) {
-            $sel = '';
-
-            if (in_array((int) $aray_mod_func_i['id'], array_map('intval', $func_list), true) or $functionid == $aray_mod_func_i['id']) {
-                ++$i;
-                $sel = ' checked="checked"';
-            }
-
-            $xtpl->assign('SELECTED', $sel);
-            $xtpl->assign('FUNCID', $aray_mod_func_i['id']);
-            $xtpl->assign('FUNCNAME', $aray_mod_func_i['func_custom_name']);
-
-            $xtpl->parse('main.loopfuncs.fuc');
+        if (!isset($mod_funcs[$m_title])) {
+            $mod_funcs[$m_title] = [
+                'key' => $m_title,
+                'title' => $m_custom_title,
+                'func_checked' => 0,
+                'funcs' => []
+            ];
         }
 
-        $xtpl->assign('M_TITLE', $m_title);
-        $xtpl->assign('M_CUSTOM_TITLE', $m_custom_title);
-        $xtpl->assign('M_CHECKED', (sizeof($aray_mod_func[$m_title]) == $i) ? ' checked="checked"' : '');
+        foreach ($aray_mod_func[$m_title] as $aray_mod_func_i) {
+            $mod_funcs[$m_title]['funcs'][$aray_mod_func_i['id']] = [
+                'id' => $aray_mod_func_i['id'],
+                'name' => $aray_mod_func_i['func_custom_name'],
+                'checked' => 0
+            ];
 
-        $xtpl->parse('main.loopfuncs');
+            if (in_array((int) $aray_mod_func_i['id'], array_map('intval', $func_list), true) or $functionid == $aray_mod_func_i['id']) {
+                $mod_funcs[$m_title]['funcs'][$aray_mod_func_i['id']]['checked'] = 1;
+                $mod_funcs[$m_title]['func_checked']++;
+            }
+        }
     }
 }
+$tpl->assign('MOD_FUNCS', $mod_funcs);
 
-$page_title = '&nbsp;&nbsp;' . $nv_Lang->getModule('blocks') . ': Theme ' . $selectthemes;
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('block-content.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents, 0);
