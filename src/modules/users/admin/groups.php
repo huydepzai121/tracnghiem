@@ -617,9 +617,7 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
                 }
 
                 $post['alias'] = $nv_Request->get_title('alias', 'post', '');
-                if (empty($post['alias'])) {
-                    exit($nv_Lang->getModule('alias_empty'));
-                }
+                $post['alias'] = change_alias($post['alias'] ?: $post['title']);
 
                 // Kiểm tra trùng tên nhóm
                 $stmt = $db->prepare('SELECT group_id FROM ' . NV_MOD_TABLE . '_groups WHERE alias = :alias AND group_id!= ' . (int) ($post['id']) . ' AND (idsite=' . $global_config['idsite'] . ' or (idsite=0 AND siteus=1))');

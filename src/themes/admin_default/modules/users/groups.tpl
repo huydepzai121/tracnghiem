@@ -22,7 +22,7 @@
                         <td><input title="{LANG.title}" class="form-control" type="text" name="title" value="{DATA.title}" maxlength="240" /></td>
                     </tr>
                     <tr>
-                        <td>{LANG.alias} <span style="color:red">*</span>:</td>
+                        <td>{LANG.alias}:</td>
                         <td>
                             <div class="input-group">
                                 <input title="{LANG.alias}" class="form-control" type="text" name="alias" value="{DATA.alias}" maxlength="240" />
