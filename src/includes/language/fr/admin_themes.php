@@ -81,6 +81,7 @@ $lang_module['block_select_module'] = 'Sélectionner le module';
 $lang_module['block_select_function'] = 'Sélectionner la fonction';
 $lang_module['block_error_fileconfig_title'] = 'Erreur du fichier de configuration de Thème';
 $lang_module['block_error_fileconfig_content'] = 'Fichier de configuration de Thème incorrect ou inexistant. Vérifiez votre répertoire de Thème';
+$lang_module['block_error_bconfig'] = 'Erreur du fichier INI de configuration du bloc, le système ne peut pas le lire';
 $lang_module['package_theme_module'] = 'Emballer le thème du module';
 $lang_module['autoinstall_continue'] = 'Suivant';
 $lang_module['back'] = 'Revenir';
