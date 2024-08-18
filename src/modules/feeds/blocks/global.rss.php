@@ -28,41 +28,40 @@ if (!nv_function_exists('nv_block_data_config_rss')) {
         $return = '';
 
         $html = '<input class="form-control" name="config_url" type="text" value="' . $data_block['url'] . '"/>';
-        $return .= '<div class="form-group"><label class="control-label col-sm-6">' . $nv_Lang->getModule('url') . ':</label><div class="col-sm-18">' . $html . '</div></div>';
+        $return .= '<div class="row mb-3"><label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('url') . ':</label><div class="col-sm-9">' . $html . '</div></div>';
 
-        $html = "<select class=\"form-control\" name=\"config_number\">\n";
+        $html = "<select class=\"form-select\" name=\"config_number\">\n";
         for ($index = 1; $index <= 50; ++$index) {
             $sel = ($index == $data_block['number']) ? ' selected' : '';
             $html .= '<option value="' . $index . '" ' . $sel . '>' . $index . "</option>\n";
         }
         $html .= "</select>\n";
-        $return .= '<div class="form-group"><label class="control-label col-sm-6">' . $nv_Lang->getModule('number') . ':</label><div class="col-sm-18">' . $html . '</div></div>';
+        $return .= '<div class="row mb-3"><label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('number') . ':</label><div class="col-sm-9">' . $html . '</div></div>';
 
         $data_block['title_length'] = isset($data_block['title_length']) ? (int) ($data_block['title_length']) : 0;
-        $html = "<select class=\"form-control\" name=\"config_title_length\">\n";
+        $html = "<select class=\"form-select\" name=\"config_title_length\">\n";
         for ($index = 0; $index <= 255; ++$index) {
             $sel = ($index == $data_block['title_length']) ? ' selected' : '';
             $html .= '<option value="' . $index . '" ' . $sel . '>' . $index . "</option>\n";
         }
         $html .= "</select>\n";
-        $return .= '<div class="form-group"><label class="control-label col-sm-6">' . $nv_Lang->getModule('title_length') . ':</label><div class="col-sm-18">' . $html . '</div></div>';
+        $return .= '<div class="row mb-3"><label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('title_length') . ':</label><div class="col-sm-9">' . $html . '</div></div>';
 
         $sel = ((int) ($data_block['isdescription']) == 1) ? 'checked="checked"' : '';
-        $html = '<input type="checkbox" name="config_isdescription" value="1" ' . $sel . ' /> ' . $nv_Lang->getModule('block_yes') . "\n";
-        $return .= '<div class="form-group"><label class="control-label col-sm-6">' . $nv_Lang->getModule('isdescription') . '</label><div class="col-sm-18"><div class="checkbox"><label>' . $html . '</label></div></div></div>';
+        $html = '<input class="form-check-input" type="checkbox" id="config_isdescription" name="config_isdescription" value="1" ' . $sel . ' /><label for="config_isdescription" class="form-check-label">' . $nv_Lang->getModule('block_yes') . "</label>\n";
+        $return .= '<div class="row mb-3"><label class="col-sm-3 col-form-label py-0 text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('isdescription') . '</label><div class="col-sm-9"><div class="form-check">' . $html . '</div></div></div>';
 
         $sel = ((int) ($data_block['ishtml']) == 1) ? 'checked="checked"' : '';
-        $html = '<input type="checkbox" name="config_ishtml" value="1" ' . $sel . ' /> ' . $nv_Lang->getModule('block_yes') . "\n";
-        $return .= '<div class="form-group"><label class="control-label col-sm-6">' . $nv_Lang->getModule('ishtml') . ':</label><div class="col-sm-18"><div class="checkbox"><label>' . $html . '</label></div></div></div>';
+        $html = '<input class="form-check-input" type="checkbox" id="config_ishtml" name="config_ishtml" value="1" ' . $sel . ' /><label for="config_ishtml" class="form-check-label">' . $nv_Lang->getModule('block_yes') . "</label>\n";
+        $return .= '<div class="row mb-3"><label class="col-sm-3 col-form-label py-0 text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('ishtml') . ':</label><div class="col-sm-9"><div class="form-check">' . $html . '</div></div></div>';
 
         $sel = ((int) ($data_block['ispubdate']) == 1) ? 'checked="checked"' : '';
-        $html = '<input type="checkbox" name="config_ispubdate" value="1" ' . $sel . ' /> ' . $nv_Lang->getModule('block_yes') . "\n";
-        $return .= '<div class="form-group"><label class="control-label col-sm-6">' . $nv_Lang->getModule('ispubdate') . ':</label><div class="col-sm-18"><div class="checkbox"><label>' . $html . '</label></div></div></div>';
+        $html = '<input class="form-check-input" type="checkbox" id="config_ispubdate" name="config_ispubdate" value="1" ' . $sel . ' /><label for="config_ispubdate" class="form-check-label">' . $nv_Lang->getModule('block_yes') . "</label>\n";
+        $return .= '<div class="row mb-3"><label class="col-sm-3 col-form-label py-0 text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('ispubdate') . ':</label><div class="col-sm-9"><div class="form-check">' . $html . '</div></div></div>';
 
         $sel = ((int) ($data_block['istarget']) == 1) ? 'checked="checked"' : '';
-        $html = '<input type="checkbox" name="config_istarget" value="1" ' . $sel . ' /> ' . $nv_Lang->getModule('block_yes') . "\n";
-
-        $return .= '<div class="form-group"><label class="control-label col-sm-6">' . $nv_Lang->getModule('istarget') . ':</label><div class="col-sm-18"><div class="checkbox"><label>' . $html . '</label></div></div></div>';
+        $html = '<input class="form-check-input" type="checkbox" id="config_istarget" name="config_istarget" value="1" ' . $sel . ' /><label for="config_istarget" class="form-check-label">' . $nv_Lang->getModule('block_yes') . "</label>\n";
+        $return .= '<div class="row mb-3"><label class="col-sm-3 col-form-label py-0 text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('istarget') . ':</label><div class="col-sm-9"><div class="form-check">' . $html . '</div></div></div>';
 
         return $return;
     }

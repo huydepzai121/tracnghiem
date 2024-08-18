@@ -24,25 +24,23 @@ if (!nv_function_exists('site_terms')) {
         $term_names = !empty($data_block['term_names']) ? array_map('trim', explode('|', $data_block['term_names'])) : [''];
         $term_queries = !empty($data_block['term_queries']) ? array_map('trim', explode('|', $data_block['term_queries'])) : [''];
 
-        $html = '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('links') . ':</label>';
-        $html .= '<div class="col-sm-18 list">';
+        $html = '<div class="row mb-2">';
+        $html .= '<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('links') . ':</label>';
+        $html .= '<div class="col-sm-9 list">';
         foreach ($term_names as $key => $term_name) {
             empty($term_queries[$key]) && $term_queries[$key] = '';
-            $html .= '<div class="input-group margin-bottom item">';
+            $html .= '<div class="input-group mb-2 item">';
             if (!empty($list)) {
-                $html .= '<span class="input-group-btn">';
-                $html .= '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>';
+                $html .= '<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>';
                 $html .= '<ul class="dropdown-menu">';
                 foreach ($list as $item) {
-                    $html .= '<li><a href="#" data-url="' . NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module . '&amp;' . NV_OP_VARIABLE . '=' . $item['alias'] . $global_config['rewrite_exturl'] . '" data-toggle="sample_term">' . nv_clean60($item['title'], 60) . '</a></li>';
+                    $html .= '<li><a class="dropdown-item" href="#" data-url="' . NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module . '&amp;' . NV_OP_VARIABLE . '=' . $item['alias'] . $global_config['rewrite_exturl'] . '" data-toggle="sample_term">' . nv_clean60($item['title'], 60) . '</a></li>';
                 }
                 $html .= '</ul>';
-                $html .= '</span>';
             }
-            $html .= '<input type="text" name="term_names[]" value="' . $term_name . '" placeholder="' . $nv_Lang->getModule('term_name') . '" class="form-control" style="width:40%;">';
-            $html .= '<input type="text" name="term_queries[]" value="' . $term_queries[$key] . '" placeholder="' . $nv_Lang->getModule('term_query') . '" class="form-control" style="border-left:0;width:60%">';
-            $html .= '<span class="input-group-btn"><button class="btn btn-default" type="button" data-toggle="del_term">x</button><button class="btn btn-default" type="button" data-toggle="add_term">+</button></span>';
+            $html .= '<input type="text" name="term_names[]" value="' . $term_name . '" placeholder="' . $nv_Lang->getModule('term_name') . '" class="form-control">';
+            $html .= '<input type="text" name="term_queries[]" value="' . $term_queries[$key] . '" placeholder="' . $nv_Lang->getModule('term_query') . '" class="form-control">';
+            $html .= '<button class="btn btn-default" type="button" data-toggle="del_term">x</button><button class="btn btn-default" type="button" data-toggle="add_term">+</button>';
             $html .= '</div>';
         }
         $html .= '</div>';

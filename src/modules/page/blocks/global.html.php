@@ -36,7 +36,7 @@ if (!nv_function_exists('nv_block_data_config_html')) {
             $html = '<textarea style="width: 100%" name="htmlcontent" id="htmlcontent" cols="20" rows="8">' . $htmlcontent . '</textarea>';
         }
 
-        return '<div class="clearfix">' . $nv_Lang->getModule('htmlcontent') . ':<br>' . $html . '</div>';
+        return '<div class="mb-3"><div class="fw-medium mb-1">' . $nv_Lang->getModule('htmlcontent') . ':</div>' . $html . '</div>';
     }
 
     /**

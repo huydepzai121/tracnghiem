@@ -33,11 +33,11 @@ if (!nv_function_exists('nv_menu_theme_social_btns')) {
         $html = '<script>$((function(){$("body").on("click",".social-add",(function(){var t=$(this).parents(".social-item"),a=t.clone();$("input",a).attr("value","").val(""),t.after(a)})),$("body").on("click",".social-del",(function(){var t=$(this).parents(".social-btns"),a=$(this).parents(".social-item");$(".social-item",t).length>1?a.remove():$("input",a).attr("value","").val("")}))}));</script>';
         $html .= '<div class="social-btns">';
         foreach ($names as $key => $name) {
-            $html .= '<div class="row margin-bottom social-item">';
-            $html .= '	<div class="col-sm-6"><div class="input-group margin-bottom"><span class="input-group-btn"><button class="btn btn-default social-add" type="button"><i class="fa fa-plus"></i></button><button class="btn btn-default social-del" type="button"><i class="fa fa-times"></i></button></span><input type="text" name="social_name[]" class="form-control" value="' . $name . '" placeholder="' . $nv_Lang->getModule('social_name') . '"/></div></div>';
-            $html .= '	<div class="col-sm-10"><div class="margin-bottom"><input type="text" name="social_url[]" class="form-control" value="' . $urls[$key] . '" placeholder="' . $nv_Lang->getModule('social_url') . '"/></div></div>';
-            $html .= '	<div class="col-sm-4"><div class="margin-bottom"><input type="text" name="social_icon[]" class="form-control" value="' . $icons[$key] . '" placeholder="' . $nv_Lang->getModule('social_icon') . '"/></div></div>';
-            $html .= '	<div class="col-sm-4"><div class="input-group margin-bottom"><span class="input-group-addon">#</span><input type="text" name="social_color[]" class="form-control" value="' . $colors[$key] . '" placeholder="' . $nv_Lang->getModule('social_color') . '"/></div></div>';
+            $html .= '<div class="row g-2 mb-3 social-item">';
+            $html .= '	<div class="col-sm-3"><div class="input-group"><button class="btn btn-secondary social-add" type="button"><i class="fa fa-plus"></i></button><button class="btn btn-secondary social-del" type="button"><i class="fa fa-times"></i></button><input type="text" name="social_name[]" class="form-control" value="' . $name . '" placeholder="' . $nv_Lang->getModule('social_name') . '"/></div></div>';
+            $html .= '	<div class="col-sm-5"><div><input type="text" name="social_url[]" class="form-control" value="' . $urls[$key] . '" placeholder="' . $nv_Lang->getModule('social_url') . '"/></div></div>';
+            $html .= '	<div class="col-sm-2"><div><input type="text" name="social_icon[]" class="form-control" value="' . $icons[$key] . '" placeholder="' . $nv_Lang->getModule('social_icon') . '"/></div></div>';
+            $html .= '	<div class="col-sm-2"><div class="input-group"><span class="input-group-text">#</span><input type="text" name="social_color[]" class="form-control" value="' . $colors[$key] . '" placeholder="' . $nv_Lang->getModule('social_color') . '"/></div></div>';
             $html .= '</div>';
         }
         $html .= '</div>';

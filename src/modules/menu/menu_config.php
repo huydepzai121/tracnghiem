@@ -24,9 +24,9 @@ function nv_block_config_menu($module, $data_block)
 {
     global $nv_Cache, $nv_Lang;
     $html = '';
-    $html .= '<div class="form-group">';
-    $html .= '	<label class="control-label col-sm-6">' . $nv_Lang->getModule('menu') . ':</label>';
-    $html .= "	<div class=\"col-sm-9\"><select name=\"menuid\" class=\"form-control\">\n";
+    $html .= '<div class="row mb-3">';
+    $html .= '	<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('menu') . ':</label>';
+    $html .= "	<div class=\"col-sm-5\"><select name=\"menuid\" class=\"form-select\">\n";
 
     $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_menu ORDER BY id DESC';
     // Module menu của hệ thống không ảo hóa, do đó chỉ định cache trực tiếp vào module tránh lỗi khi gọi file từ giao diện
@@ -38,11 +38,11 @@ function nv_block_config_menu($module, $data_block)
 
     $html .= "	</select></div>\n";
     $html .= '</div>';
-    $html .= '<div class="form-group">';
-    $html .= '<label class="control-label col-sm-6">';
+    $html .= '<div class="row mb-3">';
+    $html .= '<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">';
     $html .= $nv_Lang->getModule('title_length');
     $html .= ':</label>';
-    $html .= '<div class="col-sm-18">';
+    $html .= '<div class="col-sm-9">';
     $html .= '<input type="text" class="form-control" name="config_title_length" value="' . $data_block['title_length'] . '"/>';
     $html .= '</div>';
     $html .= '</div>';

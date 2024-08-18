@@ -69,3 +69,6 @@ $lang_module['module_in_menu'] = 'Les modules affichent sur le menu';
 $lang_module['save'] = 'Sauvegardez la configuration';
 $lang_module['exp'] = 'exemple';
 $lang_module['gfont_note'] = 'Choisir le font au: <a href="https://www.google.com/fonts" target="_blank" rel="nofollow">https://www.google.com/fonts</a>';
+$lang_module['facebook'] = 'Facebook';
+$lang_module['youtube'] = 'Youtube';
+$lang_module['twitter'] = 'Twitter';

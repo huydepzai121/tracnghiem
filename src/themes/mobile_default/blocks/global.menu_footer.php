@@ -29,13 +29,15 @@ if (!nv_function_exists('nv_menu_theme_default_footer')) {
             $data_block['module_in_menu'] = [];
         }
 
-        $html = '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('module_in_menu') . ':</label>';
-        $html .= '<div class="col-sm-18">';
+        $html = '<div class="row mb-3">';
+        $html .= '<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('module_in_menu') . ':</label>';
+        $html .= '<div class="col-sm-9">';
+        $html .= '<div class="row g-2">';
         foreach ($site_mods as $modname => $modvalues) {
             $checked = in_array($modname, $data_block['module_in_menu'], true) ? ' checked="checked"' : '';
-            $html .= '<div class="w150 pull-left"><div class="ellipsis"><label style="text-align: left"><input type="checkbox" ' . $checked . ' value="' . $modname . '" name="module_in_menu[]">' . $modvalues['custom_title'] . '</label></div></div>';
+            $html .= '<div class="col-sm-6"><div class="form-check"><input class="form-check-input" type="checkbox" ' . $checked . ' value="' . $modname . '" name="module_in_menu[]" id="config_check_' . $modname . '"><label class="form-check-label d-block text-truncate" for="config_check_' . $modname . '">' . $modvalues['custom_title'] . '</label></div></div>';
         }
+        $html .= '</div>';
         $html .= '</div>';
         $html .= '</div>';
 

@@ -73,3 +73,6 @@ $lang_module['social_name'] = 'Social network name';
 $lang_module['social_url'] = 'URL to social network page';
 $lang_module['social_icon'] = 'Icon class';
 $lang_module['social_color'] = 'Logo color';
+$lang_module['facebook'] = 'Facebook';
+$lang_module['youtube'] = 'Youtube';
+$lang_module['twitter'] = 'Twitter';

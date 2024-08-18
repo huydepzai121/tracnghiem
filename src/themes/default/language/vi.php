@@ -73,3 +73,6 @@ $lang_module['social_name'] = 'Tên mạng xã hội';
 $lang_module['social_url'] = 'URL đến trang mạng xã hội';
 $lang_module['social_icon'] = 'Icon class';
 $lang_module['social_color'] = 'Màu logo';
+$lang_module['facebook'] = 'Facebook';
+$lang_module['youtube'] = 'Youtube';
+$lang_module['twitter'] = 'Twitter';

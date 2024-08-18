@@ -69,3 +69,6 @@ $lang_module['module_in_menu'] = 'Module in menu';
 $lang_module['save'] = 'Save configuration';
 $lang_module['exp'] = 'eg';
 $lang_module['gfont_note'] = 'Select font in the site: <a href="https://www.google.com/fonts" target="_blank" rel="nofollow">https://www.google.com/fonts</a>';
+$lang_module['facebook'] = 'Facebook';
+$lang_module['youtube'] = 'Youtube';
+$lang_module['twitter'] = 'Twitter';

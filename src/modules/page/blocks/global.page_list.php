@@ -26,13 +26,13 @@ if (!nv_function_exists('nv_page_list')) {
         global $nv_Lang;
 
         $html = '';
-        $html .= '<div class="form-group">';
-        $html .= '	<label class="control-label col-sm-6">' . $nv_Lang->getModule('title_length') . ':</label>';
-        $html .= '	<div class="col-sm-9"><input type="text" class="form-control" name="config_title_length" value="' . $data_block['title_length'] . '"/></div>';
+        $html .= '<div class="row mb-3">';
+        $html .= '	<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('title_length') . ':</label>';
+        $html .= '	<div class="col-sm-5"><input type="text" class="form-control" name="config_title_length" value="' . $data_block['title_length'] . '"/></div>';
         $html .= '</div>';
-        $html .= '<div class="form-group">';
-        $html .= '	<label class="control-label col-sm-6">' . $nv_Lang->getModule('numrow') . ':</label>';
-        $html .= '	<div class="col-sm-9"><input type="text" name="config_numrow" class="form-control" value="' . $data_block['numrow'] . '"/></div>';
+        $html .= '<div class="row mb-3">';
+        $html .= '	<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('numrow') . ':</label>';
+        $html .= '	<div class="col-sm-5"><input type="text" name="config_numrow" class="form-control" value="' . $data_block['numrow'] . '"/></div>';
         $html .= '</div>';
 
         return $html;

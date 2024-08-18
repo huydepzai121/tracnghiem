@@ -100,3 +100,4 @@ $lang_module['multi_delete'] = 'Xóa các menu đã chọn';
 $lang_module['select_menu_block'] = 'Chọn khối menu';
 $lang_module['module_display'] = 'Module hiển thị';
 $lang_module['menu_note_auto'] = 'Lưu ý: Block này lấy menu tự động không tùy chỉnh được trong khu vực quản trị';
+$lang_module['title_length'] = 'Số kí tự của tiêu đề';

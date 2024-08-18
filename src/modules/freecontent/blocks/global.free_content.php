@@ -26,10 +26,10 @@ if (!nv_function_exists('nv_block_freecontent')) {
         global $site_mods, $nv_Cache, $nv_Lang;
 
         $html = '';
-        $html .= '<div class="form-group">';
-        $html .= '	<label class="control-label col-sm-6">' . $nv_Lang->getModule('blockid') . ':</label>';
-        $html .= '	<div class="col-sm-9">';
-        $html .= '		<select name="config_blockid" class="form-control">';
+        $html .= '<div class="row mb-3">';
+        $html .= '	<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('blockid') . ':</label>';
+        $html .= '	<div class="col-sm-5">';
+        $html .= '		<select name="config_blockid" class="form-select">';
 
         $sql = 'SELECT bid, title FROM ' . NV_PREFIXLANG . '_' . $site_mods[$module]['module_data'] . '_blocks ORDER BY title ASC';
         $list = $nv_Cache->db($sql, '', $module);
@@ -42,10 +42,10 @@ if (!nv_function_exists('nv_block_freecontent')) {
         $html .= '	</div>';
         $html .= '</div>';
 
-        $html .= '<div class="form-group">';
-        $html .= '	<label class="control-label col-sm-6">' . $nv_Lang->getModule('numrows') . ':</label>';
-        $html .= '	<div class="col-sm-9">';
-        $html .= '		<select name="config_numrows" class="form-control">';
+        $html .= '<div class="row mb-3">';
+        $html .= '	<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('numrows') . ':</label>';
+        $html .= '	<div class="col-sm-5">';
+        $html .= '		<select name="config_numrows" class="form-select">';
 
         for ($i = 1; $i <= 10; ++$i) {
             $html .= '	<option value="' . $i . '"' . ($i == $data_block['numrows'] ? ' selected="selected"' : '') . '>' . $i . '</option>';

@@ -27,22 +27,22 @@ if (!nv_function_exists('nv_facebook_comment_box_blocks')) {
 
         $html = '';
 
-        $html .= '<div class="form-group">';
-        $html .= '	<label class="control-label col-sm-6">' . $nv_Lang->getModule('facebookappid') . ':</label>';
-        $html .= '	<div class="col-sm-18"><input class="form-control" type="text" name="config_facebookappid" value="' . $data_block['facebookappid'] . '"/></div>';
+        $html .= '<div class="row mb-3">';
+        $html .= '	<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('facebookappid') . ':</label>';
+        $html .= '	<div class="col-sm-9"><input class="form-control" type="text" name="config_facebookappid" value="' . $data_block['facebookappid'] . '"/></div>';
         $html .= '</div>';
-        $html .= '<div class="form-group">';
-        $html .= '	<label class="control-label col-sm-6">' . $nv_Lang->getModule('width') . ':</label>';
-        $html .= '	<div class="col-sm-18"><input class="form-control" type="text" name="config_width" value="' . $data_block['width'] . '"/></div>';
+        $html .= '<div class="row mb-3">';
+        $html .= '	<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('width') . ':</label>';
+        $html .= '	<div class="col-sm-9"><input class="form-control" type="text" name="config_width" value="' . $data_block['width'] . '"/></div>';
         $html .= '</div>';
-        $html .= '<div class="form-group">';
-        $html .= ' <label class="control-label col-sm-6">' . $nv_Lang->getModule('numpost') . ':</label>';
-        $html .= ' <div class="col-sm-18"><input class="form-control" type="text" name="config_numpost" value="' . $data_block['numpost'] . '"/></div>';
+        $html .= '<div class="row mb-3">';
+        $html .= ' <label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('numpost') . ':</label>';
+        $html .= ' <div class="col-sm-9"><input class="form-control" type="text" name="config_numpost" value="' . $data_block['numpost'] . '"/></div>';
         $html .= '</div>';
 
-        $html .= '<div class="form-group">';
-        $html .= '	<label class="control-label col-sm-6">' . $nv_Lang->getModule('scheme') . ':</label>';
-        $html .= '	<div class="col-sm-9"> <select class="form-control" name="config_scheme"> ';
+        $html .= '<div class="row mb-3">';
+        $html .= '	<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('scheme') . ':</label>';
+        $html .= '	<div class="col-sm-5"> <select class="form-select" name="config_scheme"> ';
 
         $se1 = ($data_block['scheme'] == 'light') ? 'selected="selected"' : '';
         $se2 = ($data_block['scheme'] == 'dark') ? 'selected="selected"' : '';

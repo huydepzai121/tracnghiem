@@ -32,8 +32,8 @@ if (!nv_function_exists('nv_block_news_cat')) {
             'right' => $nv_Lang->getModule('tooltip_position_right')
         ];
 
-        $html = '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('catid') . ':</label>';
+        $html = '<div class="row mb-3">';
+        $html .= '<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('catid') . ':</label>';
 
         $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $site_mods[$module]['module_data'] . '_cat ORDER BY sort ASC';
         $list = $nv_Cache->db($sql, '', $module);
@@ -41,7 +41,7 @@ if (!nv_function_exists('nv_block_news_cat')) {
             $data_block['catid'] = [$data_block['catid']];
         }
 
-        $html .= '<div class="col-sm-18">';
+        $html .= '<div class="col-sm-9">';
         foreach ($list as $l) {
             if ($l['status'] == 1 or $l['status'] == 2) {
                 $xtitle_i = '';
@@ -51,31 +51,29 @@ if (!nv_function_exists('nv_block_news_cat')) {
                         $xtitle_i .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                     }
                 }
-                $html .= $xtitle_i . '<label><input type="checkbox" name="config_catid[]" value="' . $l['catid'] . '" ' . ((in_array((int) $l['catid'], array_map('intval', $data_block['catid']), true)) ? ' checked="checked"' : '') . '</input>' . $l['title'] . '</label><br />';
+                $html .= '<div class="form-check"><input class="form-check-input" type="checkbox" name="config_catid[]" value="' . $l['catid'] . '" ' . ((in_array((int) $l['catid'], array_map('intval', $data_block['catid']), true)) ? ' checked="checked"' : '') . ' id="checkbox_catid_' . $l['catid'] . '"><label class="form-check-label" for="checkbox_catid_' . $l['catid'] . '">' . $xtitle_i . $l['title'] . '</label></div>';
             }
         }
         $html .= '</div>';
         $html .= '</div>';
-        $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('title_length') . ':</label>';
-        $html .= '<div class="col-sm-18"><input type="text" class="form-control" name="config_title_length" size="5" value="' . $data_block['title_length'] . '"/></div>';
+        $html .= '<div class="row mb-3">';
+        $html .= '<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('title_length') . ':</label>';
+        $html .= '<div class="col-sm-9"><input type="text" class="form-control" name="config_title_length" size="5" value="' . $data_block['title_length'] . '"/></div>';
         $html .= '</div>';
-        $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('numrow') . ':</label>';
-        $html .= '<div class="col-sm-18"><input type="text" class="form-control" name="config_numrow" size="5" value="' . $data_block['numrow'] . '"/></div>';
+        $html .= '<div class="row mb-3">';
+        $html .= '<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('numrow') . ':</label>';
+        $html .= '<div class="col-sm-9"><input type="text" class="form-control" name="config_numrow" size="5" value="' . $data_block['numrow'] . '"/></div>';
         $html .= '</div>';
-        $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('showtooltip') . ':</label>';
-        $html .= '<div class="col-sm-18">';
-        $html .= '<div class="row">';
-        $html .= '<div class="col-sm-4">';
-        $html .= '<div class="checkbox"><label><input type="checkbox" value="1" name="config_showtooltip" ' . ($data_block['showtooltip'] == 1 ? 'checked="checked"' : '') . ' /></label>';
-        $html .= '</div>';
-        $html .= '</div>';
-        $html .= '<div class="col-sm-10">';
-        $html .= '<div class="input-group margin-bottom-sm">';
-        $html .= '<div class="input-group-addon">' . $nv_Lang->getModule('tooltip_position') . '</div>';
-        $html .= '<select name="config_tooltip_position" class="form-control">';
+        $html .= '<div class="row mb-3">';
+        $html .= '<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('showtooltip') . ':</label>';
+        $html .= '<div class="col-sm-9">';
+        $html .= '<div class="row g-2 align-items-center">';
+        $html .= '<div class="col-sm-2">';
+        $html .= '<input class="form-check-input" type="checkbox" value="1" name="config_showtooltip" ' . ($data_block['showtooltip'] == 1 ? 'checked="checked"' : '') . ' /></div>';
+        $html .= '<div class="col-sm-5">';
+        $html .= '<div class="input-group">';
+        $html .= '<div class="input-group-text">' . $nv_Lang->getModule('tooltip_position') . '</div>';
+        $html .= '<select name="config_tooltip_position" class="form-select">';
 
         foreach ($tooltip_position as $key => $value) {
             $html .= '<option value="' . $key . '" ' . ($data_block['tooltip_position'] == $key ? 'selected="selected"' : '') . '>' . $value . '</option>';
@@ -84,9 +82,9 @@ if (!nv_function_exists('nv_block_news_cat')) {
         $html .= '</select>';
         $html .= '</div>';
         $html .= '</div>';
-        $html .= '<div class="col-sm-10">';
+        $html .= '<div class="col-sm-5">';
         $html .= '<div class="input-group">';
-        $html .= '<div class="input-group-addon">' . $nv_Lang->getModule('tooltip_length') . '</div>';
+        $html .= '<div class="input-group-text">' . $nv_Lang->getModule('tooltip_length') . '</div>';
         $html .= '<input type="text" class="form-control" name="config_tooltip_length" value="' . $data_block['tooltip_length'] . '"/>';
         $html .= '</div>';
         $html .= '</div>';

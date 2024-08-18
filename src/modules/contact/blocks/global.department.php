@@ -26,9 +26,9 @@ if (!nv_function_exists('nv_department_info')) {
         global $site_mods, $nv_Cache, $nv_Lang;
 
         $html = '';
-        $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('departmentid') . ':</label>';
-        $html .= '<div class="col-sm-9"><select name="config_departmentid" class="form-control">';
+        $html .= '<div class="row mb-3">';
+        $html .= '<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('departmentid') . ':</label>';
+        $html .= '<div class="col-sm-5"><select name="config_departmentid" class="form-select">';
         $departments = $nv_Cache->db('SELECT * FROM ' . NV_PREFIXLANG . '_' . $site_mods[$module]['module_data'] . '_department ORDER BY weight', 'id', $module);
         foreach ($departments as $l) {
             if ($l['act']) {

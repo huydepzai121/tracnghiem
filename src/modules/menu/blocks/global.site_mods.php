@@ -25,18 +25,18 @@ if (!nv_function_exists('nv_menu_site_mods')) {
     {
         global $site_mods, $nv_Lang;
 
-        $html = '<div class="form-group">';
-        $html .= '	<div class="col-sm-18 col-sm-offset-6"><div class="alert alert-info panel-block-content-last">' . $nv_Lang->getModule('menu_note_auto') . '</div></div>';
+        $html = '<div class="row mb-3">';
+        $html .= '	<div class="col-sm-9 offset-sm-3"><div class="alert alert-info mb-0" role="alert">' . $nv_Lang->getModule('menu_note_auto') . '</div></div>';
         $html .= '</div>';
-        $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">';
+        $html .= '<div class="row mb-3">';
+        $html .= '<label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">';
         $html .= $nv_Lang->getModule('title_length');
         $html .= ':</label>';
-        $html .= '<div class="col-sm-9">';
+        $html .= '<div class="col-sm-7">';
         $html .= '<input type="text" class="form-control" name="config_title_length" value="' . $data_block['title_length'] . '"/>';
         $html .= '</div>';
         $html .= '</div>';
-        $html .= '<div class="form-group"><label class="control-label col-sm-6">' . $nv_Lang->getModule('module_display') . ':</label><div class="col-sm-9"><ul id="sortable" class="list-group" style="margin-bottom:0">';
+        $html .= '<div class="row mb-3"><label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('module_display') . ':</label><div class="col-sm-7"><ul id="sortable" class="list-group">';
 
         if (empty($data_block['module_in_menu']) or !is_array($data_block['module_in_menu'])) {
             $data_block['module_in_menu'] = [];
@@ -49,7 +49,7 @@ if (!nv_function_exists('nv_menu_site_mods')) {
             if (isset($site_mods[$modname])) {
                 $modvalues = $site_mods[$modname];
                 $checked = in_array($modname, $data_block['module_in_menu'], true) ? ' checked="checked"' : '';
-                $html .= '<li class="list-group-item"><i class="fa fa-sort pull-right"></i><label style="text-align: left;margin-bottom:0;"><input type="checkbox" ' . $checked . ' value="' . $modname . '" name="module_in_menu[]">' . $modvalues['custom_title'] . '</label></li>';
+                $html .= '<li class="list-group-item"><div class="d-flex align-items-center justify-content-between"><div class="form-check"><input class="form-check-input" type="checkbox" ' . $checked . ' value="' . $modname . '" name="module_in_menu[]" id="module_in_menu_' . $modname . '"><label class="form-check-label" for="module_in_menu_' . $modname . '">' . $modvalues['custom_title'] . '</label></div><i class="fa-solid fa-sort"></i></li>';
             }
         }
         $html .= '</ul></div></div>';

@@ -25,7 +25,7 @@ if (!nv_function_exists('nv_block_data_config_banners')) {
     {
         global $db, $language_array, $nv_Lang;
 
-        $html = "<select name=\"config_idplanbanner\" class=\"form-control\">\n";
+        $html = "<select name=\"config_idplanbanner\" class=\"form-select\">\n";
         $html .= '<option value="">' . $nv_Lang->getModule('idplanbanner') . "</option>\n";
         $query = 'SELECT * FROM ' . NV_BANNERS_GLOBALTABLE . "_plans WHERE (blang='" . NV_LANG_DATA . "' OR blang='') ORDER BY title ASC";
         $result = $db->query($query);
@@ -43,7 +43,7 @@ if (!nv_function_exists('nv_block_data_config_banners')) {
 
         $html .= "</select>\n";
 
-        return '<div class="form-group"><label class="control-label col-sm-6">' . $nv_Lang->getModule('idplanbanner') . ':</label><div class="col-sm-9">' . $html . '</div></div>';
+        return '<div class="row mb-3"><label class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium">' . $nv_Lang->getModule('idplanbanner') . ':</label><div class="col-sm-5">' . $html . '</div></div>';
     }
 
     /**
