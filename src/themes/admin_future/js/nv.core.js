@@ -904,10 +904,14 @@ $(document).ready(function() {
                 }
 
                 if (a.status == 'OK' || a.status == 'ok' || a.status == 'success') {
+                    let cb;
                     if ('function' === typeof callback) {
-                        callback();
+                        cb = callback(a);
                     } else if ('string' == typeof callback && "function" === typeof window[callback]) {
-                        window[callback]();
+                        cb = window[callback](a);
+                    }
+                    if (cb === 0 || cb === false) {
+                        return;
                     }
                     let timeout = 0;
                     if (a.mess) {

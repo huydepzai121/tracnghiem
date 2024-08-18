@@ -150,6 +150,65 @@ $(function() {
         loadConfig();
     });
 
+    // Xử lý khi click hiển thị toàn bộ hay từng funcs
+    $('[name="all_func"]', form).on('click', function() {
+        let module = $('[name="module_type"]', form).val();
+        let all_func = $(this).val();
+        if (all_func == 0 && module != 'global') {
+            $('#shows_all_func', form).removeClass('d-none');
+        } else if (module == 'global' && all_func == 0) {
+            $('#shows_all_func', form).removeClass('d-none');
+        } else if (all_func == 1) {
+            $('#shows_all_func', form).addClass('d-none');
+        }
+    });
+
+    // Xử lý khi ấn tách nhóm
+    $('[name="leavegroup"]', form).on('click', function() {
+        if ($('[name="leavegroup"]:checked', form).val() == '1') {
+            $('[name="all_func"]', form).filter('[value=0]').prop('checked', true);
+            $('#shows_all_func').removeClass('d-none');
+        }
+    });
+
+    // Click chọn tất cả các funcs hiển thị
+    $('[name="checkallmod"]', form).on('click', function(e) {
+        e.preventDefault();
+        var obj = $('#shows_all_func', form),
+            notcheck = $('[type=checkbox]:not(:checked)', obj).length;
+        $('[type=checkbox]', obj).prop('checked', notcheck);
+    });
+
+    // Xử lý khi chọn func > nếu chọn hết check cả module
+    $('[name^=func_id]', form).on('change', function() {
+        var item = $(this).parents('.funclist'),
+            notcheck = $('[name^=func_id]:not(:checked)', item).length;
+        $('.checkmodule', item).prop('checked', !notcheck);
+    });
+
+    // Xử lý khi check/bỏ check module > check/bỏ check hết funcs của module
+    $('.checkmodule', form).on('change', function() {
+        var item = $(this).parents('.funclist');
+        $('[name^=func_id]', item).prop('checked', $(this).prop('checked'));
+    });
+
+    // Định nghĩa hàm xử lý sau khi thêm block
+    if (typeof nvBlockCtCallback == 'undefined') {
+        window.nvBlockCtCallback = (respon) => {
+            nvToast(respon.mess, 'success');
+            setTimeout(() => {
+                if (respon.redirect != '') {
+                    window.opener.location.href = respon.redirect;
+                } else {
+                    window.opener.location.href = window.opener.location.href;
+                }
+                window.opener.focus();
+                window.close();
+            }, 2000);
+            return 0;
+        }
+    }
+
     // Xử lý khi thay đổi kiểu hiển thị
     $('[name="dtime_type"]', form).on('change', function() {
         let btn = $(this);

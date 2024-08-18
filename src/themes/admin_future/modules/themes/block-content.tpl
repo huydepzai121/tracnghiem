@@ -2,7 +2,7 @@
 <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/jquery-ui/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/language/jquery.ui.datepicker-{$smarty.const.NV_LANG_INTERFACE}.js"></script>
 <script type="text/javascript" src="{$smarty.const.NV_STATIC_URL}themes/{$TEMPLATE}/js/nv.block.content.js"></script>
-<form class="p-1 ajax-submit" method="post" action="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;selectthemes={$SELECTTHEMES}{if not empty($BLOCKREDIRECT)}&amp;blockredirect={$BLOCKREDIRECT}{/if}" id="block-content-form" data-page-url="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}" data-selectthemes="{$SELECTTHEMES}" novalidate>
+<form class="p-1 ajax-submit" method="post" action="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;selectthemes={$SELECTTHEMES}{if not empty($BLOCKREDIRECT)}&amp;blockredirect={$BLOCKREDIRECT}{/if}" id="block-content-form" data-page-url="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}" data-selectthemes="{$SELECTTHEMES}" data-callback="nvBlockCtCallback" novalidate>
     <div class="card border-primary border-1 mb-3">
         <div class="card-header fs-5 fw-medium py-2 text-bg-primary">
             {$LANG->getModule('theme', "<span class=\"text-capitalize\">`$SELECTTHEMES`</span>")}
@@ -150,7 +150,7 @@
                         <tr class="funclist" id="idmodule_{$m_title}">
                             <td>
                                 <div class="form-check m-0">
-                                    <input{if count($m_data.funcs) <= $m_data.func_checked} checked{/if} class="form-check-input" type="checkbox" id="element_checkmodule_{$m_title}">
+                                    <input{if count($m_data.funcs) <= $m_data.func_checked} checked{/if} class="form-check-input checkmodule" type="checkbox" id="element_checkmodule_{$m_title}">
                                     <label class="form-check-label text-truncate-3" title="{$m_data.title}" for="element_checkmodule_{$m_title}">{$m_data.title}</label>
                                 </div>
                             </td>

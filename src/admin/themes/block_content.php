@@ -63,9 +63,12 @@ $row = [
     'groups_view' => '6',
     'all_func' => 1,
     'weight' => 0,
-    'config' => ''];
+    'config' => ''
+];
+
 $row_old = [];
 $is_add = true;
+
 $row['bid'] = $nv_Request->get_int('bid', 'get,post', 0);
 if ($row['bid'] > 0) {
     $row = $db->query('SELECT * FROM ' . NV_BLOCKS_TABLE . '_groups WHERE bid=' . $row['bid'])->fetch();
