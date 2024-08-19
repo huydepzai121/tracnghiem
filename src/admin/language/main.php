@@ -55,20 +55,28 @@ if ($_lang_multi == $_md5_lang_multi) {
 
 $lang_array_exit = nv_scandir(NV_ROOTDIR . '/includes/language', '/^[a-z]{2}+$/');
 
-$xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-
-$array_lang_setup = [];
+$array_lang_setup = $array_lang_installed = [];
 $db->sqlreset()->select('*')->from($db_config['prefix'] . '_setup_language')->order('weight ASC');
 $result = $db->query($db->sql());
 while ($row = $result->fetch()) {
-    $array_lang_setup[$row['lang']] = (int) ($row['setup']);
+    $array_lang_setup[$row['lang']] = [
+        'setup' => (int) ($row['setup']),
+        'weight' => (int) ($row['weight'])
+    ];
+    if (in_array($row['lang'], $lang_array_exit, true) and $array_lang_setup[$row['lang']]['setup'] == 1) {
+        $array_lang_installed[$row['lang']] = $row['lang'];
+    }
+}
+$lang_can_install = [];
+foreach ($lang_array_exit as $lang) {
+    if (!isset($array_lang_installed[$lang])) {
+        $lang_can_install[$lang] = $lang;
+    }
 }
 
 if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_IS_SPADMIN'))) {
     // Change weight
-    if ($nv_Request->isset_request('changeweight', 'post')) {
+    if ($nv_Request->get_title('changeweight', 'post', '') === NV_CHECK_SESSION) {
         if (!defined('NV_IS_AJAX')) {
             nv_jsonOutput([
                 'status' => 'error',
@@ -139,13 +147,18 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
             nv_update_config_allow_sitelangs(array_unique($allow_sitelangs));
             nv_save_file_config_global();
 
-            nv_htmlOutput('OK');
-        } else {
-            nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=site&' . NV_OP_VARIABLE . '=edit&idsite=' . $global_config['idsite']);
+            nv_jsonOutput([
+                'success' => 1
+            ]);
         }
+
+        nv_jsonOutput([
+            'success' => 0,
+            'text' => 'Wrong request data!!!'
+        ]);
     } elseif ($checksess == md5($keylang . NV_CHECK_SESSION) and in_array($keylang, $lang_array_exit, true)) {
         // Cài đặt ngôn ngữ data mới
-        if (isset($array_lang_setup[$keylang]) and $array_lang_setup[$keylang] == 1) {
+        if (isset($array_lang_setup[$keylang]) and $array_lang_setup[$keylang]['setup'] == 1) {
             nv_jsonOutput([
                 'status' => 'error',
                 'mess' => $nv_Lang->getModule('nv_data_setup')
@@ -225,7 +238,7 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
                 // Cai dat du lieu mau
                 $global_config['site_home_module'] = 'users';
                 $_site_home_module = $db->query('SELECT config_value FROM ' . $db_config['prefix'] . "_config WHERE module = 'global' AND config_name = 'site_home_module' AND lang=" . $db->quote($global_config['site_lang']))
-                    ->fetchColumn();
+                ->fetchColumn();
                 if (!empty($_site_home_module)) {
                     $result = $db->query('SELECT COUNT(*) FROM ' . $db_config['prefix'] . '_' . $keylang . '_modules where title=' . $db->quote($_site_home_module));
                     if ($result->fetchColumn()) {
@@ -454,94 +467,28 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
             return $lang != $deletekeylang;
         });
         nv_rewrite_change();
-
-        nv_htmlOutput('OK');
-    }
-}
-
-$array_lang_installed = [];
-$num = sizeof($array_lang_setup);
-$weight = 0;
-foreach ($array_lang_setup as $keylang => $setup) {
-    if (in_array($keylang, $lang_array_exit, true)) {
-        ++$weight;
-        $xtpl->assign('ROW', [
-            'keylang' => $keylang,
-            'name' => $language_array[$keylang]['name']
+        nv_jsonOutput([
+            'status' => 'OK'
         ]);
-
-        if ($setup == 1) {
-            $array_lang_installed[$keylang] = $keylang;
-        }
-
-        for ($i = 1; $i <= $num; ++$i) {
-            $xtpl->assign('WEIGHT', [
-                'w' => $i,
-                'selected' => ($i == $weight) ? ' selected="selected"' : ''
-            ]);
-
-            $xtpl->parse('main.installed_loop.weight');
-        }
-
-        if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_IS_SPADMIN')) and $setup == 1) {
-            if (!in_array($keylang, $global_config['allow_sitelangs'], true)) {
-                $xtpl->assign('DELETE', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;deletekeylang=' . $keylang . '&amp;checksess=' . md5($keylang . NV_CHECK_SESSION . 'deletekeylang'));
-
-                $xtpl->parse('main.installed_loop.setup_delete');
-            } else {
-                $xtpl->parse('main.installed_loop.setup_note');
-            }
-
-            if ($keylang != $global_config['site_lang']) {
-                $selected_yes = $selected_no = ' ';
-
-                if (in_array($keylang, $global_config['allow_sitelangs'], true)) {
-                    $selected_yes = ' selected="selected"';
-                } else {
-                    $selected_no = ' selected="selected"';
-                }
-
-                $xtpl->assign('ALLOW_SITELANGS', [
-                    'selected_yes' => $selected_yes,
-                    'selected_no' => $selected_no,
-                    'url_yes' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;keylang=' . $keylang . '&amp;activelang=1&amp;checksess=' . md5('activelang_' . $keylang . NV_CHECK_SESSION),
-                    'url_no' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;keylang=' . $keylang . '&amp;activelang=0&amp;checksess=' . md5('activelang_' . $keylang . NV_CHECK_SESSION)
-                ]);
-
-                $xtpl->parse('main.installed_loop.allow_sitelangs');
-            } else {
-                $xtpl->parse('main.installed_loop.allow_sitelangs_note');
-            }
-        }
-
-        $xtpl->parse('main.installed_loop');
     }
 }
 
-$lang_can_install = false;
-foreach ($lang_array_exit as $keylang) {
-    if (!isset($array_lang_installed[$keylang])) {
-        $lang_can_install = true;
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/main.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->registerPlugin('modifier', 'md5', 'md5');
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-        $xtpl->assign('ROW', [
-            'keylang' => $keylang,
-            'name' => $language_array[$keylang]['name']
-        ]);
+$tpl->assign('EXISTS_LANGS', $lang_array_exit);
+$tpl->assign('LIST_LANGS', $array_lang_setup);
+$tpl->assign('NUM_LANGS', sizeof($array_lang_setup));
+$tpl->assign('LANGUAGE_ARRAY', $language_array);
+$tpl->assign('GCONFIG', $global_config);
+$tpl->assign('OTHER_LANGS', $lang_can_install);
 
-        if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_IS_SPADMIN'))) {
-            $xtpl->assign('INSTALL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;keylang=' . $keylang . '&amp;checksess=' . md5($keylang . NV_CHECK_SESSION));
-            $xtpl->parse('main.can_install.loop.setup_new');
-        }
-        $xtpl->parse('main.can_install.loop');
-    }
-}
-
-if ($lang_can_install) {
-    $xtpl->parse('main.can_install');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('main.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

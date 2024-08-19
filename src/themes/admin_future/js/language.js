@@ -224,4 +224,134 @@ $(document).ready(function() {
         }
         ajLangInterface(btn, icon);
     });
+
+    // Cài ngôn ngữ data mới
+    $('[data-toggle="setup_new"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        $.ajax({
+            type: 'GET',
+            url: btn.data('url') + '&nocache=' + new Date().getTime(),
+            dataType: 'json',
+            cache: false,
+            success: function(respon) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                if (respon.status != 'OK') {
+                    nvToast(respon.mess, 'error');
+                    return;
+                }
+                window.location.href = respon.redirect;
+            },
+            error: function(xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
+
+    // Xóa ngôn ngữ data
+    $('[data-toggle="setup_delete"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(nv_is_del_confirm[0], () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'GET',
+                url: btn.data('url') + '&nocache=' + new Date().getTime(),
+                dataType: 'json',
+                cache: false,
+                success: function(respon) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (respon.status != 'OK') {
+                        nvToast(respon.mess, 'error');
+                        return;
+                    }
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
+
+    // Đình chỉ/kích hoạt hiển thị ngoài site ngôn ngữ data
+    $('[data-toggle="activelang"]').on('change', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        if (btn.is(':disabled')) {
+            return;
+        }
+        btn.prop('disabled', true);
+        $.ajax({
+            type: 'GET',
+            url: btn.data('url') + (btn.is(':checked') ? 1 : 0) + '&nocache=' + new Date().getTime(),
+            dataType: 'json',
+            cache: false,
+            success: function(respon) {
+                btn.prop('disabled', false);
+                if (!respon.success) {
+                    nvToast(respon.text, 'error');
+                    btn.prop('checked', btn.data('current'));
+                    return;
+                }
+                location.reload();
+            },
+            error: function(xhr, text, err) {
+                btn.prop('disabled', false);
+                btn.prop('checked', btn.data('current'));
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
+
+    // Thay đổi thứ tự ngôn ngữ data
+    $('[data-toggle="change_weight"]').on('change', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        if (btn.is(':disabled')) {
+            return;
+        }
+        let new_weight = btn.val();
+        $('[data-toggle="change_weight"]').prop('disabled', true);
+        $.ajax({
+            type: 'POST',
+            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&nocache=' + new Date().getTime(),
+            dataType: 'json',
+            data: {
+                changeweight: $('body').data('checksess'),
+                keylang: btn.data('keylang'),
+                new_weight: new_weight
+            },
+            cache: false,
+            success: function(respon) {
+                $('[data-toggle="change_weight"]').prop('disabled', false);
+                if (respon.status != 'OK') {
+                    nvToast(respon.mess, 'error');
+                    btn.val(btn.data('current'));
+                    return;
+                }
+                location.reload();
+            },
+            error: function(xhr, text, err) {
+                $('[data-toggle="change_weight"]').prop('disabled', false);
+                btn.val(btn.data('current'));
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
 });
