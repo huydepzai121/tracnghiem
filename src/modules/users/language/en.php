@@ -754,6 +754,7 @@ $lang_module['update_LDAP_config_lname'] = 'Last Name';
 $lang_module['default'] = 'Default';
 $lang_module['allowuserloginmulti'] = 'Allow user login multi';
 $lang_module['user_check_pass_time'] = 'Check pass time';
+$lang_module['user_check_pass_time_note'] = 'Enter 0 if you do not want to check (not recommended)';
 $lang_module['auto_login_after_reg'] = 'Automatically login after successful registration';
 $lang_module['active_group_newusers'] = 'Enable new member';
 $lang_module['active_group_newusers_note'] = 'If this function is activated, the new member registration will be automatically classified as "activated" until it has been removed from the team manager, at which new members are considered "Official members"';

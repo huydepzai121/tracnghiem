@@ -106,7 +106,7 @@ if (preg_match('/^([a-z0-9\-\_]+)$/', $oauth_config, $m) and file_exists(NV_ROOT
         $array_config['openid_processing'] = $nv_Request->get_typed_array('openid_processing', 'post', 'string', []);
         $array_config['openid_processing'] = !empty($array_config['openid_processing']) ? implode(',', $array_config['openid_processing']) : '';
 
-        if ($array_config['user_check_pass_time'] < 120) {
+        if ($array_config['user_check_pass_time'] < 120 and $array_config['user_check_pass_time'] != 0) {
             $array_config['user_check_pass_time'] = 120;
         }
         $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET config_value = :config_value WHERE lang = 'sys' AND module = 'site' AND config_name = :config_name");

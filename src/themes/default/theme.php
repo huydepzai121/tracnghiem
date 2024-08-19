@@ -65,7 +65,6 @@ function nv_site_theme($contents, $full = true)
     $xtpl->assign('NV_SITE_NAME', $global_config['site_name']);
     $xtpl->assign('NV_SITE_TITLE', $global_config['site_name'] . NV_TITLEBAR_DEFIS . $nv_Lang->getGlobal('admin_page') . NV_TITLEBAR_DEFIS . $module_info['custom_title']);
     $xtpl->assign('SITE_DESCRIPTION', $global_config['site_description']);
-    $xtpl->assign('NV_CHECK_PASS_MSTIME', ((int) ($global_config['user_check_pass_time']) - 62) * 1000);
     $xtpl->assign('MODULE_NAME', $module_name);
     $xtpl->assign('NV_CURRENTTIME', nv_datetime_format(NV_CURRENTTIME, 0, 0));
     $xtpl->assign('NV_COOKIE_PREFIX', $global_config['cookie_prefix']);

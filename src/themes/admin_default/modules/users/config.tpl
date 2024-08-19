@@ -230,6 +230,7 @@
                             <input class="form-control number pull-left" style="width:50px;" type="text" value="{USER_CHECK_PASS_TIME}" name="user_check_pass_time" maxlength="3"/>
                             <span class="input-group-addon" id="basic-addon2">{GLANG.min}</span>
                         </div>
+                        {LANG.user_check_pass_time_note}
                     </td>
                 </tr>
                 <tr>

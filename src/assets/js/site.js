@@ -542,7 +542,7 @@ $(function() {
     });
 
     // Show messger timeout login users
-    nv_is_user && (myTimerPage = setTimeout(function() {
+    nv_is_user && nv_check_pass_mstime != 0 && (myTimerPage = setTimeout(function() {
         timeoutsessrun()
     }, nv_check_pass_mstime));
 

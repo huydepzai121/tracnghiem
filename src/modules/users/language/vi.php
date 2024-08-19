@@ -754,6 +754,7 @@ $lang_module['update_LDAP_config_lname'] = 'Họ';
 $lang_module['default'] = 'Mặc định';
 $lang_module['allowuserloginmulti'] = 'Cho phép đăng nhập cùng lúc từ nhiều trình duyệt';
 $lang_module['user_check_pass_time'] = 'Thời gian kiểm tra lại mật khẩu, nếu người dùng không sử dụng trình duyệt';
+$lang_module['user_check_pass_time_note'] = 'Nhập 0 nếu không muốn kiểm tra (không khuyến nghị)';
 $lang_module['auto_login_after_reg'] = 'Tự động đăng nhập sau khi đăng ký thành công';
 $lang_module['active_group_newusers'] = 'Kích hoạt chức năng xác thực người dùng';
 $lang_module['active_group_newusers_note'] = 'Nếu chức năng này được kích hoạt, những người dùng mới đăng ký sẽ được tự động xếp vào nhóm "Người dùng mới" cho đến khi được người quản lý loại khỏi nhóm, lúc này người dùng mới được xem là "Người dùng chính thức"';

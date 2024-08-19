@@ -754,6 +754,7 @@ $lang_module['update_LDAP_config_lname'] = 'Nom';
 $lang_module['default'] = 'Par défaut';
 $lang_module['allowuserloginmulti'] = 'Permettre de connecter sur plusieurs navigateurs';
 $lang_module['user_check_pass_time'] = 'Le temps de vérifier les mots de passe, si les utilisateurs n\'utilisent pas les navigateurs';
+$lang_module['user_check_pass_time_note'] = 'Entrez 0 si vous ne souhaitez pas vérifier (non recommandé)';
 $lang_module['auto_login_after_reg'] = 'Se connecter automatiquement après une inscription réussie';
 $lang_module['active_group_newusers'] = 'Activer membre d\'authentification';
 $lang_module['active_group_newusers_note'] = 'Si cette fonction est activée, le nouvel enregistrement de membre sera automatiquement classé comme "activé" jusqu\'à ce qu\'il ait été retiré du chef d\'équipe, au cours de laquelle les nouveaux membres sont considérés comme des «membres officiels "';
