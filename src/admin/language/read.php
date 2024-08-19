@@ -239,29 +239,16 @@ if ($nv_Request->get_string('checksess', 'get') == md5('readallfile' . NV_CHECK_
         $array_filename[] = str_replace(NV_ROOTDIR, '', str_replace('\\', '/', $include_lang));
     }
     $array_filename = array_filter($array_filename);
-
-    if (defined('NV_IS_AJAX')) {
-        nv_htmlOutput($nv_Lang->getModule('read_files') . ":\n\n" . implode("\n", $array_filename));
-    }
-
     $nv_Request->set_Cookie('drlg', $dirlang, NV_LIVE_COOKIE_TIME);
 
-    $xtpl = new XTemplate('read.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    $xtpl->assign('URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=interface');
-
-    foreach ($array_filename as $name) {
-        $xtpl->assign('NAME', $name);
-        $xtpl->parse('main.loop');
-    }
-
-    $xtpl->parse('main');
-    $contents = $xtpl->text('main');
-
-    include NV_ROOTDIR . '/includes/header.php';
-    echo nv_admin_theme($contents);
-    include NV_ROOTDIR . '/includes/footer.php';
+    nv_jsonOutput([
+        'success' => 1,
+        'text' => $nv_Lang->getModule('read_files'),
+        'files' => array_values($array_filename)
+    ]);
 }
 
-nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
+nv_jsonOutput([
+    'success' => 0,
+    'text' => 'Wrong request data!!!'
+]);

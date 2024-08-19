@@ -176,4 +176,52 @@ $(document).ready(function() {
             demoTime();
         });
     }
+
+    // Các thao tác dạng GET:url > alert result
+    const ajLangInterface = (btn, icon) => {
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        $.ajax({
+            type: 'GET',
+            url: btn.data('url') + '&nocache=' + new Date().getTime(),
+            dataType: 'json',
+            cache: false,
+            success: function(respon) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                if (!respon.success) {
+                    nvToast(respon.text, 'error');
+                    return;
+                }
+                let html;
+                if (respon.files) {
+                    html = '<div><strong>' + respon.text + ':</strong></div>';
+                    html += respon.files.join('<br />');
+                } else {
+                    html = respon.text;
+                }
+                nvAlert(html, () => {
+                    location.reload();
+                });
+            },
+            error: function(xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    }
+    $('[data-toggle="ajLangInterface"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        if (btn.data('confirm')) {
+            nvConfirm(nv_is_del_confirm[0], () => {
+                ajLangInterface(btn, icon);
+            });
+            return;
+        }
+        ajLangInterface(btn, icon);
+    });
 });

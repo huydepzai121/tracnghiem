@@ -13,21 +13,19 @@ if (!defined('NV_IS_FILE_LANG')) {
     exit('Stop!!!');
 }
 
+$page_title = $nv_Lang->getModule('nv_lang_setting');
+
+// Lưu cấu hình đọc ngôn ngữ giao diện
 if ($nv_Request->get_string('checkss', 'post') == NV_CHECK_SESSION) {
     $read_type = $nv_Request->get_int('read_type', 'post', 0);
     $db->query('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET config_value = '" . $read_type . "' WHERE lang='sys' AND module = 'global' AND config_name = 'read_type'");
     nv_save_file_config_global();
 
-    nv_htmlOutput($nv_Lang->getModule('nv_setting_save'));
+    nv_jsonOutput([
+        'status' => 'success',
+        'mess' => $nv_Lang->getModule('nv_setting_save')
+    ]);
 }
-
-$a = 1;
-
-$page_title = $nv_Lang->getModule('nv_lang_setting');
-
-$xtpl = new XTemplate('setting.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 
 $lang_array_exit = nv_scandir(NV_ROOTDIR . '/includes/language', '/^[a-z]{2}+$/');
 $lang_array_data_exit = [];
@@ -39,71 +37,35 @@ foreach ($columns_array as $row) {
     }
 }
 
-$a = 0;
+$array = [];
 foreach ($language_array as $key => $value) {
     if (file_exists(NV_ROOTDIR . '/includes/language/' . $key . '/global.php')) {
-        $arr_lang_func = [];
-        $arr_lang_func['read'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=read&amp;dirlang=' . $key . '&amp;checksess=' . md5('readallfile' . NV_CHECK_SESSION);
-        if (in_array($key, $lang_array_data_exit, true) and in_array('edit', $allow_func, true)) {
-            $arr_lang_func['edit'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=interface&amp;dirlang=' . $key;
-        }
-        if (in_array($key, $lang_array_data_exit, true) and in_array('write', $allow_func, true)) {
-            $arr_lang_func['write'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=write&amp;dirlang=' . $key . '&amp;checksess=' . md5('writeallfile' . NV_CHECK_SESSION);
-        }
-        $arr_lang_func['download'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=download&amp;dirlang=' . $key . '&amp;checksess=' . md5('downloadallfile' . NV_CHECK_SESSION);
-        if (in_array($key, $lang_array_data_exit, true) and in_array('delete', $allow_func, true)) {
-            $arr_lang_func['delete'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=delete&amp;type=db&amp;dirlang=' . $key . '&amp;checksess=' . md5('deleteallfile' . NV_CHECK_SESSION);
-        }
-        if (!in_array($key, $global_config['setup_langs'], true) and in_array('delete', $allow_func, true)) {
-            $arr_lang_func['delete_files'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=delete&amp;type=files&amp;dirlang=' . $key . '&amp;checksess=' . md5('deleteallfile' . NV_CHECK_SESSION);
-        }
-
-        $xtpl->assign('LANG_FUNC', $arr_lang_func);
-
-        $xtpl->assign('ROW', [
-            'number' => ++$a,
+        $array[] = [
             'key' => $key,
             'language' => $value['language'],
             'name' => $value['name'],
-            'arr_lang_func' => implode(' - ', $arr_lang_func)
-        ]);
-
-        if (in_array($key, $lang_array_data_exit, true) and in_array('edit', $allow_func, true)) {
-            $xtpl->parse('main.loop.edit');
-        }
-        if (in_array($key, $lang_array_data_exit, true) and in_array('write', $allow_func, true)) {
-            $xtpl->parse('main.loop.write');
-        }
-        if (in_array($key, $lang_array_data_exit, true) and in_array('delete', $allow_func, true)) {
-            $xtpl->parse('main.loop.delete');
-        }
-        if (!in_array($key, $global_config['setup_langs'], true) and in_array('delete', $allow_func, true)) {
-            $xtpl->parse('main.loop.delete_files');
-        }
-        $xtpl->parse('main.loop');
+            'allowed_edit' => (in_array($key, $lang_array_data_exit, true) and in_array('edit', $allow_func, true)),
+            'allowed_write' => (in_array($key, $lang_array_data_exit, true) and in_array('write', $allow_func, true)),
+            'allowed_delete' => (in_array($key, $lang_array_data_exit, true) and in_array('delete', $allow_func, true)),
+            'allowed_delete_files' => (!in_array($key, $global_config['setup_langs'], true) and in_array('delete', $allow_func, true)),
+            'checkss_read' => md5('readallfile' . NV_CHECK_SESSION),
+            'checkss_write' => md5('writeallfile' . NV_CHECK_SESSION),
+            'checkss_download' => md5('downloadallfile' . NV_CHECK_SESSION),
+            'checkss_delete' => md5('deleteallfile' . NV_CHECK_SESSION)
+        ];
     }
 }
 
-$array_type = [$nv_Lang->getModule('nv_setting_type_0'), $nv_Lang->getModule('nv_setting_type_1'), $nv_Lang->getModule('nv_setting_type_2')];
-foreach ($array_type as $key => $value) {
-    $xtpl->assign('TYPE', [
-        'key' => $key,
-        'checked' => $global_config['read_type'] == $key ? ' checked="checked"' : '',
-        'title' => $value
-    ]);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/setting.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('GCONFIG', $global_config);
+$tpl->assign('ROWS', $array);
 
-    $xtpl->parse('main.type');
-}
-
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('setting.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

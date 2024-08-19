@@ -31,13 +31,15 @@ if ($nv_Request->isset_request('idfile,checksess', 'get') and $nv_Request->get_s
             'status' => 'OK',
             'mess' => $nv_Lang->getModule('nv_lang_wite_ok') . ': ' . str_replace(NV_ROOTDIR, '', str_replace('\\', '/', $include_lang))
         ]);
-    } else {
-        nv_jsonOutput([
-            'status' => 'error',
-            'mess' => $content
-        ]);
     }
-} elseif ($nv_Request->isset_request('checksess', 'get') and $nv_Request->get_string('checksess', 'get') == md5('writeallfile' . NV_CHECK_SESSION)) {
+
+    nv_jsonOutput([
+        'status' => 'error',
+        'mess' => $content
+    ]);
+}
+
+if ($nv_Request->isset_request('checksess', 'get') and $nv_Request->get_string('checksess', 'get') == md5('writeallfile' . NV_CHECK_SESSION)) {
     $dirlang = $nv_Request->get_string('dirlang', 'get', '');
 
     if ($dirlang != '' and preg_match('/^([a-z]{2})$/', $dirlang)) {
@@ -57,11 +59,21 @@ if ($nv_Request->isset_request('idfile,checksess', 'get') and $nv_Request->get_s
         }
 
         if (empty($content)) {
-            nv_htmlOutput($nv_Lang->getModule('nv_lang_wite_ok') . ":\n\n" . implode("\n", $array_filename));
+            nv_jsonOutput([
+                'success' => 1,
+                'text' => $nv_Lang->getModule('nv_lang_wite_ok'),
+                'files' => array_values($array_filename)
+            ]);
         }
     }
 
-    nv_htmlOutput($nv_Lang->getModule('nv_error_write_file'));
-} else {
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=main&dirlang=' . $dirlang);
+    nv_jsonOutput([
+        'success' => 0,
+        'text' => $nv_Lang->getModule('nv_error_write_file')
+    ]);
 }
+
+nv_jsonOutput([
+    'success' => 0,
+    'text' => 'Wrong request data!!!'
+]);

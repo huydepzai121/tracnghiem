@@ -92,13 +92,20 @@ if ($nv_Request->get_string('checksess', 'get') == md5('deleteallfile' . NV_CHEC
 
         if ($type == 'files') {
             nv_jsonOutput([
-                'status' => 'OK',
-                'mess' => $nv_Lang->getModule('nv_lang_delete_files_ok') . ":\n\n" . implode("\n", $array_filename)
+                'success' => 1,
+                'text' => $nv_Lang->getModule('nv_lang_delete_files_ok'),
+                'files' => array_values($array_filename)
             ]);
         }
 
-        nv_htmlOutput($nv_Lang->getModule('nv_lang_deleteok'));
+        nv_jsonOutput([
+            'success' => 1,
+            'text' => $nv_Lang->getModule('nv_lang_deleteok')
+        ]);
     }
 }
 
-nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
+nv_jsonOutput([
+    'success' => 0,
+    'text' => 'Wrong request data!!!'
+]);
