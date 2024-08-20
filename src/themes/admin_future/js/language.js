@@ -8,6 +8,15 @@
  */
 
 $(document).ready(function() {
+    // Select 2
+    if ($('.select2').length) {
+        $('.select2').select2({
+            language: nv_lang_interface,
+            dir: $('html').attr('dir'),
+            width: '100%'
+        });
+    }
+
     // Thiết lập bản địa hóa
     let tabRegion = $('#tab-region');
     if (tabRegion.length) {
@@ -354,4 +363,28 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Xử lý tại trang kiểm tra ngôn ngữ giao diện
+    let clform = $('#form-checklang');
+    if (clform.length) {
+        $('[name=typelang]', clform).on('change', function() {
+            var lang = $(this).val(),
+                sourcelang = $('[name=sourcelang]', clform).val();
+            if (lang == '' || lang == sourcelang) {
+                $('[type=submit]', clform).prop('disabled', true);
+            } else {
+                $('[type=submit]', clform).prop('disabled', false);
+            }
+        });
+
+        $('[name=sourcelang]', clform).on('change', function() {
+            var sourcelang = $(this).val(),
+                lang = $('[name=typelang]', clform).val();
+            $('[name=typelang] option', clform).prop('disabled', false);
+            $('[name=typelang] option[value=' + sourcelang + ']', clform).prop('disabled', true);
+            if (lang == sourcelang) {
+                $('[name=typelang]', clform).val('');
+            }
+        });
+    }
 });
