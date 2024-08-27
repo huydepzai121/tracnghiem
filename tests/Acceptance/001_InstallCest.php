@@ -49,6 +49,21 @@ class InstallCest
                 }
             }
         }
+
+        // Xóa cache
+        $dirs = scandir(NV_ROOTDIR . '/data/cache');
+        if (!empty($dirs)) {
+            foreach ($dirs as $dir) {
+                if ($dir != '.' and $dir != '..' and is_dir(NV_ROOTDIR . '/data/cache/' . $dir)) {
+                    $files = scandir(NV_ROOTDIR . '/data/cache/' . $dir);
+                    foreach ($files as $file) {
+                        if (preg_match('/\.(cache|php)$/i', $file)) {
+                            unlink(NV_ROOTDIR . '/data/cache/' . $dir . '/' . $file);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public function installStep1(AcceptanceTester $I)
