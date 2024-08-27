@@ -753,7 +753,8 @@ $lang_module['update_LDAP_config_name'] = 'First Name';
 $lang_module['update_LDAP_config_lname'] = 'Last Name';
 $lang_module['default'] = 'Default';
 $lang_module['allowuserloginmulti'] = 'Allow user login multi';
-$lang_module['user_check_pass_time'] = 'Check pass time';
+$lang_module['user_check_pass_time'] = 'Password recheck time, if user is not using browser';
+$lang_module['user_check_pass_time0'] = 'Check still online';
 $lang_module['user_check_pass_time_note'] = 'Enter 0 if you do not want to check (not recommended)';
 $lang_module['auto_login_after_reg'] = 'Automatically login after successful registration';
 $lang_module['active_group_newusers'] = 'Enable new member';
@@ -870,6 +871,7 @@ $lang_module['active2step_status'] = '2-step verification status';
 $lang_module['active2step_status0'] = '2-step verification is not enabled';
 $lang_module['active2step_status1'] = '2-step verification enabled';
 $lang_module['active2step_status2'] = 'Request to disable 2-step verification';
+$lang_module['config_deny'] = 'Config deny words';
 
 $lang_module['merge_field_active_deadline'] = 'Expired time for active';
 $lang_module['merge_field_link'] = 'Link';

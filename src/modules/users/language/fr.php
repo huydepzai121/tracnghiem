@@ -754,6 +754,7 @@ $lang_module['update_LDAP_config_lname'] = 'Nom';
 $lang_module['default'] = 'Par défaut';
 $lang_module['allowuserloginmulti'] = 'Permettre de connecter sur plusieurs navigateurs';
 $lang_module['user_check_pass_time'] = 'Le temps de vérifier les mots de passe, si les utilisateurs n\'utilisent pas les navigateurs';
+$lang_module['user_check_pass_time0'] = 'Vérifiez toujours en ligne';
 $lang_module['user_check_pass_time_note'] = 'Entrez 0 si vous ne souhaitez pas vérifier (non recommandé)';
 $lang_module['auto_login_after_reg'] = 'Se connecter automatiquement après une inscription réussie';
 $lang_module['active_group_newusers'] = 'Activer membre d\'authentification';
@@ -870,6 +871,7 @@ $lang_module['active2step_status'] = 'Statut de vérification en 2 étapes';
 $lang_module['active2step_status0'] = 'La vérification en deux étapes n\'est pas activée';
 $lang_module['active2step_status1'] = 'Vérification en deux étapes activée';
 $lang_module['active2step_status2'] = 'Demande de désactivation de la vérification en deux étapes';
+$lang_module['config_deny'] = 'Configurer les mots de refus';
 
 $lang_module['merge_field_active_deadline'] = 'Temps écoulé pour actif';
 $lang_module['merge_field_link'] = 'Lien';

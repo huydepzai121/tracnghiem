@@ -25,6 +25,9 @@ nv_add_hook($module_name, 'get_module_admin_theme', $priority, function ($vars) 
     if (($module_info['module_file'] ?? '') == 'news' and in_array($op, ['tags', 'main'])) {
         return $new_theme;
     }
+    if (($module_info['module_file'] ?? '') == 'users' and in_array($op, ['config'])) {
+        return $new_theme;
+    }
     if (in_array($module_name, ['siteinfo', 'authors', 'database'])) {
         return $new_theme;
     }
