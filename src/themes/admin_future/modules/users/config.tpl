@@ -480,6 +480,14 @@
                     <div class="row mb-3">
                         <div class="col-sm-8 col-lg-6 col-xxl-8 offset-sm-3 offset-xxl-4">
                             <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="remove_2step_allow" value="1"{if not empty($DATA.remove_2step_allow)} checked="checked"{/if} role="switch" id="element_remove_2step_allow">
+                                <label class="form-check-label" for="element_remove_2step_allow">{$LANG->getModule('remove_2step_allow')}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-8 col-lg-6 col-xxl-8 offset-sm-3 offset-xxl-4">
+                            <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" name="remove_2step_method" value="1"{if not empty($DATA.remove_2step_method)} checked="checked"{/if} role="switch" id="element_remove_2step_method">
                                 <label class="form-check-label" for="element_remove_2step_method">{$LANG->getModule('remove_2step_method')}</label>
                             </div>

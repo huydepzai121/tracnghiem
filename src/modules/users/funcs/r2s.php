@@ -15,7 +15,7 @@ if (!defined('NV_IS_MOD_USER')) {
 
 use NukeViet\Module\users\Shared\Emails;
 
-if (defined('NV_IS_USER')) {
+if (defined('NV_IS_USER') or empty($global_config['remove_2step_allow'])) {
     nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
 }
 

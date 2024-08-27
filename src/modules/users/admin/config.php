@@ -110,6 +110,7 @@ if ($nv_Request->isset_request('save', 'post')) {
         $array_config['login_name_type'] = 'username';
     }
     $array_config['remove_2step_method'] = (int) $nv_Request->get_bool('remove_2step_method', 'post', false);
+    $array_config['remove_2step_allow'] = (int) $nv_Request->get_bool('remove_2step_allow', 'post', false);
 
     $array_config['whoviewuser'] = $nv_Request->get_typed_array('whoviewuser', 'post', 'int', []);
     $array_config['whoviewuser'] = !empty($array_config['whoviewuser']) ? implode(',', nv_groups_post(array_intersect($array_config['whoviewuser'], array_keys($groups_list)))) : '';
