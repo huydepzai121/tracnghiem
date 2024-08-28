@@ -130,6 +130,7 @@ if ($page_config['viewtype'] == 2) {
         $query = 'UPDATE ' . NV_PREFIXLANG . '_' . $module_data . ' SET hitstotal=hitstotal+1 WHERE id=' . $id;
         $db->query($query);
     }
+    [$rowdetail, $other_links, $content_comment] = nv_apply_hook($module_name, 'before_detail_theme', [$rowdetail, $other_links, $content_comment], [$rowdetail, $other_links, $content_comment]);
     $contents = nv_page_main($rowdetail, $other_links, $content_comment);
 } else {
     // Xem theo danh sách

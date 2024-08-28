@@ -557,6 +557,7 @@ if (!empty($news_contents['auto_nav']) and !empty($news_contents['bodyhtml'])) {
     }
 }
 
+[$news_contents, $array_keyword, $related_new_array, $related_array, $topic_array, $content_comment] = nv_apply_hook($module_name, 'before_detail_theme', [$news_contents, $array_keyword, $related_new_array, $related_array, $topic_array, $content_comment], [$news_contents, $array_keyword, $related_new_array, $related_array, $topic_array, $content_comment]);
 $contents = detail_theme($news_contents, $array_keyword, $related_new_array, $related_array, $topic_array, $content_comment);
 
 $key_words = ($module_config[$module_name]['keywords_tag'] and empty($news_contents['keywords'])) ? implode(',', $key_words) : $news_contents['keywords'];
