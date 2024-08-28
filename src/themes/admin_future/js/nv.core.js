@@ -864,7 +864,7 @@ $(document).ready(function() {
         $('.is-valid', this).removeClass('is-valid');
 
         if (typeof(CKEDITOR) !== 'undefined') {
-            for (instance in CKEDITOR.instances) {
+            for (let instance in CKEDITOR.instances) {
                 CKEDITOR.instances[instance].updateElement();
                 CKEDITOR.instances[instance].setReadOnly(true)
             }
@@ -930,7 +930,7 @@ $(document).ready(function() {
                         setTimeout(() => {
                             $('input, textarea, select, button', that).prop('disabled', false);
                             if (typeof(CKEDITOR) !== 'undefined') {
-                                for (instance in CKEDITOR.instances) {
+                                for (let instance in CKEDITOR.instances) {
                                     CKEDITOR.instances[instance].setReadOnly(false);
                                 }
                             }

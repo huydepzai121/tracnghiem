@@ -202,7 +202,7 @@ function get_alias() {
             return alert("{LANG.title_empty}"), $("input[name=title]").select(), false
         }
         if ( typeof (CKEDITOR) !== 'undefined') {
-            for ( instance in CKEDITOR.instances ){
+            for (let instance in CKEDITOR.instances) {
                 CKEDITOR.instances[instance].updateElement();
             }
         }
