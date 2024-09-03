@@ -1832,7 +1832,7 @@ function nv_generate_page($base_url, $num_items, $per_page, $on_page, $add_prevn
         if ($total_pages > 3) {
             if ($on_page > 1 and $on_page < $total_pages) {
                 if ($on_page > 5) {
-                    $page_string .= '<li' . $li_disabled_class . '><span>...</span></li>';
+                    $page_string .= '<li' . $li_disabled_class . '><span' . $a_class . '>...</span></li>';
                 }
 
                 $init_page_min = ($on_page > 4) ? $on_page : 5;
@@ -1845,10 +1845,10 @@ function nv_generate_page($base_url, $num_items, $per_page, $on_page, $add_prevn
                 }
 
                 if ($on_page < $total_pages - 4) {
-                    $page_string .= '<li' . $li_disabled_class . '><span>...</span></li>';
+                    $page_string .= '<li' . $li_disabled_class . '><span' . $a_class . '>...</span></li>';
                 }
             } else {
-                $page_string .= '<li' . $li_disabled_class . '><span>...</span></li>';
+                $page_string .= '<li' . $li_disabled_class . '><span' . $a_class . '>...</span></li>';
             }
 
             for ($i = $total_pages - 2; $i < $total_pages + 1; ++$i) {
@@ -1940,7 +1940,7 @@ function nv_alias_page($title, $base_url, $num_items, $per_page, $on_page, $add_
 
         if ($on_page > 1 and $on_page < $total_pages) {
             if ($on_page > 3) {
-                $page_string .= '<li' . $li_disabled_class . '><span>...</span></li>';
+                $page_string .= '<li' . $li_disabled_class . '><span' . $a_class . '>...</span></li>';
             }
 
             $init_page_min = ($on_page > 3) ? $on_page : 4;
@@ -1956,10 +1956,10 @@ function nv_alias_page($title, $base_url, $num_items, $per_page, $on_page, $add_
             }
 
             if ($on_page < $total_pages - 3) {
-                $page_string .= '<li' . $li_disabled_class . '><span>...</span></li>';
+                $page_string .= '<li' . $li_disabled_class . '><span' . $a_class . '>...</span></li>';
             }
         } else {
-            $page_string .= '<li' . $li_disabled_class . '><span>...</span></li>';
+            $page_string .= '<li' . $li_disabled_class . '><span' . $a_class . '>...</span></li>';
         }
 
         $init_page_min = ($total_pages - $on_page > 3) ? $total_pages : $total_pages - 1;
