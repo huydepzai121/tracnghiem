@@ -7,7 +7,7 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-$(document).ready(function() {
+$(function() {
     var last_id = 0;
     var ps = false;
     var ctn = $('#main-notifications');

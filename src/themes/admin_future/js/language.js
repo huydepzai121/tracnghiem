@@ -7,7 +7,7 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-$(document).ready(function() {
+$(function() {
     // Select 2
     if ($('.select2').length) {
         $('.select2').select2({

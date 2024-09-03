@@ -45,10 +45,11 @@ const nvToast = (text, level, halign, valign) => {
     $('.toast-items', toasts).append(`
     <div data-id="` + id + `" id="toast-` + id + `" class="toast align-items-center ` + level + ` border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
-            <div class="toast-body text-break">` + text + `</div>
+            <div class="toast-body text-break"></div>
             <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="` + nv_close + `"></button>
         </div>
     </div>`);
+    $('#toast-' + id + ' .toast-body').text(text);
     if (align != '') {
         toasts.removeClass(allAlign).addClass(align);
     }
@@ -134,9 +135,7 @@ const nvConfirm = (message, cbConfirm, cbCancel, cancelBtn) => {
     box.setAttribute('aria-labelledby', id + '-body');
     box.innerHTML = `<div class="modal-dialog alert-box-dialog modal-dialog-scrollable">
         <div class="modal-content alert-box-content">
-            <div class="modal-body alert-box-body" id="` + id + `-body">
-                ` + message + `
-            </div>
+            <div class="modal-body alert-box-body" id="` + id + `-body"></div>
             <div class="modal-footer alert-box-footer" id="` + id + `-footer">
                 <button type="button" class="btn btn-primary" id="` + id + `-confirm"><i class="fa-solid fa-check"></i> ` + nv_confirm + `</button>
                 ` + (cancelBtn ? `<button type="button" class="btn btn-secondary" id="` + id + `-close"><i class="fa-solid fa-xmark"></i> ` + nv_close + `</button>` : '') + `
@@ -149,6 +148,7 @@ const nvConfirm = (message, cbConfirm, cbCancel, cancelBtn) => {
     backdrop.classList.add('alert-backdrop', 'fade');
 
     body.append(box, backdrop);
+    $('#' + id + '-body').text(message);
     box.style.display = 'block';
 
     const cOverflow = body.style.overflow;
@@ -250,7 +250,7 @@ function formXSSsanitize(form) {
     });
 }
 
-$(document).ready(function() {
+$(function() {
     // Hàm lưu config tùy chỉnh của giao diện
     function storeThemeConfig(configName, configValue, callbackSuccess, callbackError) {
         if (typeof callbackSuccess == 'undefined') {

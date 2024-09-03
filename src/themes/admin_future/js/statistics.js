@@ -7,7 +7,7 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-$(document).ready(function() {
+$(function() {
     // Hàm định dạng số
     function _format(value, decimals = 0, decPoint = '.', thousandsSep = ',') {
         let formatted = '';
