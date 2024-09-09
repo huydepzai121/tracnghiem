@@ -108,6 +108,10 @@ class Error
         '/includes/vendor/vinades/nukeviet/Core/Database.php' => [[
             'message' => '/SQLSTATE.*HY000.*Unknown database/i',
             'request' => '/\/install\/index\.php.*step\=5/i'
+        ]],
+        // Cảnh báo sRGB khi xử lý ảnh
+        '/includes/vendor/vinades/nukeviet/Files/Image.php' => [[
+            'message' => '/known[\s]*incorrect[\s]*sRGB[\s]*profile/i'
         ]]
     ];
 
