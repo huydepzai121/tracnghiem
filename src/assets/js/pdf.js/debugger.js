@@ -12,5 +12,600 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* eslint-disable no-var */
-"use strict";var opMap,FontInspector=function(){var e,t=!1;function n(){const e=document.querySelectorAll("span[data-font-name]");for(const t of e)t.className="debuggerHideText"}function a(e,t){const n=document.querySelectorAll(`span[data-font-name=${e}]`);for(const e of n)e.className=t?"debuggerShowText":"debuggerHideText"}function r(e){if(e.target.dataset.fontName&&"SPAN"===e.target.tagName.toUpperCase())for(var t=e.target.dataset.fontName,n=document.getElementsByTagName("input"),r=0;r<n.length;++r){var i=n[r];i.dataset.fontName===t&&(i.checked=!i.checked,a(t,i.checked),i.scrollIntoView())}}return{id:"FontInspector",name:"Font Inspector",panel:null,manager:null,init:function(t){var a=this.panel,r=document.createElement("button");r.addEventListener("click",n),r.textContent="Refresh",a.appendChild(r),e=document.createElement("div"),a.appendChild(e)},cleanup:function(){e.textContent=""},enabled:!1,get active(){return t},set active(e){(t=e)?(document.body.addEventListener("click",r,!0),n()):(document.body.removeEventListener("click",r,!0),function(){const e=document.querySelectorAll("span[data-font-name]");for(const t of e)t.className=""}())},fontAdded:function(t,r){var i=function(e,t){for(var n=document.createElement("table"),a=0;a<t.length;a++){var r=document.createElement("tr"),i=document.createElement("td");i.textContent=t[a],r.appendChild(i);var o=document.createElement("td");o.textContent=e[t[a]].toString(),r.appendChild(o),n.appendChild(r)}return n}(t,["name","type"]);const o=t.loadedName;var d=document.createElement("div"),l=document.createElement("span");l.textContent=o;var s=document.createElement("a");r?(r=/url\(['"]?([^)"']+)/.exec(r),s.href=r[1]):t.data&&(s.href=URL.createObjectURL(new Blob([t.data],{type:t.mimeType}))),s.textContent="Download";var c=document.createElement("a");c.href="",c.textContent="Log",c.addEventListener("click",(function(e){e.preventDefault()}));const p=document.createElement("input");p.setAttribute("type","checkbox"),p.dataset.fontName=o,p.addEventListener("click",(function(){a(o,p.checked)})),d.appendChild(p),d.appendChild(l),d.appendChild(document.createTextNode(" ")),d.appendChild(s),d.appendChild(document.createTextNode(" ")),d.appendChild(c),d.appendChild(i),e.appendChild(d),setTimeout((()=>{this.active&&n()}),2e3)}}}(),StepperManager=function(){var e=[],t=null,n=null,a=null,r=Object.create(null);return{id:"Stepper",name:"Stepper",panel:null,manager:null,init:function(e){var i=this;for(var o in n=document.createElement("div"),(a=document.createElement("select")).addEventListener("change",(function(e){i.selectStepper(this.value)})),n.appendChild(a),t=document.createElement("div"),this.panel.appendChild(n),this.panel.appendChild(t),sessionStorage.getItem("pdfjsBreakPoints")&&(r=JSON.parse(sessionStorage.getItem("pdfjsBreakPoints"))),opMap=Object.create(null),e.OPS)opMap[e.OPS[o]]=o},cleanup:function(){a.textContent="",t.textContent="",e=[]},enabled:!1,active:!1,create:function(n){var i=document.createElement("div");i.id="stepper"+n,i.hidden=!0,i.className="stepper",t.appendChild(i);var o=document.createElement("option");o.textContent="Page "+(n+1),o.value=n,a.appendChild(o);var d=r[n]||[],l=new Stepper(i,n,d);return e.push(l),1===e.length&&this.selectStepper(n,!1),l},selectStepper:function(t,n){var r;for(t|=0,n&&this.manager.selectPanel(this),r=0;r<e.length;++r){var i=e[r];i.panel.hidden=i.pageIndex!==t}var o=a.options;for(r=0;r<o.length;++r){var d=o[r];d.selected=(0|d.value)===t}},saveBreakPoints:function(e,t){r[e]=t,sessionStorage.setItem("pdfjsBreakPoints",JSON.stringify(r))}}}(),Stepper=function(){function e(e,t){var n=document.createElement(e);return t&&(n.textContent=t),n}function t(e){if("string"==typeof e){return e.length<=75?e:e.substring(0,75)+"..."}if("object"!=typeof e||null===e)return e;if("length"in e){var n,a,r=[];for(n=0,a=Math.min(10,e.length);n<a;n++)r.push(t(e[n]));return n<e.length&&r.push("..."),r}var i={};for(var o in e)i[o]=t(e[o]);return i}function n(e,t,n){this.panel=e,this.breakPoint=0,this.nextBreakPoint=null,this.pageIndex=t,this.breakPoints=n,this.currentIdx=-1,this.operatorListIdx=0}return n.prototype={init:function(t){var n=this.panel,a=e("div","c=continue, s=step"),r=e("table");a.appendChild(r),r.cellSpacing=0;var i=e("tr");r.appendChild(i),i.appendChild(e("th","Break")),i.appendChild(e("th","Idx")),i.appendChild(e("th","fn")),i.appendChild(e("th","args")),n.appendChild(a),this.table=r,this.updateOperatorList(t)},updateOperatorList:function(n){var a=this;function r(){var e=+this.dataset.idx;this.checked?a.breakPoints.push(e):a.breakPoints.splice(a.breakPoints.indexOf(e),1),StepperManager.saveBreakPoints(a.pageIndex,a.breakPoints)}if(!(this.operatorListIdx>15e3)){for(var i=document.createDocumentFragment(),o=Math.min(15e3,n.fnArray.length),d=this.operatorListIdx;d<o;d++){var l=e("tr");l.className="line",l.dataset.idx=d,i.appendChild(l);var s=this.breakPoints.includes(d),c=n.argsArray[d]||[],p=e("td"),u=e("input");u.type="checkbox",u.className="points",u.checked=s,u.dataset.idx=d,u.onclick=r,p.appendChild(u),l.appendChild(p),l.appendChild(e("td",d.toString()));var h=opMap[n.fnArray[d]],m=c;if("showText"===h){for(var f=c[0],v=[],g=[],C=0;C<f.length;C++){var b=f[C];"object"==typeof b&&null!==b?g.push(b.fontChar):(g.length>0&&(v.push(g.join("")),g=[]),v.push(b))}g.length>0&&v.push(g.join("")),m=[v]}l.appendChild(e("td",h)),l.appendChild(e("td",JSON.stringify(t(m))))}if(o<n.fnArray.length){var x=e("td","...");x.colspan=4,i.appendChild(x)}this.operatorListIdx=n.fnArray.length,this.table.appendChild(i)}},getNextBreakPoint:function(){this.breakPoints.sort((function(e,t){return e-t}));for(var e=0;e<this.breakPoints.length;e++)if(this.breakPoints[e]>this.currentIdx)return this.breakPoints[e];return null},breakIt:function(e,t){StepperManager.selectStepper(this.pageIndex,!0);var n=this,a=document;n.currentIdx=e;var r=function(e){switch(e.keyCode){case 83:a.removeEventListener("keydown",r),n.nextBreakPoint=n.currentIdx+1,n.goTo(-1),t();break;case 67:a.removeEventListener("keydown",r);var i=n.getNextBreakPoint();n.nextBreakPoint=i,n.goTo(-1),t();break}};a.addEventListener("keydown",r),n.goTo(e)},goTo:function(e){for(var t=this.panel.getElementsByClassName("line"),n=0,a=t.length;n<a;++n){var r=t[n];(0|r.dataset.idx)===e?(r.style.backgroundColor="rgb(251,250,207)",r.scrollIntoView()):r.style.backgroundColor=null}}},n}(),Stats=function(){var e=[];function t(e){for(;e.hasChildNodes();)e.removeChild(e.lastChild)}return{id:"Stats",name:"Stats",panel:null,manager:null,init(e){},enabled:!1,active:!1,add(n,a){if(a){var r=function(t){for(var n=0,a=e.length;n<a;++n)if(e[n].pageNumber===t)return n;return!1}(n);if(!1!==r){const t=e[r];this.panel.removeChild(t.div),e.splice(r,1)}var i=document.createElement("div");i.className="stats";var o=document.createElement("div");o.className="title",o.textContent="Page: "+n;var d=document.createElement("div");d.textContent=a.toString(),i.appendChild(o),i.appendChild(d),e.push({pageNumber:n,div:i}),e.sort((function(e,t){return e.pageNumber-t.pageNumber})),t(this.panel);for(var l=0,s=e.length;l<s;++l)this.panel.appendChild(e[l].div)}},cleanup(){e=[],t(this.panel)}}}();window.PDFBug=function(){var e=[],t=null;return{tools:[FontInspector,StepperManager,Stats],enable(e){var t=!1,n=this.tools;1===e.length&&"all"===e[0]&&(t=!0);for(var a=0;a<n.length;++a){var r=n[a];(t||e.includes(r.id))&&(r.enabled=!0)}t||n.sort((function(t,a){var r=e.indexOf(t.id);r=r<0?n.length:r;var i=e.indexOf(a.id);return r-(i=i<0?n.length:i)}))},init(t,n){var a=document.createElement("div");a.id="PDFBug";var r=document.createElement("div");r.setAttribute("class","controls"),a.appendChild(r);var i=document.createElement("div");i.setAttribute("class","panels"),a.appendChild(i),n.appendChild(a),n.style.right="300px";for(var o=this.tools,d=this,l=0;l<o.length;++l){var s=o[l],c=document.createElement("div"),p=document.createElement("button");p.textContent=s.name,p.addEventListener("click",function(e){return function(t){t.preventDefault(),d.selectPanel(e)}}(l)),r.appendChild(p),i.appendChild(c),s.panel=c,s.manager=this,s.enabled?s.init(t):c.textContent=s.name+' is disabled. To enable add  "'+s.id+'" to the pdfBug parameter and refresh (separate multiple by commas).',e.push(p)}this.selectPanel(0)},cleanup(){for(var e=0,t=this.tools.length;e<t;e++)this.tools[e].enabled&&this.tools[e].cleanup()},selectPanel(n){if("number"!=typeof n&&(n=this.tools.indexOf(n)),n!==t){t=n;for(var a=this.tools,r=0;r<a.length;++r){var i=r===n;e[r].classList.toggle("active",i),a[r].active=i,a[r].panel.hidden=!i}}}}}();
+
+const { OPS } = globalThis.pdfjsLib || (await import("pdfjs-lib"));
+
+const opMap = Object.create(null);
+for (const key in OPS) {
+  opMap[OPS[key]] = key;
+}
+
+const FontInspector = (function FontInspectorClosure() {
+  let fonts;
+  let active = false;
+  const fontAttribute = "data-font-name";
+  function removeSelection() {
+    const divs = document.querySelectorAll(`span[${fontAttribute}]`);
+    for (const div of divs) {
+      div.className = "";
+    }
+  }
+  function resetSelection() {
+    const divs = document.querySelectorAll(`span[${fontAttribute}]`);
+    for (const div of divs) {
+      div.className = "debuggerHideText";
+    }
+  }
+  function selectFont(fontName, show) {
+    const divs = document.querySelectorAll(
+      `span[${fontAttribute}=${fontName}]`
+    );
+    for (const div of divs) {
+      div.className = show ? "debuggerShowText" : "debuggerHideText";
+    }
+  }
+  function textLayerClick(e) {
+    if (
+      !e.target.dataset.fontName ||
+      e.target.tagName.toUpperCase() !== "SPAN"
+    ) {
+      return;
+    }
+    const fontName = e.target.dataset.fontName;
+    const selects = document.getElementsByTagName("input");
+    for (const select of selects) {
+      if (select.dataset.fontName !== fontName) {
+        continue;
+      }
+      select.checked = !select.checked;
+      selectFont(fontName, select.checked);
+      select.scrollIntoView();
+    }
+  }
+  return {
+    // Properties/functions needed by PDFBug.
+    id: "FontInspector",
+    name: "Font Inspector",
+    panel: null,
+    manager: null,
+    init() {
+      const panel = this.panel;
+      const tmp = document.createElement("button");
+      tmp.addEventListener("click", resetSelection);
+      tmp.textContent = "Refresh";
+      panel.append(tmp);
+
+      fonts = document.createElement("div");
+      panel.append(fonts);
+    },
+    cleanup() {
+      fonts.textContent = "";
+    },
+    enabled: false,
+    get active() {
+      return active;
+    },
+    set active(value) {
+      active = value;
+      if (active) {
+        document.body.addEventListener("click", textLayerClick, true);
+        resetSelection();
+      } else {
+        document.body.removeEventListener("click", textLayerClick, true);
+        removeSelection();
+      }
+    },
+    // FontInspector specific functions.
+    fontAdded(fontObj, url) {
+      function properties(obj, list) {
+        const moreInfo = document.createElement("table");
+        for (const entry of list) {
+          const tr = document.createElement("tr");
+          const td1 = document.createElement("td");
+          td1.textContent = entry;
+          tr.append(td1);
+          const td2 = document.createElement("td");
+          td2.textContent = obj[entry].toString();
+          tr.append(td2);
+          moreInfo.append(tr);
+        }
+        return moreInfo;
+      }
+      const moreInfo = properties(fontObj, ["name", "type"]);
+      const fontName = fontObj.loadedName;
+      const font = document.createElement("div");
+      const name = document.createElement("span");
+      name.textContent = fontName;
+      const download = document.createElement("a");
+      if (url) {
+        url = /url\(['"]?([^)"']+)/.exec(url);
+        download.href = url[1];
+      } else if (fontObj.data) {
+        download.href = URL.createObjectURL(
+          new Blob([fontObj.data], { type: fontObj.mimetype })
+        );
+      }
+      download.textContent = "Download";
+      const logIt = document.createElement("a");
+      logIt.href = "";
+      logIt.textContent = "Log";
+      logIt.addEventListener("click", function (event) {
+        event.preventDefault();
+        console.log(fontObj);
+      });
+      const select = document.createElement("input");
+      select.setAttribute("type", "checkbox");
+      select.dataset.fontName = fontName;
+      select.addEventListener("click", function () {
+        selectFont(fontName, select.checked);
+      });
+      font.append(select, name, " ", download, " ", logIt, moreInfo);
+      fonts.append(font);
+      // Somewhat of a hack, should probably add a hook for when the text layer
+      // is done rendering.
+      setTimeout(() => {
+        if (this.active) {
+          resetSelection();
+        }
+      }, 2000);
+    },
+  };
+})();
+
+// Manages all the page steppers.
+const StepperManager = (function StepperManagerClosure() {
+  let steppers = [];
+  let stepperDiv = null;
+  let stepperControls = null;
+  let stepperChooser = null;
+  let breakPoints = Object.create(null);
+  return {
+    // Properties/functions needed by PDFBug.
+    id: "Stepper",
+    name: "Stepper",
+    panel: null,
+    manager: null,
+    init() {
+      const self = this;
+      stepperControls = document.createElement("div");
+      stepperChooser = document.createElement("select");
+      stepperChooser.addEventListener("change", function (event) {
+        self.selectStepper(this.value);
+      });
+      stepperControls.append(stepperChooser);
+      stepperDiv = document.createElement("div");
+      this.panel.append(stepperControls, stepperDiv);
+      if (sessionStorage.getItem("pdfjsBreakPoints")) {
+        breakPoints = JSON.parse(sessionStorage.getItem("pdfjsBreakPoints"));
+      }
+    },
+    cleanup() {
+      stepperChooser.textContent = "";
+      stepperDiv.textContent = "";
+      steppers = [];
+    },
+    enabled: false,
+    active: false,
+    // Stepper specific functions.
+    create(pageIndex) {
+      const debug = document.createElement("div");
+      debug.id = "stepper" + pageIndex;
+      debug.hidden = true;
+      debug.className = "stepper";
+      stepperDiv.append(debug);
+      const b = document.createElement("option");
+      b.textContent = "Page " + (pageIndex + 1);
+      b.value = pageIndex;
+      stepperChooser.append(b);
+      const initBreakPoints = breakPoints[pageIndex] || [];
+      const stepper = new Stepper(debug, pageIndex, initBreakPoints);
+      steppers.push(stepper);
+      if (steppers.length === 1) {
+        this.selectStepper(pageIndex, false);
+      }
+      return stepper;
+    },
+    selectStepper(pageIndex, selectPanel) {
+      pageIndex |= 0;
+      if (selectPanel) {
+        this.manager.selectPanel(this);
+      }
+      for (const stepper of steppers) {
+        stepper.panel.hidden = stepper.pageIndex !== pageIndex;
+      }
+      for (const option of stepperChooser.options) {
+        option.selected = (option.value | 0) === pageIndex;
+      }
+    },
+    saveBreakPoints(pageIndex, bps) {
+      breakPoints[pageIndex] = bps;
+      sessionStorage.setItem("pdfjsBreakPoints", JSON.stringify(breakPoints));
+    },
+  };
+})();
+
+// The stepper for each page's operatorList.
+class Stepper {
+  // Shorter way to create element and optionally set textContent.
+  #c(tag, textContent) {
+    const d = document.createElement(tag);
+    if (textContent) {
+      d.textContent = textContent;
+    }
+    return d;
+  }
+
+  #simplifyArgs(args) {
+    if (typeof args === "string") {
+      const MAX_STRING_LENGTH = 75;
+      return args.length <= MAX_STRING_LENGTH
+        ? args
+        : args.substring(0, MAX_STRING_LENGTH) + "...";
+    }
+    if (typeof args !== "object" || args === null) {
+      return args;
+    }
+    if ("length" in args) {
+      // array
+      const MAX_ITEMS = 10,
+        simpleArgs = [];
+      let i, ii;
+      for (i = 0, ii = Math.min(MAX_ITEMS, args.length); i < ii; i++) {
+        simpleArgs.push(this.#simplifyArgs(args[i]));
+      }
+      if (i < args.length) {
+        simpleArgs.push("...");
+      }
+      return simpleArgs;
+    }
+    const simpleObj = {};
+    for (const key in args) {
+      simpleObj[key] = this.#simplifyArgs(args[key]);
+    }
+    return simpleObj;
+  }
+
+  constructor(panel, pageIndex, initialBreakPoints) {
+    this.panel = panel;
+    this.breakPoint = 0;
+    this.nextBreakPoint = null;
+    this.pageIndex = pageIndex;
+    this.breakPoints = initialBreakPoints;
+    this.currentIdx = -1;
+    this.operatorListIdx = 0;
+    this.indentLevel = 0;
+  }
+
+  init(operatorList) {
+    const panel = this.panel;
+    const content = this.#c("div", "c=continue, s=step");
+    const table = this.#c("table");
+    content.append(table);
+    table.cellSpacing = 0;
+    const headerRow = this.#c("tr");
+    table.append(headerRow);
+    headerRow.append(
+      this.#c("th", "Break"),
+      this.#c("th", "Idx"),
+      this.#c("th", "fn"),
+      this.#c("th", "args")
+    );
+    panel.append(content);
+    this.table = table;
+    this.updateOperatorList(operatorList);
+  }
+
+  updateOperatorList(operatorList) {
+    const self = this;
+
+    function cboxOnClick() {
+      const x = +this.dataset.idx;
+      if (this.checked) {
+        self.breakPoints.push(x);
+      } else {
+        self.breakPoints.splice(self.breakPoints.indexOf(x), 1);
+      }
+      StepperManager.saveBreakPoints(self.pageIndex, self.breakPoints);
+    }
+
+    const MAX_OPERATORS_COUNT = 15000;
+    if (this.operatorListIdx > MAX_OPERATORS_COUNT) {
+      return;
+    }
+
+    const chunk = document.createDocumentFragment();
+    const operatorsToDisplay = Math.min(
+      MAX_OPERATORS_COUNT,
+      operatorList.fnArray.length
+    );
+    for (let i = this.operatorListIdx; i < operatorsToDisplay; i++) {
+      const line = this.#c("tr");
+      line.className = "line";
+      line.dataset.idx = i;
+      chunk.append(line);
+      const checked = this.breakPoints.includes(i);
+      const args = operatorList.argsArray[i] || [];
+
+      const breakCell = this.#c("td");
+      const cbox = this.#c("input");
+      cbox.type = "checkbox";
+      cbox.className = "points";
+      cbox.checked = checked;
+      cbox.dataset.idx = i;
+      cbox.onclick = cboxOnClick;
+
+      breakCell.append(cbox);
+      line.append(breakCell, this.#c("td", i.toString()));
+      const fn = opMap[operatorList.fnArray[i]];
+      let decArgs = args;
+      if (fn === "showText") {
+        const glyphs = args[0];
+        const charCodeRow = this.#c("tr");
+        const fontCharRow = this.#c("tr");
+        const unicodeRow = this.#c("tr");
+        for (const glyph of glyphs) {
+          if (typeof glyph === "object" && glyph !== null) {
+            charCodeRow.append(this.#c("td", glyph.originalCharCode));
+            fontCharRow.append(this.#c("td", glyph.fontChar));
+            unicodeRow.append(this.#c("td", glyph.unicode));
+          } else {
+            // null or number
+            const advanceEl = this.#c("td", glyph);
+            advanceEl.classList.add("advance");
+            charCodeRow.append(advanceEl);
+            fontCharRow.append(this.#c("td"));
+            unicodeRow.append(this.#c("td"));
+          }
+        }
+        decArgs = this.#c("td");
+        const table = this.#c("table");
+        table.classList.add("showText");
+        decArgs.append(table);
+        table.append(charCodeRow, fontCharRow, unicodeRow);
+      } else if (fn === "restore" && this.indentLevel > 0) {
+        this.indentLevel--;
+      }
+      line.append(this.#c("td", " ".repeat(this.indentLevel * 2) + fn));
+      if (fn === "save") {
+        this.indentLevel++;
+      }
+
+      if (decArgs instanceof HTMLElement) {
+        line.append(decArgs);
+      } else {
+        line.append(this.#c("td", JSON.stringify(this.#simplifyArgs(decArgs))));
+      }
+    }
+    if (operatorsToDisplay < operatorList.fnArray.length) {
+      const lastCell = this.#c("td", "...");
+      lastCell.colspan = 4;
+      chunk.append(lastCell);
+    }
+    this.operatorListIdx = operatorList.fnArray.length;
+    this.table.append(chunk);
+  }
+
+  getNextBreakPoint() {
+    this.breakPoints.sort(function (a, b) {
+      return a - b;
+    });
+    for (const breakPoint of this.breakPoints) {
+      if (breakPoint > this.currentIdx) {
+        return breakPoint;
+      }
+    }
+    return null;
+  }
+
+  breakIt(idx, callback) {
+    StepperManager.selectStepper(this.pageIndex, true);
+    this.currentIdx = idx;
+
+    const listener = evt => {
+      switch (evt.keyCode) {
+        case 83: // step
+          document.removeEventListener("keydown", listener);
+          this.nextBreakPoint = this.currentIdx + 1;
+          this.goTo(-1);
+          callback();
+          break;
+        case 67: // continue
+          document.removeEventListener("keydown", listener);
+          this.nextBreakPoint = this.getNextBreakPoint();
+          this.goTo(-1);
+          callback();
+          break;
+      }
+    };
+    document.addEventListener("keydown", listener);
+    this.goTo(idx);
+  }
+
+  goTo(idx) {
+    const allRows = this.panel.getElementsByClassName("line");
+    for (const row of allRows) {
+      if ((row.dataset.idx | 0) === idx) {
+        row.style.backgroundColor = "rgb(251,250,207)";
+        row.scrollIntoView();
+      } else {
+        row.style.backgroundColor = null;
+      }
+    }
+  }
+}
+
+const Stats = (function Stats() {
+  let stats = [];
+  function clear(node) {
+    node.textContent = ""; // Remove any `node` contents from the DOM.
+  }
+  function getStatIndex(pageNumber) {
+    for (const [i, stat] of stats.entries()) {
+      if (stat.pageNumber === pageNumber) {
+        return i;
+      }
+    }
+    return false;
+  }
+  return {
+    // Properties/functions needed by PDFBug.
+    id: "Stats",
+    name: "Stats",
+    panel: null,
+    manager: null,
+    init() {},
+    enabled: false,
+    active: false,
+    // Stats specific functions.
+    add(pageNumber, stat) {
+      if (!stat) {
+        return;
+      }
+      const statsIndex = getStatIndex(pageNumber);
+      if (statsIndex !== false) {
+        stats[statsIndex].div.remove();
+        stats.splice(statsIndex, 1);
+      }
+      const wrapper = document.createElement("div");
+      wrapper.className = "stats";
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = "Page: " + pageNumber;
+      const statsDiv = document.createElement("div");
+      statsDiv.textContent = stat.toString();
+      wrapper.append(title, statsDiv);
+      stats.push({ pageNumber, div: wrapper });
+      stats.sort(function (a, b) {
+        return a.pageNumber - b.pageNumber;
+      });
+      clear(this.panel);
+      for (const entry of stats) {
+        this.panel.append(entry.div);
+      }
+    },
+    cleanup() {
+      stats = [];
+      clear(this.panel);
+    },
+  };
+})();
+
+// Manages all the debugging tools.
+class PDFBug {
+  static #buttons = [];
+
+  static #activePanel = null;
+
+  static tools = [FontInspector, StepperManager, Stats];
+
+  static enable(ids) {
+    const all = ids.length === 1 && ids[0] === "all";
+    const tools = this.tools;
+    for (const tool of tools) {
+      if (all || ids.includes(tool.id)) {
+        tool.enabled = true;
+      }
+    }
+    if (!all) {
+      // Sort the tools by the order they are enabled.
+      tools.sort(function (a, b) {
+        let indexA = ids.indexOf(a.id);
+        indexA = indexA < 0 ? tools.length : indexA;
+        let indexB = ids.indexOf(b.id);
+        indexB = indexB < 0 ? tools.length : indexB;
+        return indexA - indexB;
+      });
+    }
+  }
+
+  static init(container, ids) {
+    this.loadCSS();
+    this.enable(ids);
+    /*
+     * Basic Layout:
+     * PDFBug
+     *  Controls
+     *  Panels
+     *    Panel
+     *    Panel
+     *    ...
+     */
+    const ui = document.createElement("div");
+    ui.id = "PDFBug";
+
+    const controls = document.createElement("div");
+    controls.setAttribute("class", "controls");
+    ui.append(controls);
+
+    const panels = document.createElement("div");
+    panels.setAttribute("class", "panels");
+    ui.append(panels);
+
+    container.append(ui);
+    container.style.right = "var(--panel-width)";
+
+    // Initialize all the debugging tools.
+    for (const tool of this.tools) {
+      const panel = document.createElement("div");
+      const panelButton = document.createElement("button");
+      panelButton.textContent = tool.name;
+      panelButton.addEventListener("click", event => {
+        event.preventDefault();
+        this.selectPanel(tool);
+      });
+      controls.append(panelButton);
+      panels.append(panel);
+      tool.panel = panel;
+      tool.manager = this;
+      if (tool.enabled) {
+        tool.init();
+      } else {
+        panel.textContent =
+          `${tool.name} is disabled. To enable add "${tool.id}" to ` +
+          "the pdfBug parameter and refresh (separate multiple by commas).";
+      }
+      this.#buttons.push(panelButton);
+    }
+    this.selectPanel(0);
+  }
+
+  static loadCSS() {
+    const { url } = import.meta;
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = url.replace(/.js$/, ".css");
+
+    document.head.append(link);
+  }
+
+  static cleanup() {
+    for (const tool of this.tools) {
+      if (tool.enabled) {
+        tool.cleanup();
+      }
+    }
+  }
+
+  static selectPanel(index) {
+    if (typeof index !== "number") {
+      index = this.tools.indexOf(index);
+    }
+    if (index === this.#activePanel) {
+      return;
+    }
+    this.#activePanel = index;
+    for (const [j, tool] of this.tools.entries()) {
+      const isActive = j === index;
+      this.#buttons[j].classList.toggle("active", isActive);
+      tool.active = isActive;
+      tool.panel.hidden = !isActive;
+    }
+  }
+}
+
+globalThis.FontInspector = FontInspector;
+globalThis.StepperManager = StepperManager;
+globalThis.Stats = Stats;
+
+export { PDFBug };
