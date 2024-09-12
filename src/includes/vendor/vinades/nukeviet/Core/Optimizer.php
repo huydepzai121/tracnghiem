@@ -38,6 +38,7 @@ class Optimizer
     private $is_http2 = false;
     private $resource_preload = 0;
     private $headerPreloadItems = [];
+    private $blank_operation;
 
     /**
      * @var \DOMDocument
@@ -54,8 +55,9 @@ class Optimizer
      * @param mixed $base_siteurl
      * @param bool  $is_http2
      * @param int   $resource_preload
+     * @param array $config
      */
-    public function __construct($content, $base_siteurl, $is_http2 = false, $resource_preload = 0)
+    public function __construct($content, $base_siteurl, $is_http2 = false, $resource_preload = 0, array $config = [])
     {
         $this->_content = $content;
         $this->base_siteurl = $base_siteurl;
@@ -64,6 +66,7 @@ class Optimizer
         if ($this->resource_preload === 1 and !$this->is_http2) {
             $this->resource_preload = 2;
         }
+        $this->blank_operation = $config['blank_operation'] ?? true;
     }
 
     /**
@@ -226,6 +229,10 @@ class Optimizer
         }
 
         if (str_contains($this->_content, '<head>')) {
+            if (!$this->blank_operation) {
+                // Xóa bỏ phần trống trong <head> sau khi xử lý các thẻ trong nó
+                $this->_content = preg_replace('/[\t\r\n\s]+\<\/head\>/i', '</head>', $this->_content);
+            }
             $head = '<head>' . $this->eol . $this->_title . $this->eol . $head;
             $this->_content = trim(preg_replace('/<head>/i', $head, $this->_content, 1));
             $this->trackLogRegex('head');
@@ -246,7 +253,7 @@ class Optimizer
             $this->_content = $this->_content . $this->eol . $_jsAfter;
         }
 
-        return preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $this->_content);
+        return $this->blank_operation ? preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $this->_content) : $this->_content;
     }
 
     /**

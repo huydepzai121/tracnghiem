@@ -146,6 +146,7 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
         $array_config_global['my_domains'] = implode(',', $my_domains);
 
         $array_config_global['gzip_method'] = $nv_Request->get_int('gzip_method', 'post');
+        $array_config_global['blank_operation'] = (int) $nv_Request->get_bool('blank_operation', 'post', false);
         $array_config_global['resource_preload'] = $nv_Request->get_int('resource_preload', 'post');
         $array_config_global['lang_multi'] = $nv_Request->get_int('lang_multi', 'post');
 
@@ -292,6 +293,7 @@ if (defined('NV_IS_GODADMIN')) {
     $array_config_define['nv_debug'] = empty($array_config_define['nv_debug']) ? '' : ' checked="checked"';
 
     $xtpl->assign('CHECKED_GZIP_METHOD', ($array_config_global['gzip_method']) ? ' checked="checked"' : '');
+    $xtpl->assign('CHECKED_BLANK_OPERATION', ($array_config_global['blank_operation']) ? ' checked="checked"' : '');
     $xtpl->assign('CHECKED_LANG_MULTI', ($array_config_global['lang_multi']) ? ' checked="checked"' : '');
     $xtpl->assign('CHECKED_NOTIFI_ACTIVE', ($array_config_global['notification_active']) ? ' checked="checked"' : '');
     $xtpl->assign('CHECKED_ERROR_SET_LOGS', ($array_config_global['error_set_logs']) ? ' checked="checked"' : '');

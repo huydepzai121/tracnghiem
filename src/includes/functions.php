@@ -1656,7 +1656,7 @@ function _otherMethodSendmail($gconfigs, $sm_parameters)
         $sm_parameters['logo_add'] = true;
     }
     $sm_parameters['message'] = nv_url_rewrite($sm_parameters['message']);
-    $optimizer = new NukeViet\Core\Optimizer($sm_parameters['message'], NV_BASE_SITEURL, !empty($sys_info['is_http2']));
+    $optimizer = new NukeViet\Core\Optimizer($sm_parameters['message'], NV_BASE_SITEURL, !empty($sys_info['is_http2']), 0, $gconfigs);
     $sm_parameters['message'] = $optimizer->process(false);
     $sm_parameters['message'] = nv_unhtmlspecialchars($sm_parameters['message']);
 

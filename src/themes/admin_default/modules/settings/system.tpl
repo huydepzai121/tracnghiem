@@ -145,7 +145,6 @@
                             </div>
                         </div>
                     </li>
-
                     <li class="list-group-item">
                         <div class="form-group mb-0">
                             <label class="col-sm-10 control-label"><strong>{LANG.resource_preload}</strong></label>
@@ -155,6 +154,19 @@
                                     <option value="{PRELOAD.val}" {PRELOAD.sel}>{PRELOAD.name}</option>
                                     <!-- END: resource_preload -->
                                 </select>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-group mb-0">
+                            <label class="col-sm-10 control-label hidden-xs"><strong>{LANG.blank_operation}</strong></label>
+                            <div class="col-sm-14">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" class="form-control" value="1" name="blank_operation" {CHECKED_BLANK_OPERATION}>
+                                        <strong class="visible-xs-inline-block">{LANG.blank_operation}.</strong> {LANG.blank_operation_help}
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </li>
