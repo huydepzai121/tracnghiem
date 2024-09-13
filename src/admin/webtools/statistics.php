@@ -14,7 +14,6 @@ if (!defined('NV_IS_FILE_WEBTOOLS')) {
 }
 
 $timezone_array = array_keys($nv_parse_ini_timezone);
-
 $array_config_global = [];
 
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
@@ -51,8 +50,11 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     }
 
     $nv_Cache->delAll(false);
-
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&rand=' . nv_genpass());
+    $respon = [];
+    $respon['status'] = 'success';
+    $respon['mess'] = $nv_Lang->getGlobal('save_success');
+    $respon['refresh'] = 1;
+    nv_jsonOutput($respon);
 }
 
 $page_title = $nv_Lang->getModule('global_statistics');
@@ -64,27 +66,20 @@ $array_config_global['googleAnalyticsID'] = $global_config['googleAnalyticsID'];
 $array_config_global['googleAnalytics4ID'] = $global_config['googleAnalytics4ID'];
 $array_config_global['google_tag_manager'] = !empty($global_config['google_tag_manager']) ? $global_config['google_tag_manager'] : '';
 
-$xtpl = new XTemplate('statistics.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('DATA', $array_config_global);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-$xtpl->assign('OP', $op);
-$xtpl->assign('CHECKSS', $checkss);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/statistics.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('CHECKSS', $checkss);
 
 sort($timezone_array);
-foreach ($timezone_array as $site_timezone_i) {
-    $xtpl->assign('TIMEZONEOP', $site_timezone_i);
-    $xtpl->assign('TIMEZONESELECTED', ($site_timezone_i == $global_config['statistics_timezone']) ? ' selected="selected"' : '');
-    $xtpl->assign('TIMEZONELANGVALUE', $site_timezone_i);
-    $xtpl->parse('main.timezone');
-}
+$tpl->assign('TIMEZONE_ARRAY', $timezone_array);
+$tpl->assign('GCONFIG', $global_config);
 
-$xtpl->parse('main');
-$content = $xtpl->text('main');
+$contents = $tpl->fetch('statistics.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
-echo nv_admin_theme($content);
+echo nv_admin_theme($contents);
 include NV_ROOTDIR . '/includes/footer.php';
