@@ -16,10 +16,6 @@ if (!defined('NV_IS_FILE_LANG')) {
 $select_options = [];
 $contents = '';
 
-$xtpl = new XTemplate('edit.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-
 $dirlang = $nv_Request->get_title('dirlang', 'get', '');
 if (empty($dirlang) or !isset($language_array[$dirlang])) {
     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=interface');
@@ -133,50 +129,45 @@ if (empty($author_lang)) {
 
 $modules_exit = nv_scandir(NV_ROOTDIR . '/modules', $global_config['check_module']);
 
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=edit&amp;dirlang=' . $dirlang . '&amp;idfile=' . $idfile);
-$xtpl->assign('EDIT_MODULE', $module);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/edit.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+$tpl->registerPlugin('modifier', 'strencode', 'nv_htmlspecialchars');
+
+$tpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;dirlang=' . $dirlang . '&amp;idfile=' . $idfile);
+$tpl->assign('TRANSLATOR', $array_translator);
+$tpl->assign('EDIT_MODULE', $module);
 if ($admin_file == '1') {
-    $xtpl->assign('MODULE_AREA', $nv_Lang->getModule('nv_lang_admin'));
+    $tpl->assign('MODULE_AREA', $nv_Lang->getModule('nv_lang_admin'));
 } elseif ($admin_file == '0') {
     if (in_array($module, $modules_exit, true) or preg_match('/^theme\_(.*?)$/', $module)) {
-        $xtpl->assign('MODULE_AREA', $nv_Lang->getModule('nv_lang_whole_site'));
+        $tpl->assign('MODULE_AREA', $nv_Lang->getModule('nv_lang_whole_site'));
     } else {
-        $xtpl->assign('MODULE_AREA', $nv_Lang->getModule('nv_lang_site'));
+        $tpl->assign('MODULE_AREA', $nv_Lang->getModule('nv_lang_site'));
     }
 } else {
-    $xtpl->assign('MODULE_AREA', $admin_file);
+    $tpl->assign('MODULE_AREA', $admin_file);
 }
-$xtpl->assign('LANGTYPE', $array_translator['langtype']);
-
-foreach ($array_translator as $lang_key => $lang_value) {
-    if ($lang_key != 'langtype') {
-        $xtpl->assign('ARRAY_TRANSLATOR', [
-            'lang_key' => $lang_key,
-            'value' => nv_htmlspecialchars($lang_value)
-        ]);
-
-        $xtpl->parse('main.array_translator');
-    }
-}
+$tpl->assign('ALLOWED_WRITE', in_array('write', $allow_func, true));
 
 $sql = 'SELECT id, lang_key, lang_' . $dirlang . ' FROM ' . NV_LANGUAGE_GLOBALTABLE . ' WHERE idfile=' . $idfile . ' ORDER BY weight ASC';
 $result = $db->query($sql);
+
+$array = [];
 while ([$id, $lang_key, $lang_value] = $result->fetch(3)) {
-    $xtpl->assign('ARRAY_DATA', [
+    $array[] = [
         'lang_key' => $lang_key,
         'value' => !empty($lang_value) ? str_replace(['&lt;', '&gt;', '&quot;', '<', '>', '"', "'"], ['&amp;lt;', '&amp;gt;', '&amp;quot;', '&lt;', '&gt;', '&quot;', '&#039;'], $lang_value) : '',
         'id' => $id
-    ]);
-
-    $xtpl->parse('main.array_data');
+    ];
 }
+$tpl->assign('ARRAY', $array);
 
-if (in_array('write', $allow_func, true)) {
-    $xtpl->parse('main.write');
-}
-
-$xtpl->parse('main');
-$contents .= $xtpl->text('main');
+$contents = $tpl->fetch('edit.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

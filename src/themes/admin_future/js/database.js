@@ -221,7 +221,10 @@ $(function() {
                     },
                     success: function(data) {
                         icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
-                        nvAlert(data, () => {
+                        nvAlert({
+                            html: true,
+                            message: data
+                        }, () => {
                             location.reload();
                         });
                     },

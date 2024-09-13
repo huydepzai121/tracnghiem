@@ -148,7 +148,11 @@ const nvConfirm = (message, cbConfirm, cbCancel, cancelBtn) => {
     backdrop.classList.add('alert-backdrop', 'fade');
 
     body.append(box, backdrop);
-    $('#' + id + '-body').text(message);
+    if (typeof message == 'object' && message.html) {
+        $('#' + id + '-body').html(message.message);
+    } else {
+        $('#' + id + '-body').text(message);
+    }
     box.style.display = 'block';
 
     const cOverflow = body.style.overflow;

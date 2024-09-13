@@ -207,7 +207,10 @@ $(function() {
                 } else {
                     html = respon.text;
                 }
-                nvAlert(html, () => {
+                nvAlert({
+                    html: true,
+                    message: html
+                }, () => {
                     location.reload();
                 });
             },
@@ -387,4 +390,194 @@ $(function() {
             }
         });
     }
+
+    // Xuất ra file (file đơn), tại trang ngôn ngữ giao diện
+    $('[data-toggle="lang_export"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        $.ajax({
+            type: 'GET',
+            url: btn.data('url') + '&nocache=' + new Date().getTime(),
+            dataType: 'json',
+            cache: false,
+            success: function(respon) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                if (respon.status != 'OK') {
+                    nvToast(respon.mess, 'error');
+                    return;
+                }
+                nvToast(respon.mess, 'success');
+            },
+            error: function(xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
+
+    // Xử lý submit riêng cho form dịch ngôn ngữ
+    function escapeHtml(text) {
+        var map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+
+        return text.replace(/[&<>"']/g, function(m) {
+            return map[m];
+        });
+    }
+    $('#lang-edit-form').on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        $('.is-invalid', form).removeClass('is-invalid');
+        var keys = [],
+            values = [],
+            ids = [],
+            isdels = [],
+            pozauthor = {},
+            obj, par, langkey, langvalue, langid, langisdel,
+            isError = false;
+        $('.item', form).each(function() {
+            obj = $('[name^=langkey]', this);
+            par = obj.parent();
+            langkey = obj.val();
+            if (langkey == '') {
+                $('.invalid-feedback', par).text(obj.data('empty-error'));
+                obj.addClass('is-invalid');
+                isError = true;
+                obj.focus();
+                return !1
+            }
+            if (keys.indexOf(langkey) != -1) {
+                $('.invalid-feedback', par).text(obj.data('duplicate-error'));
+                obj.addClass('is-invalid');
+                isError = true;
+                obj.focus();
+                return !1
+            } else {
+                keys.push(langkey)
+            }
+
+            values.push(escapeHtml(trim($('[name^=langvalue]', this).val())))
+            ids.push(parseInt($('[name^=langid]', this).val()));
+            isdels.push(parseInt($('[name^=isdel]', this).val()));
+        });
+
+        if (!isError) {
+            $('[name^=pozauthor]', form).each(function() {
+                pozauthor[$(this).data('key')] = escapeHtml(trim($(this).val()));
+            });
+
+            var url = form.attr('action') + '&savedata=' + $('[name=savedata]', form).val(),
+                jsn = JSON.stringify({
+                    'pozauthor': pozauthor,
+                    'keys': keys,
+                    'values': values,
+                    'ids': ids,
+                    'isdels': isdels
+                });
+            if ($('[name=write]', form).length && $('[name=write]', form).is(':checked')) {
+                url += '&write=1'
+            }
+            $('input,button', this).prop('disabled', true);
+            $.ajax({
+                type: 'POST',
+                cache: !1,
+                url: url,
+                data: jsn,
+                contentType: 'application/json;charset=UTF-8',
+                dataType: "json",
+                success: function(result) {
+                    if (result.status != 'OK') {
+                        $('input,button', this).prop('disabled', false);
+                        nvToast(result.mess, 'error');
+                        return;
+                    }
+                    let timeout = 1;
+                    if (result.mess) {
+                        nvToast(result.mess, 'success');
+                        timeout = 2000;
+                    }
+                    setTimeout(() => {
+                        window.location.href = result.redirect;
+                    }, timeout);
+                },
+                error: function(xhr, text, err) {
+                    $('input,button', this).prop('disabled', false);
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        }
+    });
+
+    // Sắp xếp row khi edit ngôn ngữ giao diện
+    if ($("#sortable").length) {
+        $("#sortable").sortable().disableSelection();
+    }
+
+    // Xóa row khi edit ngôn ngữ giao diện
+    $('.del-item').on('change', function() {
+        var item = $(this).closest('.item');
+        if ($(this).is(':checked')) {
+            $('[type=text]', item).prop('readonly', true);
+            $('[name^=isdel]', item).val('1');
+        } else {
+            $('[type=text]', item).prop('readonly', false);
+            $('[name^=isdel]', item).val('0');
+        }
+    });
+
+    // Thêm/xóa row khi edit ngôn ngữ giao diện
+    $('body').on('click', '.add-new', function() {
+        var item = $(this).closest('.item'),
+            newitem = item.clone();
+        $('[name^=langid], [name^=isdel]', newitem).val('0');
+        $('[name^=langkey], [name^=langvalue]', newitem).prop('readonly', false).attr('value', '').val('');
+        $('.is-invalid', newitem).removeClass('is-invalid');
+        $('.delitem', newitem).remove();
+        $('.del-new', newitem).removeClass('d-none');
+        item.after(newitem);
+    });
+    $('body').on('click', '.del-new', function() {
+        $(this).closest('.item').remove();
+    });
+
+    // Hủy thông báo lỗi khi chỉnh sửa input lỗi khi sửa ngôn ngữ giao diện
+    $('body').on('change', '[name^=langkey]', function() {
+        var that = $(this),
+            val = that.val(),
+            item = that.closest('.item');
+        if (val == '') {
+            $('.invalid-feedback', item).text(that.data('empty-error'));
+            that.addClass('is-invalid');
+        } else {
+            that.removeClass('is-invalid');
+            item.siblings().each(function() {
+                if ($('[name^=langkey]', this).val() == val) {
+                    $('.invalid-feedback', item).text(that.data('duplicate-error'));
+                    that.addClass('is-invalid');
+                    return !1;
+                }
+            })
+        }
+    });
+    $('body').on('change', '[name^=langvalue]', function() {
+        var val = trim($(this).val());
+        $(this).val(val);
+        if (val == '') {
+            $(this).addClass('is-invalid');
+        } else {
+            $(this).removeClass('is-invalid');
+        }
+    });
 });

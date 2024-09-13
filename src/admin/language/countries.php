@@ -26,7 +26,18 @@ while ([$lang_i] = $result->fetch(3)) {
     }
 }
 
-if ($nv_Request->isset_request('countries', 'post') == 1) {
+// Lưu dữ liệu
+if ($nv_Request->isset_request('checkss', 'post')) {
+    $respon = [
+        'status' => 'error',
+        'mess' => '',
+    ];
+
+    if ($nv_Request->get_title('checkss', 'post', '') !== NV_CHECK_SESSION) {
+        $respon['mess'] = 'Session error!!!';
+        nv_jsonOutput($respon);
+    }
+
     $post = $nv_Request->get_typed_array('countries', 'post', 'string', []);
 
     $content_config = "<?php\n\n";
@@ -41,39 +52,25 @@ if ($nv_Request->isset_request('countries', 'post') == 1) {
     }
 
     file_put_contents(NV_ROOTDIR . '/' . NV_DATADIR . '/config_geo.php', $content_config, LOCK_EX);
-
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&rand=' . nv_genpass());
+    $respon['status'] = 'success';
+    $respon['mess'] = $nv_Lang->getGlobal('save_success');
+    nv_jsonOutput($respon);
 }
 
 include NV_ROOTDIR . '/' . NV_DATADIR . '/config_geo.php';
 
-$xtpl = new XTemplate('countries.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-$xtpl->assign('OP', $op);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/countries.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-$nb = 0;
-foreach ($countries as $key => $value) {
-    $xtpl->assign('NB', ++$nb);
-    $xtpl->assign('LANG_KEY', $key);
-    $xtpl->assign('LANG_NAME', $nv_Lang->existsGlobal('country_' . $key) ? $nv_Lang->getGlobal('country_' . $key) : $value[1]);
+$tpl->assign('COUNTRIES', $countries);
+$tpl->assign('LANG_SETUP', $array_lang_setup);
+$tpl->assign('CONFIG_GEO', $config_geo);
 
-    foreach ($array_lang_setup as $data_name) {
-        $data_key = $data_name[0];
-        $xtpl->assign('DATA_SELECTED', (isset($config_geo[$key]) and $config_geo[$key] == $data_key) ? ' selected="selected"' : '');
-        $xtpl->assign('DATA_KEY', $data_key);
-        $xtpl->assign('DATA_TITLE', $data_name[1]);
-        $xtpl->parse('main.countries.language');
-    }
-
-    $xtpl->parse('main.countries');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('countries.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

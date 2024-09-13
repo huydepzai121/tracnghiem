@@ -37,7 +37,10 @@ $(function() {
                         });
                         return;
                     }
-                    nvAlert(data.error.join('<br />'));
+                    nvAlert({
+                        html: true,
+                        message: data.error.join('<br />')
+                    });
                 },
                 error: function(xhr, text, err) {
                     console.log(xhr, text, err);
