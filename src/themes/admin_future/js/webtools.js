@@ -72,4 +72,124 @@ $(function() {
             }
         });
     });
+
+    // Xử lý load chậm trang kiểm tra phiên bản
+    let upCtn = $('#updIf');
+    if (upCtn.length) {
+        // Kiểm tra phiên bản các ứng dụng
+        function checkUpdateExt(reload) {
+            $.ajax({
+                type: 'GET',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&i=' + (reload ? 'extUpdRef' : 'extUpd') + '&nocache=' + new Date().getTime(),
+                success: function(res) {
+                    $('#extUpd').html(res);
+                    $('[data-bs-toggle="tooltip"]', $('#extUpd')).each(function() {
+                        new bootstrap.Tooltip(this);
+                    });
+                },
+                error: function(xhr, text, err) {
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        }
+
+        // Kiểm tra phiên bản hệ thống
+        function checkUpdateSys(reload) {
+            $.ajax({
+                type: 'GET',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&i=' + (reload ? 'sysUpdRef' : 'sysUpd') + '&nocache=' + new Date().getTime(),
+                success: function(res) {
+                    $('#sysUpd').html(res);
+                    $('#extUpd').html($('#upLoader').html()).removeClass('d-none');
+                    setTimeout(() => {
+                        checkUpdateExt();
+                    }, 200);
+                },
+                error: function(xhr, text, err) {
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        }
+
+        $('#sysUpd').html($('#upLoader').html()).removeClass('d-none');
+        setTimeout(() => {
+            checkUpdateSys();
+        }, 500);
+
+        // Cập nhật lại kiểm tra phiên bản hệ thống
+        $("body").delegate("#sysUpdRefresh", "click", function(e) {
+            e.preventDefault();
+            $('#sysUpd').html($('#upLoader').html()).removeClass('d-none');
+            checkUpdateSys(true);
+        });
+
+        // Cập nhật lại kiểm tra phiên bản ứng dụng
+        $("body").delegate("#extUpdRefresh", "click", function(e) {
+            e.preventDefault();
+            $('#extUpd').html($('#upLoader').html()).removeClass('d-none');
+            checkUpdateExt(true);
+        });
+
+        // Xem chi tiết thông tin check update ứng dụng
+        $('body').delegate('[data-toggle="viewUpExtInfo"]', 'click', function(e) {
+            e.preventDefault();
+            let ctn = $(this).closest('tr');
+            let ocElement = $('#offcanvasUpExtDetail');
+            $('.offcanvas-body', ocElement).html($('[data-toggle="viewUpExtInfoBody"]', ctn).html());
+            $('.offcanvas-title', ocElement).text($(this).data('title'));
+            let oc = bootstrap.Offcanvas.getOrCreateInstance(ocElement[0]);
+            oc.show();
+        });
+    }
+
+    // Xử lý load chậm trang tải và kiểm tra gói cập nhật
+    let getupCtn = $('#getUpd');
+    if (getupCtn.length) {
+        getupCtn.html($('#getUpdLoader').html()).removeClass('d-none');
+        setTimeout(() => {
+            $.ajax({
+                type: 'GET',
+                url: getupCtn.data('url') + '&nocache=' + new Date().getTime(),
+                success: function(res) {
+                    getupCtn.html(res);
+                },
+                error: function(xhr, text, err) {
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        }, 500);
+
+        // Xử lý các link thông qua ajax
+        getupCtn.delegate('a', 'click', function(e) {
+            if ($(this).closest('.alert-danger').length || $(this).is('[data-toggle="autolink"]')) {
+                return;
+            }
+            e.preventDefault();
+            getupCtn.html($('#getUpdLoader').html()).removeClass('d-none');
+            $.ajax({
+                type: 'GET',
+                url: $(this).attr('href'),
+                success: function(res) {
+                    getupCtn.html(res);
+                    if ($('[data-bs-toggle="tooltip"]', getupCtn).length) {
+                        $('[data-bs-toggle="tooltip"]', getupCtn).each(function() {
+                            new bootstrap.Tooltip(this);
+                        });
+                    }
+                    if ($('[data-toggle="autolink"]', getupCtn).length) {
+                        setTimeout(() => {
+                            window.location = $('[data-toggle="autolink"]', getupCtn).attr('href');
+                        }, 5000);
+                    }
+                },
+                error: function(xhr, text, err) {
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    }
 });

@@ -37,7 +37,7 @@ nv_add_hook($module_name, 'get_global_admin_theme', $priority, function ($vars) 
     if ($module_name == 'themes' and in_array($op, ['block_content'])) {
         return $new_theme;
     }
-    if ($module_name == 'webtools' and in_array($op, ['clearsystem', 'config', 'statistics'])) {
+    if ($module_name == 'webtools' and in_array($op, ['getupdate', 'checkupdate', 'clearsystem', 'config', 'statistics'])) {
         return $new_theme;
     }
 

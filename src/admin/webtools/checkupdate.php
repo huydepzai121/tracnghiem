@@ -14,19 +14,21 @@ if (!defined('NV_IS_FILE_WEBTOOLS')) {
 }
 
 $page_title = $nv_Lang->getModule('checkupdate');
-$contents = '';
 
-$xtpl = new XTemplate('checkupdate.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/checkupdate.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('GCONFIG', $global_config);
 
+// Check update qua ajax
 if ($nv_Request->isset_request('i', 'get')) {
     $i = $nv_Request->get_string('i', 'get');
 
     if ($i == 'sysUpd' or $i == 'sysUpdRef') {
-        $values = [];
-        $values['userVersion'] = $global_config['version'];
+        // Check phiên bản hệ thống
         $new_version = ($i == 'sysUpd') ? nv_geVersion(28800) : nv_geVersion(120);
 
         $error = '';
@@ -35,39 +37,40 @@ if ($nv_Request->isset_request('i', 'get')) {
         } elseif (is_string($new_version)) {
             $error = $new_version;
         }
-
         if (!empty($error)) {
-            $xtpl->assign('ERROR', $nv_Lang->getModule('checkSystem') . ': ' . $error);
-
-            $xtpl->parse('error');
-            echo $xtpl->text('error');
-        } else {
-            $values['onlineVersion'] = $nv_Lang->getModule('newVersion_detail', (string) $new_version->version, (string) $new_version->name, nv_datetime_format(strtotime((string) $new_version->date)));
-            $xtpl->assign('VALUE', $values);
-
-            if (nv_version_compare($global_config['version'], (string) $new_version->version) < 0) {
-                $xtpl->assign('VERSION_INFO', (string) $new_version->message);
-
-                // Allow auto update to newest version
-                if ((string) $new_version->version == (string) $new_version->updateable) {
-                    $xtpl->assign('VERSION_LINK', $nv_Lang->getModule('newVersion_info1', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=getupdate&amp;version=' . ((string) $new_version->updateable) . '&amp;package=' . ((string) $new_version->updatepackage) . '&amp;checksess=' . md5(((string) $new_version->updateable) . ((string) $new_version->updatepackage) . NV_CHECK_SESSION)));
-                } elseif (((string) $new_version->updateable) != '') {
-                    $xtpl->assign('VERSION_LINK', $nv_Lang->getModule('newVersion_info2', ((string) $new_version->updateable), NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=getupdate&amp;version=' . ((string) $new_version->updateable) . '&amp;package=' . ((string) $new_version->updatepackage) . '&amp;checksess=' . md5(((string) $new_version->updateable) . ((string) $new_version->updatepackage) . NV_CHECK_SESSION)));
-                } else {
-                    $xtpl->assign('VERSION_LINK', $nv_Lang->getModule('newVersion_info3', (string) $new_version->link));
-                }
-
-                $xtpl->parse('sysUpd.inf');
-            }
-
-            clearstatcache();
-            $sysUpdDate = filemtime(NV_ROOTDIR . '/' . NV_CACHEDIR . '/nukeviet.version.' . NV_LANG_INTERFACE . '.xml');
-            $xtpl->assign('SYSUPDDATE', nv_datetime_format($sysUpdDate));
-
-            $xtpl->parse('sysUpd');
-            echo $xtpl->text('sysUpd');
+            $html = nv_theme_alert($nv_Lang->getModule('checkSystem'), $error, 'danger');
+            nv_htmlOutput($html);
         }
-    } elseif ($i == 'extUpd' or $i == 'extUpdRef') {
+
+        $version_value = (string) $new_version->version;
+        $updateable = (string) $new_version->updateable;
+        $updatepackage = (string) $new_version->updatepackage;
+
+        $version = [
+            'version' => $version_value,
+            'name' => (string) $new_version->name,
+            'date' => nv_datetime_format(strtotime((string) $new_version->date)),
+            'info' => (string) $new_version->message,
+            'need_update' => (nv_version_compare($global_config['version'], (string) $new_version->version) < 0),
+            'updateable' => $updateable,
+            'link_update' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=getupdate&amp;version=' . $updateable . '&amp;package=' . $updatepackage . '&amp;checksess=' . md5($updateable . $updatepackage . NV_CHECK_SESSION),
+            'link' => (string) $new_version->link,
+            'updatepackage' => $updatepackage
+        ];
+        $tpl->assign('VERSION', $version);
+
+        clearstatcache();
+        $sysUpdDate = filemtime(NV_ROOTDIR . '/' . NV_CACHEDIR . '/nukeviet.version.' . NV_LANG_INTERFACE . '.xml');
+        $tpl->assign('SYSUPDDATE', nv_datetime_format($sysUpdDate));
+
+        $contents = $tpl->fetch('checkupdate-sys.tpl');
+        include NV_ROOTDIR . '/includes/header.php';
+        echo $contents;
+        include NV_ROOTDIR . '/includes/footer.php';
+    }
+
+    // Check phiên bản các ứng dụng
+    if ($i == 'extUpd' or $i == 'extUpdRef') {
         $exts = ($i == 'extUpd') ? nv_getExtVersion(28800) : nv_getExtVersion(120);
 
         $error = '';
@@ -76,153 +79,107 @@ if ($nv_Request->isset_request('i', 'get')) {
         } elseif (is_string($exts)) {
             $error = $exts;
         }
-
         if (!empty($error)) {
-            $xtpl->assign('ERROR', $nv_Lang->getModule('checkExtensions') . ': ' . $error);
+            $html = nv_theme_alert($nv_Lang->getModule('checkExtensions'), $error, 'danger');
+            nv_htmlOutput($html);
+        }
 
-            $xtpl->parse('error');
-            echo $xtpl->text('error');
-        } else {
-            clearstatcache();
-            $extUpdDate = filemtime(NV_ROOTDIR . '/' . NV_CACHEDIR . '/extensions.version.' . NV_LANG_INTERFACE . '.xml');
-            $exts = $exts->xpath('extension');
-            $static_exts = (isset($global_config['static_exts']) and is_array($global_config['static_exts'])) ? $global_config['static_exts'] : [];
-            $a = 1;
+        clearstatcache();
+        $extUpdDate = filemtime(NV_ROOTDIR . '/' . NV_CACHEDIR . '/extensions.version.' . NV_LANG_INTERFACE . '.xml');
+        $exts = $exts->xpath('extension');
+        $static_exts = (isset($global_config['static_exts']) and is_array($global_config['static_exts'])) ? $global_config['static_exts'] : [];
 
-            foreach ($exts as $extname => $values) {
-                $ext_type = (string) $values->type;
-                $ext_name = (string) $values->name;
+        $tpl->assign('EXTUPDDATE', nv_datetime_format($extUpdDate));
 
-                if (!isset($static_exts[$ext_type]) or !in_array($ext_name, $static_exts[$ext_type], true)) {
-                    $value = [
-                        'id' => (int) $values->id,
-                        'type' => $ext_type,
-                        'name' => $ext_name,
-                        'version' => (string) $values->version,
-                        'date' => (string) $values->date,
-                        'new_version' => (string) $values->new_version,
-                        'new_date' => (string) $values->new_date,
-                        'author' => (string) $values->author,
-                        'license' => (string) $values->license,
-                        'mode' => (string) $values->mode,
-                        'message' => (string) $values->message,
-                        'link' => (string) $values->link,
-                        'support' => (string) $values->support,
-                        'updateable' => [],
-                        'origin' => ((string) $values->origin) == 'true' ? true : false,
-                    ];
+        $array = [];
+        foreach ($exts as $extname => $values) {
+            $ext_type = (string) $values->type;
+            $ext_name = (string) $values->name;
 
-                    // Xu ly update
-                    $updateables = $values->xpath('updateable/upds/upd');
+            if (!isset($static_exts[$ext_type]) or !in_array($ext_name, $static_exts[$ext_type], true)) {
+                $value = [
+                    'id' => (int) $values->id,
+                    'type' => $ext_type,
+                    'type_text' => $nv_Lang->existsModule('extType_' . $ext_type) ? $nv_Lang->getModule('extType_' . $ext_type) : $ext_type,
+                    'name' => $ext_name,
+                    'version' => (string) $values->version,
+                    'date' => (string) $values->date,
+                    'date_show' => !empty($values->date) ? nv_datetime_format(strtotime((string) $values->date)) : '',
+                    'new_version' => (string) $values->new_version,
+                    'new_date' => (string) $values->new_date,
+                    'new_date_show' => !empty($values->new_date) ? nv_datetime_format(strtotime((string) $values->new_date)) : '',
+                    'author' => (string) $values->author,
+                    'license' => (string) $values->license,
+                    'mode' => (string) $values->mode,
+                    'message' => (string) $values->message,
+                    'link' => (string) $values->link,
+                    'support' => (string) $values->support,
+                    'updateable' => [],
+                    'origin' => ((string) $values->origin) == 'true' ? true : false,
+                    'status_level' => 1,
+                    'status_note' => '',
+                    'note_level' => 0,
+                    'up_need' => 0,
+                    'up_new_version' => [],
+                    'up_link' => '',
+                ];
 
-                    if (!empty($updateables)) {
-                        foreach ($updateables as $updateable) {
-                            $value['updateable'][] = [
-                                'fid' => (string) $updateable->upd_fid,
-                                'old' => explode(',', (string) $updateable->upd_old),
-                                'new' => (string) $updateable->upd_new,
-                            ];
-                        }
+                // Xử lý lấy phiên bản update
+                $updateables = $values->xpath('updateable/upds/upd');
+
+                if (!empty($updateables)) {
+                    foreach ($updateables as $updateable) {
+                        $value['updateable'][] = [
+                            'fid' => (string) $updateable->upd_fid,
+                            'old' => explode(',', (string) $updateable->upd_old),
+                            'new' => (string) $updateable->upd_new,
+                        ];
                     }
-                    unset($updateables, $updateable);
+                }
+                unset($updateables, $updateable);
 
-                    $info = $nv_Lang->getModule('userVersion') . ': ';
-                    $info .= !empty($value['version']) ? $value['version'] : 'n/a';
-                    $info .= '; ' . $nv_Lang->getModule('onlineVersion') . ': ';
-                    $info .= !empty($value['new_version']) ? $value['new_version'] : ((!empty($value['version']) and $value['origin']) ? $value['version'] : 'n/a');
+                // Thông tin cập nhật phiên bản
+                if (!empty($value['new_version']) and nv_version_compare($value['version'], $value['new_version']) < 0) {
+                    $value['status_level'] = 1;
+                    $value['status_note'] = $nv_Lang->getModule('extNote4');
 
-                    $tooltip = [];
-                    $tooltip[] = ['title' => $nv_Lang->getModule('userVersion'), 'content' => (!empty($value['version']) ? $value['version'] : 'n/a') . (!empty($value['date']) ? ' (' . nv_datetime_format(strtotime($value['date'])) . ')' : '')];
-                    $tooltip[] = ['title' => $nv_Lang->getModule('onlineVersion'), 'content' => (!empty($value['new_version']) ? $value['new_version'] : ((!empty($value['version']) and $value['origin']) ? $value['version'] : 'n/a')) . (!empty($value['new_date']) ? ' (' . nv_datetime_format(strtotime($value['new_date'])) . ')' : '')];
-
-                    if (!empty($value['author'])) {
-                        $tooltip[] = ['title' => $nv_Lang->getModule('extAuthor'), 'content' => $value['author']];
-                    }
-
-                    if (!empty($value['license'])) {
-                        $tooltip[] = ['title' => $nv_Lang->getModule('extLicense'), 'content' => $value['license']];
-                    }
-
-                    if (!empty($value['mode'])) {
-                        $tooltip[] = ['title' => $nv_Lang->getModule('extMode'), 'content' => $value['mode'] == 'sys' ? $nv_Lang->getModule('extModeSys') : $nv_Lang->getModule('extModeOther')];
-                    }
-
-                    if (!empty($value['link'])) {
-                        $tooltip[] = ['title' => $nv_Lang->getModule('extLink'), 'content' => '<a href="' . $value['link'] . '">' . $value['link'] . '</a>'];
-                    }
-
-                    if (!empty($value['support'])) {
-                        $tooltip[] = ['title' => $nv_Lang->getModule('extSupport'), 'content' => '<a href="' . $value['support'] . '">' . $value['support'] . '</a>'];
-                    }
-
-                    $xtpl->assign('EXTNAME', $value['name']);
-                    $xtpl->assign('EXTTYPE', $nv_Lang->existsModule('extType_' . $value['type']) ? $nv_Lang->getModule('extType_' . $value['type']) : $value['type']);
-                    $xtpl->assign('EXTINFO', $info);
-
-                    foreach ($tooltip as $t) {
-                        $xtpl->assign('EXTTOOLTIP', $t);
-                        $xtpl->parse('extUpd.loop.li');
-                    }
-
-                    // Thong bao ung dung khong co phien ban (Khong hop le)
-                    if (!isset($value['version'])) {
-                        $xtpl->parse('extUpd.loop.note1');
-                    }
-
-                    // Thong tin cap nhat
-                    if (!empty($value['new_version']) and nv_version_compare($value['version'], $value['new_version']) < 0) {
-                        $note = $nv_Lang->getModule('extNote4');
-                        $icon = 'fa-bolt text-warning';
-
-                        $updateVersion = [];
-
-                        foreach ($value['updateable'] as $updateable) {
-                            if (in_array($value['version'], $updateable['old'], true)) {
-                                if (empty($updateVersion) or nv_version_compare($updateVersion['new'], $updateable['new']) < 0) {
-                                    $updateVersion = $updateable;
-                                }
+                    $updateVersion = [];
+                    foreach ($value['updateable'] as $updateable) {
+                        if (in_array($value['version'], $updateable['old'], true)) {
+                            if (empty($updateVersion) or nv_version_compare($updateVersion['new'], $updateable['new']) < 0) {
+                                $updateVersion = $updateable;
                             }
                         }
-
-                        if (empty($updateVersion)) {
-                            $xtpl->assign('UPDNOTE', $nv_Lang->getModule('extUpdNote1', $value['link']));
-                            $xtpl->parse('extUpd.loop.updateNotSuport');
-                        } elseif ($updateVersion['new'] != $value['new_version']) {
-                            $xtpl->assign('UPDNOTE', $nv_Lang->getModule('extUpdNote2', $updateVersion['new'], NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=extensions&amp;' . NV_OP_VARIABLE . '=update&amp;eid=' . $value['id'] . '&amp;fid=' . $updateVersion['fid'] . '&amp;checksess=' . md5($value['id'] . $updateVersion['fid'] . NV_CHECK_SESSION)));
-                            $xtpl->parse('extUpd.loop.updateNotLastest');
-                        } else {
-                            $xtpl->assign('UPDNOTE', $nv_Lang->getModule('extUpdNote3', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=extensions&amp;' . NV_OP_VARIABLE . '=update&amp;eid=' . $value['id'] . '&amp;fid=' . $updateVersion['fid'] . '&amp;checksess=' . md5($value['id'] . $updateVersion['fid'] . NV_CHECK_SESSION)));
-                            $xtpl->parse('extUpd.loop.updateLastest');
-                        }
-                    } elseif (!$value['origin']) {
-                        $note = $nv_Lang->getModule('extNote1');
-                        $icon = 'fa-exclamation-triangle text-danger';
-
-                        $xtpl->parse('extUpd.loop.note2');
-                    } else {
-                        $note = $nv_Lang->getModule('extNote5');
-                        $icon = 'fa-check text-success';
                     }
-
-                    $xtpl->assign('EXTNOTE', $note);
-                    $xtpl->assign('EXTICON', $icon);
-                    $xtpl->parse('extUpd.loop');
-                    ++$a;
+                    $value['up_need'] = 1;
+                    $value['up_new_version'] = $updateVersion;
+                    if (!empty($updateVersion)) {
+                        $value['up_link'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=extensions&amp;' . NV_OP_VARIABLE . '=update&amp;eid=' . $value['id'] . '&amp;fid=' . $updateVersion['fid'] . '&amp;checksess=' . md5($value['id'] . $updateVersion['fid'] . NV_CHECK_SESSION);
+                    }
+                } elseif (!$value['origin']) {
+                    $value['status_level'] = 2;
+                    $value['status_note'] = $nv_Lang->getModule('extNote1');
+                    $value['note_level'] = 2;
+                } else {
+                    $value['status_level'] = 3;
+                    $value['status_note'] = $nv_Lang->getModule('extNote5');
                 }
+
+                $array[] = $value;
             }
-
-            $xtpl->assign('EXTUPDDATE', nv_datetime_format($extUpdDate));
-            $xtpl->assign('LINKNEWEXT', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=extensions&amp;' . NV_OP_VARIABLE . '=newest');
-
-            $xtpl->parse('extUpd');
-            echo $xtpl->text('extUpd');
         }
+        $tpl->assign('EXTS', $array);
+
+        $contents = $tpl->fetch('checkupdate-ext.tpl');
+        include NV_ROOTDIR . '/includes/header.php';
+        echo $contents;
+        include NV_ROOTDIR . '/includes/footer.php';
     }
-    exit();
+
+    nv_htmlOutput('');
 }
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('checkupdate.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

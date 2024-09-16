@@ -19,12 +19,16 @@ $set_active_op = 'checkupdate';
 $version = trim($nv_Request->get_title('version', 'get', ''));
 $package = $nv_Request->get_int('package', 'get', 0);
 
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/getupdate.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+// Bước giải nén
 if ($nv_Request->get_title('checksess', 'get', '') == md5('unzip' . $version . $package . NV_CHECK_SESSION)) {
-    $xtpl = new XTemplate('getupdate.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-
     $filename = NV_TEMPNAM_PREFIX . 'sysupd_' . NV_CHECK_SESSION . '.zip';
-
     if (file_exists(NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . $filename)) {
         $zip = new PclZip(NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . $filename);
         $ziplistContent = $zip->listContent();
@@ -159,58 +163,24 @@ if ($nv_Request->get_title('checksess', 'get', '') == md5('unzip' . $version . $
             }
         }
 
-        if (!empty($no_extract)) {
-            $i = 0;
-            foreach ($no_extract as $tmp) {
-                $xtpl->assign('FILENAME', $tmp);
-                $xtpl->parse('complete.no_extract.loop');
-                ++$i;
-            }
+        $tpl->assign('NO_EXTRACT', $no_extract);
+        $tpl->assign('ERROR_CREATE_FOLDER', $error_create_folder);
+        $tpl->assign('ERROR_MOVE_FOLDER', $error_move_folder);
 
-            $xtpl->parse('complete.no_extract');
-        } elseif (!empty($error_create_folder)) {
-            $i = 0;
-            asort($error_create_folder);
+        $contents = $tpl->fetch('getupdate-unzip.tpl');
 
-            foreach ($error_create_folder as $tmp) {
-                $xtpl->assign('FILENAME', $tmp);
-                $xtpl->parse('complete.error_create_folder.loop');
-                ++$i;
-            }
-
-            $xtpl->parse('complete.error_create_folder');
-        } elseif (!empty($error_move_folder)) {
-            $i = 0;
-            asort($error_move_folder);
-
-            foreach ($error_move_folder as $tmp) {
-                $xtpl->assign('FILENAME', $tmp);
-                $xtpl->parse('complete.error_move_folder.loop');
-                ++$i;
-            }
-
-            $xtpl->parse('complete.error_move_folder');
-        } else {
-            $xtpl->assign('URL_GO', NV_BASE_SITEURL . 'install/update.php');
-            $xtpl->parse('complete.ok');
-        }
-
-        $xtpl->parse('complete');
-        echo $xtpl->text('complete');
+        include NV_ROOTDIR . '/includes/header.php';
+        echo $contents;
+        include NV_ROOTDIR . '/includes/footer.php';
     }
 
-    exit();
+    nv_htmlOutput('Unknow error!');
 }
 
+// Bước tải gói ứng dụng
 if ($nv_Request->get_title('checksess', 'get', '') == md5('download' . $version . $package . NV_CHECK_SESSION)) {
-    $xtpl = new XTemplate('getupdate.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-
     $NV_Http = new NukeViet\Http\Http($global_config, NV_TEMP_DIR);
-
     $filename = NV_TEMPNAM_PREFIX . 'sysupd_' . NV_CHECK_SESSION . '.zip';
-
-    // Debug
     $args = [
         'headers' => [
             'Referer' => NUKEVIET_STORE_APIURL,
@@ -224,7 +194,7 @@ if ($nv_Request->get_title('checksess', 'get', '') == md5('download' . $version 
             'version' => $version,
             'package' => $package
         ],
-        'timeout' => 0
+        'timeout' => 300
     ];
 
     // Delete temp file if exists
@@ -241,68 +211,56 @@ if ($nv_Request->get_title('checksess', 'get', '') == md5('download' . $version 
     }
 
     if (!empty($error)) {
-        $xtpl->assign('ERROR', $error);
+        $html = nv_theme_alert($page_title, $error, 'danger');
+        nv_htmlOutput($html);
+    }
 
-        $xtpl->parse('error');
-        echo $xtpl->text('error');
-    } else {
-        $zip = new PclZip(NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . $filename);
-        $ziplistContent = $zip->listContent();
+    $zip = new PclZip(NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . $filename);
+    $ziplistContent = $zip->listContent();
 
-        // Not exists (can not download)
-        $warning = 2;
-
-        if (!empty($ziplistContent)) {
-            // Package ok
-            $warning = 0;
-            foreach ($ziplistContent as $zipContent) {
-                if (!preg_match("/^install\//is", $zipContent['filename'])) {
-                    // Package invald
-                    $warning = 1;
-                }
+    // Not exists (can not download)
+    $warning = 2;
+    if (!empty($ziplistContent)) {
+        // Package ok
+        $warning = 0;
+        foreach ($ziplistContent as $zipContent) {
+            if (!preg_match("/^install\//is", $zipContent['filename'])) {
+                // Package invald
+                $warning = 1;
             }
-        }
-
-        if ($warning == 1) {
-            $xtpl->assign('MESSAGE', $nv_Lang->getModule('get_update_warning', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=webtools&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;version=' . $version . '&amp;package=' . $package . '&amp;checksess=' . md5('unzip' . $version . $package . NV_CHECK_SESSION)));
-
-            $xtpl->parse('warning');
-            echo $xtpl->text('warning');
-        } elseif ($warning == 2) {
-            $error = $nv_Lang->getModule('get_update_error_file_download');
-            $new_version = nv_geVersion(NV_CURRENTTIME);
-            if ($new_version !== false and !is_string($new_version)) {
-                $manual_link = (string) $new_version->link;
-                if (!empty($manual_link)) {
-                    $error .= ' ' . $nv_Lang->getModule('get_update_error_file_download1', $manual_link);
-                }
-            }
-
-            $xtpl->assign('ERROR', $error);
-            $xtpl->parse('error');
-            echo $xtpl->text('error');
-        } else {
-            $xtpl->assign('MESSAGE', $nv_Lang->getModule('get_update_ok', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=webtools&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;version=' . $version . '&amp;package=' . $package . '&amp;checksess=' . md5('unzip' . $version . $package . NV_CHECK_SESSION)));
-
-            $xtpl->parse('ok');
-            echo $xtpl->text('ok');
         }
     }
 
-    exit();
+    if ($warning == 1) {
+        $html = nv_theme_alert($page_title, $nv_Lang->getModule('get_update_warning', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=webtools&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;version=' . $version . '&amp;package=' . $package . '&amp;checksess=' . md5('unzip' . $version . $package . NV_CHECK_SESSION)), 'warning');
+        nv_htmlOutput($html);
+    }
+
+    if ($warning == 2) {
+        $error = $nv_Lang->getModule('get_update_error_file_download');
+        $new_version = nv_geVersion(NV_CURRENTTIME);
+        if ($new_version !== false and !is_string($new_version)) {
+            $manual_link = (string) $new_version->link;
+            if (!empty($manual_link)) {
+                $error .= ' ' . $nv_Lang->getModule('get_update_error_file_download1', $manual_link);
+            }
+        }
+
+        $html = nv_theme_alert($page_title, $error, 'danger');
+        nv_htmlOutput($html);
+    }
+
+    $html = nv_theme_alert($page_title, $nv_Lang->getModule('get_update_ok', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=webtools&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;version=' . $version . '&amp;package=' . $package . '&amp;checksess=' . md5('unzip' . $version . $package . NV_CHECK_SESSION)), 'success');
+    nv_htmlOutput($html);
 }
 
+// Bước hiển thị trang để ajax các thao tác tiếp theo
 if ($nv_Request->get_title('checksess', 'get', '') == md5($version . $package . NV_CHECK_SESSION)) {
-    $xtpl = new XTemplate('getupdate.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-    $xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-    $xtpl->assign('VERSION', $version);
-    $xtpl->assign('PACKAGE', $package);
-    $xtpl->assign('CHECKSESS', md5('download' . $version . $package . NV_CHECK_SESSION));
+    $tpl->assign('VERSION', $version);
+    $tpl->assign('PACKAGE', $package);
+    $tpl->assign('CHECKSESS', md5('download' . $version . $package . NV_CHECK_SESSION));
 
-    $xtpl->parse('main');
-    $contents = $xtpl->text('main');
+    $contents = $tpl->fetch('getupdate.tpl');
 
     include NV_ROOTDIR . '/includes/header.php';
     echo nv_admin_theme($contents);
