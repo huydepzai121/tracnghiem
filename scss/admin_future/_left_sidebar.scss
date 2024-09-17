@@ -131,7 +131,7 @@
 
         // Cấp 2 và 3 nói chung
         >li ul li>a {
-            padding: .5rem .9375rem .5rem 3.0625rem;
+            padding: .5rem .9375rem .5rem 1.875rem;
             color: var(--bs-body-color);
             display: block;
             text-overflow: ellipsis;
@@ -146,7 +146,7 @@
 
         // Canh trái thẻ menu cấp 3
         >li ul li>ul>li>a {
-            padding-left: 4.375rem;
+            padding-left: 2.625rem;
             position: relative;
         }
 

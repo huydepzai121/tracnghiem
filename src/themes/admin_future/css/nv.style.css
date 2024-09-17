@@ -25900,7 +25900,7 @@ readers do not read off random characters that represent icons */
   color: var(--bs-primary);
 }
 .left-sidebar .sidebar-elements > li ul li > a {
-  padding: 0.5rem 0.9375rem 0.5rem 3.0625rem;
+  padding: 0.5rem 0.9375rem 0.5rem 1.875rem;
   color: var(--bs-body-color);
   display: block;
   text-overflow: ellipsis;
@@ -25912,7 +25912,7 @@ readers do not read off random characters that represent icons */
   background-color: var(--nv-left-sidebar-link-child-hover-color);
 }
 .left-sidebar .sidebar-elements > li ul li > ul > li > a {
-  padding-left: 4.375rem;
+  padding-left: 2.625rem;
   position: relative;
 }
 .left-sidebar .sidebar-elements li.open > ul {
