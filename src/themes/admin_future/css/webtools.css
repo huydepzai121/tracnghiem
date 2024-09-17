@@ -6,5 +6,8 @@
  * @license GNU/GPL version 2 or any later version
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
+.errorlog-plain-view {
+  white-space: pre-wrap;
+}
 
 /*# sourceMappingURL=webtools.css.map */

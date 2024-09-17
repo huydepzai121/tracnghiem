@@ -192,4 +192,59 @@ $(function() {
             });
         });
     }
+
+    /**
+     * Xử lý trang xem log lỗi
+     */
+    $('#errorfile').on('change', function() {
+        var url = $(this).data('url'),
+        efile = $(this).val();
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: 'errorfile=' + efile,
+            cache: !1,
+            dataType: "json",
+            success: function(response) {
+                $('#errorlist').html(response.errorlist);
+                $('#error-content .error_file_name').text(response.errorfilename);
+                $('#error-content code').html(response.errorfilecontent);
+                hljs.debugMode();
+                hljs.highlightAll();
+            },
+            error: function(xhr, text, err) {
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
+            }
+        })
+    });
+
+    $('#display-mode').on('change', function() {
+        var url = $(this).data('url'),
+            val = $(this).val();
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: 'changemode=1&mode=' + val,
+            cache: !1,
+            success: function() {
+                if (val == 'tabular') {
+                    $('#errorlist').removeClass('d-none');
+                    $('#error-content').addClass('d-none');
+                } else {
+                    $('#error-content').removeClass('d-none');
+                    $('#errorlist').addClass('d-none');
+                }
+            },
+            error: function(xhr, text, err) {
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
+            }
+        })
+    });
+
+    if ($('#error-content').length) {
+        hljs.debugMode();
+        hljs.highlightAll();
+    }
 });

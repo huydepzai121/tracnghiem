@@ -79,12 +79,7 @@ if (file_exists(NV_ROOTDIR . '/' . NV_LOGS_DIR . '/error_logs/sendmail.' . $loge
 }
 
 if (empty($filelist)) {
-    $xtpl = new XTemplate('errorlog.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-
-    $xtpl->parse('filelist_empty');
-    $contents = $xtpl->text('filelist_empty');
-
+    $contents = nv_theme_alert($nv_Lang->getGlobal('info_level'), $nv_Lang->getModule('error_filelist_empty'), 'info');
     include NV_ROOTDIR . '/includes/header.php';
     echo nv_admin_theme($contents);
     include NV_ROOTDIR . '/includes/footer.php';
@@ -119,51 +114,36 @@ $errors = array_filter($errors);
 krsort($errors);
 
 $file_content = nv_htmlspecialchars($file_content);
-$xtpl = new XTemplate('errorlog.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('PAGE_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-$xtpl->assign('ERROR_FILE_NAME', $errorfile);
-$xtpl->assign('ERROR_FILE_CONTENT', $file_content);
 
-foreach ($errors as $id => $item) {
-    $item = json_decode($item, true);
-    $item['time'] = date('d/m/Y H:i:s P', strtotime($item['time']));
-    $xtpl->assign('ERROR', [
-        'id' => $id,
-        'time' => $item['time']
-    ]);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/errorlog.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-    foreach ($item as $key => $value) {
-        if ($key != 'time') {
-            if ($key == 'backtrace') {
-                $b = '';
-                foreach ($value as $vl) {
-                    $b .= '<li>' . $vl . '</li>';
-                }
-                $value = '<ul>' . $b . '</ul>';
-            }
-            $xtpl->assign('OPTION', [
-                'title' => $nv_Lang->getModule('errorlog_' . $key),
-                'value' => $value
-            ]);
-            unset($matches);
-            if ($key == 'errno' and preg_match('/^(\d+)\s*\(.+\)/', $value, $matches)) {
-                if (!empty($nv_Lang->getModule('errorcode_' . $matches[1]))) {
-                    $xtpl->assign('NOTE', $nv_Lang->getModule('errorcode_' . $matches[1]));
-                    $xtpl->parse('errorlist.error.option.note');
-                }
-            }
-            $xtpl->parse('errorlist.error.option');
-        }
-    }
-    $xtpl->parse('errorlist.error');
-}
+$tpl->registerPlugin('modifier', 'array_keys', 'array_keys');
+$tpl->registerPlugin('modifier', 'json_decode', 'json_decode');
+$tpl->registerPlugin('modifier', 'nv_datetime_format', 'nv_datetime_format');
+$tpl->registerPlugin('modifier', 'strtotime', 'strtotime');
+$tpl->registerPlugin('modifier', 'is_numeric', 'is_numeric');
 
-$xtpl->parse('errorlist');
-$errorlist = $xtpl->text('errorlist');
+$tpl->assign('PAGE_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
+$tpl->assign('ERROR_FILE_NAME', $errorfile);
+$tpl->assign('ERROR_FILE_CONTENT', $file_content);
 
+$mode = $nv_Request->get_string('errorfile_view_mode', 'session', '');
+$modes = [
+    'tabular' => $nv_Lang->getModule('display_mode_tabular'),
+    'plaintext' => $nv_Lang->getModule('display_mode_plaintext')
+];
+empty($mode) && $mode = array_key_first($modes);
+
+$tpl->assign('MODES', $modes);
+$tpl->assign('MODE', $mode);
+$tpl->assign('ERRORS', $errors);
+
+$errorlist = $tpl->fetch('errorlog-list.tpl');
 if (!$is_default) {
     nv_jsonOutput([
         'errorlist' => $errorlist,
@@ -172,57 +152,10 @@ if (!$is_default) {
     ]);
 }
 
-$xtpl->assign('ERRORLIST', $errorlist);
+$tpl->assign('ERRORLIST', $errorlist);
+$tpl->assign('FILELIST', $filelist2);
 
-foreach ($filelist2 as $type => $list) {
-    if (!empty($list)) {
-        if ($type == 'error') {
-            $optgroup = $nv_Lang->getModule('errorlog_log');
-        } elseif ($type == 'notice') {
-            $optgroup = $nv_Lang->getModule('noticelog_log');
-        } elseif ($type == 'e256') {
-            $optgroup = $nv_Lang->getModule('errorlog_256');
-        } else {
-            $optgroup = $nv_Lang->getModule('errorlog_sendmail');
-        }
-        $xtpl->assign('OPTGROUP', $optgroup);
-
-        $list = array_keys($list);
-        foreach ($list as $key) {
-            $xtpl->assign('ERRORFILE', [
-                'val' => $key,
-                'sel' => $key == $errorfile ? ' selected="selected"' : '',
-                'name' => $key
-            ]);
-            $xtpl->parse('main.error_type.error_file');
-        }
-        $xtpl->parse('main.error_type');
-    }
-}
-
-$mode = $nv_Request->get_string('errorfile_view_mode', 'session', '');
-$modes = [
-    'tabular' => $nv_Lang->getModule('display_mode_tabular'),
-    'plaintext' => $nv_Lang->getModule('display_mode_plaintext')
-];
-empty($mode) && $mode = array_key_first($modes);
-foreach ($modes as $key => $name) {
-    $xtpl->assign('MODE', [
-        'val' => $key,
-        'sel' => $key == $mode ? ' selected="selected"' : '',
-        'name' => $name
-    ]);
-    $xtpl->parse('main.display_mode');
-}
-
-if ($mode == 'tabular') {
-    $xtpl->parse('main.plaintext_mode_hide');
-} else {
-    $xtpl->parse('main.tabular_mode_hide');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('errorlog.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
