@@ -42,6 +42,8 @@ class AcceptanceTester extends \Codeception\Actor
         $I->amOnUrl($this->getDomain() . '/admin/index.php');
         $I->seeElement('#nv_login');
 
+        $I->waitForJS("return document.activeElement === document.querySelector('input#nv_login');", 1);
+
         $username = $username ?? $_ENV['NV_USERNAME'];
         $password = $password ?? $_ENV['NV_PASSWORD'];
 
