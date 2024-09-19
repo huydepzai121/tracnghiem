@@ -1,0 +1,51 @@
+/**
+ * NukeViet Content Management System
+ * @version 4.x
+ * @author VINADES.,JSC <contact@vinades.vn>
+ * @copyright (C) 2009-2021 VINADES.,JSC. All rights reserved
+ * @license GNU/GPL version 2 or any later version
+ * @see https://github.com/nukeviet The NukeViet CMS GitHub project
+ */
+
+// Define variable
+@import "../functions";
+@import "variables";
+@import "variables-dark";
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
+
+.ext-thumbnail {
+    flex: 0 0 5.375rem;
+
+    >div {
+        width: 5.375rem;
+        height: 5.375rem;
+        overflow: hidden;
+
+        img,
+        svg {
+            object-position: center;
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+.ext-detail-container {
+    margin-left: calc(-1 * var(--bs-modal-padding));
+    margin-right: calc(-1 * var(--bs-modal-padding));
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .tab-header {
+        border-bottom: #{$nav-tabs-border-width} solid #{$nav-tabs-border-color};
+
+        > .nav {
+            margin-bottom: calc(-1 * var(--bs-nav-tabs-border-width));
+        }
+    }
+}
