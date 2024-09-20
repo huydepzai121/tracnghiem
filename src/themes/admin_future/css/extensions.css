@@ -39,4 +39,33 @@
   margin-bottom: calc(-1 * var(--bs-nav-tabs-border-width));
 }
 
+.stepper {
+  counter-reset: countSteper;
+}
+.stepper .line {
+  width: 2px;
+}
+.stepper .indicate {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-basis: 2.5rem;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.stepper .indicate span::before {
+  content: counter(countSteper);
+}
+.stepper .slead {
+  margin-bottom: 1.5rem;
+}
+.stepper > div {
+  counter-increment: countSteper;
+}
+.stepper > div:last-child .line {
+  display: none;
+}
+.stepper > div:last-child .slead {
+  margin-bottom: 0;
+}
+
 /*# sourceMappingURL=extensions.css.map */

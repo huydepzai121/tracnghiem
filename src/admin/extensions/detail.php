@@ -44,6 +44,8 @@ if (!empty($error)) {
     nv_htmlOutput(nv_theme_alert($nv_Lang->getGlobal('danger_level'), $error, 'danger'));
 }
 
+$page_title = $nv_Lang->getModule('detail_title', $array['data']['title']);
+
 $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/detail.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
 $tpl->registerPlugin('modifier', 'ddatetime', 'nv_datetime_format');
@@ -56,8 +58,13 @@ $tpl->assign('OP', $op);
 $tpl->assign('GCONFIG', $global_config);
 $tpl->assign('DATA', $array['data']);
 
-$contents = $tpl->fetch('detail.tpl');
+$popup = $nv_Request->get_absint('popup', 'get', 0);
+if ($popup) {
+    $contents = $tpl->fetch('detail-popup.tpl');
+} else {
+    $contents = $tpl->fetch('detail.tpl');
+}
 
 include NV_ROOTDIR . '/includes/header.php';
-echo $contents;
+echo $popup ? $contents : nv_admin_theme($contents);
 include NV_ROOTDIR . '/includes/footer.php';

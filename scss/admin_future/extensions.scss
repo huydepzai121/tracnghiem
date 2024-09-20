@@ -49,3 +49,41 @@
         }
     }
 }
+
+.stepper {
+    counter-reset: countSteper;
+
+    .line {
+        width: 2px;
+    }
+
+    .indicate {
+        width: 2.5rem;
+        height: 2.5rem;
+        flex-basis: 2.5rem;
+        flex-grow: 0;
+        flex-shrink: 0;
+
+        span::before {
+            content: counter(countSteper);
+        }
+    }
+
+    .slead {
+        margin-bottom: 1.5rem;
+    }
+
+    >div {
+        counter-increment: countSteper;
+
+        &:last-child {
+            .line {
+                display: none;
+            }
+
+            .slead {
+                margin-bottom: 0;
+            }
+        }
+    }
+}

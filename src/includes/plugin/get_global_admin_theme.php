@@ -37,7 +37,7 @@ nv_add_hook($module_name, 'get_global_admin_theme', $priority, function ($vars) 
     if ($module_name == 'themes' and in_array($op, ['block_content'])) {
         return $new_theme;
     }
-    if ($module_name == 'extensions' and in_array($op, ['detail', 'main'])) {
+    if ($module_name == 'extensions' and in_array($op, ['install', 'detail', 'main'])) {
         return $new_theme;
     }
 

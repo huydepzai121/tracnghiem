@@ -63,4 +63,4 @@ if (empty($request['id']) or empty($request['fid']) or !isset($array['tid'])) {
     }
 }
 
-echo $contents;
+nv_htmlOutput($contents);
