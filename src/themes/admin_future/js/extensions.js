@@ -94,4 +94,63 @@ $(function() {
     if (autoDownExt.length) {
         downloadExt();
     }
+
+    // Kiểm tra gói ứng dụng trước khi tải lên
+    function checkext(myArray, myValue) {
+        var type = eval(myArray).join().indexOf(myValue) >= 0;
+        return type;
+    }
+    $('#formSubmitExt').on('submit', function(e) {
+        let form = $(this);
+        let zipfile = $("input[name=extfile]").val();
+        if (zipfile == "") {
+            e.preventDefault();
+            nvToast(form.data('error-choose'), 'error');
+            return;
+        }
+
+        let filezip = zipfile.slice(-3);
+        let filegzip = zipfile.slice(-2);
+        let allowext = new Array("zip", "gz");
+
+        if (!checkext(allowext, filezip) || !checkext(allowext, filegzip)) {
+            e.preventDefault();
+            nvToast(form.data('error-type'), 'error');
+        }
+    });
+
+    // Xóa ứng dụng ra khỏi hệ thống
+    $('[data-toggle="deleteExtension"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(btn.data('confirm'), () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: btn.attr('href') + '&nocache=' + new Date().getTime(),
+                dataType: 'json',
+                cache: false,
+                success: function(respon) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (!respon.success) {
+                        nvToast(respon.text, 'error');
+                        return;
+                    }
+                    nvToast(respon.text, 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
 });

@@ -15,26 +15,16 @@ if (!defined('NV_IS_FILE_EXTENSIONS')) {
 
 $page_title = $nv_Lang->getModule('manage');
 
-$theme_config = [
-    'sys_icon' => 'fa-cubes',
-    'admin_icon' => 'fa-cube'
-];
-
-$xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('THEME_CONFIG', $theme_config);
-
 $request = [
     'type' => $nv_Request->get_title('type', 'get', ''),
     'title' => $nv_Request->get_title('title', 'get', ''),
     'checksess' => $nv_Request->get_title('checksess', 'get', '')
 ];
 
-// Cac module trong admin
+// Module trong admin
 $array_module_admin = nv_scandir(NV_ROOTDIR . '/' . NV_ADMINDIR, $global_config['check_module']);
 
-// Cac theme trong admin
+// Giao diện trong admin
 $array_theme_admin = nv_scandir(NV_ROOTDIR . '/themes', $global_config['check_theme_admin']);
 
 // Package extensions (Odd feature: Package module, theme)
@@ -322,7 +312,7 @@ if (md5('package_' . $request['type'] . '_' . $request['title'] . '_' . NV_CHECK
     nv_error404();
 }
 
-// Xoa ung dung
+// Xóa ứng dụng
 if (md5('delete_' . $request['type'] . '_' . $request['title'] . '_' . NV_CHECK_SESSION) == $request['checksess']) {
     $sql = 'SELECT * FROM ' . $db_config['prefix'] . '_setup_extensions WHERE type = :type AND title = :title';
     $sth = $db->prepare($sql);
@@ -444,7 +434,10 @@ if (md5('delete_' . $request['type'] . '_' . $request['title'] . '_' . NV_CHECK_
             }
 
             if (!empty($lang_module_array)) {
-                exit('ERROR_' . printf($nv_Lang->getModule('delele_ext_theme_note_module'), implode('; ', $lang_module_array)));
+                nv_jsonOutput([
+                    'success' => 0,
+                    'text' => printf($nv_Lang->getModule('delele_ext_theme_note_module'), implode('; ', $lang_module_array))
+                ]);
             }
             nv_insert_logs(NV_LANG_DATA, $module_name, 'log_del_theme', 'theme ' . $request['title'], $admin_info['userid']);
             nv_deletefile(NV_ROOTDIR . '/themes/' . $request['title'], true);
@@ -471,7 +464,10 @@ if (md5('delete_' . $request['type'] . '_' . $request['title'] . '_' . NV_CHECK_
                 $db->query('OPTIMIZE TABLE ' . $db_config['prefix'] . '_' . $_lang . '_blocks_weight');
                 $db->query('OPTIMIZE TABLE ' . $db_config['prefix'] . '_' . $_lang . '_blocks_groups');
             } else {
-                exit('ERROR_' . $nv_Lang->getModule('delele_ext_unsuccess'));
+                nv_jsonOutput([
+                    'success' => 0,
+                    'text' => $nv_Lang->getModule('delele_ext_unsuccess')
+                ]);
             }
         }
 
@@ -521,10 +517,16 @@ if (md5('delete_' . $request['type'] . '_' . $request['title'] . '_' . NV_CHECK_
         $sth->bindValue(':title', $request['title']);
         $sth->execute();
 
-        exit('OK_' . $nv_Lang->getModule('delele_ext_success'));
+        nv_jsonOutput([
+            'success' => 1,
+            'text' => $nv_Lang->getModule('delele_ext_success')
+        ]);
     }
 
-    exit('ERROR_' . $nv_Lang->getModule('delele_ext_unsuccess'));
+    nv_jsonOutput([
+        'success' => 0,
+        'text' => $nv_Lang->getModule('delele_ext_unsuccess')
+    ]);
 }
 
 $array_extType = [
@@ -557,19 +559,17 @@ if ($selecttype_old != $selecttype and !empty($selecttype)) {
     $nv_Request->set_Cookie('selecttype', $selecttype, NV_LIVE_COOKIE_TIME);
 }
 
-// Cho phep upload
-if ($global_config['extension_setup'] == 1 or $global_config['extension_setup'] == 3) {
-    $xtpl->assign('SUBMIT_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=upload');
-    $xtpl->assign('SUBMIT_CHECKSESS', md5(NV_CHECK_SESSION . 'submit-ext'));
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/manage.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->registerPlugin('modifier', 'encodehtml', 'nv_htmlspecialchars');
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-    if (!$sys_info['zlib_support']) {
-        $xtpl->parse('main.upload_allowed.nozlib');
-    } else {
-        $xtpl->parse('main.upload_allowed.upload');
-    }
-
-    $xtpl->parse('main.upload_allowed');
-}
+$tpl->assign('GCONFIG', $global_config);
+$tpl->assign('SYS_INFO', $sys_info);
+$tpl->assign('SUBMIT_CHECKSESS', md5(NV_CHECK_SESSION . 'submit-ext'));
 
 // Array lang setup
 $sql = 'SELECT lang FROM ' . $db_config['prefix'] . '_setup_language WHERE setup=1';
@@ -619,7 +619,7 @@ foreach ($array_langs as $lang) {
     }
 }
 
-// List extensions
+// Danh sách các ứng dụng trong CSDL
 $sql = 'SELECT * FROM ' . $db_config['prefix'] . '_setup_extensions WHERE title=basename';
 if (in_array($selecttype, $array_extType, true)) {
     $sql .= ' AND type = ' . $db->quote($selecttype);
@@ -634,9 +634,7 @@ while ($row = $result->fetch()) {
         $array_themes_indb[] = $row['basename'];
     }
 
-    $row['icon'] = $row['is_sys'] ? [
-        $theme_config['sys_icon']
-    ] : [];
+    $row['icon'] = $row['is_sys'] ? ['sys'] : [];
     $row['is_admin'] = false;
     $row['delete_allowed'] = $row['is_sys'] == 0 ? true : false;
 
@@ -664,7 +662,7 @@ while ($row = $result->fetch()) {
     $array_parse[] = $row;
 }
 
-// Them cac module admin
+// Thêm các module trong quản trị
 if ($selecttype == '' or $selecttype == 'admin') {
     foreach ($array_module_admin as $row) {
         $array_parse[] = [
@@ -674,16 +672,13 @@ if ($selecttype == '' or $selecttype == 'admin') {
             'version' => $global_config['version'],
             'url_package' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;type=module&amp;title=' . $row . '&amp;checksess=' . md5('package_module_' . $row . '_' . NV_CHECK_SESSION),
             'is_admin' => true,
-            'icon' => [
-                $theme_config['admin_icon'],
-                $theme_config['sys_icon']
-            ],
+            'icon' => ['admin', 'sys'],
             'delete_allowed' => false
         ];
     }
 }
 
-// Them cac theme admin
+// Thêm các giao diện trong quản trị
 $is_reload = false;
 if ($selecttype == '' or $selecttype == 'theme') {
     $theme_list = nv_scandir(NV_ROOTDIR . '/themes/', $global_config['check_theme']);
@@ -733,10 +728,7 @@ if ($selecttype == '' or $selecttype == 'theme') {
             'version' => $global_config['version'],
             'url_package' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;type=theme&amp;title=' . $row . '&amp;checksess=' . md5('package_theme_' . $row . '_' . NV_CHECK_SESSION),
             'is_admin' => true,
-            'icon' => [
-                $theme_config['admin_icon'],
-                $theme_config['sys_icon']
-            ],
+            'icon' => ['admin', 'sys'],
             'delete_allowed' => false
         ];
     }
@@ -746,29 +738,9 @@ if ($is_reload) {
     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op);
 }
 
-foreach ($array_parse as $row) {
-    $row['author'] = nv_htmlspecialchars($row['author']);
+$tpl->assign('ARRAY', $array_parse);
 
-    $xtpl->assign('ROW', $row);
-
-    if (!empty($row['icon'])) {
-        foreach ($row['icon'] as $icon) {
-            $xtpl->assign('ICON', $icon);
-            $xtpl->parse('main.loop.icons.loop');
-        }
-
-        $xtpl->parse('main.loop.icons');
-    }
-
-    if ($row['delete_allowed'] === true) {
-        $xtpl->parse('main.loop.delete');
-    }
-
-    $xtpl->parse('main.loop');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('manage.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
