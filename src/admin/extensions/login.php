@@ -22,19 +22,40 @@ $request['redirect'] = $nv_Request->get_title('redirect', 'post,get', '');
 
 $checksess = md5(NV_CHECK_SESSION . 'mer-login');
 
-$xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('REQUEST', $request);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_LANG_VARIABLE', NV_LANG_VARIABLE);
-$xtpl->assign('NV_LANG_DATA', NV_LANG_DATA);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('CHECKSESS', $checksess);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/login.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-if (!empty($request['username']) and !empty($request['password']) and $checksess === $nv_Request->get_title('checksess', 'post', '')) {
-    // Fixed request
+$tpl->assign('CHECKSESS', $checksess);
+$tpl->assign('REQUEST', $request);
+
+// Submit đăng nhập
+if ($nv_Request->isset_request('checksess', 'post')) {
+    if ($nv_Request->get_title('checksess', 'post', '') !== $checksess) {
+        nv_jsonOutput([
+            'status' => 'error',
+            'mess' => 'Session error!!!',
+        ]);
+    }
+
+    if (empty($request['username'])) {
+        nv_jsonOutput([
+            'status' => 'error',
+            'input' => 'username',
+            'mess' => $nv_Lang->getGlobal('required_invalid')
+        ]);
+    }
+    if (empty($request['password'])) {
+        nv_jsonOutput([
+            'status' => 'error',
+            'input' => 'password',
+            'mess' => $nv_Lang->getGlobal('required_invalid')
+        ]);
+    }
+
     $request['lang'] = NV_LANG_INTERFACE;
     $request['basever'] = $global_config['version'];
     $request['mode'] = 'login';
@@ -43,7 +64,6 @@ if (!empty($request['username']) and !empty($request['password']) and $checksess
     $NV_Http = new NukeViet\Http\Http($global_config, NV_TEMP_DIR);
     $stored_cookies = nv_get_cookies();
 
-    // Debug
     $args = [
         'headers' => [
             'Referer' => NUKEVIET_STORE_APIURL
@@ -68,32 +88,24 @@ if (!empty($request['username']) and !empty($request['password']) and $checksess
     } elseif (!empty($array['error']['message'])) {
         $error = $array['error']['message'];
     }
-
-    // Show error
     if (!empty($error)) {
-        $xtpl->assign('ERROR', $error);
-        $xtpl->parse('main.error');
-
-        $contents = $xtpl->text('main.error');
-    } else {
-        // Save cookies
-        nv_store_cookies(nv_object2array($cookies), $stored_cookies);
-
-        $redirect = $request['redirect'] ? nv_redirect_decrypt($request['redirect']) : NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name;
-
-        $xtpl->assign('REDIRECT_LINK', $redirect);
-        $xtpl->parse('main.ok');
-
-        $contents = $xtpl->text('main.ok');
+        nv_jsonOutput([
+            'status' => 'error',
+            'mess' => $error
+        ]);
     }
 
-    include NV_ROOTDIR . '/includes/header.php';
-    echo $contents;
-    include NV_ROOTDIR . '/includes/footer.php';
+    // Lưu cookie mới
+    nv_store_cookies(nv_object2array($cookies), $stored_cookies);
+    $redirect = $request['redirect'] ? nv_redirect_decrypt($request['redirect']) : NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name;
+    nv_jsonOutput([
+        'status' => 'success',
+        'redirect' => $redirect,
+        'mess' => $nv_Lang->getModule('login_success')
+    ]);
 }
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('login.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
