@@ -160,6 +160,7 @@ $lang_module['autoinstall_error_mimetype'] = 'Warning: The system does not check
 $lang_module['autoinstall_error_mimetype_pass'] = 'Ignore warnings';
 $lang_module['autoinstall_note_invaild'] = 'Location not allowed';
 $lang_module['autoinstall_note_exists'] = 'The file already exists';
+$lang_module['autoinstall_package_processing'] = 'Processing, please wait';
 $lang_module['package'] = 'Packaged Applications';
 $lang_module['delele_ext_confirm'] = 'Are you sure you delete the app, it will not be undone?';
 $lang_module['delele_ext_theme_note_module'] = 'You can not delete the theme because we are using the module:% s, you need to reconfigure the module.';

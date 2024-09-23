@@ -113,7 +113,7 @@ $(function() {
         let filegzip = zipfile.slice(-2);
         let allowext = new Array("zip", "gz");
 
-        if (!checkext(allowext, filezip) || !checkext(allowext, filegzip)) {
+        if (!checkext(allowext, filezip) && !checkext(allowext, filegzip)) {
             e.preventDefault();
             nvToast(form.data('error-type'), 'error');
         }
@@ -151,6 +151,52 @@ $(function() {
                     console.log(xhr, text, err);
                 }
             });
+        });
+    });
+
+    function handlerAutoRedirect() {
+        let ele = $('[data-toggle="upExtSuccessAutolink"]', $('#filelist'));
+        if (ele.length) {
+            setTimeout(() => {
+                window.location = ele.attr('href');
+            }, 3000);
+        }
+    }
+
+    // Giải nén gói ứng dụng đã upload
+    $('#upload-ext-status a').on('click', function(e) {
+        e.preventDefault();
+        $('#filelist').html($('#filelist-loader').html());
+        $.ajax({
+            type: 'GET',
+            url: $('#filelist').data('link') + '&nocache=' + new Date().getTime(),
+            success: function(res) {
+                $('#filelist').html(res);
+                handlerAutoRedirect();
+            },
+            error: function(xhr, text, err) {
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
+
+    // Giải nén gói ứng dụng đã upload
+    $('body').on('click', '[data-toggle="upExtDismissWarning"]', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        $('#filelist').html($('#filelist-loader').html());
+        $.ajax({
+            type: 'GET',
+            url: btn.data('link') + '&nocache=' + new Date().getTime(),
+            success: function(res) {
+                $('#filelist').html(res);
+                handlerAutoRedirect();
+            },
+            error: function(xhr, text, err) {
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
         });
     });
 });

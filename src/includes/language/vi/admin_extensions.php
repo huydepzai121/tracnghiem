@@ -160,6 +160,7 @@ $lang_module['autoinstall_error_mimetype'] = 'Cảnh báo: Hệ thống không k
 $lang_module['autoinstall_error_mimetype_pass'] = 'Bỏ qua cảnh báo';
 $lang_module['autoinstall_note_invaild'] = 'Vị trí không được phép';
 $lang_module['autoinstall_note_exists'] = 'Tệp tin đã tồn tại';
+$lang_module['autoinstall_package_processing'] = 'Đang xử lý, vui lòng đợi';
 $lang_module['package'] = 'Đóng gói ứng dụng';
 $lang_module['delele_ext_confirm'] = 'Bạn có chắc chắn xóa ứng dụng này? Việc này sẽ không thể hoàn tác';
 $lang_module['delele_ext_theme_note_module'] = 'Bạn không thể xóa giao diện vì nó đang được sử dụng cho module: %s. Vui lòng cấu hình lại module đó trước.';

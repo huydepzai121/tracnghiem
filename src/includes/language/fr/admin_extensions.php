@@ -160,6 +160,7 @@ $lang_module['autoinstall_error_mimetype'] = 'Attention: Le système ne vérifie
 $lang_module['autoinstall_error_mimetype_pass'] = 'Ignorer l\'avertissement';
 $lang_module['autoinstall_note_invaild'] = 'La location interdite';
 $lang_module['autoinstall_note_exists'] = 'Fichier existe déjà';
+$lang_module['autoinstall_package_processing'] = 'Traitement en cours, veuillez patienter';
 $lang_module['package'] = 'Emballer application';
 $lang_module['delele_ext_confirm'] = 'Vous êtes surs de supprimer cette application, ce fait ne peut pas être défait';
 $lang_module['delele_ext_theme_note_module'] = 'Vous ne pouvez pas supprimer le thème car module: %s est en cours de fonctionner, vous devez re-configurer ces modules';
