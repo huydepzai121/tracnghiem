@@ -28,16 +28,13 @@ nv_add_hook($module_name, 'get_global_admin_theme', $priority, function ($vars) 
     if (($module_info['module_file'] ?? '') == 'users' and in_array($op, ['config'])) {
         return $new_theme;
     }
-    if (in_array($module_name, ['webtools', 'language', 'siteinfo', 'authors', 'database'])) {
+    if (in_array($module_name, ['extensions', 'webtools', 'language', 'siteinfo', 'authors', 'database'])) {
         return $new_theme;
     }
     if ($module_name == 'modules' and in_array($op, ['edit'])) {
         return $new_theme;
     }
     if ($module_name == 'themes' and in_array($op, ['block_content'])) {
-        return $new_theme;
-    }
-    if ($module_name == 'extensions' and in_array($op, ['upload', 'manage', 'login', 'install', 'detail', 'main'])) {
         return $new_theme;
     }
 

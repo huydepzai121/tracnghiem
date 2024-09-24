@@ -199,4 +199,62 @@ $(function() {
             }
         });
     });
+
+    // Xử lý cập nhật ứng dụng
+    let getUpCtn = $('#getUpd');
+    if (getUpCtn.length) {
+        getUpCtn.html($('#getUpdLoader').html()).removeClass('d-none');
+        setTimeout(() => {
+            $.ajax({
+                type: 'GET',
+                url: getUpCtn.data('url') + '&nocache=' + new Date().getTime(),
+                success: function(res) {
+                    getUpCtn.html(res);
+                    let downCtn = $('#upd-getfile', getUpCtn);
+                    if (downCtn.length) {
+                        setTimeout(() => {
+                            $.ajax({
+                                type: 'GET',
+                                url: downCtn.data('link') + '&nocache=' + new Date().getTime(),
+                                success: function(res) {
+                                    downCtn.html(res);
+                                },
+                                error: function(xhr, text, err) {
+                                    nvToast(err, 'error');
+                                    console.log(xhr, text, err);
+                                }
+                            });
+                        }, 200);
+                    }
+                },
+                error: function(xhr, text, err) {
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        }, 500);
+
+        // Giải nén gói cập nhật
+        $(document).delegate('[data-toggle="updateExtUnzip"] a', 'click', function(e) {
+            e.preventDefault();
+            getUpCtn.html($('#getUpdLoader').html()).removeClass('d-none');
+            $.ajax({
+                type: 'GET',
+                url: $(this).attr('href') + '&nocache=' + new Date().getTime(),
+                success: function(res) {
+                    getUpCtn.html(res);
+                    let ele = $('[data-toggle="upExtSuccessAutolink"]', getUpCtn);
+                    if (ele.length) {
+                        setTimeout(() => {
+                            window.location = ele.attr('href');
+                        }, 3000);
+                    }
+                },
+                error: function(xhr, text, err) {
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    }
 });
