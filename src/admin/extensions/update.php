@@ -175,49 +175,6 @@ if ($nv_Request->get_title('checksess', 'get', '') == md5('unzip' . $eid . $fid 
     include NV_ROOTDIR . '/includes/header.php';
     echo $contents;
     include NV_ROOTDIR . '/includes/footer.php';
-
-
-
-
-
-    if (!empty($no_extract)) {
-        $i = 0;
-        foreach ($no_extract as $tmp) {
-            $xtpl->assign('FILENAME', $tmp);
-            $xtpl->parse('complete.no_extract.loop');
-            ++$i;
-        }
-
-        $xtpl->parse('complete.no_extract');
-    } elseif (!empty($error_create_folder)) {
-        $i = 0;
-        asort($error_create_folder);
-
-        foreach ($error_create_folder as $tmp) {
-            $xtpl->assign('FILENAME', $tmp);
-            $xtpl->parse('complete.error_create_folder.loop');
-            ++$i;
-        }
-
-        $xtpl->parse('complete.error_create_folder');
-    } elseif (!empty($error_move_folder)) {
-        $i = 0;
-        asort($error_move_folder);
-
-        foreach ($error_move_folder as $tmp) {
-            $xtpl->assign('FILENAME', $tmp);
-            $xtpl->parse('complete.error_move_folder.loop');
-            ++$i;
-        }
-
-        $xtpl->parse('complete.error_move_folder');
-    } else {
-        $xtpl->assign('URL_GO', NV_BASE_SITEURL . 'install/update.php');
-        $xtpl->parse('complete.ok');
-    }
-
-    $xtpl->parse('complete');
-    echo $xtpl->text('complete');
 }
 
 // Tải gói cập nhật

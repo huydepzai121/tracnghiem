@@ -18,7 +18,6 @@ $submenu['vmodule'] = $nv_Lang->getModule('vmodule_add');
 
 $allow_func = [
     'main',
-    'list',
     'setup',
     'vmodule',
     'edit',

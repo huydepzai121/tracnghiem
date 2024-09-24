@@ -17,7 +17,10 @@ $mod = $nv_Request->get_title('mod', 'post', '');
 $new_weight = $nv_Request->get_int('new_weight', 'post', 0);
 
 if (empty($mod) or empty($new_weight) or !preg_match($global_config['check_module'], $mod)) {
-    exit('NO_' . $mod);
+    nv_jsonOutput([
+        'success' => 0,
+        'text' => 'Wrong module!'
+    ]);
 }
 
 $sth = $db->prepare('SELECT weight FROM ' . NV_MODULES_TABLE . ' WHERE title= :title');
@@ -25,7 +28,10 @@ $sth->bindParam(':title', $mod, PDO::PARAM_STR);
 $sth->execute();
 $row = $sth->fetch();
 if (empty($row)) {
-    exit('NO_' . $mod);
+    nv_jsonOutput([
+        'success' => 0,
+        'text' => 'Not exists!'
+    ]);
 }
 
 $sth = $db->prepare('SELECT title FROM ' . NV_MODULES_TABLE . ' WHERE title != :title ORDER BY weight ASC');
@@ -49,9 +55,8 @@ $sth2->bindParam(':title', $mod, PDO::PARAM_STR);
 $sth2->execute();
 
 $nv_Cache->delMod('modules');
-
 nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('weight') . ' module: ' . $mod, $weight . ' -> ' . $new_weight, $admin_info['userid']);
-
-include NV_ROOTDIR . '/includes/header.php';
-echo 'OK_' . $mod;
-include NV_ROOTDIR . '/includes/footer.php';
+nv_jsonOutput([
+    'success' => 1,
+    'text' => 'Success!'
+]);

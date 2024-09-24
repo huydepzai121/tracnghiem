@@ -13,7 +13,6 @@ if (!defined('NV_IS_FILE_MODULES')) {
     exit('Stop!!!');
 }
 
-$contents = 'NO_' . $module_name;
 $modname = $nv_Request->get_title('mod', 'post');
 $sample = $nv_Request->get_int('sample', 'post', 0);
 
@@ -22,10 +21,16 @@ if (!empty($modname) and preg_match($global_config['check_module'], $modname) an
     if (!defined('NV_MODULE_RECREATE')) {
         define('NV_MODULE_RECREATE', true);
     }
-    $contents = nv_setup_data_module(NV_LANG_DATA, $modname, $sample);
-    $contents = ($contents['success'] ? 'OK' : 'NO') . '_' . $module_name;
+    $check = nv_setup_data_module(NV_LANG_DATA, $modname, $sample);
+    if ($check['success']) {
+        nv_jsonOutput([
+            'status' => 'success',
+            'refresh' => 1
+        ]);
+    }
 }
 
-include NV_ROOTDIR . '/includes/header.php';
-echo $contents;
-include NV_ROOTDIR . '/includes/footer.php';
+nv_jsonOutput([
+    'status' => 'error',
+    'mess' => 'Error re-create!'
+]);

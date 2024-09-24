@@ -14,41 +14,58 @@ if (!defined('NV_IS_FILE_MODULES')) {
 }
 
 $mod = $nv_Request->get_title('mod', 'post');
-
 if (empty($mod) or !preg_match($global_config['check_module'], $mod)) {
-    exit('NO_' . $mod);
+    nv_jsonOutput([
+        'success' => 0,
+        'text' => 'Wrong module!'
+    ]);
 }
-if (md5(NV_CHECK_SESSION . '_' . $module_name . '_change_act_' . $mod) == $nv_Request->get_string('checkss', 'post')) {
-    $sth = $db->prepare('SELECT act, module_file FROM ' . NV_MODULES_TABLE . ' WHERE title= :title');
-    $sth->bindParam(':title', $mod, PDO::PARAM_STR);
-    $sth->execute();
-    $row = $sth->fetch();
-    if (empty($row)) {
-        exit('NO_' . $mod);
-    }
 
-    $act = (int) ($row['act']);
-
-    if ($act == 2) {
-        if (!is_dir(NV_ROOTDIR . '/modules/' . $row['module_file'])) {
-            exit('NO_' . $mod);
-        }
-    }
-
-    $act = ($act != 1) ? 1 : 0;
-    if ($act == 0 and $mod == $global_config['site_home_module']) {
-        exit('NO_' . $mod);
-    }
-
-    $sth = $db->prepare('UPDATE ' . NV_MODULES_TABLE . ' SET act=' . $act . ' WHERE title= :title');
-    $sth->bindParam(':title', $mod, PDO::PARAM_STR);
-    $sth->execute();
-
-    $nv_Cache->delMod('modules');
-
-    $temp = ($act == 1) ? $nv_Lang->getGlobal('yes') : $nv_Lang->getGlobal('no');
-    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getGlobal('activate') . ' module "' . $mod . '"', $temp, $admin_info['userid']);
+if (md5(NV_CHECK_SESSION . '_' . $module_name . '_change_act_' . $mod) !== $nv_Request->get_string('checkss', 'post')) {
+    nv_jsonOutput([
+        'success' => 0,
+        'text' => 'Session error!'
+    ]);
 }
-include NV_ROOTDIR . '/includes/header.php';
-echo 'OK_' . $mod;
-include NV_ROOTDIR . '/includes/footer.php';
+
+$sth = $db->prepare('SELECT act, module_file FROM ' . NV_MODULES_TABLE . ' WHERE title= :title');
+$sth->bindParam(':title', $mod, PDO::PARAM_STR);
+$sth->execute();
+$row = $sth->fetch();
+if (empty($row)) {
+    nv_jsonOutput([
+        'success' => 0,
+        'text' => 'Not exists!'
+    ]);
+}
+
+$act = (int) ($row['act']);
+if ($act == 2) {
+    if (!is_dir(NV_ROOTDIR . '/modules/' . $row['module_file'])) {
+        nv_jsonOutput([
+            'success' => 0,
+            'text' => 'Not exists on server!'
+        ]);
+    }
+}
+
+$act = ($act != 1) ? 1 : 0;
+if ($act == 0 and $mod == $global_config['site_home_module']) {
+    nv_jsonOutput([
+        'success' => 0,
+        'text' => 'Not allowed!'
+    ]);
+}
+
+$sth = $db->prepare('UPDATE ' . NV_MODULES_TABLE . ' SET act=' . $act . ' WHERE title= :title');
+$sth->bindParam(':title', $mod, PDO::PARAM_STR);
+$sth->execute();
+
+$nv_Cache->delMod('modules');
+
+$temp = ($act == 1) ? $nv_Lang->getGlobal('yes') : $nv_Lang->getGlobal('no');
+nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getGlobal('activate') . ' module "' . $mod . '"', $temp, $admin_info['userid']);
+nv_jsonOutput([
+    'success' => 1,
+    'text' => 'Success!'
+]);

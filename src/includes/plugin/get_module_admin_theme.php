@@ -31,7 +31,7 @@ nv_add_hook($module_name, 'get_module_admin_theme', $priority, function ($vars) 
     if (in_array($module_name, ['extensions', 'webtools', 'language', 'siteinfo', 'authors', 'database'])) {
         return $new_theme;
     }
-    if ($module_name == 'modules' and in_array($op, ['edit'])) {
+    if ($module_name == 'modules' and in_array($op, ['main', 'edit'])) {
         return $new_theme;
     }
     if ($module_name == 'themes' and in_array($op, ['block_content'])) {
