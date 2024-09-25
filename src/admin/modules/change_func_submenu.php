@@ -14,7 +14,6 @@ if (!defined('NV_IS_FILE_MODULES')) {
 }
 
 $func_id = $nv_Request->get_int('id', 'post', 0);
-$content = 'ERR_' . $func_id;
 
 if ($func_id > 0) {
     $row = $db->query('SELECT in_submenu FROM ' . NV_MODFUNCS_TABLE . ' WHERE func_id=' . $func_id)->fetch();
@@ -22,10 +21,14 @@ if ($func_id > 0) {
         $in_submenu = $row['in_submenu'] ? 0 : 1;
         $db->query('UPDATE ' . NV_MODFUNCS_TABLE . ' SET in_submenu=' . $in_submenu . ' WHERE func_id=' . $func_id);
         $nv_Cache->delMod('modules');
-        $content = 'OK_' . $func_id;
+        nv_jsonOutput([
+            'success' => 1,
+            'text' => 'Success!'
+        ]);
     }
 }
 
-include NV_ROOTDIR . '/includes/header.php';
-echo $content;
-include NV_ROOTDIR . '/includes/footer.php';
+nv_jsonOutput([
+    'success' => 0,
+    'text' => 'Wrong data!'
+]);

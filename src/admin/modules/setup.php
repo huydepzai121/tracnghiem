@@ -25,6 +25,7 @@ $contents = '';
 
 // Thiet lap module moi
 $setmodule = $nv_Request->get_title('setmodule', 'get', '', 1);
+$autosetup = $nv_Request->get_title('autosetup', 'get', '', 1);
 
 if (!empty($setmodule) and preg_match($global_config['check_module'], $setmodule)) {
     if ($nv_Request->get_title('checkss', 'get') == md5('setmodule' . $setmodule . NV_CHECK_SESSION)) {
@@ -293,7 +294,6 @@ while ($row = $result->fetch()) {
 
 // Kiem tra module moi
 $news_modules_for_file = array_diff_key($modules_data, $modules_for_file);
-
 $array_modules = $array_virtual_modules = $mod_virtual = [];
 
 foreach ($modules_data as $row) {
@@ -326,32 +326,22 @@ foreach ($modules_data as $row) {
         }
     }
 }
+if (!empty($autosetup) and !array_key_exists($autosetup, $modules_exit) and !array_key_exists($autosetup, $news_modules_for_file)) {
+    $autosetup = '';
+}
 
-$array_head = [
-    'caption' => $nv_Lang->getModule('module_sys'),
-    'head' => [
-        $nv_Lang->getModule('weight'),
-        $nv_Lang->getModule('module_name'),
-        $nv_Lang->getModule('version'),
-        $nv_Lang->getModule('settime'),
-        $nv_Lang->getModule('author'),
-        ''
-    ]
-];
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/setup.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-$array_virtual_head = [
-    'caption' => $nv_Lang->getModule('vmodule'),
-    'head' => [
-        $nv_Lang->getModule('weight'),
-        $nv_Lang->getModule('module_name'),
-        $nv_Lang->getModule('vmodule_file'),
-        $nv_Lang->getModule('settime'),
-        $nv_Lang->getModule('vmodule_note'),
-        ''
-    ]
-];
+$tpl->assign('AUTOSETUP', $autosetup);
+$tpl->assign('MODULES', $array_modules);
+$tpl->assign('VMODULES', $array_virtual_modules);
 
-$contents .= call_user_func('setup_modules', $array_head, $array_modules, $array_virtual_head, $array_virtual_modules);
+$contents = $tpl->fetch('setup.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

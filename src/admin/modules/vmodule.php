@@ -22,25 +22,47 @@ if ($global_config['idsite']) {
     }
 }
 
-$title = $note = $modfile = $error = '';
 $modules_site = nv_scandir(NV_ROOTDIR . '/modules', $global_config['check_module']);
+
 if ($nv_Request->get_title('checkss', 'post') == NV_CHECK_SESSION) {
     $title = $nv_Request->get_title('title', 'post', '', 1);
-    $modfile = $nv_Request->get_title('module_file', 'post', '', 1);
-    $note = $nv_Request->get_title('note', 'post', '', 1);
     $title = strtolower(change_alias($title));
+    $modfile = $nv_Request->get_title('m_file', 'post', '', 1);
+    $note = $nv_Request->get_title('note', 'post', '', 1);
+
+    if (empty($title)) {
+        nv_jsonOutput([
+            'status' => 'error',
+            'input' => 'title',
+            'mess' => $nv_Lang->getGlobal('required_invalid'),
+        ]);
+    }
+    if (empty($modfile)) {
+        nv_jsonOutput([
+            'status' => 'error',
+            'input' => 'm_file',
+            'mess' => $nv_Lang->getGlobal('required_invalid'),
+        ]);
+    }
 
     $modules_admin = nv_scandir(NV_ROOTDIR . '/' . NV_ADMINDIR, $global_config['check_module']);
-    $error = $nv_Lang->getModule('vmodule_exit');
 
-    if (!empty($title) and !empty($modfile) and !in_array($title, $modules_site, true) and !in_array($title, $modules_admin, true) and preg_match($global_config['check_module'], $title) and preg_match($global_config['check_module'], $modfile)) {
+    // Kiểm tra tồn tại
+    $sql = "SELECT * FROM " . $db_config['prefix'] . "_setup_extensions WHERE type='module' AND title=" . $db->quote($title);
+    $is_exists = $db->query($sql)->fetch();
+
+    if (!$is_exists and !in_array($title, $modules_site, true) and !in_array($title, $modules_admin, true) and preg_match($global_config['check_module'], $title) and preg_match($global_config['check_module'], $modfile)) {
         $version = '';
         $author = '';
         $note = nv_nl2br($note, '<br />');
         $module_data = preg_replace('/(\W+)/i', '_', $title);
         if (empty($array_site_cat_module) or in_array($modfile, $array_site_cat_module, true)) {
             try {
-                $sth = $db->prepare('INSERT INTO ' . $db_config['prefix'] . '_setup_extensions (type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES ( \'module\', :title, 0, 0, :basename, :table_prefix, :version, ' . NV_CURRENTTIME . ', :author, :note)');
+                $sth = $db->prepare('INSERT INTO ' . $db_config['prefix'] . '_setup_extensions (
+                    type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note
+                ) VALUES (
+                    \'module\', :title, 0, 0, :basename, :table_prefix, :version, ' . NV_CURRENTTIME . ', :author, :note
+                )');
                 $sth->bindParam(':title', $title, PDO::PARAM_STR);
                 $sth->bindParam(':basename', $modfile, PDO::PARAM_STR);
                 $sth->bindParam(':table_prefix', $module_data, PDO::PARAM_STR);
@@ -49,48 +71,52 @@ if ($nv_Request->get_title('checkss', 'post') == NV_CHECK_SESSION) {
                 $sth->bindParam(':note', $note, PDO::PARAM_STR);
                 if ($sth->execute()) {
                     nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('vmodule_add') . ' ' . $module_data, '', $admin_info['userid']);
-                    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=setup&setmodule=' . $title . '&checkss=' . md5($title . NV_CHECK_SESSION));
                 }
-            } catch (PDOException $e) {
+                nv_jsonOutput([
+                    'status' => 'success',
+                    'redirect' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=setup&autosetup=' . $title
+                ]);
+            } catch (Throwable $e) {
                 trigger_error($e->getMessage());
+                nv_jsonOutput([
+                    'status' => 'error',
+                    'mess' => $e->getMessage(),
+                ]);
             }
         }
     }
+
+    nv_jsonOutput([
+        'status' => 'error',
+        'input' => 'title',
+        'mess' => $nv_Lang->getModule('vmodule_exit'),
+    ]);
 }
 
 $page_title = $nv_Lang->getModule('vmodule_add');
 
-$xtpl = new XTemplate('vmodule.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-if ($error) {
-    $nv_Lang->setModule('vmodule_blockquote', $nv_Lang->getModule('vmodule_exit'));
-    $xtpl->parse('main.error');
-}
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-
-$xtpl->assign('TITLE', $title);
-$xtpl->assign('NOTE', $note);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/vmodule.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
 $sql = 'SELECT title FROM ' . $db_config['prefix'] . '_setup_extensions WHERE is_virtual=1 AND type=\'module\' ORDER BY addtime ASC';
 $result = $db->query($sql);
 
+$modfile = [];
 while ([$modfile_i] = $result->fetch(3)) {
     if (in_array($modfile_i, $modules_site, true)) {
         if (!empty($array_site_cat_module) and !in_array($modfile_i, $array_site_cat_module, true)) {
             continue;
         }
-        $xtpl->assign('MODFILE', ['key' => $modfile_i, 'selected' => ($modfile_i == $modfile) ? ' selected="selected"' : '']);
-        $xtpl->parse('main.modfile');
+        $modfile[] = $modfile_i;
     }
 }
+$tpl->assign('MODFILE', $modfile);
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('vmodule.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
