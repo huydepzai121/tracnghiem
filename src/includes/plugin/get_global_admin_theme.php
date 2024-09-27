@@ -34,6 +34,9 @@ nv_add_hook($module_name, 'get_global_admin_theme', $priority, function ($vars) 
     if ($module_name == 'themes' and in_array($op, ['block_content'])) {
         return $new_theme;
     }
+    if ($module_name == 'seotools' and in_array($op, ['sitemapPing', 'pagetitle'])) {
+        return $new_theme;
+    }
 
     return $admin_theme;
 });
