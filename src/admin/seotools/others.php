@@ -61,6 +61,14 @@ function strip_tags_array($array)
     }, $array);
 }
 
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/others.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('TEMPLATE', $template);
+$tpl->assign('OP', $op);
+
 // Khai báo thông tin doanh nghiệp
 if ($nv_Request->isset_request('localbusiness_information', 'get')) {
     if ($nv_Request->isset_request('save', 'post')) {
@@ -110,12 +118,6 @@ if ($nv_Request->isset_request('localbusiness_information', 'get')) {
         ]);
     }
     $page_title = $nv_Lang->getModule('localbusiness_information');
-    $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    $xtpl->assign('TEMPLATE', $global_config['module_theme']);
-    $xtpl->assign('MODULE_NAME', $module_name);
-    $xtpl->assign('OP', $op);
 
     $data = [];
     if (file_exists(NV_ROOTDIR . '/' . NV_DATADIR . '/localbusiness.json')) {
@@ -128,13 +130,12 @@ if ($nv_Request->isset_request('localbusiness_information', 'get')) {
     if (empty($data)) {
         $data = $sample_data;
     }
-    $xtpl->assign('DATA', json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    $tpl->assign('DATA', htmlspecialchars(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)));
 
-    $xtpl->parse('lbinf');
-    $content = $xtpl->text('lbinf');
+    $contents = $tpl->fetch('localbusiness.tpl');
 
     include NV_ROOTDIR . '/includes/header.php';
-    echo nv_admin_theme($content);
+    echo nv_admin_theme($contents);
     include NV_ROOTDIR . '/includes/footer.php';
 }
 
@@ -219,6 +220,15 @@ if ($nv_Request->isset_request('logoupload', 'get')) {
     $nv_Lang->setModule('bigsize', $nv_Lang->getModule('bigsize', NV_MAX_WIDTH, NV_MAX_HEIGHT));
     $nv_Lang->setModule('smallsize', $nv_Lang->getModule('smallsize', $logo_config['logo_width'], $logo_config['logo_height']));
 
+    $tpl->assign('DATA', json_encode($array));
+
+    $contents = $tpl->fetch('others-uploaded.tpl');
+
+    include NV_ROOTDIR . '/includes/header.php';
+    echo nv_admin_theme($contents);
+    include NV_ROOTDIR . '/includes/footer.php';
+
+
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
     if ($array['success']) {
         $xtpl->assign('FILENAME', $array['filename']);
@@ -259,6 +269,7 @@ if ($nv_Request->isset_request('logodel', 'post')) {
     ]);
 }
 
+// Lưu các giá trị gửi qua form
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
 if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     $name = $nv_Request->get_title('name', 'post', '');
@@ -286,26 +297,12 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
 
 $page_title = $nv_Lang->getModule('other_seo_tools');
 
-$xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('DATA', $global_config);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-$xtpl->assign('CHECKSS', $checkss);
-$xtpl->assign('ORGANIZATION_LOGO_DEFAULT', NV_BASE_SITEURL . NV_ASSETS_DIR . '/images/no-photo.svg');
-$xtpl->assign('ORGANIZATION_LOGO', !empty($global_config['organization_logo']) ? NV_BASE_SITEURL . $global_config['organization_logo'] : NV_BASE_SITEURL . NV_ASSETS_DIR . '/images/no-photo.svg');
-$xtpl->assign('BREADCRUMBLIST_CHECKED', $global_config['breadcrumblist'] ? ' checked="checked"' : '');
-$xtpl->assign('SEARCH_BOX_SCHEMA_CHECKED', $global_config['sitelinks_search_box_schema'] ? ' checked="checked"' : '');
-$xtpl->assign('LOCALBUSINESS_CHECKED', ($global_config['localbusiness'] and file_exists(NV_ROOTDIR . '/' . NV_DATADIR . '/localbusiness.json')) ? ' checked="checked"' : '');
+$tpl->registerPlugin('modifier', 'file_exists', 'file_exists');
+$tpl->assign('GCONFIG', $global_config);
+$tpl->assign('CHECKSS', $checkss);
 
-if (empty($global_config['organization_logo'])) {
-    $xtpl->parse('main.delbtn');
-}
-
-$xtpl->parse('main');
-$content = $xtpl->text('main');
+$contents = $tpl->fetch('others.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
-echo nv_admin_theme($content);
+echo nv_admin_theme($contents);
 include NV_ROOTDIR . '/includes/footer.php';
