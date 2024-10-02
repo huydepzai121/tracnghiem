@@ -177,4 +177,75 @@ $(function() {
             }
         });
     });
+
+    // Thêm thuộc tính linktags
+    $('[data-toggle="addLinkTagsAttr"]').on('click', function() {
+        let tbl = $(this).closest('table');
+        let ctn = $('tbody', tbl);
+        $('<tr>' + $('.sample', ctn).html() + '</tr>').insertBefore($('.sample', ctn));
+    });
+
+    // Submit form thêm thẻ link
+    $('[data-toggle="formLinkTags"]').on('submit', function(e) {
+        e.preventDefault();
+        let form = $(this);
+        let relVal = $('.rel-val', form).val();
+        relVal = trim(relVal);
+        $('.rel-val', form).val(relVal);
+        if ('' == relVal) {
+            nvToast(form.data('error'), 'error');
+            $('.rel-val', form).focus();
+            return;
+        }
+        let data = $(form).serialize();
+        $('input,button', form).prop('disabled', true);
+        $.ajax({
+            type: $(form).prop("method"),
+            cache: !1,
+            url: $(form).prop("action"),
+            data: data,
+            dataType: "json",
+            success: function(e) {
+                if ("error" == e.status) {
+                    nvToast(e.mess, 'error');
+                    $('input,button', form).prop('disabled', false);
+                    return;
+                }
+                location.reload();
+            },
+            error: function(xhr, text, err) {
+                $('input,button', form).prop('disabled', false);
+                console.log(xhr, text, err);
+                nvToast(err, 'error');
+            }
+        });
+    });
+
+    // Xóa thẻ link
+    $('[data-toggle="delLinkTagsAttr"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        let form = btn.closest('form');
+        nvConfirm(btn.data('message'), () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: $(form).prop("method"),
+                cache: !1,
+                url: $(form).prop("action"),
+                data: {'key':$('[name=key]',form).val(), 'del':1, 'checkss': $('[name=checkss]',form).val()},
+                success: function() {
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
 });

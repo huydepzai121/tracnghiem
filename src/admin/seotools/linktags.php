@@ -32,6 +32,7 @@ if (file_exists($file_linktags)) {
     }
 }
 
+// Lưu cấu hình opensearch
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
 if ($nv_Request->isset_request('opensearch', 'post') and $checkss == $nv_Request->get_string('checkss', 'post')) {
     $opensearch_link = $nv_Request->get_typed_array('opensearch_link', 'post', 'title', []);
@@ -45,15 +46,23 @@ if ($nv_Request->isset_request('opensearch', 'post') and $checkss == $nv_Request
             }
         }
     }
+
+    nv_insert_logs(NV_LANG_DATA, $module_name, 'CHANGE_OPENSEARCH', '', $admin_info['userid']);
+
     $config_value = !empty($config_value) ? json_encode($config_value) : '';
     $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET config_value= :config_value WHERE config_name = 'opensearch_link' AND lang = '" . NV_LANG_DATA . "' AND module='global'");
     $sth->bindParam(':config_value', $config_value, PDO::PARAM_STR);
     $sth->execute();
     $nv_Cache->delAll();
 
-    exit('ok');
+    nv_jsonOutput([
+        'status' => 'success',
+        'mess' => $nv_Lang->getGlobal('save_success'),
+        'refresh' => 1
+    ]);
 }
 
+// Thêm linktag
 if ($nv_Request->isset_request('add', 'post') and $checkss == $nv_Request->get_string('checkss', 'post')) {
     $key = $nv_Request->get_string('key', 'post', '');
     $linktags_key = -1;
@@ -94,12 +103,15 @@ if ($nv_Request->isset_request('add', 'post') and $checkss == $nv_Request->get_s
         $array2XML->saveXML($linktags, 'link', $file_linktags, $global_config['site_charset']);
     }
 
+    nv_insert_logs(NV_LANG_DATA, $module_name, 'Add linktag', '', $admin_info['userid']);
+
     nv_jsonOutput([
         'status' => 'OK',
         'mess' => ''
     ]);
 }
 
+// Xóa linktag
 if ($nv_Request->isset_request('del,key', 'post') and $checkss == $nv_Request->get_string('checkss', 'post')) {
     $key = $nv_Request->get_string('key', 'post', '');
     $key = (int) (substr($key, 2));
@@ -115,21 +127,31 @@ if ($nv_Request->isset_request('del,key', 'post') and $checkss == $nv_Request->g
             $array2XML->saveXML($linktags, 'link', $file_linktags, $global_config['site_charset']);
         }
     }
-    echo 'OK';
-    exit();
+    nv_insert_logs(NV_LANG_DATA, $module_name, 'Delete linktag', $key, $admin_info['userid']);
+    nv_htmlOutput('OK');
 }
 
 $page_title = $nv_Lang->getModule('linkTagsConfig');
 
-$xtpl = new XTemplate('linktags.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-$xtpl->assign('OP', $op);
-$xtpl->assign('CHECKSS', $checkss);
+$opensearch_link = [];
+if (!empty($global_config['opensearch_link'])) {
+    $opensearch_link = json_decode($global_config['opensearch_link'], true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        $opensearch_link = [];
+    }
+}
+
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/linktags.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->registerPlugin('modifier', 'array_merge', 'array_merge');
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('CHECKSS', $checkss);
+
+$tpl->assign('SITE_MODS', $site_mods);
+$tpl->assign('OPENSEARCH_LINK', $opensearch_link);
 
 $acceptVars = [
     '<code>{BASE_SITEURL}</code> (' . NV_BASE_SITEURL . ')',
@@ -140,66 +162,10 @@ $acceptVars = [
     '<code>{SITE_NAME}</code> (' . $global_config['site_name'] . ')',
     '<code>{SITE_EMAIL}</code> (' . $global_config['site_email'] . ')'
 ];
-$xtpl->assign('ACCEPTVARS', implode(', ', $acceptVars));
+$tpl->assign('ACCEPTVARS', implode(', ', $acceptVars));
+$tpl->assign('LINKTAGS', $linktags['link']);
 
-if (!empty($linktags['link'])) {
-    foreach ($linktags['link'] as $key => $val) {
-        $title = [];
-        foreach ($val as $attribute => $v) {
-            $title[] = $attribute . (!empty($v) ? '=&quot;' . $v . '&quot;' : '');
-
-            if ($attribute != 'rel') {
-                $xtpl->assign('ATTRIBUTE', [
-                    'k' => $attribute,
-                    'v' => $v
-                ]);
-                $xtpl->parse('main.if_links.item.attr');
-            }
-        }
-        $title = '&lt;link ' . implode(' ', $title) . ' /&gt;';
-        $item = [
-            'key' => $key,
-            'title' => $title,
-            'rel' => $val['rel']
-        ];
-        $xtpl->assign('LINK_TAGS', $item);
-        $xtpl->parse('main.if_links.item');
-    }
-    $xtpl->parse('main.if_links');
-}
-
-$opensearch_link = [];
-if (!empty($global_config['opensearch_link'])) {
-    $opensearch_link = json_decode($global_config['opensearch_link'], true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        $opensearch_link = [];
-    }
-}
-
-$xtpl->assign('OPENSEARCH', [
-    'val' => 'site',
-    'checked' => isset($opensearch_link['site']) ? ' checked="checked"' : '',
-    'title' => $nv_Lang->getModule('add_opensearch_link_all'),
-    'shortname' => isset($opensearch_link['site']) ? $opensearch_link['site'][0] : '',
-    'description' => isset($opensearch_link['site']) ? $opensearch_link['site'][1] : ''
-]);
-$xtpl->parse('main.opensearch_link');
-
-foreach ($site_mods as $mod => $arr_mod) {
-    if (!empty($arr_mod['is_search'])) {
-        $xtpl->assign('OPENSEARCH', [
-            'val' => $mod,
-            'checked' => isset($opensearch_link[$mod]) ? ' checked="checked"' : '',
-            'title' => $arr_mod['custom_title'],
-            'shortname' => isset($opensearch_link[$mod]) ? $opensearch_link[$mod][0] : '',
-            'description' => isset($opensearch_link[$mod]) ? $opensearch_link[$mod][1] : ''
-        ]);
-        $xtpl->parse('main.opensearch_link');
-    }
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('linktags.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

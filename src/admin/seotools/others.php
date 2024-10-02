@@ -227,34 +227,6 @@ if ($nv_Request->isset_request('logoupload', 'get')) {
     include NV_ROOTDIR . '/includes/header.php';
     echo nv_admin_theme($contents);
     include NV_ROOTDIR . '/includes/footer.php';
-
-
-    $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    if ($array['success']) {
-        $xtpl->assign('FILENAME', $array['filename']);
-        $xtpl->parse('logoupload.complete');
-    } else {
-        $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-        $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-        $xtpl->assign('CONFIG', $logo_config);
-        $xtpl->assign('TEMPLATE', $global_config['module_theme']);
-        $xtpl->assign('MODULE_NAME', $module_name);
-        $xtpl->assign('OP', $op);
-
-        if ($array['error']) {
-            $xtpl->assign('ERROR', $array['error']);
-            $xtpl->parse('logoupload.init.error');
-        }
-
-        $xtpl->parse('logoupload.init');
-    }
-
-    $xtpl->parse('logoupload');
-    $content = $xtpl->text('logoupload');
-
-    include NV_ROOTDIR . '/includes/header.php';
-    echo nv_admin_theme($content, false);
-    include NV_ROOTDIR . '/includes/footer.php';
 }
 
 // Xóa biểu trưng

@@ -25381,6 +25381,19 @@ readers do not read off random characters that represent icons */
   border-bottom-width: 0;
 }
 
+.table-accordion {
+  margin: -1rem -1.25rem;
+}
+.table-accordion td:first-child, .table-accordion th:first-child {
+  padding-right: 1.25rem;
+}
+.table-accordion td:last-child, .table-accordion th:last-child {
+  padding-left: 1.25rem;
+}
+.table-accordion tbody:last-child tr:last-child td, .table-accordion tbody:last-child tr:last-child th, .table-accordion tfoot:last-child tr:last-child td, .table-accordion tfoot:last-child tr:last-child th, .table-accordion thead:last-child tr:last-child td, .table-accordion thead:last-child tr:last-child th {
+  border-bottom-width: 0;
+}
+
 .table thead {
   --bs-table-bg: var(--nv-table-thead-bg);
 }

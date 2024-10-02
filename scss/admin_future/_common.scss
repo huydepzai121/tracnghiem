@@ -98,6 +98,32 @@
     }
 }
 
+.table-accordion {
+    margin: calc(-1 * $accordion-padding-y) calc(-1 * $accordion-padding-x);
+
+    td, th {
+        &:first-child {
+            padding-left: $accordion-padding-x;
+        }
+    }
+
+    td, th {
+        &:last-child {
+            padding-right: $accordion-padding-x;
+        }
+    }
+
+    tbody, tfoot, thead {
+        &:last-child {
+            tr:last-child {
+                td, th {
+                    border-bottom-width: 0;
+                }
+            }
+        }
+    }
+}
+
 .table {
     thead {
         --bs-table-bg: var(--nv-table-thead-bg);
