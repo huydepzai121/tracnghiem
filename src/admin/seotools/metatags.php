@@ -111,7 +111,11 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     }
 
     $nv_Cache->delAll(false);
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&rand=' . nv_genpass());
+    nv_jsonOutput([
+        'status' => 'success',
+        'mess' => $nv_Lang->getGlobal('save_success'),
+        'refresh' => 1
+    ]);
 } elseif (empty($global_config['idsite'])) {
     $metatags = $sys_metatags;
 } else {
@@ -131,17 +135,15 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
 
 $page_title = $nv_Lang->getModule('metaTagsConfig');
 
-$xtpl = new XTemplate('metatags.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('NOTE', $nv_Lang->getModule('metaTagsNote', implode(', ', $ignore)));
-$xtpl->assign('VARS', $nv_Lang->getModule('metaTagsVar') . ': ' . implode(', ', $vas));
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-$xtpl->assign('OP', $op);
-$xtpl->assign('CHECKSS', $checkss);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/metatags.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+$tpl->assign('NOTE', $nv_Lang->getModule('metaTagsNote', implode(', ', $ignore)));
+$tpl->assign('VARS', $nv_Lang->getModule('metaTagsVar') . ': ' . implode(', ', $vas));
 
 if (empty($metatags['meta'])) {
     $metatags['meta'][] = [
@@ -152,65 +154,32 @@ if (empty($metatags['meta'])) {
         'n_selected' => ''
     ];
 }
-// Các meta hiện có
-if (!empty($metatags['meta'])) {
-    foreach ($metatags['meta'] as $value) {
-        $value['content'] = !empty($value['content']) ? $value['content'] : '';
-        $value['h_selected'] = $value['group'] == 'http-equiv' ? ' selected="selected"' : '';
-        $value['n_selected'] = $value['group'] == 'name' ? ' selected="selected"' : '';
-        $value['p_selected'] = $value['group'] == 'property' ? ' selected="selected"' : '';
+$tpl->assign('METAS', $metatags['meta']);
+$tpl->assign('CHECKSS', $checkss);
+$tpl->assign('GCONFIG', $global_config);
 
-        if ($global_config['idsite'] and $value['group'] == 'name' and in_array($value['value'], ['author', 'copyright'], true)) {
-            $value['disabled'] = ' disabled="disabled"';
-        } else {
-            $value['disabled'] = '';
-        }
+$meta_name_list = 'author, designer, publisher, revisit-after, distribution, web_author, subject, copyright, reply-to, abstract, city, country, classification, robots,googlebot, google, googlebot-news,  twitter:title, twitter:description, twitter:image, twitter:card, twitter:site, twitter:creator, google-site-verification, rating';
+$meta_name_list = array_map('trim', explode(',', $meta_name_list));
+$tpl->assign('META_NAME_LIST', $meta_name_list);
 
-        $xtpl->assign('DATA', $value);
+$meta_property_list = 'og:title, og:type, og:url, og:image, og:image:secure_url, og:image:type,og:image:width, og:image:height, og:image:alt, og:audio, og:audio:secure_url, og:audio:type, og:video, og:video:secure_url, og:video:type, og:video:width, og:video:height, og:description, og:determiner, og:locale, og:locale:alternate, og:site_name';
+$meta_property_list = array_map('trim', explode(',', $meta_property_list));
+$tpl->assign('META_PROPERTY_LIST', $meta_property_list);
 
-        $defs = ['{BASE_SITEURL}', '{UPLOADS_DIR}', '{ASSETS_DIR}', '{CONTENT-LANGUAGE}', '{LANGUAGE}', '{SITE_NAME}', '{SITE_EMAIL}'];
-        foreach ($defs as $def) {
-            $xtpl->assign('ITEM', $def);
-            $xtpl->parse('main.loop.metaContents_list');
-        }
-        $xtpl->parse('main.loop');
-    }
-}
+$meta_http_equiv_list = 'Content-Style-Type, Content-Script-Type, refresh';
+$meta_http_equiv_list = array_map('trim', explode(',', $meta_http_equiv_list));
+$tpl->assign('META_HTTP_EQUIV_LIST', $meta_http_equiv_list);
 
-$xtpl->assign('METATAGSOGPCHECKED', $global_config['metaTagsOgp'] ? ' checked="checked" ' : '');
-$xtpl->assign('PRIVATE_SITE', $global_config['private_site'] ? ' checked="checked" ' : '');
-$xtpl->assign('DESCRIPTION_LENGTH', $global_config['description_length']);
+$defs = ['{BASE_SITEURL}', '{UPLOADS_DIR}', '{ASSETS_DIR}', '{CONTENT-LANGUAGE}', '{LANGUAGE}', '{SITE_NAME}', '{SITE_EMAIL}'];
+$tpl->assign('META_CTLISTS', $defs);
+
 $ogp_image = '';
 if (!empty($global_config['ogp_image']) and !nv_is_url($global_config['ogp_image']) and file_exists(NV_ROOTDIR . '/' . $global_config['ogp_image'])) {
     $ogp_image = NV_BASE_SITEURL . $global_config['ogp_image'];
 }
-$xtpl->assign('OGP_IMAGE', $ogp_image);
+$tpl->assign('OGP_IMAGE', $ogp_image);
 
-$meta_name_list = 'author, designer, publisher, revisit-after, distribution, web_author, subject, copyright, reply-to, abstract, city, country, classification, robots,googlebot, google, googlebot-news,  twitter:title, twitter:description, twitter:image, twitter:card, twitter:site, twitter:creator, google-site-verification, rating';
-$meta_name_list = array_map('trim', explode(',', $meta_name_list));
-foreach ($meta_name_list as $item) {
-    $xtpl->assign('ITEM', $item);
-    $xtpl->parse('main.meta_name_list');
-}
-
-$meta_property_list = 'og:title, og:type, og:url, og:image, og:image:secure_url, og:image:type,og:image:width, og:image:height, og:image:alt, og:audio, og:audio:secure_url, og:audio:type, og:video, og:video:secure_url, og:video:type, og:video:width, og:video:height, og:description, og:determiner, og:locale, og:locale:alternate, og:site_name';
-$meta_property_list = array_map('trim', explode(',', $meta_property_list));
-foreach ($meta_property_list as $item) {
-    $xtpl->assign('ITEM', $item);
-    $xtpl->parse('main.meta_property_list');
-}
-
-$meta_http_equiv_list = 'Content-Style-Type, Content-Script-Type, refresh';
-$meta_http_equiv_list = array_map('trim', explode(',', $meta_http_equiv_list));
-foreach ($meta_http_equiv_list as $item) {
-    $xtpl->assign('ITEM', $item);
-    $xtpl->parse('main.meta_http_equiv_list');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
-
-$array_url_instruction['metatags'] = 'http://wiki.nukeviet.vn/nukeviet4:admin:seotools:metatags';
+$contents = $tpl->fetch('metatags.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

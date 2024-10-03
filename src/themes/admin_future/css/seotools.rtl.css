@@ -23,4 +23,9 @@
   width: 5rem;
   height: 5rem;
 }
+
+#metatags-manage .dropdown-menu {
+  max-height: 17.5rem;
+  overflow-y: auto;
+}
 /*# sourceMappingURL=seotools.rtl.css.map */

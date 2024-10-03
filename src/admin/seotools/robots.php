@@ -17,6 +17,15 @@ $page_title = $nv_Lang->getModule('robots');
 
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
 $cache_file = NV_ROOTDIR . '/' . NV_DATADIR . '/robots.php';
+
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/robots.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->registerPlugin('modifier', 'array_merge', 'array_merge');
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
 if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     $robots_data = $nv_Request->get_array('filename', 'post');
     $fileother = $nv_Request->get_array('fileother', 'post');
@@ -36,7 +45,7 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
 
     file_put_contents($cache_file, $content_config, LOCK_EX);
 
-    $redirect = false;
+    // Không hỗ trợ rewrite thì ghi trực tiếp vào file txt. Không thì dùng rewrite để đọc trong php
     if (!$global_config['check_rewrite_file'] or !$global_config['rewrite_enable']) {
         $rbcontents = [];
         $rbcontents[] = 'User-agent: *';
@@ -55,20 +64,9 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
 
         if (is_writable(NV_ROOTDIR . '/robots.txt')) {
             file_put_contents(NV_ROOTDIR . '/robots.txt', $rbcontents, LOCK_EX);
-            $redirect = true;
         } else {
-            $xtpl = new XTemplate('robots.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-            $xtpl->assign('TITLE', $nv_Lang->getModule('robots_error_writable'));
-            $xtpl->assign('CONTENT', str_replace([
-                "\n",
-                "\t"
-            ], [
-                '<br />',
-                '&nbsp;&nbsp;&nbsp;&nbsp;'
-            ], nv_htmlspecialchars($rbcontents)));
-            $xtpl->parse('main.nowrite');
-            $xtpl->parse('main');
-            $contents = $xtpl->text('main');
+            $tpl->assign('CONTENT', nv_htmlspecialchars($rbcontents));
+            $contents = $tpl->fetch('robots-error.tpl');
 
             include NV_ROOTDIR . '/includes/header.php';
             echo nv_admin_theme($contents);
@@ -78,15 +76,7 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&rand=' . nv_genpass());
 }
 
-$xtpl = new XTemplate('robots.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-$xtpl->assign('OP', $op);
-$xtpl->assign('CHECKSS', $checkss);
+$tpl->assign('CHECKSS', $checkss);
 
 $robots_data = [];
 $robots_other = [];
@@ -103,7 +93,6 @@ if (file_exists($cache_file)) {
     $robots_data['/robots.php'] = 0;
     $robots_data['/web.config'] = 0;
 }
-
 if ($global_config['rewrite_enable']) {
     foreach ($site_mods as $key => $value) {
         if ($value['module_file'] == 'users' or $value['module_file'] == 'statistics') {
@@ -116,9 +105,7 @@ if ($global_config['rewrite_enable']) {
 }
 $files = scandir(NV_ROOTDIR, true);
 sort($files);
-$contents = [];
-$contents[] = 'User-agent: *';
-$number = 0;
+$array_files = [];
 foreach ($files as $file) {
     if (!preg_match('/^\.(.*)$/', $file)) {
         if (is_dir(NV_ROOTDIR . '/' . $file)) {
@@ -126,51 +113,16 @@ foreach ($files as $file) {
         } else {
             $file = '/' . $file;
         }
-
-        $data = [
-            'number' => ++$number,
-            'filename' => $file
+        $array_files[] = [
+            'filename' => $file,
+            'type' => $robots_data[$file] ?? 1
         ];
-
-        $type = $robots_data[$file] ?? 1;
-
-        for ($i = 0; $i <= 2; ++$i) {
-            $option = [
-                'value' => $i,
-                'title' => $nv_Lang->getModule('robots_type_' . $i),
-                'selected' => ($type == $i) ? ' selected="selected"' : ''
-            ];
-
-            $xtpl->assign('OPTION', $option);
-            $xtpl->parse('main.loop.option');
-        }
-
-        $xtpl->assign('DATA', $data);
-        $xtpl->parse('main.loop');
     }
 }
-foreach ($robots_other as $file => $value) {
-    $data = [
-        'number' => ++$number,
-        'filename' => $file
-    ];
-    $xtpl->assign('DATA', $data);
+$tpl->assign('FILES', $array_files);
+$tpl->assign('ROBOTS_OTHER', $robots_other);
 
-    for ($i = 0; $i <= 2; ++$i) {
-        $option = [
-            'value' => $i,
-            'title' => $nv_Lang->getModule('robots_type_' . $i),
-            'selected' => ($value == $i) ? ' selected="selected"' : ''
-        ];
-
-        $xtpl->assign('OPTION', $option);
-        $xtpl->parse('main.other.option');
-    }
-    $xtpl->parse('main.other');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('robots.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

@@ -28,7 +28,7 @@ $(function() {
     });
     $('#strdata .autosubmit').on('change', function() {
         var that = $(this),
-            form = that.parents('form'),
+            form = that.closest('form'),
             url = form.attr('action'),
             name = that.attr('name'),
             checkss = $('[name=checkss]', form).val(),
@@ -69,7 +69,7 @@ $(function() {
             return;
         }
         var url = $(this).data('url'),
-            form = $(this).parents('form');
+            form = $(this).closest('form');
         icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
         $.ajax({
             type: 'POST',
@@ -159,7 +159,7 @@ $(function() {
         if (icon.is('.fa-spinner')) {
             return;
         }
-        var url = $(this).parents('form').attr('action');
+        var url = $(this).closest('form').attr('action');
         icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
         $.ajax({
             type: 'POST',
@@ -247,5 +247,51 @@ $(function() {
                 }
             });
         });
+    });
+
+    // Thêm dòng meta-tag
+    $('#metatags-manage').on('click', '.add-meta-tag', function() {
+        var item = $(this).closest('.item'),
+            newitem = item.clone();
+        $('[name^=metaGroupsName] option:selected', newitem).prop('selected', false);
+        $('[name^=metaGroupsValue], [name^=metaContents]', newitem).val('');
+        $('.metaGroupsValue-opt', newitem).text('');
+        item.after(newitem);
+    });
+    // Xóa dòng meta-tag
+    $('#metatags-manage').on('click', '.del-meta-tag', function() {
+        var items = $(this).closest('.items'),
+            item = $(this).closest('.item');
+        if ($('.item', items).length > 1) {
+            item.remove();
+        } else {
+            $('[name^=metaGroupsName] option:selected', item).prop('selected', false);
+            $('[name^=metaGroupsValue], [name^=metaContents]', item).val('');
+            $('.metaGroupsValue-opt', item).text('');
+        }
+    });
+    // Chọn mục nhóm meta từ danh sách đổ xuống
+    $('#metatags-manage').on('click', '.groupvalue', function(e) {
+        e.preventDefault();
+        var item = $(this).closest('.item');
+        $('[name^=metaGroupsValue]', item).val($(this).text());
+    });
+    // Chọn mục nội dung meta từ danh sách đổ xuống
+    $('#metatags-manage').on('click', '.metacontent', function(e) {
+        e.preventDefault();
+        var item = $(this).closest('.item'),
+            val = $('[name^=metaContents]', item).val() + $(this).text();
+        $('[name^=metaContents]', item).val(val);
+    });
+    // Lọc tên của metatag
+    $('[name^=metaGroupsValue]').on('input', function() {
+        $(this).val($(this).val().replace(/[^a-zA-Z0-9-_.:]+/g, ''));
+    });
+    // Các meta dựng sẵn
+    $('#metatags-manage').on('show.bs.dropdown', '.metaGroupsValue-dropdown', function() {
+        var item = $(this).closest('.item'),
+            metaGroupsName = $('[name^=metaGroupsName]', item).val(),
+            id = (metaGroupsName == 'name') ? 'meta-name-list' : (metaGroupsName == 'property' ? 'meta-property-list' : 'meta-http-equiv-list');
+        $('.metaGroupsValue-opt', this).html($('#' + id).html());
     });
 });
