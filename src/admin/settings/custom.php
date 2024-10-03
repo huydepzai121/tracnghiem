@@ -54,29 +54,19 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
 
 $custom_configs = $db->query('SELECT config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE config_name = 'custom_configs' AND lang='" . NV_LANG_DATA . "' AND module='global'")->fetchColumn();
 $custom_configs = !empty($custom_configs) ? json_decode($custom_configs, true) : ['' => ['', '']];
-
-$xtpl = new XTemplate('custom.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-$xtpl->assign('CHECKSS', $checkss);
-
-foreach ($custom_configs as $key => $vals) {
-    $custom = [
-        'key' => $key,
-        'value' => is_array($vals) ? $vals[0] : $vals,
-        'description' => is_array($vals) ? $vals[1] : ''
-    ];
-    $xtpl->assign('CUSTOM', $custom);
-    $xtpl->parse('main.loop');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
-
 $page_title = $nv_Lang->getModule('custom_configs', $language_array[NV_LANG_DATA]['name']);
+
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/custom.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+$tpl->assign('CHECKSS', $checkss);
+$tpl->assign('CUSTOM_CONFIGS', $custom_configs);
+
+$contents = $tpl->fetch('custom.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

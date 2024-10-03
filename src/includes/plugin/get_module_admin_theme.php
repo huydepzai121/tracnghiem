@@ -34,6 +34,9 @@ nv_add_hook($module_name, 'get_module_admin_theme', $priority, function ($vars) 
     if ($module_name == 'themes' and in_array($op, ['block_content'])) {
         return $new_theme;
     }
+    if ($module_name == 'settings' and in_array($op, ['custom'])) {
+        return $new_theme;
+    }
 
     return 'admin_default';
 });
