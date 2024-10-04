@@ -13,18 +13,16 @@ if (!defined('NV_ADMIN') or !defined('NV_MAINFILE') or !defined('NV_IS_MODADMIN'
     exit('Stop!!!');
 }
 
-if (!$sys_info['ftp_support']) {
-    $xtpl = new XTemplate('ftp.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+$page_title = $nv_Lang->getModule('ftp_config');
 
-    $xtpl->parse('no_support');
-    $contents = $xtpl->text('no_support');
+if (!$sys_info['ftp_support']) {
+    $contents = nv_theme_alert('', $nv_Lang->getModule('ftp_error_support'), 'danger');
     include NV_ROOTDIR . '/includes/header.php';
     echo nv_admin_theme($contents);
     include NV_ROOTDIR . '/includes/footer.php';
 }
 
-// Tu dong nhan dang Remove Path
+// Tự động nhận diện Remove Path
 if ($nv_Request->isset_request('autodetect', 'post')) {
     $ftp_server = nv_unhtmlspecialchars($nv_Request->get_title('ftp_server', 'post', '', 1));
     $ftp_port = $nv_Request->get_int('ftp_port', 'post');
@@ -149,13 +147,12 @@ if ($nv_Request->isset_request('ftp_server', 'post') and $checkss == $nv_Request
     }
 
     nv_save_file_config_global();
-
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
-$page_title = $nv_Lang->getModule('ftp_config');
 $data = [
     'ftp_server' => $global_config['ftp_server'],
     'ftp_port' => $global_config['ftp_port'],
@@ -164,16 +161,17 @@ $data = [
     'ftp_path' => $global_config['ftp_path']
 ];
 
-$xtpl = new XTemplate('ftp.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-$xtpl->assign('CHECKSS', $checkss);
-$xtpl->assign('VALUE', $data);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/ftp.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$tpl->assign('CHECKSS', $checkss);
+$tpl->assign('DATA', $data);
+
+$contents = $tpl->fetch('ftp.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

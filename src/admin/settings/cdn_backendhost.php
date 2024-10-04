@@ -66,6 +66,15 @@ function get_cdn_urls($urls = '', $countries_string = false, $except_inc = true)
 $page_title = $nv_Lang->getModule('cdn_backendhost');
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
 
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/cdn_backendhost.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('CHECKSS', $checkss);
+
+// Load form cấu hình CDN theo ngôn ngữ
 if ($nv_Request->isset_request('by_country', 'get')) {
     $cdn_urls = get_cdn_urls();
 
@@ -111,46 +120,17 @@ if ($nv_Request->isset_request('by_country', 'get')) {
         ]);
     }
 
-    $xtpl = new XTemplate('cdn_backendhost.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&by_country=1');
-    $xtpl->assign('CHECKSS', $checkss);
+    $tpl->assign('COUNTRIES', $countries);
+    $tpl->assign('CDN_URLS', $cdn_urls);
 
-    foreach ($countries as $code => $vals) {
-        $xtpl->assign('COUNTRY', [
-            'code' => $code,
-            'name' => $nv_Lang->existsGlobal('country_' . $code) ? $nv_Lang->getGlobal('country_' . $code) : $vals[1]
-        ]);
+    $contents = $tpl->fetch('cdn_backendhost_country.tpl');
 
-        $is_sel = false;
-        if (!empty($cdn_urls)) {
-            foreach ($cdn_urls as $cdn) {
-                $isel = false;
-                if (!empty($cdn['countries']) and in_array($code, $cdn['countries'], true)) {
-                    $is_sel = true;
-                    $isel = true;
-                }
-                $xtpl->assign('CDN', [
-                    'key' => $cdn['val'],
-                    'sel' => $isel ? ' selected="selected"' : '',
-                    'url' => ($cdn['val'] == 'except') ? $nv_Lang->getModule('dont_use') : $cdn['val']
-                ]);
-                $xtpl->parse('by_country.country.cdn');
-            }
-        }
-
-        if ($is_sel) {
-            $xtpl->parse('by_country.country.selected');
-        }
-        $xtpl->parse('by_country.country');
-    }
-
-    $xtpl->parse('by_country');
-    $content = $xtpl->text('by_country');
-
-    nv_htmlOutput($content);
+    include NV_ROOTDIR . '/includes/header.php';
+    echo $contents;
+    include NV_ROOTDIR . '/includes/footer.php';
 }
 
+// Lưu thiết lập CDN
 if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     $array_config_global = [];
 
@@ -242,7 +222,6 @@ while ([$c_config_name, $c_config_value] = $result->fetch(3)) {
     $array_config_global[$c_config_name] = $c_config_value;
 }
 
-$array_config_global['assets_cdn_checked'] = $array_config_global['assets_cdn'] ? ' checked ' : '';
 $core_cdn_url = !empty($global_config['core_cdn_url']) ? $global_config['core_cdn_url'] : 'https://cdn.jsdelivr.net/gh/nukeviet/nukeviet/';
 $array_config_global['assets_cdn_note'] = $nv_Lang->getModule('assets_cdn_note', NV_ASSETS_DIR . '/css, ' . NV_ASSETS_DIR . '/fonts, ' . NV_ASSETS_DIR . '/images, ' . NV_ASSETS_DIR . '/js', NV_BASE_SITEURL . NV_ASSETS_DIR . '/js/jquery/jquery.min.js', $core_cdn_url . 'assets/js/jquery/jquery.min.js');
 
@@ -256,22 +235,11 @@ if (empty($cdn_urls)) {
     ]);
 }
 
-$xtpl = new XTemplate('cdn_backendhost.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-$xtpl->assign('CDN_BY_COUNTRY_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;by_country=1');
-$xtpl->assign('CHECKSS', $checkss);
-$xtpl->assign('DATA', $array_config_global);
+$tpl->assign('DATA', $array_config_global);
+$tpl->assign('CDN_URLS', $cdn_urls);
 
-foreach ($cdn_urls as $cdn) {
-    $cdn['is_default_checked'] = $cdn['is_default'] ? ' checked="checked"' : '';
-    $xtpl->assign('CDN_URL', $cdn);
-    $xtpl->parse('main.cdn_item');
-}
-
-$xtpl->parse('main');
-$content = $xtpl->text('main');
+$contents = $tpl->fetch('cdn_backendhost.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
-echo nv_admin_theme($content);
+echo nv_admin_theme($contents);
 include NV_ROOTDIR . '/includes/footer.php';

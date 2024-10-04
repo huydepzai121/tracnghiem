@@ -55,45 +55,28 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     }
 
     nv_save_file_config_global();
-
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
 $global_config['checkss'] = $checkss;
 
-$xtpl = new XTemplate('variables.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('DATA', $global_config);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-$xtpl->assign('NV_LIVE_COOKIE_TIME', round(NV_LIVE_COOKIE_TIME / 86400));
-$xtpl->assign('NV_LIVE_SESSION_TIME', round(NV_LIVE_SESSION_TIME / 60));
-$xtpl->assign('CHECKBOX_COOKIE_SECURE', !empty($global_config['cookie_secure']) ? ' checked="checked"' : '');
-$xtpl->assign('CHECKBOX_COOKIE_HTTPONLY', !empty($global_config['cookie_httponly']) ? ' checked="checked"' : '');
-$xtpl->assign('CHECKBOX_COOKIE_SHARE', !empty($global_config['cookie_share']) ? ' checked="checked"' : '');
-$xtpl->assign('CHECKED_COOKIE_NOTICE_POPUP', !empty($global_config['cookie_notice_popup']) ? ' checked="checked"' : '');
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/variables.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-foreach ($sameSite_array as $val => $note) {
-    if (empty($global_config['cookie_SameSite'])) {
-        $global_config['cookie_SameSite'] = 'Empty';
-    }
+$tpl->assign('DATA', $global_config);
+$tpl->assign('NV_LIVE_COOKIE_TIME', round(NV_LIVE_COOKIE_TIME / 86400));
+$tpl->assign('NV_LIVE_SESSION_TIME', round(NV_LIVE_SESSION_TIME / 60));
+$tpl->assign('SAMESITE_ARRAY', $sameSite_array);
 
-    $sameSite = [
-        'val' => $val,
-        'note' => $note,
-        'checked' => $val == $global_config['cookie_SameSite'] ? ' checked="checked"' : ''
-    ];
-    $xtpl->assign('SAMESITE', $sameSite);
-    $xtpl->parse('main.SameSite');
-}
-$xtpl->parse('main');
-$content = $xtpl->text('main');
+$contents = $tpl->fetch('variables.tpl');
 
-$page_title = $nv_Lang->getModule('variables');
 include NV_ROOTDIR . '/includes/header.php';
-echo nv_admin_theme($content);
+echo nv_admin_theme($contents);
 include NV_ROOTDIR . '/includes/footer.php';
