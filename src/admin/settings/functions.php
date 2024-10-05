@@ -22,10 +22,6 @@ if (defined('NV_IS_GODADMIN')) {
     $allow_func[] = 'ftp';
     $allow_func[] = 'security';
     $allow_func[] = 'cronjobs';
-    $allow_func[] = 'cronjobs_add';
-    $allow_func[] = 'cronjobs_edit';
-    $allow_func[] = 'cronjobs_del';
-    $allow_func[] = 'cronjobs_act';
     $allow_func[] = 'plugin';
     $allow_func[] = 'variables';
     $allow_func[] = 'ssettings';
@@ -52,60 +48,6 @@ $array_url_instruction['plugin'] = 'https://wiki.nukeviet.vn/nukeviet4:admin:set
 $array_url_instruction['cronjobs'] = 'https://wiki.nukeviet.vn/nukeviet4:admin:settings:cronjobs';
 $array_url_instruction['ftp'] = 'https://wiki.nukeviet.vn/nukeviet4:admin:settings:ftp';
 $array_url_instruction['variables'] = 'https://wiki.nukeviet.vn/nukeviet4:admin:setting:variables';
-
-/**
- * nv_admin_add_theme()
- *
- * @param mixed $contents
- */
-function nv_admin_add_theme($contents)
-{
-    global $global_config, $module_file, $my_head, $my_footer, $nv_Lang;
-
-    $xtpl = new XTemplate('cronjobs_add.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-
-    $my_head .= '<link type="text/css" href="' . ASSETS_STATIC_URL . "/js/jquery-ui/jquery-ui.min.css\" rel=\"stylesheet\" />\n";
-
-    $my_footer .= '<script type="text/javascript" src="' . ASSETS_STATIC_URL . "/js/jquery-ui/jquery-ui.min.js\"></script>\n";
-    $my_footer .= '<script type="text/javascript" src="' . ASSETS_LANG_STATIC_URL . '/js/language/jquery.ui.datepicker-' . NV_LANG_INTERFACE . ".js\"></script>\n";
-
-    if ($contents['is_error']) {
-        $xtpl->parse('main.error');
-    }
-
-    $xtpl->assign('DATA', $contents);
-
-    foreach ($contents['run_file'][2] as $run) {
-        $xtpl->assign('RUN_FILE', ['key' => $run, 'selected' => $contents['run_file'][3] == $run ? ' selected="selected"' : '']);
-        $xtpl->parse('main.run_file');
-    }
-
-    for ($i = 0; $i < 24; ++$i) {
-        $xtpl->assign('HOUR', ['key' => $i, 'selected' => $i == $contents['hour'][1] ? ' selected="selected"' : '']);
-        $xtpl->parse('main.hour');
-    }
-
-    for ($i = 0; $i < 60; ++$i) {
-        $xtpl->assign('MIN', ['key' => $i, 'selected' => $i == $contents['min'][1] ? ' selected="selected"' : '']);
-        $xtpl->parse('main.min');
-    }
-
-    for ($i = 0; $i < 2; ++$i) {
-        $xtpl->assign('INTER_VAL_TYPE', [
-            'key' => $i,
-            'title' => $nv_Lang->getModule('cron_interval_type' . $i),
-            'selected' => $i == $contents['inter_val_type'] ? ' selected="selected"' : ''
-        ]);
-        $xtpl->parse('main.inter_val_type');
-    }
-
-    $xtpl->assign('DELETE', !empty($contents['del'][1]) ? ' checked="checked"' : '');
-
-    $xtpl->parse('main');
-
-    return $xtpl->text('main');
-}
 
 /**
  * Cập nhật lại thời điểm thực hiện tiếp theo của Cronjob

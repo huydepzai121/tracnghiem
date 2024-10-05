@@ -65,7 +65,7 @@
         {elseif $EXTCONFIG.extension.type eq 'block'}
         <a href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}=themes&amp;{$smarty.const.NV_OP_VARIABLE}=blocks" data-toggle="upExtSuccessAutolink">{$LANG->getModule('autoinstall_unzip_setuppage')}</a>
         {elseif $EXTCONFIG.extension.type eq 'cronjob'}
-        <a href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}=settings&amp;{$smarty.const.NV_OP_VARIABLE}=cronjobs_add&amp;file={$EXTCONFIG.extension.name}" data-toggle="upExtSuccessAutolink">{$LANG->getModule('autoinstall_unzip_setuppage')}</a>
+        <a href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}=settings&amp;{$smarty.const.NV_OP_VARIABLE}=cronjobs&amp;auto_add_file={$EXTCONFIG.extension.name}" data-toggle="upExtSuccessAutolink">{$LANG->getModule('autoinstall_unzip_setuppage')}</a>
         {else}
         <a href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=manage" data-toggle="upExtSuccessAutolink">{$LANG->getModule('autoinstall_unzip_setuppage')}</a>
         {/if}

@@ -147,4 +147,216 @@ $(function() {
         }
         $(this).closest('form').submit();
     });
+
+    // Xóa crontab
+    $('[data-toggle="delCron"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(nv_is_del_confirm[0], () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    checkss: btn.data('checkss'),
+                    cron_del: btn.data('id')
+                },
+                dataType: 'json',
+                cache: false,
+                success: function(respon) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (!respon.success) {
+                        nvToast(respon.text, 'error');
+                        return;
+                    }
+                    nvToast(nv_is_del_confirm[1], 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
+
+    // Chọn ngày tháng
+    if ($('.datepicker').length) {
+        $('.datepicker').each(function() {
+            let pk = $(this);
+            let inMd = pk.closest('.modal');
+            pk.datepicker({
+                dateFormat: nv_jsdate_post.replace('yyyy', 'yy'),
+                changeMonth: true,
+                changeYear: true,
+                showOtherMonths: true,
+                showButtonPanel: true,
+                showOn: 'focus',
+                isRTL: $('html').attr('dir') == 'rtl',
+                beforeShow: (ipt, pkr) => {
+                    if (inMd.length) {
+                        setTimeout(() => {
+                            pkr.dpDiv[0].style.setProperty("z-index", "9999", "important");
+                        }, 100);
+                    }
+                }
+            });
+        });
+    }
+
+    let btnAddCron = $('[data-toggle="cronAdd"]');
+    if (btnAddCron.length) {
+        // Ấn nút thêm crontab
+        btnAddCron.on('click', function(e) {
+            e.preventDefault();
+            let md = $('#mdCronForm');
+            $('.modal-title').html($(this).attr('aria-label'));
+            $('[type="checkbox"]', md).prop('checked', false);
+            $('[type="text"]:not(.datepicker)', md).val('');
+            $('.datepicker', md).each(function() {
+                $(this).val($(this).data('default'));
+            });
+            $('[type="number"]', md).val('60');
+            $('[name="id"]', md).val('0');
+            $('option', md).prop('selected', false);
+            $('.is-invalid', md).removeClass('is-invalid');
+            $('[name="run_file"]', md).val(btnAddCron.data('autofile'));
+            btnAddCron.data('autofile', '');
+            bootstrap.Modal.getOrCreateInstance(md[0]).show();
+        });
+
+        // Tự mở form thêm
+        if (btnAddCron.data('autofile') != '') {
+            btnAddCron.trigger('click');
+        }
+    }
+
+    // Lấy thông tin chi tiết crontab để sửa
+    $('[data-toggle="editCron"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        $.ajax({
+            type: 'POST',
+            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+            data: {
+                crontabinfo: 1,
+                checkss: btn.data('checkss'),
+                id: btn.data('id')
+            },
+            dataType: 'json',
+            cache: false,
+            success: function(respon) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                if (!respon.success) {
+                    nvToast(respon.text, 'error');
+                    return;
+                }
+                let data = respon.data;
+                let md = $('#mdCronForm');
+
+                $('.modal-title').html(data.form_title);
+                $('[name="id"]', md).val(btn.data('id'));
+                $('.is-invalid', md).removeClass('is-invalid');
+                $('[name="cron_name"]', md).val(data.cron_name);
+                $('[name="run_file"]', md).val(data.run_file);
+                $('[name="run_func_iavim"]', md).val(data.run_func);
+                $('[name="params_iavim"]', md).val(data.params);
+                $('[name="hour"]', md).val(data.hour);
+                $('[name="min"]', md).val(data.min);
+                $('[name="start_date"]', md).val(data.start_date);
+                $('[name="interval_iavim"]', md).val(data.inter_val);
+                $('[name="inter_val_type"]', md).val(data.inter_val_type);
+                $('[name="del"]', md).prop('checked', data.del);
+
+                bootstrap.Modal.getOrCreateInstance(md[0]).show();
+            },
+            error: function(xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
+    // Hiệu chỉnh lại picker date khi mở modal edit/add lên
+    $('#mdCronForm').on('shown.bs.modal', function() {
+        $('.datepicker', $('#mdCronForm')).each(function() {
+            let pk = $(this);
+            let inMd = pk.closest('.modal');
+            pk.datepicker('destroy');
+            setTimeout(() => {
+                pk.datepicker({
+                    dateFormat: nv_jsdate_post.replace('yyyy', 'yy'),
+                    changeMonth: true,
+                    changeYear: true,
+                    showOtherMonths: true,
+                    showButtonPanel: true,
+                    showOn: 'focus',
+                    isRTL: $('html').attr('dir') == 'rtl',
+                    beforeShow: (ipt, pkr) => {
+                        if (inMd.length) {
+                            setTimeout(() => {
+                                pkr.dpDiv[0].style.setProperty("z-index", "9999", "important");
+                                pkr.dpDiv.position({
+                                    my: 'left top',
+                                    at: 'left bottom',
+                                    of: ipt
+                                });
+                            }, 10);
+                        }
+                    }
+                });
+            }, 1);
+        });
+    });
+
+    // Kích hoạt đình chỉ crontab
+    $('[data-toggle="actCron"]').on('click', function(e) {
+        e.preventDefault();
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(nv_is_change_act_confirm[0], () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+                data: {
+                    checkss: btn.data('checkss'),
+                    cron_changeact: btn.data('id')
+                },
+                dataType: 'json',
+                cache: false,
+                success: function(respon) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (!respon.success) {
+                        nvToast(respon.text, 'error');
+                        return;
+                    }
+                    nvToast(nv_is_change_act_confirm[1], 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
 });
