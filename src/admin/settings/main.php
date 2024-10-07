@@ -153,11 +153,11 @@ if ($nv_Request->get_string('checkss', 'post') == $checkss) {
     $nv_Cache->delAll();
 
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success'),
+        'refresh' => 1
     ]);
 }
-
-$global_config['switch_mobi_des'] = !empty($global_config['switch_mobi_des']) ? ' checked="checked"' : '';
 
 $site_logo = '';
 if (!empty($global_config['site_logo']) and $global_config['site_logo'] != NV_ASSETS_DIR . '/images/logo.png' and !nv_is_url($global_config['site_logo']) and file_exists(NV_ROOTDIR . '/' . $global_config['site_logo'])) {
@@ -190,77 +190,34 @@ $value_setting = [
 if (defined('NV_EDITOR')) {
     require_once NV_ROOTDIR . '/' . NV_EDITORSDIR . '/' . NV_EDITOR . '/nv.php';
 }
+$page_title = $nv_Lang->getModule('lang_site_config', $language_array[NV_LANG_DATA]['name']);
 
-$xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('VALUE', $value_setting);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/main.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-foreach ($array_theme_type as $theme_type) {
-    $xtpl->assign('THEME_TYPE', $theme_type);
-    $xtpl->assign('THEME_TYPE_TXT', $nv_Lang->getGlobal('theme_type_' . $theme_type));
-    $xtpl->assign('THEME_TYPE_CHECKED', in_array($theme_type, $global_config['array_theme_type'], true) ? ' checked="checked"' : '');
-    $xtpl->parse('main.theme_type');
-}
-
-if (sizeof($global_config['my_domains']) > 1) {
-    foreach ($global_config['my_domains'] as $_domain) {
-        $xtpl->assign('SELECTED', ($global_config['site_domain'] == $_domain) ? ' selected="selected"' : '');
-        $xtpl->assign('SITE_DOMAIN', $_domain);
-        $xtpl->parse('main.site_domain.loop');
-    }
-    $xtpl->parse('main.site_domain');
-}
-
-foreach ($theme_array as $folder) {
-    $xtpl->assign('SELECTED', ($global_config['site_theme'] == $folder) ? ' selected="selected"' : '');
-    $xtpl->assign('SITE_THEME', $folder);
-    $xtpl->parse('main.site_theme');
-}
-
-if (!empty($mobile_theme_array)) {
-    foreach ($mobile_theme_array as $folder) {
-        $xtpl->assign('SELECTED', ($global_config['mobile_theme'] == $folder) ? ' selected="selected"' : '');
-        $xtpl->assign('SITE_THEME', $folder);
-        $xtpl->parse('main.mobile_theme');
-    }
-}
-
-if (!(!empty($mobile_theme_array) and in_array('m', $global_config['array_theme_type'], true))) {
-    $xtpl->parse('main.if_not_mobile_type');
-}
-
-if (!(!empty($mobile_theme_array) and in_array('m', $global_config['array_theme_type'], true)) or empty($global_config['mobile_theme'])) {
-    $xtpl->parse('main.if_not_mobile_type2');
-}
+$tpl->assign('GCONFIG', $global_config);
+$tpl->assign('DATA', $value_setting);
+$tpl->assign('THEME_TYPES', $array_theme_type);
+$tpl->assign('THEME_ARRAY', $theme_array);
+$tpl->assign('MOBILE_THEME_ARRAY', $mobile_theme_array);
 
 $sql = 'SELECT title, custom_title FROM ' . NV_MODULES_TABLE . " WHERE act=1 AND title NOT IN ('menu', 'comment') ORDER BY weight ASC";
-$mods = $db->query($sql);
-foreach ($mods as $mod) {
-    $xtpl->assign('SELECTED', ($global_config['site_home_module'] == $mod['title']) ? ' selected="selected"' : '');
-    $xtpl->assign('MODULE', $mod);
-    $xtpl->parse('main.module');
-}
+$mods = $db->query($sql)->fetchAll();
+$tpl->assign('MODS', $mods);
 
 $global_config['disable_site_content'] = htmlspecialchars(nv_editor_br2nl($global_config['disable_site_content']));
-
 if (defined('NV_EDITOR') and nv_function_exists('nv_aleditor')) {
     $disable_site_content = nv_aleditor('disable_site_content', '100%', '100px', $global_config['disable_site_content'], 'Basic');
 } else {
     $disable_site_content = '<textarea style="width:100%;height:100px" name="disable_site_content" id="disable_site_content">' . $global_config['disable_site_content'] . '</textarea>';
 }
+$tpl->assign('DISABLE_SITE_CONTENT', $disable_site_content);
 
-$xtpl->assign('DISABLE_SITE_CONTENT', $disable_site_content);
-$xtpl->assign('DATA_USAGE_WARNING', !empty($global_config['data_warning']) ? ' checked="chekced"' : '');
-$xtpl->assign('ANTISPAM_WARNING', !empty($global_config['antispam_warning']) ? ' checked="chekced"' : '');
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
-
-$page_title = $nv_Lang->getModule('lang_site_config', $language_array[NV_LANG_DATA]['name']);
+$contents = $tpl->fetch('main.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

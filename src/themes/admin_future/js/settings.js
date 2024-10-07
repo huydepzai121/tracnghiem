@@ -26,6 +26,39 @@ function country_cdn_list_load() {
 }
 
 $(function() {
+    // Đổi loại giao diện ở cấu hình site
+    $('#site-settings [name^=theme_type]').on('change', function() {
+        var form = $(this).closest('form'),
+            types = [];
+        $('[name^=theme_type]:checked').each(function() {
+            types.push($(this).val());
+        });
+        if ($.inArray('m', types) !== -1) {
+            $('.mobile_theme-wrap', form).removeClass('d-none');
+            if ($('[name=mobile_theme]', form).val() != '') {
+                $('.switch_mobi_des-wrap', form).removeClass('d-none');
+            } else {
+                $('.switch_mobi_des-wrap', form).addClass('d-none');
+            }
+        } else {
+            $('.mobile_theme-wrap, .switch_mobi_des-wrap', form).addClass('d-none');
+        }
+        if ($.inArray('r', types) === -1 && $.inArray('d', types) === -1) {
+            $('[name^=theme_type][value=r]', form).prop('checked', true);
+        }
+    });
+
+    // Đổi giao diện mobile ở cấu hình site
+    $('#site-settings [name=mobile_theme]').on('change', function() {
+        var form = $(this).closest('form');
+        if ($(this).val() != '') {
+            $('.switch_mobi_des-wrap', form).removeClass('d-none');
+        } else {
+            $('.switch_mobi_des-wrap', form).addClass('d-none');
+            $('[name=switch_mobi_des]', form).prop('checked', false);
+        }
+    });
+
     // Thêm xóa cấu hình tùy chỉnh
     $('body').on('click', '[data-toggle="addCustomCfgItem"]', function() {
         var item = $(this).closest('.item'),

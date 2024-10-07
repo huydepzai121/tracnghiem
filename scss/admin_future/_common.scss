@@ -170,3 +170,20 @@
 .form-text > ul {
     margin-bottom: 0;
 }
+
+.collapse-button::after {
+    width: $accordion-icon-width;
+    height: $accordion-icon-width;
+    content: "";
+    background-image: #{escape-svg($accordion-button-active-icon)};
+    background-repeat: no-repeat;
+    background-size: $accordion-icon-width;
+    transition: $accordion-icon-transition;
+    display: block;
+}
+
+.collapsed>.collapse-button::after,
+.collapsed>div>.collapse-button::after {
+    background-image: #{escape-svg($accordion-button-icon)};
+    transform: $accordion-icon-transform;
+}

@@ -32,7 +32,7 @@ function nv_aleditor($textareaname, $width = '100%', $height = '450px', $val = '
     $textareaid = preg_replace('/[^a-z0-9\-\_ ]/i', '_', $textareaname);
     $editor_id = $module_data . '_' . $textareaid;
 
-    $return = '<div id="outer_' . $editor_id . '"><textarea style="width: ' . $width . '; height:' . $height . ';" id="' . $editor_id . '" name="' . $textareaname . '">' . $val . '</textarea></div>';
+    $return = '<div id="outer_' . $editor_id . '"><textarea class="form-control" style="width: ' . $width . '; height:' . $height . ';" id="' . $editor_id . '" name="' . $textareaname . '">' . $val . '</textarea></div>';
 
     if (!defined('CKEDITOR5_CLASSIC')) {
         define('CKEDITOR5_CLASSIC', true);

@@ -25523,6 +25523,23 @@ readers do not read off random characters that represent icons */
   margin-bottom: 0;
 }
 
+.collapse-button::after {
+  width: 1.25rem;
+  height: 1.25rem;
+  content: "";
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%231a3562' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M2 5L8 11L14 5'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-size: 1.25rem;
+  transition: transform 0.2s ease-in-out;
+  display: block;
+}
+
+.collapsed > .collapse-button::after,
+.collapsed > div > .collapse-button::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23666' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M2 5L8 11L14 5'/%3e%3c/svg%3e");
+  transform: rotate(180deg);
+}
+
 .header-outer {
   background-color: var(--nv-header-bg-color);
   position: fixed;
