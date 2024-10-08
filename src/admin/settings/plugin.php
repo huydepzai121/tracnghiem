@@ -21,13 +21,22 @@ if ($nv_Request->isset_request('changeweight', 'post')) {
     if (!defined('NV_IS_AJAX')) {
         exit('Wrong URL!!!');
     }
+    if ($nv_Request->get_title('checkss', 'post', '') !== NV_CHECK_SESSION) {
+        nv_jsonOutput([
+            'success' => 0,
+            'text' => 'Error session!!!'
+        ]);
+    }
 
     $pid = $nv_Request->get_int('pid', 'post', 0);
     $new_weight = $nv_Request->get_int('new_weight', 'post', 0);
 
     $row = $db->query('SELECT * FROM ' . $db_config['prefix'] . '_plugins WHERE pid=' . $pid)->fetch();
     if (empty($row)) {
-        nv_htmlOutput('ERROR');
+        nv_jsonOutput([
+            'success' => 0,
+            'text' => 'Not exists!!!'
+        ]);
     }
 
     nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('plugin_log_weight'), $pid . '-' . $new_weight, $admin_info['userid']);
@@ -49,7 +58,10 @@ if ($nv_Request->isset_request('changeweight', 'post')) {
     $db->query('UPDATE ' . $db_config['prefix'] . '_plugins SET weight=' . $new_weight . ' WHERE pid=' . $pid);
 
     nv_save_file_config_global();
-    nv_htmlOutput('OK');
+    nv_jsonOutput([
+        'success' => 1,
+        'text' => 'Success!!!'
+    ]);
 }
 
 // Xóa plugin
@@ -57,11 +69,20 @@ if ($nv_Request->isset_request('del', 'post')) {
     if (!defined('NV_IS_AJAX')) {
         exit('Wrong URL!!!');
     }
+    if ($nv_Request->get_title('checkss', 'post', '') !== NV_CHECK_SESSION) {
+        nv_jsonOutput([
+            'success' => 0,
+            'text' => 'Error session!!!'
+        ]);
+    }
 
     $pid = $nv_Request->get_int('pid', 'post', 0);
     $row = $db->query('SELECT * FROM ' . $db_config['prefix'] . '_plugins WHERE pid=' . $pid)->fetch();
     if (empty($row) or !empty($row['plugin_module_file']) or ($row['plugin_lang'] != 'all' and $row['plugin_lang'] != NV_LANG_DATA)) {
-        nv_htmlOutput('ERROR');
+        nv_jsonOutput([
+            'success' => 0,
+            'text' => 'Not allowed!!!'
+        ]);
     }
 
     nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('plugin_log_del'), $pid . '-' . $row['plugin_file'], $admin_info['userid']);
@@ -81,7 +102,10 @@ if ($nv_Request->isset_request('del', 'post')) {
     }
 
     nv_save_file_config_global();
-    nv_htmlOutput('OK');
+    nv_jsonOutput([
+        'success' => 1,
+        'text' => 'Success!!!'
+    ]);
 }
 
 // Lấy list các HOOK theo module hoặc hệ thống
@@ -347,82 +371,20 @@ if ($nv_Request->isset_request('integrate', 'post')) {
     nv_jsonOutput($respon);
 }
 
-$xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/plugin.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-// List danh sách các hook đã tích hợp để lọc
-foreach ($array_areas as $area) {
-    $p_area = [
-        'key' => $area,
-        'selected' => $area == $array_search['area'] ? ' selected="selected"' : ''
-    ];
-    $xtpl->assign('AREA', $p_area);
-    $xtpl->parse('main.select_hook');
-}
+$tpl->assign('ARRAY_AREAS', $array_areas);
+$tpl->assign('SEARCH', $array_search);
+$tpl->assign('ARRAY', $array);
+$tpl->assign('MAX_WEIGHT', $max_weight);
+$tpl->assign('AVAILABLE_PLUGINS', $available_plugins);
 
-// Hiển thị cột chỉnh thứ tự
-if (!empty($array_search['area'])) {
-    $xtpl->parse('main.col_weight');
-    $xtpl->parse('main.note_order');
-}
-
-// Xuất plugin đã tích hợp
-foreach ($array as $row) {
-    $row['type'] = empty($row['plugin_module_name']) ? $nv_Lang->getModule('plugin_type_sys') : $nv_Lang->getModule('plugin_type_module') . ':' . $row['plugin_module_name'];
-    $xtpl->assign('ROW', $row);
-
-    if (!empty($array_search['area'])) {
-        for ($i = 1; $i <= $max_weight; ++$i) {
-            $xtpl->assign('WEIGHT', [
-                'key' => $i,
-                'selected' => $i == $row['weight'] ? ' selected="selected"' : ''
-            ]);
-            $xtpl->parse('main.loop.weight.loop');
-        }
-
-        $xtpl->parse('main.loop.weight');
-    }
-
-    /*
-     * Plugin trong thư mục modules/ thì chỉ xóa khi xóa module để đảm bảo module hoạt động bình thường
-     * Plugin trong thư mục includes/plugin là phần cấu hình có thể xóa/thêm tự do
-     */
-    if (empty($row['plugin_module_file'])) {
-        $xtpl->parse('main.loop.delete');
-    }
-
-    $xtpl->parse('main.loop');
-}
-
-// Xuất các plugin khả dụng
-if (!empty($available_plugins)) {
-    foreach ($available_plugins as $hook_key => $rows) {
-        $xtpl->assign('HOOK_KEY', $hook_key);
-
-        foreach ($rows as $file_key => $row) {
-            $sizeof = !empty($row['area']);
-            $row['area'] = implode(', ', $row['area']);
-            !empty($row['hook_module']) && $row['area'] = $row['hook_module'] . ':' . $row['area'];
-            $row['type'] = empty($row['receive_module']) ? $nv_Lang->getModule('plugin_type_sys') : $nv_Lang->getModule('plugin_type_module') . ':' . $row['receive_module'];
-            $row['status'] = $sizeof ? $nv_Lang->getModule('plugin_status_ok') : $nv_Lang->getModule('plugin_status_error');
-            $xtpl->assign('FILE_KEY', $file_key);
-            $xtpl->assign('ROW', $row);
-
-            if ($sizeof) {
-                $xtpl->assign('RAND', nv_genpass());
-                $xtpl->parse('main.plugin_available.row.plugin_integrate');
-            }
-            $xtpl->parse('main.plugin_available.row');
-        }
-    }
-    $xtpl->parse('main.plugin_available');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('plugin.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
