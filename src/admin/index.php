@@ -112,7 +112,7 @@ if (preg_match($global_config['check_module'], $module_name)) {
         }
 
         // Ket noi voi giao dien chung cua admin
-        $admin_info['admin_theme'] = (!empty($admin_info['admin_theme']) and file_exists(NV_ROOTDIR . '/themes/' . $global_config['admin_theme'] . '/theme.php')) ? $admin_info['admin_theme'] : $global_config['admin_theme'];
+        $admin_info['admin_theme'] = (!empty($admin_info['admin_theme']) and file_exists(NV_ROOTDIR . '/themes/' . $admin_info['admin_theme'] . '/theme.php')) ? $admin_info['admin_theme'] : $global_config['admin_theme'];
         // Hook để tùy chỉnh giao diện chung của admin
         $admin_info['admin_theme'] = nv_apply_hook('', 'get_global_admin_theme', [$admin_info['admin_theme'], $module_name, $module_info, $op], $admin_info['admin_theme']);
         require NV_ROOTDIR . '/themes/' . $admin_info['admin_theme'] . '/theme.php';

@@ -26,6 +26,15 @@ function country_cdn_list_load() {
 }
 
 $(function() {
+    // Select 2
+    if ($('.select2').length) {
+        $('.select2').select2({
+            language: nv_lang_interface,
+            dir: $('html').attr('dir'),
+            width: '100%'
+        });
+    }
+
     // Đổi loại giao diện ở cấu hình site
     $('#site-settings [name^=theme_type]').on('change', function() {
         var form = $(this).closest('form'),
@@ -56,6 +65,82 @@ $(function() {
         } else {
             $('.switch_mobi_des-wrap', form).addClass('d-none');
             $('[name=switch_mobi_des]', form).prop('checked', false);
+        }
+    });
+
+    // Cảnh báo khi đổi chuyển hướng HTTP > HTTPS
+    $('#element_ssl_https').on('change', function() {
+        var val = parseInt($(this).data('val')),
+            mode = parseInt($(this).val()),
+            that = $(this);
+        if (mode != 0 && val == 0) {
+            nvConfirm($(this).data('confirm'), () => {}, () => {
+                that.val('0');
+            });
+        }
+    });
+
+    // Xử lý giao diện khi bật tắt rewrite, đa ngôn ngữ
+    $('[data-toggle="controlrw"]').on('change', function() {
+        var lang_multi = $('[name="lang_multi"]').is(':checked');
+        var rewrite_enable = $('[name="rewrite_enable"]').is(':checked');
+        if ($('#lang-geo').length) {
+            if (lang_multi) {
+                if (!$('#lang-geo').is(':visible')) {
+                    $('#lang-geo').hide().removeClass('d-none').slideDown();
+                }
+            } else {
+                $('#lang-geo').slideUp(function() {
+                    $(this).addClass('d-none');
+                });
+            }
+        }
+        if (!lang_multi && rewrite_enable) {
+            if (!$('#ctn_rewrite_optional').is(':visible')) {
+                $('#ctn_rewrite_optional').hide().removeClass('d-none').slideDown();
+            }
+        } else {
+            $('#ctn_rewrite_optional').slideUp(function() {
+                $(this).addClass('d-none');
+            });
+            $('[name="rewrite_optional"]').prop('checked', false);
+        }
+        $('[data-toggle="controlrw1"]').change();
+    });
+
+    // Xử lý giao diện khi bật tắt loại bỏ biến ngôn ngữ khỏi url
+    $('[data-toggle="controlrw1"]').on('change', function() {
+        var rewrite_optional = $(this).is(':checked');
+        if (rewrite_optional) {
+            $('#ctn_rewrite_op_mod').hide().removeClass('d-none').slideDown();
+        } else {
+            $('#ctn_rewrite_op_mod').slideUp(function() {
+                $(this).addClass('d-none');
+            });
+            $('[name="rewrite_op_mod"]').find('option').prop('selected', false);
+        }
+    });
+
+    // Xử lý giao diện khi đóng mở site
+    $('#collapse-closesite').on('shown.bs.collapse', function() {
+        let ctn = $(this).closest('.card');
+        $('.card-header', ctn).addClass('rounded-bottom-0');
+        $('.card-body', ctn).addClass('rounded-top-0');
+    });
+    $('#collapse-closesite').on('hidden.bs.collapse', function() {
+        let ctn = $(this).closest('.card');
+        $('.card-header', ctn).removeClass('rounded-bottom-0');
+        $('.card-body', ctn).removeClass('rounded-top-0');
+    });
+    $('[name=closed_site]').on('change', function() {
+        if ($(this).val() != '0') {
+            if (!$("#reopening_time").is(':visible')) {
+                $("#reopening_time").hide().removeClass('d-none').slideDown();
+            }
+        } else {
+            $("#reopening_time").slideUp(function() {
+                $(this).addClass('d-none');
+            });
         }
     });
 

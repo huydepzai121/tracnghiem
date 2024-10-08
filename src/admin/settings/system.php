@@ -28,6 +28,13 @@ $closed_site_Modes[3] = $nv_Lang->getModule('closed_site_3');
 // Thay đổi chế độ site
 if (defined('NV_IS_GODADMIN')) {
     if ($nv_Request->isset_request('site_mode', 'post')) {
+        if ($nv_Request->get_title('checkss', 'post', '') !== NV_CHECK_SESSION) {
+            nv_jsonOutput([
+                'status' => 'error',
+                'mess' => 'Error session!!!'
+            ]);
+        }
+
         $array_config_global = [];
         $array_config_global['closed_site'] = $nv_Request->get_int('closed_site', 'post', $global_config['closed_site']);
         if (!isset($closed_site_Modes[$array_config_global['closed_site']])) {
@@ -43,6 +50,8 @@ if (defined('NV_IS_GODADMIN')) {
             $array_config_global['site_reopening_time'] = 0;
         }
 
+        nv_insert_logs(NV_LANG_DATA, $module_name, 'closed_site', $array_config_global['closed_site'], $admin_info['userid']);
+
         $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET config_value = :config_value WHERE lang = 'sys' AND module = 'global' AND config_name = :config_name");
         foreach ($array_config_global as $config_name => $config_value) {
             $sth->bindParam(':config_name', $config_name, PDO::PARAM_STR, 30);
@@ -54,6 +63,7 @@ if (defined('NV_IS_GODADMIN')) {
 
         nv_jsonOutput([
             'status' => 'OK',
+            'mess' => $nv_Lang->getGlobal('save_success'),
             'refresh' => true
         ]);
     }
@@ -102,6 +112,8 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     if ($array_config_site['ssl_https'] < 0 or $array_config_site['ssl_https'] > 2) {
         $array_config_site['ssl_https'] = 0;
     }
+
+    nv_insert_logs(NV_LANG_DATA, $module_name, 'Change System setting', '', $admin_info['userid']);
 
     $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET config_value = :config_value WHERE lang = 'sys' AND module = 'site' AND config_name = :config_name");
     foreach ($array_config_site as $config_name => $config_value) {
@@ -241,11 +253,13 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
             'status' => 'error',
             'mess' => $errormess
         ]);
-    } else {
-        nv_jsonOutput([
-            'status' => 'OK'
-        ]);
     }
+
+    nv_jsonOutput([
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success'),
+        'refresh' => true
+    ]);
 }
 
 $page_title = $nv_Lang->getModule('global_config');
@@ -258,164 +272,51 @@ $global_config['reopening_min'] = 0;
 if (!empty($global_config['site_reopening_time'])) {
     $tdate = date('d/m/Y|H|i', $global_config['site_reopening_time']);
     [$global_config['reopening_date'], $global_config['reopening_hour'], $global_config['reopening_min']] = explode('|', $tdate);
+    $global_config['reopening_date'] = nv_u2d_post($global_config['site_reopening_time']);
 }
 
 if (!empty($global_config['site_phone']) and !empty($global_config['site_int_phone'])) {
     $global_config['site_phone'] .= '[' . $global_config['site_int_phone'] . ']';
 }
 
-$xtpl = new XTemplate('system.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('DATA', $global_config);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/system.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->registerPlugin('modifier', 'ddatetime', 'nv_datetime_format');
+$tpl->registerPlugin('modifier', 'str_pad', 'str_pad');
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-for ($i = 0; $i <= 2; ++$i) {
-    $ssl_https = [
-        'key' => $i,
-        'title' => $nv_Lang->getModule('ssl_https_' . $i),
-        'selected' => $i == $global_config['ssl_https'] ? ' selected="selected"' : ''
-    ];
+$tpl->assign('DATA', $global_config);
+$tpl->assign('ALLOW_SITELANGS', $allow_sitelangs);
+$tpl->assign('LANGUAGE_ARRAY', $language_array);
+$tpl->assign('SITE_MODS', $site_mods);
+$tpl->assign('ADMINTHEMES', $adminThemes);
+$tpl->assign('CLOSED_SITE_MODES', $closed_site_Modes);
 
-    $xtpl->assign('SSL_HTTPS', $ssl_https);
-    $xtpl->parse('main.ssl_https');
-}
-
+$array_config_global = [];
 if (defined('NV_IS_GODADMIN')) {
     $result = $db->query('SELECT config_name, config_value FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE lang='sys' AND module='global'");
     while ([$c_config_name, $c_config_value] = $result->fetch(3)) {
         $array_config_global[$c_config_name] = $c_config_value;
     }
-
-    $lang_multi = $array_config_global['lang_multi'];
-    $array_config_define['nv_debug'] = empty($array_config_define['nv_debug']) ? '' : ' checked="checked"';
-
-    $xtpl->assign('CHECKED_GZIP_METHOD', ($array_config_global['gzip_method']) ? ' checked="checked"' : '');
-    $xtpl->assign('CHECKED_BLANK_OPERATION', ($array_config_global['blank_operation']) ? ' checked="checked"' : '');
-    $xtpl->assign('CHECKED_LANG_MULTI', ($array_config_global['lang_multi']) ? ' checked="checked"' : '');
-    $xtpl->assign('CHECKED_NOTIFI_ACTIVE', ($array_config_global['notification_active']) ? ' checked="checked"' : '');
-    $xtpl->assign('CHECKED_ERROR_SET_LOGS', ($array_config_global['error_set_logs']) ? ' checked="checked"' : '');
-    $xtpl->assign('CHECKED_ERROR_SEPARATE_FILE', ($array_config_global['error_separate_file']) ? ' checked="checked"' : '');
-    $xtpl->assign('CHECKED_REWRITE_ENABLE', ($array_config_global['rewrite_enable'] == 1) ? ' checked ' : '');
-    $xtpl->assign('CHECKED_REWRITE_OPTIONAL', ($array_config_global['rewrite_optional'] == 1) ? ' checked ' : '');
-    $xtpl->assign('STATIC_NOQUERYSTRING_CHECKED', ($array_config_global['static_noquerystring'] == 1) ? ' checked ' : '');
-    $xtpl->assign('CHECKED_UNSIGN_VIETWORDS', !empty($array_config_global['unsign_vietwords']) ? ' checked="checked"' : '');
-    $xtpl->assign('CFG_DEFINE', $array_config_define);
-    $xtpl->assign('SITE_STATUS', [
-        'panel' => empty($global_config['closed_site']) ? 'success' : 'danger',
-        'icon' => empty($global_config['closed_site']) ? 'fa-check' : 'fa-ban',
-        'title' => $closed_site_Modes[$global_config['closed_site']],
-        'reopening' => !empty($global_config['site_reopening_time']) ? $nv_Lang->getModule('closed_site_reopening_time') . ': ' . nv_datetime_format($global_config['site_reopening_time']) : ''
-    ]);
-
-    $xtpl->assign('MY_DOMAINS', $array_config_global['my_domains']);
-    $xtpl->parse('main.my_domains');
-
-    foreach ($closed_site_Modes as $value => $name) {
-        $xtpl->assign('MODE_VALUE', $value);
-        $xtpl->assign('MODE_NAME', $name);
-        $xtpl->assign('MODE_SELECTED', ($value == $global_config['closed_site'] ? ' selected="selected"' : ''));
-        $xtpl->parse('main.closed_site.closed_site_mode');
-    }
-
-    if (empty($global_config['closed_site'])) {
-        $xtpl->parse('main.closed_site.reopening_time');
-    }
-
-    for ($i = 0; $i <= 23; ++$i) {
-        $xtpl->assign('RHOUR', [
-            'num' => $i,
-            'sel' => $i == $global_config['reopening_hour'] ? ' selected="selected"' : '',
-            'title' => str_pad($i, 2, 0, STR_PAD_LEFT)
-        ]);
-        $xtpl->parse('main.closed_site.reopening_hour');
-    }
-
-    for ($i = 0; $i <= 59; ++$i) {
-        $xtpl->assign('RMIN', [
-            'num' => $i,
-            'sel' => $i == $global_config['reopening_min'] ? ' selected="selected"' : '',
-            'title' => str_pad($i, 2, 0, STR_PAD_LEFT)
-        ]);
-        $xtpl->parse('main.closed_site.reopening_min');
-    }
-
-    if (!empty($global_config['site_reopening_time'])) {
-        $xtpl->parse('main.closed_site.reopening');
-    }
-
-    $xtpl->parse('main.closed_site');
-
-    $xtpl->assign('CURRENT_TIME', $nv_Lang->getModule('current_time', nv_datetime_format(NV_CURRENTTIME, 1, 0)));
-    $xtpl->assign('TIMEZONEOP', 'byCountry');
-    $xtpl->assign('TIMEZONESELECTED', ($array_config_global['site_timezone'] == 'byCountry') ? "selected='selected'" : '');
-    $xtpl->assign('TIMEZONELANGVALUE', $nv_Lang->getModule('timezoneByCountry'));
-    $xtpl->parse('main.timesettings.opsite_timezone');
-
-    sort($timezone_array);
-    foreach ($timezone_array as $site_timezone_i) {
-        $xtpl->assign('TIMEZONEOP', $site_timezone_i);
-        $xtpl->assign('TIMEZONESELECTED', ($site_timezone_i == $array_config_global['site_timezone']) ? "selected='selected'" : '');
-        $xtpl->assign('TIMEZONELANGVALUE', $site_timezone_i);
-        $xtpl->parse('main.timesettings.opsite_timezone');
-    }
-    $xtpl->parse('main.timesettings');
-
-    foreach ($site_mods as $mod => $row) {
-        $xtpl->assign('MODE_VALUE', $mod);
-        $xtpl->assign('MODE_SELECTED', ($mod == $array_config_global['rewrite_op_mod']) ? "selected='selected'" : '');
-        $xtpl->assign('MODE_NAME', $row['custom_title']);
-        $xtpl->parse('main.lang_rewrite.rewrite_op_mod');
-    }
-
-    $xtpl->assign('SHOW_REWRITE_OPTIONAL', (empty($lang_multi) and $array_config_global['rewrite_enable']) ? '' : ' style="display:none"');
-    $xtpl->assign('SHOW_REWRITE_OP_MOD', ($array_config_global['rewrite_optional'] == 1) ? '' : ' style="display:none"');
-
-    if (sizeof($global_config['allow_sitelangs']) > 1) {
-        foreach ($allow_sitelangs as $lang_i) {
-            $xtpl->assign('LANGOP', $lang_i);
-            $xtpl->assign('SELECTED', ($lang_i == $array_config_global['site_lang']) ? "selected='selected'" : '');
-            $xtpl->assign('LANGVALUE', $language_array[$lang_i]['name']);
-            $xtpl->parse('main.lang_rewrite.lang_multi.site_lang_option');
-        }
-        $xtpl->assign('CONFIG_LANG_GEO', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=language&' . NV_OP_VARIABLE . '=countries');
-        $xtpl->assign('CHECKED_LANG_GEO', ($array_config_global['lang_geo'] == 1) ? ' checked ' : '');
-        if (empty($lang_multi)) {
-            $xtpl->parse('main.lang_rewrite.lang_multi.hide_geo');
-        }
-        $xtpl->parse('main.lang_rewrite.lang_multi');
-    }
-
-    $xtpl->parse('main.lang_rewrite');
-
-    $xtpl->parse('main.error_handling');
-
-    $preload_opts = [$nv_Lang->getModule('resource_preload_not'), $nv_Lang->getModule('resource_preload_headers'), $nv_Lang->getModule('resource_preload_html')];
-    foreach ($preload_opts as $k => $name) {
-        $xtpl->assign('PRELOAD', [
-            'val' => $k,
-            'sel' => $k == $array_config_global['resource_preload'] ? ' selected="selected"' : '',
-            'name' => $name
-        ]);
-        $xtpl->parse('main.optimization_settings.resource_preload');
-    }
-
-    $xtpl->parse('main.optimization_settings');
-
-    $xtpl->parse('main.unsign_vietwords');
 }
+$tpl->assign('GDATA', $array_config_global);
+$tpl->assign('DDATA', $array_config_define);
 
-foreach ($adminThemes as $name) {
-    $xtpl->assign('THEME_NAME', $name);
-    $xtpl->assign('THEME_SELECTED', ($name == $global_config['admin_theme'] ? ' selected="selected"' : ''));
-    $xtpl->parse('main.admin_theme');
-}
+sort($timezone_array);
+$tpl->assign('TIMEZONES', $timezone_array);
 
-$xtpl->parse('main');
-$content = $xtpl->text('main');
+$preload_opts = [
+    $nv_Lang->getModule('resource_preload_not'),
+    $nv_Lang->getModule('resource_preload_headers'),
+    $nv_Lang->getModule('resource_preload_html')
+];
+$tpl->assign('PRELOAD_OPTS', $preload_opts);
+
+$contents = $tpl->fetch('system.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
-echo nv_admin_theme($content);
+echo nv_admin_theme($contents);
 include NV_ROOTDIR . '/includes/footer.php';
