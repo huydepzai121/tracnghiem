@@ -190,7 +190,7 @@
         ],
         "cache_control": "public, no-transform",
         "expires": "1y",
-        "prevent_image_hot_linking": false
+        "prevent_image_hot_linking": true
     },
     "font_files": {
         "mime_types": [

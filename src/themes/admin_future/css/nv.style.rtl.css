@@ -25287,6 +25287,10 @@ readers do not read off random characters that represent icons */
   background-color: var(--nv-body-bg);
 }
 
+.pre-wrap {
+  white-space: pre-wrap !important;
+}
+
 .main-content {
   margin-right: 14rem;
   min-height: calc(100vh - 3.75rem - 3.75rem);
@@ -25538,6 +25542,15 @@ readers do not read off random characters that represent icons */
 .collapsed > div > .collapse-button::after {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23666' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M2 5L8 11L14 5'/%3e%3c/svg%3e");
   transform: rotate(180deg);
+}
+
+.list-group-accordion > .list-group-item {
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.list-group-striped > .list-group-item:nth-of-type(odd) {
+  background-color: var(--bs-tertiary-bg);
 }
 
 .header-outer {

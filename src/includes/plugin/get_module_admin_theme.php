@@ -34,7 +34,7 @@ nv_add_hook($module_name, 'get_module_admin_theme', $priority, function ($vars) 
     if ($module_name == 'themes' and in_array($op, ['block_content'])) {
         return $new_theme;
     }
-    if ($module_name == 'settings' and in_array($op, ['plugin', 'system', 'main', 'cronjobs', 'cdn_backendhost', 'ftp', 'variables', 'custom'])) {
+    if ($module_name == 'settings' and in_array($op, ['ssettings', 'plugin', 'system', 'main', 'cronjobs', 'cdn_backendhost', 'ftp', 'variables', 'custom'])) {
         return $new_theme;
     }
 

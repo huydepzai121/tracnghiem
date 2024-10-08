@@ -726,4 +726,73 @@ $(function() {
             }
         });
     });
+
+    // Xem tệp cấu hình máy chủ
+    $('[data-toggle=view_sconfig_file]').on('click', function(e) {
+        e.preventDefault();
+        var btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        $.ajax({
+            type: 'POST',
+            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
+            data: {
+                getSconfigContents: 1,
+                checkss: btn.data('checkss')
+            },
+            dataType: 'html',
+            cache: false,
+            success: function(respon) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                $('#sConfigModal .modal-body>pre>code').text(respon);
+                bootstrap.Modal.getOrCreateInstance('#sConfigModal').show();
+            },
+            error: function(xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
+    $('#sConfigModal, #sDefaultModal').on('show.bs.modal', function() {
+        hljs.debugMode();
+        hljs.highlightAll();
+    });
+
+    // Tệp cấu hình gợi ý theo thiết lập hiện tại
+    $('#sample-form').on('submit', function(e) {
+        e.preventDefault();
+        var url = $(this).data('url'),
+            data = $(this).serialize(),
+            rewrite_supporter = $('[name=rewrite_supporter]', this).val(),
+            lang = $('option[value=' + rewrite_supporter + ']', this).data('highlight-lang');
+
+        e.preventDefault();
+        var btn = $('[type="submit"]', $(this));
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        $.ajax({
+            type: 'POST',
+            cache: !1,
+            url: url,
+            data: data,
+            dataType: "html",
+            success: function(b) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                $('#sDefaultModal .modal-body>pre>code').removeAttr('class').addClass(lang).text(b);
+                bootstrap.Modal.getOrCreateInstance('#sDefaultModal').show();
+            },
+            error: function(xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        })
+    });
 });

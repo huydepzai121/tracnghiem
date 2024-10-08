@@ -246,6 +246,8 @@ function set_access_control_allow_origin($any_origin, $origins)
     return array_values($origins);
 }
 
+$checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
+
 $sconfig_file = '';
 $highlight_lang = '';
 if ($sys_info['supports_rewrite'] == 'rewrite_mode_apache') {
@@ -258,8 +260,12 @@ if ($sys_info['supports_rewrite'] == 'rewrite_mode_apache') {
     $highlight_lang = 'nginx';
 }
 
-// Lay noi dung File cau hinh
+// Lấy nội dung file cấu hình
 if ($nv_Request->isset_request('getSconfigContents', 'post')) {
+    if ($nv_Request->get_title('checkss', 'post', '') !== $checkss) {
+        nv_htmlOutput('Error session!!!');
+    }
+
     $contents = '';
     if (!empty($sconfig_file) and file_exists(NV_ROOTDIR . '/' . $sconfig_file)) {
         $contents = file_get_contents(NV_ROOTDIR . '/' . $sconfig_file);
@@ -268,8 +274,12 @@ if ($nv_Request->isset_request('getSconfigContents', 'post')) {
     nv_htmlOutput($contents);
 }
 
-// Lay noi dung cau hinh mac dinh theo thiet lap
+// Lấy nội dung tệp cấu hình mặc định theo thiết lập
 if ($nv_Request->isset_request('getSconfigBySettings', 'post')) {
+    if ($nv_Request->get_title('checkss', 'post', '') !== $checkss) {
+        nv_htmlOutput('Error session!!!');
+    }
+
     $supporter = $nv_Request->get_title('rewrite_supporter', 'post', 'rewrite_mode_apache');
     $Sconfig = new NukeViet\Core\Sconfig($global_config);
 
@@ -289,7 +299,6 @@ $page_title = $nv_Lang->getModule('ssettings');
 $server_config_file = NV_ROOTDIR . '/' . NV_DATADIR . '/server_config.json';
 $server_configs = file_get_contents($server_config_file);
 $server_configs = json_decode($server_configs, true);
-$checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
 $csrf = $nv_Request->get_string('_csrf', 'post', '');
 
 if ($nv_Request->isset_request('save', 'post') and hash_equals($checkss, $csrf)) {
@@ -350,7 +359,8 @@ if ($nv_Request->isset_request('save', 'post') and hash_equals($checkss, $csrf))
 
     file_put_contents($server_config_file, $posts, LOCK_EX);
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
@@ -362,14 +372,8 @@ $server_configs['exec_files_format'] = !empty($server_configs['exec_files']) ? i
 $server_configs['site_mimetypes_format'] = mime_type_format($server_configs['site_mimetypes']);
 $server_configs['compress_file_exts_format'] = !empty($server_configs['compress_file_exts']) ? implode(' ', $server_configs['compress_file_exts']) : '';
 $server_configs['charset_types_format'] = !empty($server_configs['charset_types']) ? implode(' ', $server_configs['charset_types']) : '';
-$server_configs['cors_origins_any'] = (!empty($server_configs['cors_origins']) and in_array('*', $server_configs['cors_origins'], true)) ? ' checked="checked"' : '';
 $server_configs['cors_origins_list'] = !empty($server_configs['cors_origins_any']) ? '' : array_to_string_format($server_configs['cors_origins'], ' ');
 $server_configs['compress_types_format'] = compress_types_format($server_configs['compress_types']);
-$server_configs['remove_x_powered_by_checked'] = $server_configs['remove_x_powered_by'] ? 'checked' : '';
-$server_configs['disable_server_signature_checked'] = $server_configs['disable_server_signature'] ? 'checked' : '';
-$server_configs['remove_etag_checked'] = $server_configs['remove_etag'] ? 'checked' : '';
-$server_configs['not_cache_and_snippet_checked'] = $server_configs['not_cache_and_snippet'] ? 'checked' : '';
-$server_configs['prevent_image_hot_linking_checked'] = $server_configs['image_files']['prevent_image_hot_linking'] ? 'checked' : '';
 $server_configs['js_css_mime_types'] = !empty($server_configs['js_css_files']['mime_types']) ? implode(' ', $server_configs['js_css_files']['mime_types']) : '';
 $server_configs['image_mime_types'] = !empty($server_configs['image_files']['mime_types']) ? implode(' ', $server_configs['image_files']['mime_types']) : '';
 $server_configs['font_mime_types'] = !empty($server_configs['font_files']['mime_types']) ? implode(' ', $server_configs['font_files']['mime_types']) : '';
@@ -381,47 +385,26 @@ $info = [
     'sconfig_file' => $sconfig_file
 ];
 
-$xtpl = new XTemplate('ssettings.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/ssettings.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-$xtpl->assign('DATA', $server_configs);
-$xtpl->assign('CHECKSS', $checkss);
-$xtpl->assign('INFO', $info);
-$xtpl->assign('HIGHLIGHT_LANG', $highlight_lang);
-
-if (!empty($sys_info['supports_rewrite'])) {
-    if (!empty($info['sconfig_file'])) {
-        $xtpl->parse('main.sconfig_file');
-    }
-}
-
-if ($sys_info['supports_rewrite'] != 'rewrite_mode_iis') {
-    $xtpl->parse('main.if_not_iis');
-}
+$tpl->assign('DATA', $server_configs);
+$tpl->assign('CHECKSS', $checkss);
+$tpl->assign('INFO', $info);
+$tpl->assign('SYS_INFO', $sys_info);
+$tpl->assign('HIGHLIGHT_LANG', $highlight_lang);
 
 $deny_access_codes = [403, 404, 301];
-foreach ($deny_access_codes as $code) {
-    $xtpl->assign('CODE', [
-        'num' => $code,
-        'name' => $nv_Lang->getModule('deny_access_code_' . $code),
-        'sel' => ($code == $server_configs['deny_access_code']) ? ' selected="selected"' : ''
-    ]);
-    $xtpl->parse('main.deny_access_code');
-}
+$tpl->assign('DENY_ACCESS_CODES', $deny_access_codes);
 
 $errors = [400, 403, 404, 405, 408, 500, 502, 503, 504];
-foreach ($errors as $code) {
-    $xtpl->assign('EDOC', [
-        'code' => $code,
-        'title' => $nv_Lang->getModule('error_pages_' . $code),
-        'val' => $server_configs['error_document'][$code]
-    ]);
-    $xtpl->parse('main.error_document');
-}
+$tpl->assign('ERRORS', $errors);
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('ssettings.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

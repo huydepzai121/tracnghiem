@@ -2,6 +2,10 @@
     background-color: var(--nv-body-bg);
 }
 
+.pre-wrap {
+    white-space: pre-wrap!important;
+}
+
 .main-content {
     margin-left: calc($left-sidebar-width);
     min-height: calc(100vh - $header-height - $footer-height);
@@ -186,4 +190,17 @@
 .collapsed>div>.collapse-button::after {
     background-image: #{escape-svg($accordion-button-icon)};
     transform: $accordion-icon-transform;
+}
+
+.list-group-accordion {
+    >.list-group-item {
+        padding-left: $accordion-padding-x;
+        padding-right: $accordion-padding-x;
+    }
+}
+
+.list-group-striped {
+    >.list-group-item:nth-of-type(odd) {
+        background-color: var(--bs-tertiary-bg);
+    }
 }
