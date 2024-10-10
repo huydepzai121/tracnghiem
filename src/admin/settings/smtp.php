@@ -48,37 +48,29 @@ $smtp_encrypted_array = ['None', 'SSL', 'TLS'];
 $errormess = '';
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
 
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/smtp.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
 // Danh sách DKIM
 if ($nv_Request->isset_request('dkimlist', 'post')) {
     $dkim_list = get_dkim_list();
     $dkim_verified_list = get_dkim_verified_list();
 
-    if (empty($dkim_list)) {
-        exit('');
-    }
+    $tpl->assign('DKIM_VERIFIED_LIST', $dkim_verified_list);
+    $tpl->assign('DKIM_LIST', $dkim_list);
 
-    $xtpl = new XTemplate('smtp.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    foreach ($dkim_list as $num => $domain) {
-        $is_verified = (!empty($dkim_verified_list) and in_array($domain, $dkim_verified_list, true));
-        $xtpl->assign('DKIM', [
-            'domain' => $domain,
-            'title' => $is_verified ? $nv_Lang->getModule('DKIM_verified') : $nv_Lang->getModule('DKIM_unverified')
-        ]);
+    $contents = $tpl->fetch('smtp-dkim.tpl');
 
-        if ($is_verified) {
-            $xtpl->parse('dkim_list.loop.if_verified');
-        } else {
-            $xtpl->parse('dkim_list.loop.if_unverified');
-        }
-        $xtpl->parse('dkim_list.loop');
-    }
-    $xtpl->parse('dkim_list');
-    $contents = $xtpl->text('dkim_list');
-    nv_htmlOutput($contents);
+    include NV_ROOTDIR . '/includes/header.php';
+    echo $contents;
+    include NV_ROOTDIR . '/includes/footer.php';
 }
 
-// Doc public key cua DKIM
+// Đọc public key của DKIM
 if ($nv_Request->isset_request('dkimread, domain', 'post')) {
     $domain = $nv_Request->get_title('domain', 'post', '');
     $dkim_list = get_dkim_list();
@@ -86,10 +78,7 @@ if ($nv_Request->isset_request('dkimread, domain', 'post')) {
         exit(0);
     }
 
-    $xtpl = new XTemplate('smtp.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    $xtpl->assign('DOMAIN', $domain);
+    $tpl->assign('DOMAIN', $domain);
 
     $publickeyfile = NV_ROOTDIR . '/' . NV_CERTS_DIR . '/nv_dkim.' . $domain . '.public.pem';
     $publickey = file_get_contents($publickeyfile);
@@ -97,27 +86,21 @@ if ($nv_Request->isset_request('dkimread, domain', 'post')) {
     $publickey = str_replace(["\r", "\n"], '', $publickey);
     $publickey = str_split($publickey, 253);
     $publickey = 'v=DKIM1; h=sha256; t=s; p=' . implode('', $publickey);
-    $xtpl->assign('DNSVALUE', $publickey);
+
     $dkim_verified_list = get_dkim_verified_list();
     $is_verified = (!empty($dkim_verified_list) and in_array($domain, $dkim_verified_list, true));
 
-    if ($is_verified) {
-        $xtpl->parse('dkimread.verified');
-        $xtpl->parse('dkimread.verified2');
-    } else {
-        $xtpl->assign('VERIFY_NOTE', $nv_Lang->getModule('DKIM_verify_note', $domain));
-        $xtpl->parse('dkimread.unverified');
-        $xtpl->parse('dkimread.unverified2');
-    }
+    $tpl->assign('DNSVALUE', $publickey);
+    $tpl->assign('IS_VERIFIED', $is_verified);
 
-    $xtpl->parse('dkimread');
-    $contents = $xtpl->text('dkimread');
+    $contents = $tpl->fetch('smtp-dkim-read.tpl');
+
     include NV_ROOTDIR . '/includes/header.php';
     echo $contents;
     include NV_ROOTDIR . '/includes/footer.php';
 }
 
-// Kiem tra DKIM
+// Kiểm tra DKIM
 if ($nv_Request->isset_request('dkimverify, domain', 'post')) {
     $domain = $nv_Request->get_title('domain', 'post', '');
     $dkim_list = get_dkim_list();
@@ -142,7 +125,7 @@ if ($nv_Request->isset_request('dkimverify, domain', 'post')) {
     ]);
 }
 
-// Xoa DKIM
+// Xóa DKIM
 if ($nv_Request->isset_request('dkimdel, domain', 'post')) {
     $domain = $nv_Request->get_title('domain', 'post', '');
     $dkim_list = get_dkim_list();
@@ -166,7 +149,7 @@ if ($nv_Request->isset_request('dkimdel, domain', 'post')) {
     exit('OK');
 }
 
-// Them DKIM
+// Thêm DKIM
 if ($nv_Request->isset_request('dkimadd', 'post') and $checkss == $nv_Request->get_string('checkss', 'post')) {
     $domain = $nv_Request->get_title('domain', 'post', '');
     $domain = nv_check_domain($domain);
@@ -187,13 +170,17 @@ if ($nv_Request->isset_request('dkimadd', 'post') and $checkss == $nv_Request->g
         ]);
     }
 
-    $pk = openssl_pkey_new(
-        [
-            'digest_alg' => 'sha256',
-            'private_key_bits' => 2048,
-            'private_key_type' => OPENSSL_KEYTYPE_RSA,
-        ]
-    );
+    $pk = openssl_pkey_new([
+        'digest_alg' => 'sha256',
+        'private_key_bits' => 2048,
+        'private_key_type' => OPENSSL_KEYTYPE_RSA,
+    ]);
+    if ($pk === false) {
+        nv_jsonOutput([
+            'status' => 'error',
+            'mess' => $nv_Lang->getModule('DKIM_private_key_error')
+        ]);
+    }
     openssl_pkey_export_to_file($pk, $privatekeyfile);
     $pubKey = openssl_pkey_get_details($pk);
     file_put_contents($publickeyfile, $pubKey['key']);
@@ -203,30 +190,20 @@ if ($nv_Request->isset_request('dkimadd', 'post') and $checkss == $nv_Request->g
     ]);
 }
 
-// Danh sach chung chi
+// Danh sách chữ ký số S/MIME
 if ($nv_Request->isset_request('certlist', 'post')) {
     $cert_list = get_cert_list();
-    if (empty($cert_list)) {
-        exit('');
-    }
 
-    $xtpl = new XTemplate('smtp.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+    $tpl->assign('CERT_LIST', $cert_list);
 
-    foreach ($cert_list as $num => $email) {
-        $xtpl->assign('CERT', [
-            'email' => $email,
-            'num' => $num
-        ]);
-        $xtpl->parse('cert_list.loop');
-    }
+    $contents = $tpl->fetch('smtp-smime.tpl');
 
-    $xtpl->parse('cert_list');
-    $contents = $xtpl->text('cert_list');
-    nv_htmlOutput($contents);
+    include NV_ROOTDIR . '/includes/header.php';
+    echo $contents;
+    include NV_ROOTDIR . '/includes/footer.php';
 }
 
-// Doc chung chi
+// Đọc chữ kí số S/MIME
 if ($nv_Request->isset_request('smimeread, email', 'post')) {
     $email = $nv_Request->get_title('email', 'post', '');
     $cert_list = get_cert_list();
@@ -234,17 +211,11 @@ if ($nv_Request->isset_request('smimeread, email', 'post')) {
         exit(0);
     }
 
-    $xtpl = new XTemplate('smtp.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    $xtpl->assign('EMAIL', $email);
-    $xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-
     $email_name = str_replace('@', '__', $email);
     $cert_crt = file_get_contents(NV_ROOTDIR . '/' . NV_CERTS_DIR . '/' . $email_name . '.crt');
     $certPriv = openssl_x509_parse(openssl_x509_read($cert_crt));
-    $certPriv['validFrom_format'] = date('d/m/Y', $certPriv['validFrom_time_t']);
-    $certPriv['validTo_format'] = date('d/m/Y', $certPriv['validTo_time_t']);
+    $certPriv['validFrom_format'] = nv_date_format(1, $certPriv['validFrom_time_t']);
+    $certPriv['validTo_format'] = nv_date_format(1, $certPriv['validTo_time_t']);
     $certPriv['purposes_list'] = [];
     foreach ($certPriv['purposes'] as $purpose) {
         if ($purpose[0]) {
@@ -257,10 +228,14 @@ if ($nv_Request->isset_request('smimeread, email', 'post')) {
     }
     $certPriv['purposes_list'] = !empty($certPriv['purposes_list']) ? implode(', ', $certPriv['purposes_list']) : '';
 
-    $xtpl->assign('SMIMEREAD', $certPriv);
-    $xtpl->parse('smimeread');
-    $contents = $xtpl->text('smimeread');
-    nv_htmlOutput($contents);
+    $tpl->assign('SMIMEREAD', $certPriv);
+    $tpl->assign('EMAIL', $email);
+
+    $contents = $tpl->fetch('smtp-smime-read.tpl');
+
+    include NV_ROOTDIR . '/includes/header.php';
+    echo $contents;
+    include NV_ROOTDIR . '/includes/footer.php';
 }
 
 // Xoa chung chi
@@ -284,7 +259,7 @@ if ($nv_Request->isset_request('smimedel, email', 'post')) {
     exit(0);
 }
 
-// Them chung chi
+// Thêm S/MIME hoặc upload S/MIME
 if ($nv_Request->isset_request('smimeadd', 'post') and $checkss == $nv_Request->get_string('checkss', 'post')) {
     if (!empty($_FILES['pkcs12'])) {
         $passphrase = $nv_Request->get_string('passphrase', 'post', '');
@@ -451,7 +426,7 @@ if ($nv_Request->isset_request('smimeadd', 'post') and $checkss == $nv_Request->
     ]);
 }
 
-// Download chung chi
+// Download S/MIME
 if ($nv_Request->isset_request('smimedownload, email, passphrase', 'post')) {
     $email = $nv_Request->get_title('email', 'post', '');
     $cert_list = get_cert_list();
@@ -472,7 +447,7 @@ if ($nv_Request->isset_request('smimedownload, email, passphrase', 'post')) {
     $cerificate_out = null;
     $signed_csr = file_get_contents($cert_crt);
     $private_key_resource = file_get_contents($cert_key);
-    $pemChain = file_get_contents($certchain_pem);
+    $pemChain = file_exists($certchain_pem) ? file_get_contents($certchain_pem) : '';
     $matches = [];
     preg_match_all('/(-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----)/si', $pemChain, $matches);
     $args = ['extracerts' => $matches[0]];
@@ -618,6 +593,8 @@ if ($nv_Request->isset_request('submitsave', 'post') and $checkss == $nv_Request
 
     !isset($mail_tpl_opt[$array_config['mail_tpl']]) && $array_config['mail_tpl'] = '';
 
+    nv_insert_logs(NV_LANG_DATA, $module_name, 'Email send config change', '', $admin_info['userid']);
+
     $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET config_value = :config_value WHERE lang = '" . NV_LANG_DATA . "' AND module = 'global' AND config_name = :config_name");
     foreach ($array_config as $config_name => $config_value) {
         $sth->bindParam(':config_name', $config_name, PDO::PARAM_STR, 30);
@@ -625,9 +602,10 @@ if ($nv_Request->isset_request('submitsave', 'post') and $checkss == $nv_Request
         $sth->execute();
     }
     $nv_Cache->delMod('settings');
-
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success'),
+        'refresh' => 1
     ]);
 }
 
@@ -649,76 +627,14 @@ $array_config['notify_email_error'] = $global_config['notify_email_error'];
 $array_config['mail_tpl'] = !empty($global_config['mail_tpl']) ? $global_config['mail_tpl'] : '';
 $array_config['dkim_included'] = !empty($global_config['dkim_included']) ? explode(',', $global_config['dkim_included']) : [];
 $array_config['smime_included'] = !empty($global_config['smime_included']) ? explode(',', $global_config['smime_included']) : [];
-$array_config['smtp_ssl_checked'] = ($array_config['smtp_ssl'] == 1) ? ' checked="checked"' : '';
-$array_config['force_sender'] = $array_config['force_sender'] ? ' checked="checked"' : '';
-$array_config['force_reply'] = $array_config['force_reply'] ? ' checked="checked"' : '';
-$array_config['notify_email_error'] = $array_config['notify_email_error'] ? ' checked="checked"' : '';
-$array_config['smtp_dkim_included'] = in_array('smtp', $array_config['dkim_included'], true) ? ' checked="checked"' : '';
-$array_config['sendmail_dkim_included'] = in_array('sendmail', $array_config['dkim_included'], true) ? ' checked="checked"' : '';
-$array_config['mail_dkim_included'] = in_array('mail', $array_config['dkim_included'], true) ? ' checked="checked"' : '';
-$array_config['smtp_smime_included'] = in_array('smtp', $array_config['smime_included'], true) ? ' checked="checked"' : '';
-$array_config['sendmail_smime_included'] = in_array('sendmail', $array_config['smime_included'], true) ? ' checked="checked"' : '';
-$array_config['mail_smime_included'] = in_array('mail', $array_config['smime_included'], true) ? ' checked="checked"' : '';
-$array_config['mailer_mode_smtpt'] = ($array_config['mailer_mode'] == 'smtp') ? ' checked="checked"' : '';
-$array_config['mailer_mode_sendmail'] = ($array_config['mailer_mode'] == 'sendmail') ? ' checked="checked"' : '';
-$array_config['mailer_mode_phpmail'] = ($array_config['mailer_mode'] == 'mail') ? ' checked="checked"' : '';
-$array_config['mailer_mode_no'] = ($array_config['mailer_mode'] == 'no') ? ' checked="checked"' : '';
-$array_config['mailer_mode_smtpt_show'] = ($array_config['mailer_mode'] == 'smtp') ? '' : ' style="display: none" ';
 $array_config['checkss'] = $checkss;
 
-$s = $nv_Request->get_title('s', 'get', '');
-$d = $nv_Request->get_title('d', 'get', '');
+$tpl->assign('DATA', $array_config);
+$tpl->assign('MAIL_TPL_OPT', $mail_tpl_opt);
+$tpl->assign('GCONFIG', $global_config);
+$tpl->assign('SMTP_ENCRYPTED_ARRAY', $smtp_encrypted_array);
 
-$xtpl = new XTemplate('smtp.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('DATA', $array_config);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-$xtpl->assign('MAILER_MODE_DEFAULT', $array_config['mailer_mode']);
-
-if (empty($global_config['idsite'])) {
-    $xtpl->parse('smtp.mailhost');
-    $xtpl->parse('smtp.mailhost2');
-    $xtpl->parse('smtp.mailhost3');
-}
-
-foreach ($mail_tpl_opt as $key => $opt) {
-    $xtpl->assign('MAIL_TPL', [
-        'val' => $key,
-        'sel' => (!empty($key) and $key == $array_config['mail_tpl']) ? ' selected="selected"' : '',
-        'name' => $opt
-    ]);
-    $xtpl->parse('smtp.mail_tpl');
-}
-
-foreach ($smtp_encrypted_array as $id => $value) {
-    $encrypted = [
-        'id' => $id,
-        'value' => $value,
-        'checked' => ($global_config['smtp_ssl'] == $id) ? ' checked="checked"' : ''
-    ];
-
-    $xtpl->assign('EMCRYPTED', $encrypted);
-    $xtpl->parse('smtp.encrypted_connection');
-}
-if ($global_config['verify_peer_ssl'] == 1) {
-    $xtpl->assign('PEER_SSL_YES', ' checked="checked"');
-} else {
-    $xtpl->assign('PEER_SSL_NO', ' checked="checked"');
-}
-if ($global_config['verify_peer_name_ssl'] == 1) {
-    $xtpl->assign('PEER_NAME_SSL_YES', ' checked="checked"');
-} else {
-    $xtpl->assign('PEER_NAME_SSL_NO', ' checked="checked"');
-}
-
-$xtpl->parse('smtp');
-$contents = $xtpl->text('smtp');
+$contents = $tpl->fetch('smtp.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

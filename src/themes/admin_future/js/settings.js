@@ -165,7 +165,6 @@ $(function() {
     // Tự xác định path của FTP
     $('#autodetectftp').on('click', function(e) {
         e.preventDefault();
-        e.preventDefault();
         let btn = $(this);
         let icon = $('i', btn);
         if (icon.is('.fa-spinner')) {
@@ -794,5 +793,457 @@ $(function() {
                 console.log(xhr, text, err);
             }
         })
+    });
+
+    // Reset form cấu hình gửi mail
+    $('#sendmail-settings [data-toggle=form_reset]').on('click', function() {
+        $('#sendmail-settings')[0].reset();
+        $('#sendmail-settings [name=mailer_mode][value=' + $('#sendmail-settings').data('mailer-mode-default') + ']').trigger('change');
+    });
+
+    // Lưu và test gửi mail
+    $('#sendmail-settings [data-toggle=smtp_test]').on('click', function() {
+        var that = $('#sendmail-settings'),
+            url = that.attr('action'),
+            checkss = $('[name=checkss]', that).val(),
+            data = that.serialize();
+        $('input,button,textarea', that).prop('disabled', true);
+        $.ajax({
+            type: 'POST',
+            cache: !1,
+            url: url,
+            data: data,
+            dataType: "json",
+            success: function(result) {
+                if (result.status == 'error') {
+                    $('input,button,textarea', that).prop('disabled', false);
+                    nvToast(result.mess, 'error');
+                    if (result.input) {
+                        if ($('[name^=' + result.input + ']', that).length) {
+                            $('[name^=' + result.input + ']', that).focus();
+                        }
+                    }
+                    return;
+                }
+                if (result.status == 'OK') {
+                    $.ajax({
+                        type: 'POST',
+                        cache: !1,
+                        url: url,
+                        data: 'submittest=1&checkss=' + checkss,
+                        timeout: 3E4
+                    }).done(function(e) {
+                        nvToast(e, 'info');
+                        $('input,button,textarea', that).prop('disabled', false)
+                    }).fail(function(jqXHR, textStatus) {
+                        console.log(jqXHR, textStatus);
+                        if (textStatus === 'timeout') {
+                            $('input,button,textarea', that).prop('disabled', false);
+                            nvToast('Failed from timeout', 'error');
+                        }
+                    });
+                    return;
+                }
+                nvToast('Unknow respon data!', 'error');
+            },
+            error: function(xhr, text, err) {
+                $('input,button,textarea', that).prop('disabled', false);
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        })
+    });
+
+    // Xử lý form khi thay đổi chế độ gửi mail
+    $("#sendmail-settings [name=mailer_mode]").on('change', function() {
+        var type = $(this).val();
+        if (type == "smtp") {
+            if (!$('#ctn_mailer_mode_smtp').is(':visible')) {
+                $('#ctn_mailer_mode_smtp').hide().removeClass('d-none').slideDown();
+            }
+        } else {
+            $('#ctn_mailer_mode_smtp').slideUp(function() {
+                $(this).addClass('d-none');
+            });
+        }
+    });
+
+    // Lấy danh sách DKIM qua ajax
+    function dkim_list_load() {
+        let html = trim($('#dkim_list').html());
+        if (html == '') {
+            $('#dkim_list').html('<div class="accordion-body"><i class="fa-solid fa-spinner fa-spin-pulse"></i></div>');
+        } else {
+            $('#dkim_list').css({
+                opacity: 0.5
+            });
+        }
+        $.ajax({
+            type: 'POST',
+            cache: !1,
+            url: $('#dkimaddForm').attr('action'),
+            data: 'dkimlist=1',
+            success: function(data) {
+                $('#dkim_list').html(data);
+                $('#collapse-dkim').attr('data-loaded', 'true');
+                $('#dkim_list').css({
+                    opacity: 1
+                });
+            },
+            error: function(xhr, text, err) {
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    }
+
+    // Submit form thêm chữ kí số miền gửi thư
+    $("#dkimaddForm").on('submit', function(e) {
+        e.preventDefault();
+        var that = $(this),
+            domain = $('[name=domain]', that).val();
+        if ('' == domain) {
+            $('[name=domain]', that).focus();
+            return !1
+        }
+        var data = that.serialize();
+        $('input, button', that).prop('disabled', true);
+        $.ajax({
+            url: that.attr('action'),
+            type: 'POST',
+            data: data,
+            cache: false,
+            dataType: "json"
+        }).done(function(a) {
+            $('input, button', that).prop('disabled', false);
+            $('[name=domain]', that).val('');
+            if ('error' == a.status) {
+                nvToast(a.mess, 'error');
+            } else if ('OK' == a.status) {
+                dkim_list_load();
+                var myLdBtn = setInterval(function() {
+                    if ($('#dkim_list [data-toggle="dkim_read"][data-domain="' + domain + '"]').length) {
+                        clearInterval(myLdBtn);
+                        $('#dkim_list [data-toggle="dkim_read"][data-domain="' + domain + '"]').trigger('click');
+                    }
+                }, 500);
+            }
+        }).fail(function(xhr, text, err) {
+            $('input, button', that).prop('disabled', false);
+            nvToast(err, 'error');
+            console.log(xhr, text, err);
+        });
+    });
+
+    // Lấy danh sách DKIM khi mở ra
+    $('#collapse-dkim').on('show.bs.collapse', function() {
+        if ($(this).attr('data-loaded') === 'false') {
+            dkim_list_load();
+        }
+    });
+
+    // Đọc DKIM
+    $('body').on('click', '[data-toggle=dkim_read]', function() {
+        let btn = $(this);
+        let icon = $('.ico', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        $.ajax({
+            type: 'POST',
+            cache: false,
+            url: $('#dkimaddForm').attr('action'),
+            data: {
+                'dkimread': 1,
+                'domain': btn.data('domain')
+            },
+            success: function(data) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                $('#sign-read .modal-title').text(btn.data('domain'));
+                $('#sign-read .modal-body').html(data);
+                bootstrap.Modal.getOrCreateInstance('#sign-read').show();
+
+                let cpele = $('[data-toggle=clipboard]', $('#sign-read'));
+                if (cpele.length && ClipboardJS) {
+                    cpele.each(function() {
+                        var clipboard = new ClipboardJS(this);
+                        clipboard.on('success', function(e) {
+                            nvToast($(e.trigger).data('title'), 'success');
+                        });
+                    });
+                }
+            },
+            error: function(xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
+
+    // Xóa DKIM
+    $('body').on('click', '[data-toggle=dkimdel]', function(e) {
+        e.preventDefault();
+        let item = $(this).closest('.item');
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(item.data('confirm'), () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                url: $('#dkimaddForm').attr('action'),
+                data: {
+                    'dkimdel': 1,
+                    'domain': item.data('domain')
+                },
+                success: function() {
+                    bootstrap.Modal.getOrCreateInstance('#sign-read').hide();
+                    dkim_list_load();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
+
+    // Chứng thực DKIM
+    $('body').on('click', '[data-toggle=dkimverify]', function() {
+        var that = $(this),
+            item = that.closest('.item');
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        $.ajax({
+            type: 'POST',
+            cache: false,
+            url: $('#dkimaddForm').attr('action'),
+            data: {
+                'dkimverify': 1,
+                'domain': item.data('domain')
+            },
+            dataType: "json",
+            success: function(a) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                if ('OK' != a.status) {
+                    nvToast(a.mess, 'error');
+                    return;
+                }
+                nvToast(a.mess, 'success');
+                setTimeout(() => {
+                    bootstrap.Modal.getOrCreateInstance('#sign-read').hide();
+                    dkim_list_load();
+                }, 1500);
+            },
+            error: function(xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
+
+    // Đóng mở form khai báo chứng chỉ S/MIME
+    $('[data-toggle=cert_other_add_show]').on('click', function() {
+        if ($('#certOtherAddForm').is(':visible')) {
+            $('#certOtherAddForm').slideUp(function() {
+                $(this).addClass('d-none');
+            });
+        } else {
+            $('#certOtherAddForm').hide().removeClass('d-none').slideDown();
+        }
+    });
+
+    // List chứng chỉ S/MIME qua ajax
+    function cert_list_load() {
+        let html = trim($('#cert_list').html());
+        if (html == '') {
+            $('#cert_list').html('<div class="accordion-body"><i class="fa-solid fa-spinner fa-spin-pulse"></i></div>');
+        } else {
+            $('#cert_list').css({
+                opacity: 0.5
+            });
+        }
+        $.ajax({
+            type: 'POST',
+            cache: !1,
+            url: $('#certAddForm').attr('action'),
+            data: 'certlist=1',
+            success: function(data) {
+                $('#cert_list').html(data);
+                $('#collapse-cert').attr('data-loaded', 'true');
+                $('#cert_list').css({
+                    opacity: 1
+                });
+            },
+            error: function(xhr, text, err) {
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    }
+
+    // Upload tệp chứng chỉ S/MIME
+    $("#certAddForm").on('submit', function(e) {
+        e.preventDefault();
+        var data = new FormData(this),
+            th = $(this);
+        if ('' == $('[name=pkcs12]', th).val()) {
+            return !1
+        }
+        $('input, button', th).prop('disabled', true);
+        $.ajax({
+            url: th.attr('action'),
+            type: 'POST',
+            data: data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            dataType: "json"
+        }).done(function(a) {
+            $('input, button', th).prop('disabled', false);
+            if ('error' == a.status) {
+                nvToast(a.mess, 'error');
+            } else if ('overwrite' == a.status) {
+                nvConfirm(a.mess, () => {
+                    $('[name=overwrite]', th).val('1');
+                    th.submit();
+                });
+            } else {
+                $('[type=file]', th).val('');
+                $('[name=overwrite]', th).val('0');
+                $('[name=passphrase]', th).val('');
+                cert_list_load();
+            }
+        }).fail(function(xhr, text, err) {
+            $('input, button', th).prop('disabled', false);
+            nvToast(err, 'error');
+            console.log(xhr, text, err);
+        });
+    });
+
+    // Lấy danh sách S/MIME lần đầu
+    $('#collapse-cert').on('show.bs.collapse', function() {
+        if ($(this).attr('data-loaded') === 'false') {
+            cert_list_load();
+        }
+    });
+
+    // Hiển thị thông tin S/MIME
+    $('body').on('click', '[data-toggle=cert_read]', function() {
+        let btn = $(this);
+        let icon = $('.ico', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        $.ajax({
+            type: 'POST',
+            cache: false,
+            url: $('#certAddForm').attr('action'),
+            data: {
+                'smimeread': 1,
+                'email': btn.data('email')
+            },
+            success: function(data) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                $('#sign-read .modal-title').text(btn.data('email'));
+                $('#sign-read .modal-body').html(data);
+                bootstrap.Modal.getOrCreateInstance('#sign-read').show();
+            },
+            error: function(xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
+
+    // Tải về S/MIME
+    $('body').on('click', '[data-toggle=smimedownload]', function() {
+        var form = $(this).closest('form'),
+            passphrase = prompt(form.data('prompt'), "");
+        if (passphrase != null && passphrase != '') {
+            $('[name=passphrase]', form).val(passphrase);
+            form.trigger('submit');
+        }
+    });
+
+    // Xóa S/MIME
+    $('body').on('click', '[data-toggle=smimedel]', function(e) {
+        e.preventDefault();
+        let form = $(this).closest('form');
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(form.data('confirm'), () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                url: form.attr('action'),
+                data: {
+                    'smimedel': 1,
+                    'email': form.data('email')
+                },
+                success: function() {
+                    bootstrap.Modal.getOrCreateInstance('#sign-read').hide();
+                    cert_list_load();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            })
+        });
+    });
+
+    // Thêm S/MIME qua ajax
+    $('#certOtherAddForm').on('submit', function(e) {
+        e.preventDefault();
+        var th = $(this),
+            data = th.serialize();
+        $('input, button, textarea', th).prop('disabled', true);
+        $.ajax({
+            url: th.attr('action'),
+            type: 'POST',
+            data: data,
+            cache: false,
+            dataType: "json"
+        }).done(function(a) {
+            $('input, button, textarea', th).prop('disabled', false);
+            if ('error' == a.status) {
+                nvToast(a.mess, 'error');
+            } else if ('overwrite' == a.status) {
+                nvConfirm(a.mess, () => {
+                    $('[name=overwrite]', th).val('1');
+                    th.submit();
+                });
+            } else {
+                $('textarea', th).val('');
+                $('[name=overwrite]', th).val('0');
+                th.slideUp(function() {
+                    $(this).addClass('d-none');
+                    cert_list_load();
+                });
+            }
+        }).fail(function(xhr, text, err) {
+            $('input, button, textarea', th).prop('disabled', false);
+            nvToast(err, 'error');
+            console.log(xhr, text, err);
+        });
     });
 });
