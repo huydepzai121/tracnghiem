@@ -119,21 +119,21 @@ $(function() {
         }, 500);
 
         // Cập nhật lại kiểm tra phiên bản hệ thống
-        $("body").delegate("#sysUpdRefresh", "click", function(e) {
+        $("body").on("click", "#sysUpdRefresh", function(e) {
             e.preventDefault();
             $('#sysUpd').html($('#upLoader').html()).removeClass('d-none');
             checkUpdateSys(true);
         });
 
         // Cập nhật lại kiểm tra phiên bản ứng dụng
-        $("body").delegate("#extUpdRefresh", "click", function(e) {
+        $("body").on("click", "#extUpdRefresh", function(e) {
             e.preventDefault();
             $('#extUpd').html($('#upLoader').html()).removeClass('d-none');
             checkUpdateExt(true);
         });
 
         // Xem chi tiết thông tin check update ứng dụng
-        $('body').delegate('[data-toggle="viewUpExtInfo"]', 'click', function(e) {
+        $('body').on('click', '[data-toggle="viewUpExtInfo"]', function(e) {
             e.preventDefault();
             let ctn = $(this).closest('tr');
             let ocElement = $('#offcanvasUpExtDetail');
@@ -163,7 +163,7 @@ $(function() {
         }, 500);
 
         // Xử lý các link thông qua ajax
-        getupCtn.delegate('a', 'click', function(e) {
+        getupCtn.on('click', 'a', function(e) {
             if ($(this).closest('.alert-danger').length || $(this).is('[data-toggle="autolink"]')) {
                 return;
             }

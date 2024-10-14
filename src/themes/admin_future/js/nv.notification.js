@@ -132,7 +132,7 @@ $(function() {
     });
 
     // Đánh dấu đã đọc, chưa đọc
-    $(ctn).delegate('.noti-toggle', 'click', function(e) {
+    $(ctn).on('click', '.noti-toggle', function(e) {
         e.preventDefault();
         var $this = $(this);
         var icon = $('i', $(this));
@@ -184,7 +184,7 @@ $(function() {
     });
 
     // Xóa thông báo
-    $(ctn).delegate('.noti-delete', 'click', function(e) {
+    $(ctn).on('click', '.noti-delete', function(e) {
         e.preventDefault();
         var icon = $('i', $(this));
         var noti = $(this).parent().parent();
@@ -236,7 +236,7 @@ $(function() {
      * Đánh dấu thông báo đó là đã đọc rồi chuyển hướng
      * Nếu đã đọc thì không xử lý gì
      */
-    $(ctn).delegate('.noti-item', 'click', function(e) {
+    $(ctn).on('click', '.noti-item', function(e) {
         var $this = $(this), noti = $this.parent();
         if (noti.is('.notification-unread')) {
             e.preventDefault();

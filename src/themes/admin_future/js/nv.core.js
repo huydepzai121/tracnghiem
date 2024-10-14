@@ -805,7 +805,7 @@ $(function() {
     });
 
     // Select File
-    $('body').delegate('[data-toggle=selectfile]', 'click', function(e) {
+    $('body').on('click', '[data-toggle=selectfile]', function(e) {
         e.preventDefault();
         var area = $(this).data('target'),
             alt = $(this).data('alt'),

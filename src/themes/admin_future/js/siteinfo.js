@@ -102,7 +102,7 @@ $(function() {
     });
 
     // Xóa widget
-    $(document).delegate('[data-toggle="widgetDelete"]', 'click', function(e) {
+    $(document).on('click', '[data-toggle="widgetDelete"]', function(e) {
         e.preventDefault();
         let $this = $(this);
         if (widgetCtn.data('busy')) {
@@ -138,7 +138,7 @@ $(function() {
     });
 
     // Thêm khối con
-    $(document).delegate('[data-toggle="widgetAddChild"]', 'click', function(e) {
+    $(document).on('click', '[data-toggle="widgetAddChild"]', function(e) {
         e.preventDefault();
         let $this = $(this);
         if (widgetCtn.data('busy')) {
@@ -174,7 +174,7 @@ $(function() {
     });
 
     // Chỉnh kích thước khối
-    $(document).delegate('[data-toggle="widgetResize"]', 'change', function() {
+    $(document).on('change', '[data-toggle="widgetResize"]', function() {
         let $this = $(this);
         if (widgetCtn.data('busy')) {
             return;
@@ -243,7 +243,7 @@ $(function() {
             });
         });
     }
-    $(document).delegate('[data-toggle="widgetChoose"]', 'click', function(e) {
+    $(document).on('click', '[data-toggle="widgetChoose"]', function(e) {
         e.preventDefault();
         let $this = $(this);
 
@@ -252,7 +252,7 @@ $(function() {
 
         mdChooseWidgetBs.show();
     });
-    $(document).delegate('[data-toggle="setWidget"]', 'click', function(e) {
+    $(document).on('click', '[data-toggle="setWidget"]', function(e) {
         e.preventDefault();
         let $this = $(this);
         let icon = $('i', $this);

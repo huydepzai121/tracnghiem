@@ -209,7 +209,7 @@ $(function() {
     }
 
     // Khôi phục lại lịch sử
-    $(document).delegate('[data-toggle="restoreHistory"]', 'click', function(e) {
+    $(document).on('click', '[data-toggle="restoreHistory"]', function(e) {
         e.preventDefault();
         let btn = $(this);
         let icon = $('i', btn);
@@ -460,7 +460,7 @@ $(function() {
             });
         });
 
-        mdTagLinks.delegate('[data-toggle="tag_keyword_edit"]', 'click', function(e) {
+        mdTagLinks.on('click', '[data-toggle="tag_keyword_edit"]', function(e) {
             e.preventDefault();
 
             let item = $('[data-item="' + $(this).data('id') + '"]', mdTagLinks);
@@ -468,7 +468,7 @@ $(function() {
             $('.edit-keywords', item).removeClass('d-none');
         });
 
-        mdTagLinks.delegate('[data-toggle="tag_keyword_close"]', 'click', function(e) {
+        mdTagLinks.on('click', '[data-toggle="tag_keyword_close"]', function(e) {
             e.preventDefault();
 
             let item = $('[data-item="' + $(this).data('id') + '"]', mdTagLinks);
@@ -476,7 +476,7 @@ $(function() {
             $('.edit-keywords', item).addClass('d-none');
         });
 
-        mdTagLinks.delegate('[data-toggle="keyword_change"]', 'click', function(e) {
+        mdTagLinks.on('click', '[data-toggle="keyword_change"]', function(e) {
             e.preventDefault();
             let btn = $(this);
             let icon = $('i', btn);
@@ -516,7 +516,7 @@ $(function() {
             });
         });
 
-        mdTagLinks.delegate('[data-toggle=tags_id_check_del]', 'click', function(e) {
+        mdTagLinks.on('click', '[data-toggle=tags_id_check_del]', function(e) {
             e.preventDefault();
 
             let btn = $(this);

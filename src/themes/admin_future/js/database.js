@@ -193,7 +193,7 @@ $(function() {
             }
         });
 
-        eleDbTbls.delegate('[data-toggle="formDbTbls"]', 'submit', function(e) {
+        eleDbTbls.on('submit', '[data-toggle="formDbTbls"]', function(e) {
             let form = $(this);
             let btn = $('[data-toggle="actionDbTbls"]', form);
             let icon = $('i', btn);
@@ -239,7 +239,7 @@ $(function() {
             }
         });
 
-        eleDbTbls.delegate('[data-toggle="acOp"]', 'change', function() {
+        eleDbTbls.on('change', '[data-toggle="acOp"]', function() {
             let bl = $(this).val() == 'optimize';
             $('[data-toggle="acType"]', eleDbTbls).prop('disabled', bl);
             $('[data-toggle="acExt"]', eleDbTbls).prop('disabled', bl);

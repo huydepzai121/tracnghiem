@@ -157,6 +157,10 @@
     .fw-#{$i * 25} {
         width: #{$i * 25}px!important;
     }
+
+    .maxw-#{$i * 25} {
+        max-width: #{$i * 25}px!important;
+    }
 }
 
 // Block ellipsis: Chú ý class này chỉ dùng khi không thiết lập font-size, line-height mà dùng mặc định của body
@@ -202,5 +206,13 @@
 .list-group-striped {
     >.list-group-item:nth-of-type(odd) {
         background-color: var(--bs-tertiary-bg);
+    }
+}
+
+$sm-breakpoint: map-get($grid-breakpoints, sm) - 0.02px;
+@media (max-width: #{$sm-breakpoint}) {
+    .py-only-sm-0 {
+        padding-top: 0;
+        padding-bottom: 0;
     }
 }

@@ -235,7 +235,7 @@ $(function() {
         }, 500);
 
         // Giải nén gói cập nhật
-        $(document).delegate('[data-toggle="updateExtUnzip"] a', 'click', function(e) {
+        $(document).on('click', '[data-toggle="updateExtUnzip"] a', function(e) {
             e.preventDefault();
             getUpCtn.html($('#getUpdLoader').html()).removeClass('d-none');
             $.ajax({
