@@ -14,6 +14,7 @@ if (!defined('NV_ADMIN') or !defined('NV_MAINFILE') or !defined('NV_IS_MODADMIN'
 }
 
 $page_url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op;
+$page_title = $nv_Lang->getModule('security');
 
 $proxy_blocker_list = [
     0 => $nv_Lang->getModule('proxy_blocker_0'),
@@ -244,7 +245,8 @@ if (defined('NV_IS_GODADMIN') and $nv_Request->isset_request('basicsave', 'post'
     nv_save_file_config_global();
 
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
@@ -273,11 +275,21 @@ if (defined('NV_IS_GODADMIN') and $nv_Request->isset_request('floodsave', 'post'
     nv_save_file_config_global();
 
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
-//Thêm/sửa IP
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/security.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->registerPlugin('modifier', 'str_contains', 'str_contains');
+$tpl->registerPlugin('modifier', 'str_pad', 'str_pad');
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+// Thêm/sửa IP
 $action = $nv_Request->get_title('action', 'get', '');
 if (defined('NV_IS_GODADMIN') and ($action == 'fip' or $action == 'bip')) {
     $page_url .= '&amp;action=' . $action;
@@ -300,7 +312,8 @@ if (defined('NV_IS_GODADMIN') and ($action == 'fip' or $action == 'bip')) {
             'area' => 0,
             'begintime' => 0,
             'endtime' => 0,
-            'notice' => ''
+            'notice' => '',
+            'ip' => '',
         ];
         $version = 4;
     }
@@ -409,92 +422,24 @@ if (defined('NV_IS_GODADMIN') and ($action == 'fip' or $action == 'bip')) {
         $endmin = 59;
     }
 
-    $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    $xtpl->assign('FORM_ACTION', $page_url);
-    $xtpl->assign('DATA', $ipdetails);
-    $xtpl->assign('CHECKSS', $checkss);
+    $tpl->assign('CHECKSS', $checkss);
+    $tpl->assign('IPTYPES', $iptypes);
+    $tpl->assign('VERSION', $version);
+    $tpl->assign('DATA', $ipdetails);
+    $tpl->assign('MASK_LIST', $ipv4_mask_list);
+    $tpl->assign('BEGINHOUR', $beginhour);
+    $tpl->assign('BEGINMIN', $beginmin);
+    $tpl->assign('ENDHOUR', $endhour);
+    $tpl->assign('ENDMIN', $endmin);
+    $tpl->assign('FORM_TYPE', $type);
+    $tpl->assign('AREA_LIST', $banip_area_list);
+    $tpl->assign('FORM_ACTION', $page_url);
 
-    foreach ($iptypes as $key => $value) {
-        $xtpl->assign('IP_VERSION', [
-            'key' => $key,
-            'title' => $value,
-            'sel' => ($key == $version) ? ' selected="selected"' : ''
-        ]);
-        $xtpl->parse('ip_action.version');
-    }
+    $contents = $tpl->fetch('security-ip-form.tpl');
 
-    foreach ($ipv4_mask_list as $key => $value) {
-        $xtpl->assign('MASK', [
-            'val' => $key,
-            'title' => $value,
-            'ver' => 4,
-            'selected' => ($version == 4 and $key == $ipdetails['mask']) ? ' selected="selected"' : '',
-            'disabled' => $version == 4 ? '' : ' disabled="disabled" style="display:none"'
-        ]);
-        $xtpl->parse('ip_action.mask');
-    }
-
-    for ($i = 0; $i < 128; ++$i) {
-        $key = 128 - $i;
-        $xtpl->assign('MASK', [
-            'val' => $key,
-            'title' => '/' . $key,
-            'ver' => 6,
-            'selected' => ($version == 6 and $key == $ipdetails['mask']) ? ' selected="selected"' : '',
-            'disabled' => $version == 6 ? '' : ' disabled="disabled" style="display:none"'
-        ]);
-        $xtpl->parse('ip_action.mask');
-    }
-
-    if ($type == 0) {
-        foreach ($banip_area_list as $key => $value) {
-            $xtpl->assign('AREA', [
-                'val' => $key,
-                'title' => $value,
-                'sel' => ($key == $ipdetails['area']) ? ' selected="selected"' : ''
-            ]);
-            $xtpl->parse('ip_action.is_area.area');
-        }
-        $xtpl->parse('ip_action.is_area');
-    }
-
-    for ($i = 0; $i < 24; ++$i) {
-        $xtpl->assign('BEGIN_HOUR', [
-            'val' => $i,
-            'title' => str_pad($i, 2, '0', STR_PAD_LEFT),
-            'sel' => ($i == $beginhour) ? ' selected="selected"' : ''
-        ]);
-        $xtpl->parse('ip_action.beginhour');
-
-        $xtpl->assign('END_HOUR', [
-            'val' => $i,
-            'title' => str_pad($i, 2, '0', STR_PAD_LEFT),
-            'sel' => ($i == $endhour) ? ' selected="selected"' : ''
-        ]);
-        $xtpl->parse('ip_action.endhour');
-    }
-
-    for ($i = 0; $i < 60; ++$i) {
-        $xtpl->assign('BEGIN_MIN', [
-            'val' => $i,
-            'title' => str_pad($i, 2, '0', STR_PAD_LEFT),
-            'sel' => ($i == $beginmin) ? ' selected="selected"' : ''
-        ]);
-        $xtpl->parse('ip_action.beginmin');
-
-        $xtpl->assign('END_MIN', [
-            'val' => $i,
-            'title' => str_pad($i, 2, '0', STR_PAD_LEFT),
-            'sel' => ($i == $endmin) ? ' selected="selected"' : ''
-        ]);
-        $xtpl->parse('ip_action.endmin');
-    }
-
-    $xtpl->parse('ip_action');
-    $contents = $xtpl->text('ip_action');
-    nv_htmlOutput($contents);
+    include NV_ROOTDIR . '/includes/header.php';
+    echo $contents;
+    include NV_ROOTDIR . '/includes/footer.php';
 }
 
 // Xóa IP
@@ -527,18 +472,13 @@ if (defined('NV_IS_GODADMIN') and ($action == 'fiplist' or $action == 'biplist')
     $type = $action == 'fiplist' ? 1 : 0;
     $iplist = get_list_ips($type);
 
-    $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    if (!empty($iplist)) {
-        foreach ($iplist as $ip_details) {
-            $xtpl->assign('ROW', $ip_details);
-            $xtpl->parse('iplist.loop');
-        }
-    }
-    $xtpl->parse('iplist');
-    $contents = $xtpl->text('iplist');
-    nv_htmlOutput($contents);
+    $tpl->assign('IPS', $iplist);
+
+    $contents = $tpl->fetch('security-ips.tpl');
+
+    include NV_ROOTDIR . '/includes/header.php';
+    echo $contents;
+    include NV_ROOTDIR . '/includes/footer.php';
 }
 
 // Cấu hình captcha chung
@@ -580,7 +520,8 @@ if (defined('NV_IS_GODADMIN') and $nv_Request->isset_request('captchasave', 'pos
     nv_save_file_config_global();
 
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
@@ -613,7 +554,8 @@ if (defined('NV_IS_GODADMIN') and $nv_Request->isset_request('modcapt', 'post') 
     $nv_Cache->delMod('settings');
 
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
@@ -628,7 +570,8 @@ if (defined('NV_IS_GODADMIN') and $nv_Request->isset_request('captarea', 'post')
     $nv_Cache->delMod('settings');
 
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
@@ -647,7 +590,8 @@ if (defined('NV_IS_GODADMIN') and $nv_Request->isset_request('captcommarea', 'po
     $nv_Cache->delMod('settings');
 
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
@@ -738,7 +682,8 @@ if (defined('NV_IS_GODADMIN') and $nv_Request->isset_request('corssave', 'post')
     nv_save_file_config_global();
 
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
@@ -781,7 +726,8 @@ if ($nv_Request->isset_request('cspsave', 'post') and $checkss == $nv_Request->g
     $nv_Cache->delMod('settings');
 
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
@@ -813,7 +759,8 @@ if ($nv_Request->isset_request('rpsave', 'post') and $checkss == $nv_Request->ge
     $nv_Cache->delMod('settings');
 
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
@@ -884,7 +831,8 @@ if ($nv_Request->isset_request('ppsave', 'post') and $checkss == $nv_Request->ge
     $nv_Cache->delMod('settings');
 
     nv_jsonOutput([
-        'status' => 'OK'
+        'status' => 'OK',
+        'mess' => $nv_Lang->getGlobal('save_success')
     ]);
 }
 
@@ -988,248 +936,54 @@ foreach ($_directives as $_dvs) {
 }
 unset($_directives);
 
-$xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-$xtpl->assign('SELECTEDTAB', $selectedtab);
-$xtpl->assign('CHECKSS', $checkss);
+empty($global_config_list['end_url_variables']) && $global_config_list['end_url_variables'][] = [];
 
-for ($i = 0; $i <= $max_tab; ++$i) {
-    $xtpl->assign('TAB' . $i . '_ACTIVE', $i == $selectedtab ? ' active' : '');
-    $xtpl->assign('TAB' . $i . '_SEL', $i == $selectedtab ? ' selected="selected"' : '');
-}
+$tpl->assign('SELECTEDTAB', $selectedtab);
+$tpl->assign('CHECKSS', $checkss);
+$tpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
+$tpl->assign('GDATA', $global_config_list);
+$tpl->assign('DDATA', $define_config_list);
+$tpl->assign('FDATA', $flood_config_list);
+$tpl->assign('DATA', $global_config);
+
+$passshow_button_opts = [$nv_Lang->getModule('passshow_button_0'), $nv_Lang->getModule('passshow_button_1'), $nv_Lang->getModule('passshow_button_2'), $nv_Lang->getModule('passshow_button_3')];
+$tpl->assign('PASSSHOW_BUTTON_OPTS', $passshow_button_opts);
+$tpl->assign('ADMIN_2STEP_PROVIDERS', $admin_2step_providers);
+$tpl->assign('PROXY_BLOCKER_LIST', $proxy_blocker_list);
+
+$uri_check_values = [
+    'page' => $nv_Lang->getModule('request_uri_check_page'),
+    'not' => $nv_Lang->getModule('request_uri_check_not'),
+    'path' => $nv_Lang->getModule('request_uri_check_path'),
+    'query' => $nv_Lang->getModule('request_uri_check_query'),
+    'abs' => $nv_Lang->getModule('request_uri_check_abs')
+];
+$tpl->assign('URI_CHECK_VALUES', $uri_check_values);
+$tpl->assign('RECAPTCHA_VERS', $recaptcha_vers);
+$tpl->assign('RECAPTCHA_TYPE_LIST', $recaptcha_type_list);
+$tpl->assign('SITE_MODS', $site_mods);
+$tpl->assign('MODULE_CONFIG', $module_config);
+$tpl->assign('CAPTCHA_OPTS', $captcha_opts);
+$tpl->assign('CAPTCHA_AREA_LIST', $captcha_area_list);
+$tpl->assign('CAPTCHA_COMM_LIST', $captcha_comm_list);
 
 if (defined('NV_IS_GODADMIN')) {
-    $xtpl->assign('ADD_FLOODIP_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&action=fip');
-    $xtpl->assign('DEL_FLOODIP_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&action=delfip');
-    $xtpl->assign('ADD_BANIP_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&action=bip');
-    $xtpl->assign('DEL_BANIP_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&action=delbip');
-
-    $xtpl->parse('main.sys_tabs');
-    $xtpl->parse('main.sys_tabs2');
-
-    $cross_config_list['crosssite_restrict'] = empty($cross_config_list['crosssite_restrict']) ? '' : ' checked="checked"';
-    $cross_config_list['crosssite_options'] = empty($cross_config_list['crosssite_restrict']) ? '' : ' in';
-    $cross_config_list['crossadmin_restrict'] = empty($cross_config_list['crossadmin_restrict']) ? '' : ' checked="checked"';
-    $cross_config_list['crossadmin_options'] = empty($cross_config_list['crossadmin_restrict']) ? '' : ' in';
-    $cross_config_list['allow_null_origin'] = empty($cross_config_list['allow_null_origin']) ? '' : ' checked="checked"';
-    $cross_config_list['auto_acao'] = empty($cross_config_list['auto_acao']) ? '' : ' checked="checked"';
-
-    $xtpl->assign('CONFIG_CROSS', $cross_config_list);
-
-    $xtpl->assign('IS_FLOOD_BLOCKER', ($flood_config_list['is_flood_blocker']) ? ' checked="checked"' : '');
-    $xtpl->assign('MAX_REQUESTS_60', $flood_config_list['max_requests_60']);
-    $xtpl->assign('MAX_REQUESTS_300', $flood_config_list['max_requests_300']);
-
-    $xtpl->assign('ANTI_AGENT', $define_config_list['nv_anti_agent'] ? ' checked="checked"' : '');
-    foreach ($proxy_blocker_list as $proxy_blocker_i => $proxy_blocker_v) {
-        $xtpl->assign('PROXYSELECTED', ($global_config_list['proxy_blocker'] == $proxy_blocker_i) ? ' selected="selected"' : '');
-        $xtpl->assign('PROXYOP', $proxy_blocker_i);
-        $xtpl->assign('PROXYVALUE', $proxy_blocker_v);
-        $xtpl->parse('main.sys_contents.proxy_blocker');
-    }
-    $xtpl->assign('REFERER_BLOCKER', ($global_config_list['str_referer_blocker']) ? ' checked="checked"' : '');
-    $xtpl->assign('ANTI_IFRAME', $define_config_list['nv_anti_iframe'] ? ' checked="checked"' : '');
-
-    $xtpl->assign('IS_LOGIN_BLOCKER', ($global_config_list['is_login_blocker']) ? ' checked="checked"' : '');
-    $xtpl->assign('DOMAINS_RESTRICT', ($global_config_list['domains_restrict']) ? ' checked="checked"' : '');
-    $xtpl->assign('XSSSANITIZE', ($global_config_list['XSSsanitize']) ? ' checked="checked"' : '');
-    $xtpl->assign('ADMIN_XSSSANITIZE', ($global_config_list['admin_XSSsanitize']) ? ' checked="checked"' : '');
-    $xtpl->assign('LOGIN_NUMBER_TRACKING', $global_config_list['login_number_tracking']);
-    $xtpl->assign('LOGIN_TIME_TRACKING', $global_config_list['login_time_tracking']);
-    $xtpl->assign('LOGIN_TIME_BAN', $global_config_list['login_time_ban']);
-    $xtpl->assign('DOMAINS_WHITELIST', $global_config_list['domains_whitelist']);
-
-    $xtpl->assign('RECAPTCHA_SITEKEY', $captcha_config_list['recaptcha_sitekey']);
-    $xtpl->assign('RECAPTCHA_SECRETKEY', $captcha_config_list['recaptcha_secretkey'] ? $crypt->decrypt($captcha_config_list['recaptcha_secretkey']) : '');
-
-    foreach ($recaptcha_type_list as $recaptcha_type_key => $recaptcha_type_title) {
-        $array = [
-            'value' => $recaptcha_type_key,
-            'select' => ($captcha_config_list['recaptcha_type'] == $recaptcha_type_key) ? ' selected="selected"' : '',
-            'text' => $recaptcha_type_title
-        ];
-        $xtpl->assign('RECAPTCHA_TYPE', $array);
-        $xtpl->parse('main.sys_contents.recaptcha_type');
-    }
-
-    foreach ($recaptcha_vers as $ver) {
-        $array = [
-            'value' => $ver,
-            'select' => ($ver == $captcha_config_list['recaptcha_ver']) ? ' selected="selected"' : ''
-        ];
-        $xtpl->assign('OPTION', $array);
-        $xtpl->parse('main.sys_contents.recaptcha_ver');
-    }
-
-    for ($i = 2; $i < 10; ++$i) {
-        $array = [
-            'value' => $i,
-            'select' => ($i == $array_define_captcha['nv_gfx_num']) ? ' selected="selected"' : '',
-            'text' => $i
-        ];
-        $xtpl->assign('OPTION', $array);
-        $xtpl->parse('main.sys_contents.nv_gfx_num');
-    }
-    $xtpl->assign('NV_GFX_WIDTH', $array_define_captcha['nv_gfx_width']);
-    $xtpl->assign('NV_GFX_HEIGHT', $array_define_captcha['nv_gfx_height']);
-    $xtpl->assign('NV_ALLOWED_HTML_TAGS', $define_config_list['nv_allowed_html_tags']);
-
-    for ($i = 0; $i <= 3; ++$i) {
-        $two_step_verification = [
-            'key' => $i,
-            'title' => $nv_Lang->getModule('two_step_verification' . $i),
-            'selected' => $i == $global_config_list['two_step_verification'] ? ' selected="selected"' : ''
-        ];
-        $xtpl->assign('TWO_STEP_VERIFICATION', $two_step_verification);
-        $xtpl->parse('main.sys_contents.two_step_verification');
-    }
-
-    foreach ($admin_2step_providers as $admin_2step) {
-        $admin_2step_opt = [
-            'key' => $admin_2step,
-            'title' => $nv_Lang->getGlobal('admin_2step_opt_' . $admin_2step),
-            'checked' => in_array($admin_2step, $global_config_list['admin_2step_opt'], true) ? ' checked="checked"' : ''
-        ];
-        $xtpl->assign('ADMIN_2STEP_OPT', $admin_2step_opt);
-
-        if ($admin_2step == 'facebook' or $admin_2step == 'google') {
-            $xtpl->assign('LINK_CONFIG', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=users&amp;' . NV_OP_VARIABLE . '=config&amp;oauth_config=' . $admin_2step);
-            $xtpl->parse('main.sys_contents.admin_2step_opt.link_config');
-        } elseif ($admin_2step == 'zalo') {
-            $xtpl->assign('LINK_CONFIG', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=zalo&amp;' . NV_OP_VARIABLE . '=settings');
-            $xtpl->parse('main.sys_contents.admin_2step_opt.link_config');
-        }
-
-        $xtpl->parse('main.sys_contents.admin_2step_opt');
-
-        $admin_2step_default = [
-            'key' => $admin_2step,
-            'title' => $nv_Lang->getGlobal('admin_2step_opt_' . $admin_2step),
-            'selected' => $global_config_list['admin_2step_default'] == $admin_2step ? ' selected="selected"' : ''
-        ];
-        $xtpl->assign('ADMIN_2STEP_DEFAULT', $admin_2step_default);
-        $xtpl->parse('main.sys_contents.admin_2step_default');
-    }
-
-    // Cấu hình hiển thị captcha cho từng module
-    foreach ($site_mods as $title => $mod) {
-        if ($title == 'users' or isset($module_config[$title]['captcha_type'])) {
-            $mod['title'] = $title;
-            $xtpl->assign('MOD', $mod);
-
-            $captcha_type = $title == 'users' ? $global_config['captcha_type'] : $module_config[$title]['captcha_type'];
-            foreach ($captcha_opts as $val) {
-                $xtpl->assign('OPT', [
-                    'val' => $val,
-                    'sel' => (!empty($captcha_type) and $captcha_type == $val) ? ' selected="selected"' : '',
-                    'title' => $nv_Lang->getModule('captcha_' . $val)
-                ]);
-                $xtpl->parse('main.sys_contents.mod.opt');
-            }
-
-            if ($captcha_type != 'recaptcha' or ($captcha_type == 'recaptcha' and !empty($global_config['recaptcha_sitekey']) and !empty($global_config['recaptcha_secretkey']))) {
-                $xtpl->parse('main.sys_contents.mod.dnone');
-            }
-            $xtpl->parse('main.sys_contents.mod');
-        }
-    }
-
-    // Khu vực sử dụng captcha của module Thành viên
-    foreach ($captcha_area_list as $area) {
-        $captcha_area = [
-            'key' => $area,
-            'checked' => str_contains($global_config['captcha_area'], $area) ? ' checked="checked"' : '',
-            'title' => $nv_Lang->getModule('captcha_area_' . $area)
-        ];
-        $xtpl->assign('CAPTCHAAREA', $captcha_area);
-        $xtpl->parse('main.sys_contents.captcha_area');
-    }
-
-    // Đối tượng áp dụng captcha khi tham gia Bình luận
-    foreach ($captcha_comm_list as $i => $title_i) {
-        $xtpl->assign('OPTALL', [
-            'val' => $i,
-            'title' => $title_i
-        ]);
-        $xtpl->parse('main.sys_contents.optAll');
-    }
-
-    foreach ($site_mods as $title => $mod) {
-        if (isset($module_config[$title]['captcha_area_comm'], $module_config[$title]['activecomm'])) {
-            $mod['title'] = $title;
-            $xtpl->assign('MOD', $mod);
-
-            foreach ($captcha_comm_list as $i => $title_i) {
-                $xtpl->assign('OPT', [
-                    'val' => $i,
-                    'title' => $title_i,
-                    'sel' => $i == $module_config[$title]['captcha_area_comm'] ? ' selected="selected"' : ''
-                ]);
-                $xtpl->parse('main.sys_contents.modcomm.opt');
-            }
-            $xtpl->parse('main.sys_contents.modcomm');
-        }
-    }
-
-    $uri_check_values = [
-        'page' => $nv_Lang->getModule('request_uri_check_page'),
-        'not' => $nv_Lang->getModule('request_uri_check_not'),
-        'path' => $nv_Lang->getModule('request_uri_check_path'),
-        'query' => $nv_Lang->getModule('request_uri_check_query'),
-        'abs' => $nv_Lang->getModule('request_uri_check_abs')
-    ];
-    foreach ($uri_check_values as $key => $val) {
-        $xtpl->assign('URI_CHECK', [
-            'val' => $key,
-            'name' => $val,
-            'sel' => $key == $global_config_list['request_uri_check'] ? ' selected="selected"' : ''
-        ]);
-        $xtpl->parse('main.sys_contents.request_uri_check');
-    }
-
-    empty($global_config_list['end_url_variables']) && $global_config_list['end_url_variables'][] = [];
-    foreach ($global_config_list['end_url_variables'] as $key => $vals) {
-        $xtpl->assign('VAR', [
-            'parameters' => !empty($vals) ? implode(',', $vals) : '',
-            'name' => !empty($key) ? $key : '',
-            'lower_checked' => (!empty($vals) and in_array('lower', $vals, true)) ? ' checked="checked"' : '',
-            'upper_checked' => (!empty($vals) and in_array('upper', $vals, true)) ? ' checked="checked"' : '',
-            'number_checked' => (!empty($vals) and in_array('number', $vals, true)) ? ' checked="checked"' : '',
-            'dash_checked' => (!empty($vals) and in_array('dash', $vals, true)) ? ' checked="checked"' : '',
-            'under_checked' => (!empty($vals) and in_array('under', $vals, true)) ? ' checked="checked"' : '',
-            'dot_checked' => (!empty($vals) and in_array('dot', $vals, true)) ? ' checked="checked"' : '',
-            'at_checked' => (!empty($vals) and in_array('at', $vals, true)) ? ' checked="checked"' : ''
-        ]);
-        $xtpl->parse('main.sys_contents.end_url_variable');
-    }
-
-    $passshow_button_opts = [$nv_Lang->getModule('passshow_button_0'), $nv_Lang->getModule('passshow_button_1'), $nv_Lang->getModule('passshow_button_2'), $nv_Lang->getModule('passshow_button_3')];
-    foreach ($passshow_button_opts as $val => $name) {
-        $xtpl->assign('OPT', [
-            'val' => $val,
-            'sel' => $val == $global_config_list['passshow_button'] ? ' selected="selected"' : '',
-            'name' => $name
-        ]);
-        $xtpl->parse('main.sys_contents.passshow_button');
-    }
-
-    $xtpl->parse('main.sys_contents');
+    $tpl->assign('RECAPTCHA_SITEKEY', $captcha_config_list['recaptcha_sitekey']);
+    $tpl->assign('RECAPTCHA_SECRETKEY', $captcha_config_list['recaptcha_secretkey'] ? $crypt->decrypt($captcha_config_list['recaptcha_secretkey']) : '');
 }
 
-// Xử lý giao diện config CSP
-$xtpl->assign('CSP_ACT', $global_config['nv_csp_act'] ? ' checked="checked"' : '');
-$xtpl->assign('CSP_OPTIONS', $global_config['nv_csp_act'] ? ' in' : '');
+$tpl->assign('CORS', $cross_config_list);
+$tpl->assign('RP_DIRECTIVES', $rp_directives);
+
+// Xử lý sơ bộ CSP bằng PHP
+$csp_dirs = [];
 
 foreach ($csp_directives as $name => $sources) {
-    $direct = [
+    $csp_dirs[$name] = [
         'name' => $name,
-        'desc' => $nv_Lang->getModule('csp_' . $name)
+        'desc' => $nv_Lang->getModule('csp_' . $name),
+        'sources' => []
     ];
-    $xtpl->assign('DIRECTIVE', $direct);
 
     $is_none = !empty($directives[$name]['none']);
     foreach ($sources as $key => $default) {
@@ -1237,83 +991,45 @@ foreach ($csp_directives as $name => $sources) {
         if ($key == 'hosts' and !empty($directives[$name][$key])) {
             $val = is_array($directives[$name][$key]) ? implode(chr(13) . chr(10), $directives[$name][$key]) : preg_replace('/[\s]+/', chr(13) . chr(10), $directives[$name][$key]);
         }
-        $source = [
+        $csp_dirs[$name]['sources'][$key] = [
             'key' => $key,
             'val' => $val,
-            'checked' => !empty($directives[$name][$key]) ? ' checked="checked"' : '',
-            'disabled' => ($key != 'none' and $is_none) ? ' disabled' : '',
+            'checked' => !empty($directives[$name][$key]) ? 1 : 0,
+            'disabled' => ($key != 'none' and $is_none) ? 1 : 0,
             'name' => $nv_Lang->existsModule('csp_source_' . $name . '_' . $key) ? $nv_Lang->getModule('csp_source_' . $name . '_' . $key) : $nv_Lang->getModule('csp_source_' . $key)
         ];
-        $xtpl->assign('SOURCE', $source);
-        if ($key != 'hosts') {
-            $xtpl->parse('main.csp_directive.checkbox');
-        } else {
-            $xtpl->parse('main.csp_directive.input');
-        }
     }
-
-    if ($name == 'script-src') {
-        $xtpl->assign('CSP_SCRIPT_NONCE', $global_config['nv_csp_script_nonce'] ? ' checked="checked"' : '');
-        $xtpl->parse('main.csp_directive.csp_script_nonce');
-    }
-
-    $xtpl->parse('main.csp_directive');
 }
+$tpl->assign('CSP_DIRS', $csp_dirs);
 
-$xtpl->assign('RP', $global_config['nv_rp']);
-$xtpl->assign('RP_ACT', $global_config['nv_rp_act'] ? ' checked="checked"' : '');
-$xtpl->assign('RP_OPTIONS', $global_config['nv_rp_act'] ? ' in' : '');
-foreach ($rp_directives as $name => $desc) {
-    $rp_direct = [
-        'name' => $name,
-        'desc' => $desc
-    ];
-    $xtpl->assign('RP_DIRECTIVE', $rp_direct);
-    $xtpl->parse('main.rp_directive');
-}
-
-// Xử lý giao diện cho PP
-$xtpl->assign('PP_ACT', empty($global_config['nv_pp_act']) ? '' : ' checked="checked"');
-$xtpl->assign('FP_ACT', empty($global_config['nv_fp_act']) ? '' : ' checked="checked"');
-$xtpl->assign('PP_OPTIONS', (!empty($global_config['nv_pp_act']) or !empty($global_config['nv_fp_act'])) ? ' in' : '');
-
+// Xử lý sơ bộ PP bằng PHP
+$pp_dirs = [];
 foreach ($pp_directives as $name => $sources) {
-    $direct = [
+    $pp_dirs[$name] = [
         'name' => $name,
-        'desc' => $nv_Lang->getModule('pp_' . str_replace('-', '_', $name))
+        'desc' => $nv_Lang->getModule('pp_' . str_replace('-', '_', $name)),
+        'sources' => []
     ];
-    $xtpl->assign('DIRECTIVE', $direct);
 
     $value = isset($ppval_directives[$name]) ? $ppval_directives[$name] : $sources;
-
     foreach ($sources as $key => $default) {
         $val = '';
         if ($key == 'hosts' and !empty($value[$key])) {
             $val = implode("\n", $value[$key]);
         }
-        $source = [
+        $pp_dirs[$name]['sources'][$key] = [
             'key' => $key,
             'val' => $val,
             'rows' => empty($val) ? 2 : 4,
-            'checked' => !empty($value[$key]) ? ' checked="checked"' : '',
-            'disabled' => (!in_array($key, ['all', 'none', 'ignore']) and (!empty($value['all']) or !empty($value['none']) or !empty($value['ignore']))) ? ' disabled' : '',
+            'checked' => !empty($value[$key]) ? 1 : 0,
+            'disabled' => (!in_array($key, ['all', 'none', 'ignore']) and (!empty($value['all']) or !empty($value['none']) or !empty($value['ignore']))) ? 1 : 0,
             'name' => $nv_Lang->existsModule('pp_source_' . $name . '_' . $key) ? $nv_Lang->getModule('pp_source_' . $name . '_' . $key) : $nv_Lang->getModule('pp_source_' . $key)
         ];
-        $xtpl->assign('SOURCE', $source);
-        if ($key != 'hosts') {
-            $xtpl->parse('main.pp_directive.checkbox');
-        } else {
-            $xtpl->parse('main.pp_directive.input');
-        }
     }
-
-    $xtpl->parse('main.pp_directive');
 }
+$tpl->assign('PP_DIRS', $pp_dirs);
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
-
-$page_title = $nv_Lang->getModule('security');
+$contents = $tpl->fetch('security.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

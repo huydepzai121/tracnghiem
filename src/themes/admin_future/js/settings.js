@@ -304,27 +304,31 @@ $(function() {
         });
     });
 
+    // Tạo datepicker trên các thẻ input
+    function initDatepicker(element) {
+        let inMd = element.closest('.modal');
+        element.datepicker({
+            dateFormat: nv_jsdate_post.replace('yyyy', 'yy'),
+            changeMonth: true,
+            changeYear: true,
+            showOtherMonths: true,
+            showButtonPanel: true,
+            showOn: 'focus',
+            isRTL: $('html').attr('dir') == 'rtl',
+            beforeShow: (ipt, pkr) => {
+                if (inMd.length) {
+                    setTimeout(() => {
+                        pkr.dpDiv[0].style.setProperty("z-index", "9999", "important");
+                    }, 100);
+                }
+            }
+        });
+    }
+
     // Chọn ngày tháng
     if ($('.datepicker').length) {
         $('.datepicker').each(function() {
-            let pk = $(this);
-            let inMd = pk.closest('.modal');
-            pk.datepicker({
-                dateFormat: nv_jsdate_post.replace('yyyy', 'yy'),
-                changeMonth: true,
-                changeYear: true,
-                showOtherMonths: true,
-                showButtonPanel: true,
-                showOn: 'focus',
-                isRTL: $('html').attr('dir') == 'rtl',
-                beforeShow: (ipt, pkr) => {
-                    if (inMd.length) {
-                        setTimeout(() => {
-                            pkr.dpDiv[0].style.setProperty("z-index", "9999", "important");
-                        }, 100);
-                    }
-                }
-            });
+            initDatepicker($(this));
         });
     }
 
@@ -1244,6 +1248,364 @@ $(function() {
             $('input, button, textarea', th).prop('disabled', false);
             nvToast(err, 'error');
             console.log(xhr, text, err);
+        });
+    });
+
+    // Chọn tab thiết lập an ninh ở chế độ mobile
+    $('#settingSelect a').on('click', function(e) {
+        e.preventDefault();
+        let ul = $(this).closest('ul');
+        let dr = $(this).closest('.dropdown');
+        $('.active', ul).removeClass('active');
+        $('[data-toggle="dropdown-value"]', dr).text($(this).text());
+        $(this).addClass('active');
+        $('#settingTabs [aria-controls=' + $(this).data('tab') + ']')[0].click();
+    });
+
+    // Lấy danh sách IP cấm hoặc IP bỏ qua flood
+    function ip_list_load(url, type) {
+        let ele = type ? $('#noflips') : $('#banips');
+        let html = trim(ele.html());
+        if (html == '') {
+            ele.html('<li class="list-group-item"><i class="fa-solid fa-spinner fa-spin-pulse"></i></li>');
+        } else {
+            ele.css({
+                opacity: 0.5
+            });
+        }
+        $.ajax({
+            type: 'GET',
+            cache: !1,
+            url: url,
+            success: function(data) {
+                ele.html(data);
+                ele.css({
+                    opacity: 1
+                });
+            },
+            error: function(xhr, text, err) {
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        })
+    }
+
+    // Tự động load danh sách IPs nếu ở tab thiết lập an ninh tương ứng
+    if ($('[name=gselectedtab]').length) {
+        var gselectedtab = $('[name=gselectedtab]').val();
+        if (gselectedtab == '1' || gselectedtab == '3') {
+            if ($('[aria-offsets=' + gselectedtab + ']').attr('data-loaded') == 'false') {
+                $('[aria-offsets=' + gselectedtab + ']').attr('data-loaded', 'true');
+                setTimeout(() => {
+                    ip_list_load($('[aria-offsets=' + gselectedtab + ']').data('load-url'), $('[aria-offsets=' + gselectedtab + ']').data('type'));
+                }, 200);
+            }
+        }
+    }
+
+    // Xử lý khi thay đổi các tab thiết lập an ninh
+    $('#settingTabs [data-bs-toggle=pill]').on('show.bs.tab', function() {
+        let dr = $('#settingSelect');
+        $('[data-toggle="dropdown-value"]', dr).text($(this).text());
+        $('.active', dr).removeClass('active');
+        $('[data-tab="' + $(this).attr('aria-controls') + '"]', dr).addClass('active');
+        if ($(this).is('[data-loaded]')) {
+            if ($(this).attr('data-loaded') == 'false') {
+                $(this).attr('data-loaded', 'true');
+                ip_list_load($(this).data('load-url'), $(this).data('type'));
+            }
+        }
+    }).on('shown.bs.tab', function() {
+        $('[name="selectedtab"]').val($(this).attr('aria-offsets'));
+        $('[name="gselectedtab"]').val($(this).attr('aria-offsets'));
+    });
+
+    // Thêm và xóa biến được phép chèn vào cuối URL
+    $('#secForm').on('click', '.add-variable', function() {
+        var item = $(this).closest('.item'),
+            new_item = item.clone(),
+            item_id = nv_randomPassword(8);
+        $('[name^=parameters], [name^=end_url_variables]', new_item).val('');
+        $('[name^=end_url_variables]', new_item).attr('id', item_id);
+        $('.i-label', new_item).attr('for', item_id);
+        $('.parameter', new_item).prop('checked', false);
+        $('.parameter', new_item).each(function() {
+            let id = nv_randomPassword(8);
+            $(this).attr('id', id);
+            $('label', $(this).parent()).attr('for', id);
+        });
+        item.after(new_item);
+    });
+    $('#secForm').on('click', '.del-variable', function() {
+        var item = $(this).closest('.item'),
+            list = $(this).closest('.list');
+        if ($('.item', list).length > 1) {
+            item.remove();
+        } else {
+            $('[name^=parameters], [name^=end_url_variables]', item).val('');
+            $('.parameter', item).prop('checked', false);
+        }
+    });
+
+    // Thay đổi parameter các biến được phép chèn vào cuối URL
+    $('#secForm').on('change', '.parameter', function() {
+        let item = $(this).closest('.item');
+        var parameters = '';
+        $('.parameter:checked', item).each(function() {
+            parameters += $(this).val() + ','
+        });
+        if ('' != parameters) {
+            parameters = parameters.substring(0, parameters.length - 1);
+        }
+        $('[name^=parameters]', item).val(parameters);
+    });
+
+    // Chọn tất cả các module dùng captcha này
+    $('[data-toggle=selAllAs]').on('click', function() {
+        var form = $(this).closest('form');
+        $('select', form).val($(this).data('type')).trigger('change');
+    });
+
+    // Xử lý khi chọn recaptcha > cảnh báo
+    $('#captcha-general-settings [name=recaptcha_sitekey], #captcha-general-settings [name=recaptcha_secretkey]').on('change', function() {
+        $('#modcapt-settings select').trigger('change');
+    });
+    $('[name^=captcha_type]').on('change', function() {
+        var form = $('#captcha-general-settings'),
+            val = $(this).val(),
+            sitekey = $('[name=recaptcha_sitekey]', form).val(),
+            secretkey = $('[name=recaptcha_secretkey]', form).val();
+        if (val != 'recaptcha' || (val == 'recaptcha' && sitekey != '' && secretkey != '')) {
+            $(this).next().slideUp(function() {
+                $(this).addClass('d-none');
+            });
+        } else {
+            let it = $(this).next();
+            if (!it.is(':visible')) {
+                it.hide().removeClass('d-none').slideDown();
+            }
+        }
+    });
+
+    // Chọn tất cả captcha bình luận các module là
+    $('[data-toggle=selAllCaptComm]').on('click', function() {
+        var form = $(this).closest('form'),
+            val = $(this).val();
+        if (val != '-1') {
+            $('[name^=captcha_area_comm]', form).val(val);
+            $(this).val('-1');
+        }
+    });
+
+    // Bật tắt CORS
+    $('#cors-settings [name=crosssite_restrict], #cors-settings [name=crossadmin_restrict]').on('change', function() {
+        let co = bootstrap.Collapse.getOrCreateInstance($(this).closest('.item').find('.collapse')[0]);
+        if ($(this).is(':checked')) {
+            co.show();
+        } else {
+            co.hide();
+        }
+    });
+
+    // Thao tác với mã bí mật load-files
+    $('[data-toggle=seccode_create]').on('click', function() {
+        $($(this).data('target')).val(nv_randomPassword(32));
+    });
+    $('[data-toggle=seccode_remove]').on('click', function() {
+        $($(this).data('target')).val('');
+    });
+    if ($('[data-toggle=clipboard]').length && ClipboardJS) {
+        var clipboard = new ClipboardJS('[data-toggle=clipboard]');
+        clipboard.on('success', function(e) {
+            nvToast($(e.trigger).data('title'), 'success');
+        });
+    }
+
+    // Điều khiển giao diện tắt mở CSP, RP, PP
+    $('#csp-settings [name=nv_csp_act], #rp-settings [name=nv_rp_act]').on('change', function() {
+        let co = bootstrap.Collapse.getOrCreateInstance($(this).data('target'));
+        if ($(this).is(':checked')) {
+            co.show();
+        } else {
+            co.hide();
+        }
+    });
+
+    // Điều khiển giao diện tắt mở PP
+    $('#pp-settings [data-toggle="pp_act"]').on('change', function() {
+        let co = bootstrap.Collapse.getOrCreateInstance($(this).data('target'));
+        if ($('#pp-settings [data-toggle="pp_act"]:checked').length > 0) {
+            co.show();
+        } else {
+            co.hide();
+        }
+    });
+
+    // Xử lý khi chọn giá trị nguồn ở thiết lập CSP
+    $('#csp-settings [data-toggle=none]').on('click', function() {
+        if ($(this).is(':checked')) {
+            nvConfirm($(this).closest('form').data('confirm'), () => {
+                $('[name^=directives]', $(this).closest('.directive')).not('[data-toggle=none]').prop('disabled', true);
+            }, () => {
+                $(this).prop('checked', false);
+            });
+        } else {
+            $('[name^=directives]', $(this).closest('.directive')).prop('disabled', false);
+        }
+    });
+
+    // Xử lý khi chọn giá trị nguồn ở thiết lập PP
+    $('#pp-settings [data-toggle=none], #pp-settings [data-toggle=all], #pp-settings [data-toggle=ignore]').on('click', function() {
+        if ($(this).is(':checked')) {
+            let showPromt = !($('[data-toggle=none]:checked,[data-toggle=all]:checked,[data-toggle=ignore]:checked', $(this).closest('.directive')).not(this).length > 0);
+            if (showPromt) {
+                nvConfirm($(this).closest('form').data('cfnone'), () => {
+                    $('[name^=directives]', $(this).closest('.directive')).not('[data-toggle=none],[data-toggle=all],[data-toggle=ignore]').prop('disabled', true);
+                    $('[data-toggle=none],[data-toggle=all],[data-toggle=ignore]', $(this).closest('.directive')).not(this).prop('checked', false);
+                }, () => {
+                    $(this).prop('checked', false);
+                });
+            } else {
+                if ($('[data-toggle=none]:checked,[data-toggle=all]:checked,[data-toggle=ignore]:checked', $(this).closest('.directive')).not(this).length > 0) {
+                    $('[name^=directives]', $(this).closest('.directive')).not('[data-toggle=none],[data-toggle=all],[data-toggle=ignore]').prop('disabled', true);
+                    $('[data-toggle=none],[data-toggle=all],[data-toggle=ignore]', $(this).closest('.directive')).not(this).prop('checked', false);
+                } else {
+                    $(this).prop('checked', false);
+                }
+            }
+        } else {
+            $('[name^=directives]', $(this).closest('.directive')).prop('disabled', false);
+        }
+    });
+
+    // Xóa IP trong cấu hình an ninh
+    $('body').on('click', '[data-toggle=del_ip]', function() {
+        var that = $(this),
+            list = that.closest('.list');
+        let icon = $('i', that);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        nvConfirm(list.data('confirm'), () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                cache: !1,
+                url: list.data('del-url'),
+                data: '&id=' + that.data('id') + '&checkss=' + list.data('checkss'),
+                dataType: "json",
+                success: function(a) {
+                    ip_list_load(a.url, a.type);
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            })
+        });
+    });
+
+    // Thêm IP trong cấu hình an ninh
+    $('body').on('click', '[data-toggle=add_ip]', function() {
+        var that = $(this),
+            list = that.closest('.list');
+        $.ajax({
+            type: 'GET',
+            cache: !1,
+            url: list.data('url'),
+            success: function(result) {
+                $('#page-tool .modal-title').text(that.attr('title'));
+                $('#page-tool .modal-body').html(result);
+
+                // Ngày tháng trong form
+                $('.datepicker', $('#page-tool .modal-body')).each(function() {
+                    initDatepicker($(this));
+                });
+
+                bootstrap.Modal.getOrCreateInstance('#page-tool').show();
+            },
+            error: function(xhr, text, err) {
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
+
+    // Thay đổi phiên bản IP v4, v6 ở form thiết lập an ninh
+    $('body').on('change', '.ip-version', function() {
+        var form = $(this).closest('form');
+        if ($(this).val() == '4') {
+            $(".ip-mask [data-version='4']", form).prop('disabled', false).removeAttr('style');
+            $(".ip-mask [data-version='6']", form).prop('disabled', true).prop('selected', false).css({
+                'display': 'none'
+            });
+        } else {
+            $(".ip-mask [data-version='6']", form).prop('disabled', false).removeAttr('style');
+            $(".ip-mask [data-version='4']", form).prop('disabled', true).prop('selected', false).css({
+                'display': 'none'
+            });
+        }
+    });
+
+    // Submit form thêm/sửa IP ở thiết lập an ninh
+    $('body').on('submit', '.ip-action', function(e) {
+        e.preventDefault();
+        var that = $(this),
+            data = that.serialize();
+        $('input,button,textarea,select', that).prop('disabled', true);
+        $.ajax({
+            url: that.attr('action'),
+            type: 'POST',
+            data: data,
+            cache: false,
+            dataType: "json"
+        }).done(function(a) {
+            if (a.status == 'error') {
+                nvToast(a.mess, 'error');
+                $('input,button,textarea,select', that).prop('disabled', false);
+            } else if (a.status == 'OK') {
+                bootstrap.Modal.getOrCreateInstance('#page-tool').hide();
+                ip_list_load(a.url, a.type);
+            }
+        }).fail(function(xhr, text, err) {
+            $('input,button,textarea,select', that).prop('disabled', false);
+            nvToast(err, 'error');
+            console.log(xhr, text, err);
+        });
+    });
+
+    // Ấn nút sửa IP trong thiết lập an ninh
+    $('body').on('click', '[data-toggle=edit_ip]', function() {
+        var that = $(this),
+            list = that.closest('.list');
+        let icon = $('i', that);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+        $.ajax({
+            type: 'GET',
+            cache: !1,
+            url: list.data('url') + '&id=' + that.data('id'),
+            success: function(result) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+
+                $('#page-tool .modal-title').text(that.attr('title'));
+                $('#page-tool .modal-body').html(result);
+
+                // Ngày tháng trong form
+                $('.datepicker', $('#page-tool .modal-body')).each(function() {
+                    initDatepicker($(this));
+                });
+
+                bootstrap.Modal.getOrCreateInstance('#page-tool').show();
+            },
+            error: function(xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
         });
     });
 });

@@ -553,6 +553,7 @@ $lang_module['passshow_button_2'] = 'Intégré uniquement pour les utilisateurs 
 $lang_module['passshow_button_3'] = 'Intégré uniquement pour les administrateurs';
 $lang_module['config_description'] = 'Remarques sur la configuration';
 $lang_module['load_files_seccode'] = 'Code secret pour accéder aux load-fichiers';
+$lang_module['recreate_files_seccode'] = 'Créer un nouveau code';
 $lang_module['value_copied'] = 'La valeur a été copiée';
 $lang_module['auto_acao'] = 'Ajouter l\'en-tête Access-Control-Allow-Origin';
 $lang_module['auto_acao_note'] = 'Lorsque la requête inclut un en-tête Origin avec une valeur valide, le système répondra automatiquement avec un en-tête de réponse Access-Control-Allow-Origin avec une valeur égale à la valeur de l\'origine qui lui est envoyée.';

@@ -553,6 +553,7 @@ $lang_module['passshow_button_2'] = 'Integrated only for registered users';
 $lang_module['passshow_button_3'] = 'Integrated only for admins';
 $lang_module['config_description'] = 'Configuration notes';
 $lang_module['load_files_seccode'] = 'Secret code to access load-files';
+$lang_module['recreate_files_seccode'] = 'Create new code';
 $lang_module['value_copied'] = 'Value has been copied';
 $lang_module['auto_acao'] = 'Add Access-Control-Allow-Origin header';
 $lang_module['auto_acao_note'] = 'When the query includes an Origin header with a valid value, the system will automatically respond with an Access-Control-Allow-Origin response header with a value equal to the value of the origin sent to the query';

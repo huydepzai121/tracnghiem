@@ -149,13 +149,12 @@ function get_list_ips($type)
         $note = [];
         $note[] = $nv_Lang->getModule('ip_mask') . ': ' . ($ips->isIp4($row['ip']) ? $masklist[$row['mask']] : '/' . $row['mask']);
         !$type && $note[] = $nv_Lang->getModule('banip_area') . ': ' . $arealist[$row['area']];
-        !empty($row['begintime']) && $note[] = $nv_Lang->getModule('start_time') . ': ' . date('d/m/Y H:i', $row['begintime']);
-        $note[] = $nv_Lang->getModule('end_time') . ': ' . (!empty($row['endtime']) ? date('d/m/Y H:i', $row['endtime']) : $nv_Lang->getModule('unlimited'));
+        !empty($row['begintime']) && $note[] = $nv_Lang->getModule('start_time') . ': ' . nv_datetime_format($row['begintime'], 1);
+        $note[] = $nv_Lang->getModule('end_time') . ': ' . (!empty($row['endtime']) ? nv_datetime_format($row['endtime'], 1) : $nv_Lang->getModule('unlimited'));
 
+        $row['status'] = $status;
         $row['note'] = implode(', ', $note);
-        $row['status'] = $status === 2 ? $nv_Lang->getModule('waiting') : ($status === 0 ? $nv_Lang->getModule('ended') : $nv_Lang->getModule('running'));
-        $row['status_icon'] = $status === 2 ? 'fa-pause' : ($status === 0 ? 'fa-stop' : 'fa-play');
-        $row['class'] = $status === 0 ? ' text-muted' : '';
+        $row['status_text'] = $status === 2 ? $nv_Lang->getModule('waiting') : ($status === 0 ? $nv_Lang->getModule('ended') : $nv_Lang->getModule('running'));
         $list[$row['id']] = $row;
     }
 

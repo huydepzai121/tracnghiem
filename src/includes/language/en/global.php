@@ -40,6 +40,7 @@ $lang_global['admin_logout_question'] = 'Are you sure you want to log out of you
 $lang_global['admin_ipincorrect'] = 'You are logged by IP: %s. We are sorry that this IP is not allowed to enter the site administration!';
 $lang_global['ok'] = 'OK';
 $lang_global['confirm'] = 'Confirm';
+$lang_global['copy'] = 'Copy';
 $lang_global['manage'] = 'Manage';
 $lang_global['cancel'] = 'Cancel';
 $lang_global['reset'] = 'Reset';

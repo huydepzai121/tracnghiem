@@ -553,6 +553,7 @@ $lang_module['passshow_button_2'] = 'Chỉ tích hợp cho người dùng đã �
 $lang_module['passshow_button_3'] = 'Chỉ tích hợp cho quản trị viên';
 $lang_module['config_description'] = 'Ghi chú cấu hình';
 $lang_module['load_files_seccode'] = 'Mã bí mật truy cập load-files';
+$lang_module['recreate_files_seccode'] = 'Tạo mã mới';
 $lang_module['value_copied'] = 'Giá trị đã được sao chép vào bộ nhớ';
 $lang_module['auto_acao'] = 'Thêm tiêu đề Access-Control-Allow-Origin';
 $lang_module['auto_acao_note'] = 'Khi truy vấn có kèm tiêu đề Origin với giá trị hợp lệ, hệ thống sẽ tự động trả lời bằng tiêu đề phản hồi Access-Control-Allow-Origin với giá trị bằng chính giá trị miền của Origin gửi đến';
