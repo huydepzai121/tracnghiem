@@ -22,3 +22,8 @@ html:not([data-bs-theme="dark"]) {
         --bs-btn-disabled-border-color: #{$gray-400};
     }
 }
+
+.form-check-input:not(:checked):disabled {
+    background-color: var(--nv-form-check-input-disabled-bg);
+    border-color: var(--nv-form-check-input-disabled-border-color);
+}

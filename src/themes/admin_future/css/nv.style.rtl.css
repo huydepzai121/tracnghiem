@@ -25239,6 +25239,8 @@ readers do not read off random characters that represent icons */
   --nv-chart-grid-border-opacity: 1;
   --nv-border-color-translucent: #e5e5e5;
   --nv-table-thead-bg: #f9f9f9;
+  --nv-form-check-input-disabled-bg: #e5e5e5;
+  --nv-form-check-input-disabled-border-color: #d5d5d5;
 }
 
 [data-bs-theme=dark] {
@@ -25262,6 +25264,8 @@ readers do not read off random characters that represent icons */
   --nv-chart-grid-border-opacity: .2;
   --nv-border-color-translucent: #343a40;
   --nv-table-thead-bg: #343a40;
+  --nv-form-check-input-disabled-bg: #495057;
+  --nv-form-check-input-disabled-border-color: #666;
 }
 
 [data-bs-theme=dark] .ps .ps__rail-x:hover,
@@ -26308,6 +26312,11 @@ html:not([data-bs-theme=dark]) .btn-default {
   --bs-btn-disabled-color: #495057;
   --bs-btn-disabled-bg: #d5d5d5;
   --bs-btn-disabled-border-color: #ced4da;
+}
+
+.form-check-input:not(:checked):disabled {
+  background-color: var(--nv-form-check-input-disabled-bg);
+  border-color: var(--nv-form-check-input-disabled-border-color);
 }
 
 .site-toasts {

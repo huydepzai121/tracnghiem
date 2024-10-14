@@ -29,6 +29,8 @@
     --nv-border-color-translucent: #{$gray-200};
 
     --nv-table-thead-bg: #{$gray-100};
+    --nv-form-check-input-disabled-bg: #{$gray-200};
+    --nv-form-check-input-disabled-border-color: #{$gray-300};
 }
 
 [data-bs-theme="dark"] {
@@ -61,4 +63,6 @@
     --nv-border-color-translucent: #{$gray-800};
 
     --nv-table-thead-bg: #{$gray-800};
+    --nv-form-check-input-disabled-bg: #{$gray-700};
+    --nv-form-check-input-disabled-border-color: #{$gray-600};
 }

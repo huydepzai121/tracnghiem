@@ -13,39 +13,53 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
+$array_url_instruction['config'] = 'http://wiki.nukeviet.vn/nukeviet4:admin:users:oauth#c%E1%BA%A5u_hinh_v%E1%BB%9Bi_oauth_google';
+
 if ($nv_Request->isset_request('save', 'post')) {
     $array_config['oauth_client_id'] = (string) $nv_Request->get_title('oauth_client_id', 'post', '');
     $array_config['oauth_client_secret'] = $nv_Request->get_title('oauth_client_secret', 'post', '');
-    if ($checkss == $nv_Request->get_string('checkss', 'post')) {
-        $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET config_value = :config_value WHERE lang = 'sys' AND module = 'site' AND config_name = :config_name");
-
-        $sth->bindValue(':config_name', 'google_client_id', PDO::PARAM_STR);
-        $sth->bindParam(':config_value', $array_config['oauth_client_id'], PDO::PARAM_STR);
-        $sth->execute();
-
-        $sth->bindValue(':config_name', 'google_client_secret', PDO::PARAM_STR);
-        $sth->bindParam(':config_value', $array_config['oauth_client_secret'], PDO::PARAM_STR);
-        $sth->execute();
-
-        nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('config'), $page_title, $admin_info['userid']);
-        $nv_Cache->delAll();
+    if ($checkss !== $nv_Request->get_string('checkss', 'post')) {
+        nv_jsonOutput([
+            'status' => 'error',
+            'mess' => 'Session error!'
+        ]);
     }
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&oauth_config=' . $oauth_config . '&rand=' . nv_genpass());
-} else {
-    $array_config['oauth_client_id'] = $global_config['google_client_id'];
-    $array_config['oauth_client_secret'] = $global_config['google_client_secret'];
-    $array_config['checkss'] = $checkss;
 
-    $xtpl = new XTemplate('config_oauth.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;oauth_config=' . $oauth_config);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('DATA', $array_config);
+    $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET config_value = :config_value WHERE lang = 'sys' AND module = 'site' AND config_name = :config_name");
 
-    $xtpl->parse('main');
-    $contents = $xtpl->text('main');
+    $sth->bindValue(':config_name', 'google_client_id', PDO::PARAM_STR);
+    $sth->bindParam(':config_value', $array_config['oauth_client_id'], PDO::PARAM_STR);
+    $sth->execute();
 
-    $array_url_instruction['config'] = 'http://wiki.nukeviet.vn/nukeviet4:admin:users:oauth#c%E1%BA%A5u_hinh_v%E1%BB%9Bi_oauth_google';
+    $sth->bindValue(':config_name', 'google_client_secret', PDO::PARAM_STR);
+    $sth->bindParam(':config_value', $array_config['oauth_client_secret'], PDO::PARAM_STR);
+    $sth->execute();
+
+    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('config'), $page_title, $admin_info['userid']);
+    $nv_Cache->delAll();
+
+    nv_jsonOutput([
+        'status' => 'success',
+        'mess' => $nv_Lang->getGlobal('save_success'),
+        'refresh' => 1
+    ]);
 }
+
+$array_config['oauth_client_id'] = $global_config['google_client_id'];
+$array_config['oauth_client_secret'] = $global_config['google_client_secret'];
+$array_config['checkss'] = $checkss;
+
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/config_oauth.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+$tpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;oauth_config=' . $oauth_config);
+$tpl->assign('DATA', $array_config);
+
+$contents = $tpl->fetch('config_oauth.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

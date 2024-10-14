@@ -65,7 +65,9 @@ if ($nv_Request->isset_request('save', 'post')) {
         $nv_Cache->delAll();
     }
     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&oauth_config=' . $oauth_config . '&rand=' . nv_genpass());
-} elseif (isset($global_config['config_sso'])) {
+}
+
+if (isset($global_config['config_sso'])) {
     $_cas_config = unserialize($global_config['config_sso']);
 } else {
     // Thiết lập các giá trị mặc định.
@@ -95,14 +97,16 @@ if ($nv_Request->isset_request('save', 'post')) {
         'member_attribute_isdn' => '',
         'user_objectclass' => '',
         'config_field' => [
-            'firstname' => 'cn',
-            'lastname' => 'sn',
-            'email' => 'mail'
+            'first_name' => 'cn',
+            'last_name' => 'sn',
+            'email' => 'mail',
+            'show_email' => ''
         ],
         'config_field_lock' => [
-            'firstname' => 'oncreate',
-            'lastname' => 'oncreate',
-            'email' => 'oncreate'
+            'first_name' => 'oncreate',
+            'last_name' => 'oncreate',
+            'email' => 'oncreate',
+            'show_email' => 'oncreate'
         ]
     ];
 }
@@ -113,52 +117,17 @@ foreach ($_cas_config['config_field_lock'] as $key => $value) {
     $field_lock[$key]['onlogin'] = ($value == 'onlogin') ? 'selected="selected"' : '';
 }
 $_cas_config['checkss'] = $checkss;
-$xtpl = new XTemplate('config_single-sign-on.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;oauth_config=' . $oauth_config);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('DATA', $_cas_config);
-$xtpl->assign('FIELD_LOCK', $field_lock);
 
-$sql = 'SELECT * FROM ' . NV_MOD_TABLE . '_field ORDER BY weight ASC';
-$_query = $db->query($sql);
-foreach ($_query as $row) {
-    $_language = unserialize($row['language']);
-    $_field_lock = (isset($_cas_config['config_field_lock'][$row['field']])) ? $_cas_config['config_field_lock'][$row['field']] : '';
-    $xtpl->assign('FIELD', [
-        'field' => $row['field'],
-        'lang' => (isset($_language[NV_LANG_DATA])) ? $_language[NV_LANG_DATA][0] : '',
-        'value' => (isset($_cas_config['config_field'][$row['field']])) ? $_cas_config['config_field'][$row['field']] : '',
-        'oncreate' => ($_field_lock == 'oncreate') ? 'selected="selected"' : '',
-        'onlogin' => ($_field_lock == 'onlogin') ? 'selected="selected"' : ''
-    ]);
-    $xtpl->parse('main.field');
-}
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/config_single-sign-on.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
 
-$version = [
-    '1.0',
-    '2.0',
-    '3.0'
-];
-foreach ($version as $v) {
-    $values = [];
-    $values['value'] = $v;
-    $values['name'] = 'CAS ' . $v;
-    $values['select'] = ($v == $_cas_config['cas_version']) ? 'selected="selected"' : '';
-    $xtpl->assign('VERSION', $values);
-    $xtpl->parse('main.version');
-}
-
-$ldapversion = [
-    '2',
-    '3'
-];
-foreach ($ldapversion as $v) {
-    $values = [];
-    $values['value'] = $v;
-    $values['select'] = ($v == $_cas_config['ldap_version']) ? 'selected="selected"' : '';
-    $xtpl->assign('LDAPVERSION', $values);
-    $xtpl->parse('main.ldap_version');
-}
+$tpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;oauth_config=' . $oauth_config);
+$tpl->assign('DATA', $_cas_config);
+$tpl->assign('FIELD_LOCK', $field_lock);
 
 $language = [
     'CAS_Languages_English',
@@ -169,14 +138,7 @@ $language = [
     'CAS_Languages_Spanish',
     'CAS_Languages_Catalan'
 ];
-foreach ($language as $i) {
-    $values = [];
-    $values['value'] = $i;
-    $values['name'] = str_replace('CAS_Languages_', '', $i);
-    $values['select'] = ($i == $_cas_config['cas_language']) ? 'selected="selected"' : '';
-    $xtpl->assign('LANGUAGE', $values);
-    $xtpl->parse('main.language');
-}
+$tpl->assign('CAS_LANGUAGES', $language);
 
 $usertype = [
     0 => [
@@ -204,53 +166,26 @@ $usertype = [
         'name' => 'MS ActiveDirectory'
     ]
 ];
-foreach ($usertype as $i) {
-    $values = [];
-    $values['value'] = $i['value'];
-    $values['name'] = $i['name'];
-    $values['select'] = ($i['value'] == $_cas_config['user_type']) ? 'selected="selected"' : '';
-    $xtpl->assign('USERTYPE', $values);
-    $xtpl->parse('main.user_type');
+$tpl->assign('USERTYPE', $usertype);
+
+$sql = 'SELECT * FROM ' . NV_MOD_TABLE . '_field ORDER BY weight ASC';
+$_query = $db->query($sql);
+
+$fields = [];
+foreach ($_query as $row) {
+    $_language = unserialize($row['language']);
+    $_field_lock = (isset($_cas_config['config_field_lock'][$row['field']])) ? $_cas_config['config_field_lock'][$row['field']] : '';
+    $fields[] = [
+        'field' => $row['field'],
+        'lang' => (isset($_language[NV_LANG_DATA])) ? $_language[NV_LANG_DATA][0] : '',
+        'value' => (isset($_cas_config['config_field'][$row['field']])) ? $_cas_config['config_field'][$row['field']] : '',
+        'oncreate' => ($_field_lock == 'oncreate') ? 'selected="selected"' : '',
+        'onlogin' => ($_field_lock == 'onlogin') ? 'selected="selected"' : ''
+    ];
 }
+$tpl->assign('FIELDS', $fields);
 
-$arr = [
-    '0',
-    '1'
-];
-foreach ($arr as $i) {
-    $values = [];
-    $values['value'] = $i;
-    if ($i == 0) {
-        $values['name'] = $nv_Lang->getGlobal('no');
-    } else {
-        $values['name'] = $nv_Lang->getGlobal('yes');
-    }
-    $values['select'] = ($i == $_cas_config['cas_proxy']) ? 'selected="selected"' : '';
-    $xtpl->assign('PROXY', $values);
-    $xtpl->parse('main.proxy');
-
-    $values['select'] = ($i == $_cas_config['cas_multiauth']) ? 'selected="selected"' : '';
-    $xtpl->assign('MULTIAUTH', $values);
-    $xtpl->parse('main.multiauth');
-
-    $values['select'] = ($i == $_cas_config['cas_certificate_check']) ? 'selected="selected"' : '';
-    $xtpl->assign('CERTIFICATE', $values);
-    $xtpl->parse('main.cas_certificate_check');
-
-    $values['select'] = ($i == $_cas_config['ldap_start_tls']) ? 'selected="selected"' : '';
-    $xtpl->assign('START_TLS', $values);
-    $xtpl->parse('main.ldap_start_tls');
-
-    $values['select'] = ($i == $_cas_config['user_search_sub']) ? 'selected="selected"' : '';
-    $xtpl->assign('SEARCHSUB', $values);
-    $xtpl->parse('main.user_search_sub');
-
-    $values['select'] = ($i == $_cas_config['user_opt_deref']) ? 'selected="selected"' : '';
-    $xtpl->assign('OPTDEREF', $values);
-    $xtpl->parse('main.user_opt_deref');
-}
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('config_single-sign-on.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
