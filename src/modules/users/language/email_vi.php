@@ -152,7 +152,7 @@ $module_emails[Emails::LOST_PASS] = [
     'catid' => $catid,
     't' => 'Hướng dẫn lấy lại mật khẩu thành viên',
     's' => 'Hướng dẫn tạo lại mật khẩu',
-    'c' => '{$greeting_user}<br /><br />Bạn vừa gửi đề nghị thay đổi mật khẩu tài khoản người dùng tại website {$site_name}. Để thay đổi mật khẩu, bạn cần nhập mã xác minh dưới đây vào ô tương ứng tại khu vực thay đổi mật khẩu.<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Mã này chỉ được sử dụng một lần và trước thời hạn: {$deadline}.<br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+    'c' => '{$greeting_user}<br /><br />Bạn vừa gửi đề nghị thay đổi mật khẩu tài khoản người dùng tại website {$site_name}. Để thay đổi mật khẩu, bạn cần nhập mã xác minh dưới đây vào ô tương ứng tại khu vực thay đổi mật khẩu.<br /><br />Mã xác minh: <strong>{$code}</strong><br /><br />Mã này chỉ được sử dụng một lần và trước thời hạn: {$deadline}.<br />Yêu cầu này xuất phát từ:<br />- IP: <strong>{$ip}</strong><br />- Trình duyệt: <strong>{$user_agent}</strong><br />- Thời gian gửi yêu cầu: <strong>{$request_time}</strong><br /><br />Đây là thư tự động được gửi đến email của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::R2S] = [
     'is_system' => $is_system,

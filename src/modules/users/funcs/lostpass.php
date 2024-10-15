@@ -53,7 +53,10 @@ function lost_pass_sendMail($row)
                 'gender' => $row['gender'],
                 'lang' => NV_LANG_INTERFACE,
                 'code' => $key,
-                'deadline' => $pa
+                'deadline' => $pa,
+                'ip' => NV_CLIENT_IP,
+                'user_agent' => NV_USER_AGENT,
+                'request_time' => nv_datetime_format(NV_CURRENTTIME, 1)
             ]
         ]];
         $send = nv_sendmail_from_template([$module_name, Emails::LOST_PASS], $send_data, NV_LANG_INTERFACE);
@@ -186,7 +189,9 @@ if ($checkss == $data['checkss']) {
         ]);
     }
 
-    $nv_Request->set_Session('lostpass_seccode', md5($data['nv_seccode']));
+    if (isset($data['nv_seccode'])) {
+        $nv_Request->set_Session('lostpass_seccode', md5($data['nv_seccode']));
+    }
 
     if ($data['step'] == 'step1') {
         if ($global_config['allowquestion']) {

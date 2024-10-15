@@ -152,7 +152,7 @@ $module_emails[Emails::LOST_PASS] = [
     'catid' => $catid,
     't' => 'Instructions for retrieving member password',
     's' => 'Guide password recovery',
-    'c' => '{$greeting_user}<br /><br />You propose to change my login password at the website {$site_name}. To change your password, you will need to enter the verification code below in the corresponding box at the password change area.<br /><br />Verification code: <strong>{$code}</strong><br /><br />This code is only used once and before the deadline of {$deadline}.<br /><br />This letter is automatically sent to your email inbox from site {$site_name}. If you do not know anything about the contents of this letter, just delete it.'
+    'c' => '{$greeting_user}<br /><br />You propose to change my login password at the website {$site_name}. To change your password, you will need to enter the verification code below in the corresponding box at the password change area.<br /><br />Verification code: <strong>{$code}</strong><br /><br />This code is only used once and before the deadline of {$deadline}.<br />More information about this request:<br />- IP: <strong>{$ip}</strong><br />- Browser: <strong>{$user_agent}</strong><br />- Time: <strong>{$request_time}</strong><br /><br />This letter is automatically sent to your email inbox from site {$site_name}. If you do not know anything about the contents of this letter, just delete it.'
 ];
 $module_emails[Emails::R2S] = [
     'is_system' => $is_system,

@@ -132,6 +132,16 @@ $callback = function ($vars, $from_data, $receive_data) {
             if (isset($vars['new_code']) and is_array($vars['new_code'])) {
                 $merge_fields['new_code']['data'] = $vars['new_code'];
             }
+
+            // Thêm các biến khác của data truyền vào nếu có
+            foreach ($vars as $key => $value) {
+                if (!isset($merge_fields[$key])) {
+                    $merge_fields[$key] = [
+                        'name' => $key,
+                        'data' => $value
+                    ];
+                }
+            }
         }
 
         $nv_Lang->changeLang();
