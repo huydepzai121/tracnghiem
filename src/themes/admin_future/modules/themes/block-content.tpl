@@ -2,6 +2,8 @@
 <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/jquery-ui/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/language/jquery.ui.datepicker-{$smarty.const.NV_LANG_INTERFACE}.js"></script>
 <script type="text/javascript" src="{$smarty.const.NV_STATIC_URL}themes/{$TEMPLATE}/js/nv.block.content.js"></script>
+<script src="{$smarty.const.ASSETS_STATIC_URL}/js/select2/select2.min.js"></script>
+<script src="{$smarty.const.ASSETS_STATIC_URL}/js/select2/i18n/{$smarty.const.NV_LANG_INTERFACE}.js"></script>
 <form class="p-1 ajax-submit" method="post" action="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}={$OP}&amp;selectthemes={$SELECTTHEMES}{if not empty($BLOCKREDIRECT)}&amp;blockredirect={$BLOCKREDIRECT}{/if}" id="block-content-form" data-page-url="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}" data-selectthemes="{$SELECTTHEMES}" data-callback="nvBlockCtCallback" novalidate>
     <div class="card border-primary border-1 mb-3">
         <div class="card-header fs-5 fw-medium py-2 text-bg-primary">
@@ -60,7 +62,7 @@
             <div class="row mb-3">
                 <label for="element_position" class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium" title="{$LANG->getModule('block_pos')}">{$LANG->getModule('block_pos')}:</label>
                 <div class="col-9 col-sm-5">
-                    <select class="form-select" id="element_position" name="position">
+                    <select class="form-select select2" id="element_position" name="position">
                         {for $offset=0 to (count($POSITIONS) - 1)}
                         <option value="{(string)$POSITIONS[$offset]->tag}"{if ((string)$POSITIONS[$offset]->tag) eq $ROW.position} selected{/if}>{(string)$POSITIONS[$offset]->name}</option>
                         {/for}
