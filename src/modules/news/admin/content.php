@@ -840,7 +840,7 @@ if ($is_submit_form) {
                     $keywords = array_merge($keywords, nv_get_keywords($ct, 20 - $size, true));
                 }
                 !empty($keywords) && $keywords = array_unique($keywords);
-                $rowcontent['keywords'] = !empty($keywords) ? implode(',', $keywords) : '';
+                $rowcontent['keywords'] = !empty($keywords) ? trim(nv_substr(implode(',', $keywords), 0, 255), ", \t\n\r\0\x0B") : '';
             }
 
             // Toàn quyền module trở lên được đăng bài lùi về sau
