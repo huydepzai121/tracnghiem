@@ -164,7 +164,7 @@
                                 {foreach from=$mods key=mod item=modinfo}
                                 <div class="col-12 col-md-6">
                                     <div class="form-check">
-                                        <input data-toggle="checkitem" class="form-check-input" type="checkbox" id="after_modules_{$keylang}_{$mod}"{if !empty($AFTER_MODULES[$keylang]) and in_array($mod, $AFTER_MODULES[$keylang])} checked{/if} name="after_modules[{$keylang}][]" value="{$mod}">
+                                        <input data-toggle="checkitem" class="form-check-input" type="checkbox" id="after_modules_{$keylang}_{$mod}"{if !empty($AFTER_MODULES[$keylang]) and in_array($mod, $AFTER_MODULES[$keylang])} checked{elseif $LEV eq 3 and !empty($MODULES[$keylang]) and in_array($mod, $MODULES[$keylang])} checked{/if} name="after_modules[{$keylang}][]" value="{$mod}">
                                         <label class="form-check-label" for="after_modules_{$keylang}_{$mod}">{$mod} ({$modinfo.custom_title})</label>
                                     </div>
                                 </div>
