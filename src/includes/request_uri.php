@@ -82,7 +82,7 @@ if ($global_config['rewrite_endurl'] != $global_config['rewrite_exturl'] and pre
     nv_redirect_location($base_siteurl);
 } elseif (isset($_GET[NV_OP_VARIABLE])) {
     // Có query op=
-    if (preg_match('/([a-z0-9\-\_\.\/]+)' . nv_preg_quote($global_config['rewrite_exturl']) . '$/i', $_GET[NV_OP_VARIABLE], $matches)) {
+    if (preg_match('/([a-z0-9\-\_\.\/]+)' . nv_preg_quote($global_config['rewrite_exturl']) . '$/i', (string) $_GET[NV_OP_VARIABLE], $matches)) {
         $_GET[NV_OP_VARIABLE] = $matches[1];
 
         define('NV_REWRITE_EXTURL', true);
