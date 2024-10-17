@@ -17,6 +17,10 @@
 /vendor
 /.env
 
+/tools/GeoLite2/libs/*
+!/tools/GeoLite2/libs/.gitkeep
+/tools/GeoLite2/release
+
 /src/assets/css/*.opt.css
 /src/config.php
 /src/data/cache/*
