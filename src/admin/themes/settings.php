@@ -54,31 +54,28 @@ if ($nv_Request->get_title('tokend', 'post', '') === NV_CHECK_SESSION) {
     }
 
     $nv_Cache->delAll();
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op);
-} else {
-    $array_config['user_allowed_theme'] = $global_config['array_user_allowed_theme'];
-}
-
-$xtpl = new XTemplate('settings.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('LINK_SET_CONFIG', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name);
-$xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
-$xtpl->assign('TOKEND', NV_CHECK_SESSION);
-$xtpl->assign('LANG_MESSAGE', $nv_Lang->getModule('settings_utheme_lnote', $language_array[NV_LANG_DATA]['name']));
-
-foreach ($array_site_cat_theme as $theme) {
-    $xtpl->assign('USER_ALLOWED_THEME', [
-        'key' => $theme,
-        'title' => $theme,
-        'checked' => (in_array($theme, $array_config['user_allowed_theme'], true) or $theme == $global_config['site_theme']) ? ' checked="checked"' : '',
-        'disabled' => $theme == $global_config['site_theme'] ? ' disabled="disabled"' : ''
+    nv_jsonOutput([
+        'status' => 'success',
+        'mess' => $nv_Lang->getGlobal('save_success'),
+        'refresh' => 1
     ]);
-    $xtpl->parse('main.loop_theme');
 }
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$array_config['user_allowed_theme'] = $global_config['array_user_allowed_theme'];
+
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/settings.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+$tpl->assign('LANG_MESSAGE', $nv_Lang->getModule('settings_utheme_lnote', $language_array[NV_LANG_DATA]['name']));
+$tpl->assign('ARRAY', $array_site_cat_theme);
+$tpl->assign('DATA', $array_config);
+$tpl->assign('GCONFIG', $global_config);
+
+$contents = $tpl->fetch('settings.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
