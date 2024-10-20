@@ -13,8 +13,8 @@ if (!defined('NV_IS_FILE_THEMES')) {
     exit('Stop!!!');
 }
 
-$theme1 = $nv_Request->get_title('theme1', 'post');
-$theme2 = $nv_Request->get_title('theme2', 'post');
+$theme1 = $nv_Request->get_title('theme1', 'post', '');
+$theme2 = $nv_Request->get_title('theme2', 'post', '');
 
 $position = $nv_Request->get_title('position', 'post');
 $position = explode(',', $position);
@@ -39,8 +39,8 @@ if (md5(NV_CHECK_SESSION . '_' . $module_name . '_xcopyblock_' . $admin_info['us
         $sth->execute();
         while ($row = $sth->fetch()) {
             $_sql = 'INSERT INTO ' . NV_BLOCKS_TABLE . '_groups
-				(theme, module, file_name, title, link, template, position, dtime_type, dtime_details, active, groups_view, all_func, weight, config) VALUES
-				(:theme, :module, :file_name, :title, :link, :template, :position, :dtime_type, :dtime_details, :active, :groups_view, :all_func, :weight, :config )';
+                (theme, module, file_name, title, link, template, position, dtime_type, dtime_details, active, groups_view, all_func, weight, config) VALUES
+                (:theme, :module, :file_name, :title, :link, :template, :position, :dtime_type, :dtime_details, :active, :groups_view, :all_func, :weight, :config )';
 
             $data = [];
             $data['theme'] = $theme2;
@@ -72,7 +72,13 @@ if (md5(NV_CHECK_SESSION . '_' . $module_name . '_xcopyblock_' . $admin_info['us
     nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('xcopyblock'), $nv_Lang->getModule('xcopyblock_from') . ' ' . $theme1 . ' ' . $nv_Lang->getModule('xcopyblock_to') . ' ' . $theme2, $admin_info['userid']);
     $nv_Cache->delMod('themes');
 
-    echo $nv_Lang->getModule('xcopyblock_success');
-} else {
-    exit('error request !');
+    nv_jsonOutput([
+        'success' => 1,
+        'text' => $nv_Lang->getModule('xcopyblock_success')
+    ]);
 }
+
+nv_jsonOutput([
+    'success' => 0,
+    'text' => 'Request not accepted!!!'
+]);

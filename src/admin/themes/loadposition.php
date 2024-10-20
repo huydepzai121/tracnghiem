@@ -13,31 +13,31 @@ if (!defined('NV_IS_FILE_THEMES')) {
     exit('Stop!!!');
 }
 
-$theme1 = $nv_Request->get_title('theme1', 'get');
-$theme2 = $nv_Request->get_title('theme2', 'get');
+$theme1 = $nv_Request->get_title('theme1', 'post', '');
+$theme2 = $nv_Request->get_title('theme2', 'post', '');
+
+$checkss = $nv_Request->get_title('checkss', 'post', '');
+if ($checkss !== md5(NV_CHECK_SESSION . '_' . $module_name . '_xcopyblock_' . $admin_info['userid'])) {
+    nv_jsonOutput([
+        'success' => 0,
+        'text' => 'Session error!!!'
+    ]);
+}
 
 $position1 = $position2 = [];
 
 if (preg_match($global_config['check_theme'], $theme1) and preg_match($global_config['check_theme'], $theme2) and $theme1 != $theme2 and file_exists(NV_ROOTDIR . '/themes/' . $theme1 . '/config.ini') and file_exists(NV_ROOTDIR . '/themes/' . $theme2 . '/config.ini')) {
-    // theme 1
     $xml = @simplexml_load_file(NV_ROOTDIR . '/themes/' . $theme1 . '/config.ini') or nv_info_die($nv_Lang->getGlobal('error_404_title'), $nv_Lang->getModule('block_error_fileconfig_title'), $nv_Lang->getModule('block_error_fileconfig_content'), 404);
-
     $content = $xml->xpath('positions');
-    //array
     $positions = $content[0]->position;
-    //object
 
     for ($i = 0, $count = sizeof($positions); $i < $count; ++$i) {
         $position1[] = $positions[$i]->tag;
     }
 
-    // theme 2
     $xml = @simplexml_load_file(NV_ROOTDIR . '/themes/' . $theme2 . '/config.ini') or nv_info_die($nv_Lang->getGlobal('error_404_title'), $nv_Lang->getModule('block_error_fileconfig_title'), $nv_Lang->getModule('block_error_fileconfig_content'), 404);
-
     $content = $xml->xpath('positions');
-    //array
     $positions = $content[0]->position;
-    //object
 
     for ($i = 0, $count = sizeof($positions); $i < $count; ++$i) {
         $position2[] = $positions[$i]->tag;
@@ -46,23 +46,30 @@ if (preg_match($global_config['check_theme'], $theme1) and preg_match($global_co
     $diffarray = array_diff($position1, $position2);
     $diffarray = array_diff($position1, $diffarray);
 
-    $xtpl = new XTemplate('loadposition.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-
+    $array = [];
     for ($i = 0, $count = sizeof($diffarray); $i < $count; ++$i) {
-        $position1[] = $positions[$i]->tag;
-
-        $xtpl->assign('NAME', (string) $positions[$i]->tag);
-        $xtpl->assign('VALUE', (string) $positions[$i]->name);
-
-        $xtpl->parse('main.loop');
+        $array[] = [
+            'tag' => (string) $positions[$i]->tag,
+            'name' => (string) $positions[$i]->name
+        ];
     }
 
-    $xtpl->parse('main');
-    $contents = $xtpl->text('main');
+    $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/xcopyblock-position.tpl');
+    $tpl = new \NukeViet\Template\NVSmarty();
+    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+    $tpl->assign('LANG', $nv_Lang);
+    $tpl->assign('MODULE_NAME', $module_name);
+    $tpl->assign('OP', $op);
+    $tpl->assign('ARRAY', $array);
 
-    include NV_ROOTDIR . '/includes/header.php';
-    echo $contents;
-    include NV_ROOTDIR . '/includes/footer.php';
+    nv_jsonOutput([
+        'success' => 1,
+        'text' => '',
+        'html' => $tpl->fetch('xcopyblock-position.tpl')
+    ]);
 }
+
+nv_jsonOutput([
+    'success' => 0,
+    'text' => 'Request error!!!'
+]);
