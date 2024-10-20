@@ -14,14 +14,9 @@ if (!defined('NV_IS_FILE_THEMES')) {
 }
 
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
+$page_title = $nv_Lang->getModule('package_theme_module');
 
-$xtpl = new XTemplate('package_theme_module.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('CHECKSS', $checkss);
-
-if ($checkss == $nv_Request->get_string('checkss', 'post') and $nv_Request->isset_request('op', 'post')) {
-    $contents = $nv_Lang->getModule('package_noselect_module_theme');
+if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     $themename = $nv_Request->get_string('themename', 'post');
 
     if (preg_match($global_config['check_theme'], $themename) or preg_match($global_config['check_theme_mobile'], $themename)) {
@@ -64,58 +59,63 @@ if ($checkss == $nv_Request->get_string('checkss', 'post') and $nv_Request->isse
 
             $linkgetfile = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=getfile&amp;mod=nv4_theme_' . $themename . '_' . $all_module_file . '.zip&amp;checkss=' . md5($file_name . NV_CHECK_SESSION) . '&amp;filename=' . $file_name;
 
-            $xtpl->assign('LINKGETFILE', $linkgetfile);
-            $xtpl->assign('THEMENAME', $themename);
-            $xtpl->assign('MODULENAME', $all_module_file);
-            $xtpl->assign('FILESIZE', nv_convertfromBytes($filesize));
-
-            $xtpl->parse('complete');
-            $contents = $xtpl->text('complete');
-        }
-    }
-    include NV_ROOTDIR . '/includes/header.php';
-    echo $contents;
-    include NV_ROOTDIR . '/includes/footer.php';
-} else {
-    $op = $nv_Request->get_title(NV_OP_VARIABLE, 'get', '');
-    $theme_list = nv_scandir(NV_ROOTDIR . '/themes', [$global_config['check_theme'], $global_config['check_theme_mobile']]);
-    foreach ($theme_list as $themes_i) {
-        if (file_exists(NV_ROOTDIR . '/themes/' . $themes_i . '/config.ini')) {
-            $xtpl->assign('THEME', $themes_i);
-            $xtpl->parse('main.theme');
+            nv_jsonOutput([
+                'status' => 'success',
+                'link' => $linkgetfile,
+                'size' => nv_convertfromBytes($filesize),
+                'name' => 'nv4_theme_' . $themename . '_' . $all_module_file . '.zip'
+            ]);
         }
     }
 
-    $result = $db->query('SELECT title, module_file, custom_title FROM ' . NV_MODULES_TABLE . ' ORDER BY weight ASC');
-    $array_module_seup = [];
-    while ($row = $result->fetch()) {
-        if ($row['module_file'] == $row['module_file']) {
-            $xtpl->assign('MODULE', ['module_file' => $row['module_file'], 'custom_title' => $row['custom_title']]);
-            $xtpl->parse('main.module');
-            $array_module_seup[] = $row['module_file'];
-        }
-    }
-    $modules_list = nv_scandir(NV_ROOTDIR . '/modules', $global_config['check_module']);
-    foreach ($modules_list as $module_i) {
-        if (!in_array($module_i, $array_module_seup, true)) {
-            $xtpl->assign('MODULE', ['module_file' => $module_i, 'custom_title' => $module_i]);
-            $xtpl->parse('main.module');
-        }
-    }
-
-    $xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-    $xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-    $xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-
-    $xtpl->assign('MODULE_NAME', $module_name);
-    $xtpl->assign('OP', $op);
-
-    $xtpl->parse('main');
-    $contents = $xtpl->text('main');
-
-    $page_title = $nv_Lang->getModule('package_theme_module');
-
-    include NV_ROOTDIR . '/includes/header.php';
-    echo nv_admin_theme($contents);
-    include NV_ROOTDIR . '/includes/footer.php';
+    nv_jsonOutput([
+        'status' => 'error',
+        'mess' => $nv_Lang->getModule('package_noselect_module_theme')
+    ]);
 }
+
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/package_theme_module.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+$tpl->assign('CHECKSS', $checkss);
+
+$op = $nv_Request->get_title(NV_OP_VARIABLE, 'get', '');
+$theme_list = nv_scandir(NV_ROOTDIR . '/themes', [$global_config['check_theme'], $global_config['check_theme_mobile']]);
+$array_themes = [];
+foreach ($theme_list as $themes_i) {
+    if (file_exists(NV_ROOTDIR . '/themes/' . $themes_i . '/config.ini')) {
+        $array_themes[] = $themes_i;
+    }
+}
+$tpl->assign('ARRAY_THEMES', $array_themes);
+
+$result = $db->query('SELECT title, module_file, custom_title FROM ' . NV_MODULES_TABLE . ' ORDER BY weight ASC');
+$array_module_setup = $array_modules = [];
+while ($row = $result->fetch()) {
+    if ($row['module_file'] == $row['module_file']) {
+        $array_module_setup[] = $row['module_file'];
+        $array_modules[] = [
+            'module_file' => $row['module_file'],
+            'custom_title' => $row['custom_title']
+        ];
+    }
+}
+$modules_list = nv_scandir(NV_ROOTDIR . '/modules', $global_config['check_module']);
+foreach ($modules_list as $module_i) {
+    if (!in_array($module_i, $array_module_setup, true)) {
+        $array_modules[] = [
+            'module_file' => $module_i,
+            'custom_title' => $module_i
+        ];
+    }
+}
+$tpl->assign('ARRAY_MODULES', $array_modules);
+
+$contents = $tpl->fetch('package_theme_module.tpl');
+
+include NV_ROOTDIR . '/includes/header.php';
+echo nv_admin_theme($contents);
+include NV_ROOTDIR . '/includes/footer.php';
