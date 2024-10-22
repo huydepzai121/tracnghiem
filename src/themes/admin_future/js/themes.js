@@ -178,4 +178,308 @@ $(function() {
             }
         });
     });
+
+    // Phần danh sách block
+    if ($('#blocklist').length) {
+        let blocklist = $('#blocklist');
+
+        // Nếu chọn module của block
+        $('[name=module]', blocklist).on('change', function() {
+            window.location.href = script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=blocks&module=' + $(this).val();
+        });
+
+        // Nếu chọn function của block
+        $('[name=function]', blocklist).on('change', function() {
+            window.location = script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=blocks&module=' + $('[name=module]', blocklist).val() + '&func=' + $(this).val();
+        });
+
+        // Thêm/sửa block
+        $('.block_content', blocklist).on('click', function() {
+            if ($(this).is('.add')) {
+                nv_open_browse(script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + "=block_content&selectthemes=" + blocklist.data('selectthemes') + "&blockredirect=" + blocklist.data('blockredirect'), "ChangeBlock", 800, 500, "resizable=no,scrollbars=yes,toolbar=no,location=no,status=no");
+            } else {
+                var bid = parseInt($(this).parents('.item').data("id"));
+                nv_open_browse(script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + "=block_content&selectthemes=" + blocklist.data('selectthemes') + "&bid=" + bid + "&blockredirect=" + blocklist.data('blockredirect'), "ChangeBlock", 800, 500, "resizable=no,scrollbars=yes,toolbar=no,location=no,status=no");
+            }
+        });
+
+        // Đặt lại thứ tự block
+        $('.block_weight', blocklist).on('click', function(e) {
+            e.preventDefault();
+
+            let btn = $(this);
+            let icon = $('i', btn);
+            if (icon.is('.fa-spinner')) {
+                return;
+            }
+            nvConfirm(btn.data('confirm'), () => {
+                icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+                $.ajax({
+                    type: 'POST',
+                    url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=blocks_reset_order&nocache=' + new Date().getTime(),
+                    data: {
+                        checkss: blocklist.data('checkss')
+                    },
+                    dataType: 'json',
+                    cache: false,
+                    success: function(respon) {
+                        if (!respon.success) {
+                            icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                            nvToast(respon.text, 'error');
+                            return;
+                        }
+                        nvToast(respon.text, 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                    },
+                    error: function(xhr, text, err) {
+                        icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                        nvToast(text, 'error');
+                        console.log(xhr, text, err);
+                    }
+                });
+            });
+        });
+
+        // Thay đổi thứ tự block
+        $('.order, .order_func', blocklist).on('change', function() {
+            var order = $(this).val(),
+                bid = $(this).closest('.item').data('id');
+            let btn = $(this);
+            $('.order, .order_func', blocklist).prop('disabled', true);
+            $.ajax({
+                type: "POST",
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + ($(this).is('.order') ? '=blocks_change_order_group' : '=blocks_change_order'),
+                data: ($(this).is('.order_func') ? 'func_id=' + func_id + '&' : '') + 'order=' + order + '&bid=' + bid + '&checkss=' + blocklist.data('checkss'),
+                success: function() {
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    $('.order, .order_func', blocklist).prop('disabled', false);
+                    btn.val(btn.data('current'));
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+
+        // Bật/tắt block
+        $('.act', blocklist).on('change', function() {
+            var that = $(this),
+                item = that.closest('.item'),
+                bid = item.data('id'),
+                checkss = item.data('checkss');
+            that.prop('disabled', true);
+            $.ajax({
+                type: "POST",
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + "=block_change_show",
+                data: "bid=" + bid + "&checkss=" + checkss,
+                success: function() {
+                    that.prop('disabled', false);
+                    nvToast(that.data('success'), 'success');
+                },
+                error: function(xhr, text, err) {
+                    that.prop('disabled', false);
+                    that.val(that.data('current'));
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+
+        // Nút hiển thị danh sách vị trí hiển thị của block
+        $('.viewlist', blocklist).on('click', function() {
+            $(this).hide().closest('.item').find('.funclist').removeClass('d-none');
+        });
+
+        // Bật modal thay đổi vị trí block
+        $('.change_pos_block', blocklist).on('click', function(e) {
+            e.preventDefault();
+            bootstrap.Modal.getOrCreateInstance($('.modal', $(this).closest('.item'))[0]).show();
+        });
+
+        // Thay đổi vị trí block
+        function changeBlPos(btn) {
+            btn.prop('disabled', true);
+            let pos = btn.val();
+            $.ajax({
+                type: "POST",
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + "=blocks_change_pos",
+                data: "bid=" + btn.closest('.item').data('id') + "&pos=" + pos + "&checkss=" + blocklist.data('checkss'),
+                success: function() {
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    btn.prop('disabled', false);
+                    btn.val(btn.data('default'));
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        }
+        $('[name=listpos]', blocklist).on('change', function() {
+            let btn = $(this);
+            if (blocklist.data('funcid')) {
+                nvConfirm(blocklist.data('warning1') + ' ' + btn.closest('.item').data('id') + '. ' + blocklist.data('warning2'), () => {
+                    changeBlPos(btn);
+                }, () => {
+                    btn.val(btn.data('default'));
+                    bootstrap.Modal.getOrCreateInstance(btn.closest('.modal')[0]).hide();
+                });
+            } else {
+                changeBlPos(btn);
+            }
+        });
+
+        // Xóa block
+        $('.delete_block', blocklist).on('click', function(e) {
+            e.preventDefault();
+            let btn = $(this);
+            let icon = $('i', btn);
+            if (icon.is('.fa-spinner')) {
+                return;
+            }
+            nvConfirm(btn.data('confirm'), () => {
+                icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+                $.ajax({
+                    type: 'POST',
+                    url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=blocks_del&nocache=' + new Date().getTime(),
+                    data: {
+                        bid: parseInt(btn.closest('.item').data('id')),
+                        checkss: blocklist.data('checkss')
+                    },
+                    dataType: 'json',
+                    cache: false,
+                    success: function(respon) {
+                        if (!respon.success) {
+                            icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                            nvToast(respon.text, 'error');
+                            return;
+                        }
+                        location.reload();
+                    },
+                    error: function(xhr, text, err) {
+                        icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                        nvToast(text, 'error');
+                        console.log(xhr, text, err);
+                    }
+                });
+            });
+        });
+
+        // Thao tác với nhiều block
+        $('.bl_action', blocklist).on('click', function(e) {
+            e.preventDefault();
+            let btn = $(this);
+            let action = $('[name=action]', blocklist).val();
+            let list = [];
+            $('[name=idlist]:checked', blocklist).each(function() {
+                list.push($(this).val());
+            });
+            if (list.length < 1) {
+                nvToast(blocklist.data('error-noblock'), 'warning');
+                return;
+            }
+            list = list.join(',');
+
+            if (action == 'blocks_show_device') {
+                // Chọn thiết bị hiển thị của nhiều block
+                bootstrap.Modal.getOrCreateInstance('#modal_show_device').show();
+            } else if (action == 'delete_group') {
+                // Xóa nhiều block
+                nvConfirm(blocklist.data('del-confirm'), () => {
+                    btn.prop('disabled', true);
+                    $.ajax({
+                        type: "POST",
+                        url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + "=blocks_del_group",
+                        data: "list=" + list + "&checkss=" + blocklist.data('checkss'),
+                        success: function(data) {
+                            nvToast(data, 'info');
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
+                        },
+                        error: function(xhr, text, err) {
+                            btn.prop('disabled', false);
+                            nvToast(err, 'error');
+                            console.log(xhr, text, err);
+                        }
+                    });
+                });
+            } else if (action == 'bls_act') {
+                // Bật nhiều block
+                $('[name=action],.bl_action', blocklist).prop('disabled', true);
+                btn.prop('disabled', true);
+                $.ajax({
+                    type: "POST",
+                    url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + "=block_change_show",
+                    data: "multi=1&list=" + list + "&checkss=" + blocklist.data('checkss'),
+                    success: function() {
+                        btn.prop('disabled', false);
+                        $('[name=action],.bl_action', blocklist).prop('disabled', false);
+                        $('[name=idlist]:checked', blocklist).each(function() {
+                            var item = $(this).closest('.item');
+                            $('[name=act]', item).val('1');
+                        });
+                    },
+                    error: function(xhr, text, err) {
+                        btn.prop('disabled', false);
+                        $('[name=action],.bl_action', blocklist).prop('disabled', false);
+                        nvToast(err, 'error');
+                        console.log(xhr, text, err);
+                    }
+                });
+            } else if (action == 'bls_deact') {
+                // Tắt nhiều block
+                $.ajax({
+                    type: "POST",
+                    url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + "=block_change_show",
+                    data: "multi=0&list=" + list + "&checkss=" + blocklist.data('checkss'),
+                    success: function() {
+                        btn.prop('disabled', false);
+                        $('[name=action],.bl_action', blocklist).prop('disabled', false);
+                        $('[name=idlist]:checked', blocklist).each(function() {
+                            var item = $(this).closest('.item');
+                            $('[name=act]', item).val('0');
+                        });
+                    },
+                    error: function(xhr, text, err) {
+                        btn.prop('disabled', false);
+                        $('[name=action],.bl_action', blocklist).prop('disabled', false);
+                        nvToast(err, 'error');
+                        console.log(xhr, text, err);
+                    }
+                });
+            }
+        });
+
+        // Form Thay đổi thiết bị hiển thị
+        $('#modal_show_device .submit', blocklist).on('click', function() {
+            let list = [], btn = $(this),
+                active_device = [];
+            $('[name=idlist]:checked', blocklist).each(function() {
+                list.push($(this).val());
+            });
+            $('[name=active_device]:checked', blocklist).each(function() {
+                active_device.push($(this).val());
+            });
+            btn.prop('disabled', true);
+            $.ajax({
+                type: "POST",
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + "=blocks_change_active",
+                data: "list=" + list + "&active_device=" + active_device + "&selectthemes=" + blocklist.data('selectthemes') + "&checkss=" + blocklist.data('checkss'),
+                success: function(data) {
+                    btn.prop('disabled', false);
+                    nvToast(data, 'info');
+                    bootstrap.Modal.getOrCreateInstance('#modal_show_device').hide();
+                },
+                error: function(xhr, text, err) {
+                    btn.prop('disabled', false);
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    }
 });

@@ -54,197 +54,194 @@ if (!empty($layout_array)) {
 }
 $array_layout_func_default = [];
 
-if (file_exists(NV_ROOTDIR . '/themes/' . $selectthemes . '/config.ini')) {
-    $xml = simplexml_load_file(NV_ROOTDIR . '/themes/' . $selectthemes . '/config.ini');
-    $layoutdefault = (string) $xml->layoutdefault;
-    $layout = $xml->xpath('setlayout/layout');
+$page_title = $nv_Lang->getModule('setup_layout') . ':' . $selectthemes;
 
-    for ($i = 0, $count = sizeof($layout); $i < $count; ++$i) {
-        $layout_name = (string) $layout[$i]->name;
+if (!file_exists(NV_ROOTDIR . '/themes/' . $selectthemes . '/config.ini')) {
+    $contents = nv_theme_alert($nv_Lang->getGlobal('danger_level'), $nv_Lang->getModule('block_error_fileconfig_content'), 'danger');
+    include NV_ROOTDIR . '/includes/header.php';
+    echo nv_admin_theme($contents);
+    include NV_ROOTDIR . '/includes/footer.php';
+}
 
-        if (in_array($layout_name, $layout_array, true)) {
-            $layout_funcs = $layout[$i]->xpath('funcs');
+$xml = simplexml_load_file(NV_ROOTDIR . '/themes/' . $selectthemes . '/config.ini');
+$layoutdefault = (string) $xml->layoutdefault;
+$layout = $xml->xpath('setlayout/layout');
 
-            for ($j = 0, $sizeof = sizeof($layout_funcs); $j < $sizeof; ++$j) {
-                $mo_funcs = (string) $layout_funcs[$j];
-                $mo_funcs = explode(':', $mo_funcs);
-                $m = $mo_funcs[0];
-                $arr_f = explode(',', $mo_funcs[1]);
+for ($i = 0, $count = sizeof($layout); $i < $count; ++$i) {
+    $layout_name = (string) $layout[$i]->name;
 
-                foreach ($arr_f as $f) {
-                    $array_layout_func_default[$m][$f] = $layout_name;
-                }
+    if (in_array($layout_name, $layout_array, true)) {
+        $layout_funcs = $layout[$i]->xpath('funcs');
+
+        for ($j = 0, $sizeof = sizeof($layout_funcs); $j < $sizeof; ++$j) {
+            $mo_funcs = (string) $layout_funcs[$j];
+            $mo_funcs = explode(':', $mo_funcs);
+            $m = $mo_funcs[0];
+            $arr_f = explode(',', $mo_funcs[1]);
+
+            foreach ($arr_f as $f) {
+                $array_layout_func_default[$m][$f] = $layout_name;
             }
         }
     }
+}
 
-    $page_title = $nv_Lang->getModule('setup_layout') . ':' . $selectthemes;
-    $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $selectthemes . '_' . $admin_info['userid']);
-    $xtpl = new XTemplate('setuplayout.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-    $xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-    $xtpl->assign('MODULE_NAME', $module_name);
-    $xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-    $xtpl->assign('OP', $op);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    $xtpl->assign('CHECKSS', $checkss);
+$checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $selectthemes . '_' . $admin_info['userid']);
 
-    if ($checkss == $nv_Request->get_string('checkss', 'post')) {
-        if ($nv_Request->isset_request('save', 'post') and $nv_Request->isset_request('func', 'post')) {
-            nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('setup_layout') . ' theme: "' . $selectthemes . '"', '', $admin_info['userid']);
+if ($checkss == $nv_Request->get_string('checkss', 'post')) {
+    if ($nv_Request->isset_request('save', 'post') and $nv_Request->isset_request('func', 'post')) {
+        nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('setup_layout') . ' theme: "' . $selectthemes . '"', '', $admin_info['userid']);
 
-            $func_arr_save = $nv_Request->get_array('func', 'post');
+        $func_arr_save = $nv_Request->get_array('func', 'post');
 
-            foreach ($func_arr_save as $func_id => $layout_name) {
-                if (in_array($layout_name, $layout_array, true)) {
-                    $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_modthemes SET layout=:layout WHERE func_id = :func_id AND theme= :theme');
-                    $sth->bindParam(':layout', $layout_name, PDO::PARAM_STR);
-                    $sth->bindParam(':func_id', $func_id, PDO::PARAM_INT);
-                    $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
-                    $sth->execute();
-                }
-            }
-
-            $set_layout_site = true;
-
-            $xtpl->parse('main.complete');
-        } elseif ($nv_Request->isset_request('saveall', 'post') and $nv_Request->isset_request('layout', 'post')) {
-            $layout = $nv_Request->get_string('layout', 'post');
-            $module = $nv_Request->get_string('block_module', 'post');
-            if (in_array($layout, $layout_array, true)) {
-                if (empty($module)) {
-                    //Setup layout for all module
-                    $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_modthemes SET layout= :layout WHERE func_id IN (SELECT func_id FROM ' . NV_MODFUNCS_TABLE . ' WHERE show_func=1) AND theme= :theme');
-                    $sth->bindParam(':layout', $layout, PDO::PARAM_STR);
-                    $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
-                    $sth->execute();
-                    $set_layout_site = true;
-                } elseif (isset($site_mods[$module])) {
-                    //Setup layout for module
-                    $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_modthemes SET layout= :layout WHERE func_id IN (SELECT func_id FROM ' . NV_MODFUNCS_TABLE . ' WHERE in_module = :in_module AND show_func=1) AND theme= :theme');
-                    $sth->bindParam(':layout', $layout, PDO::PARAM_STR);
-                    $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
-                    $sth->bindParam(':in_module', $module, PDO::PARAM_STR);
-                    $sth->execute();
-                    $set_layout_site = true;
-                }
-            }
-        }
-    }
-
-    $array_layout_func_data = [];
-    $sth = $db->prepare('SELECT func_id, layout FROM ' . NV_PREFIXLANG . '_modthemes WHERE theme= :theme');
-    $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
-    $sth->execute();
-    while ([$func_id, $layout] = $sth->fetch(3)) {
-        $array_layout_func_data[$func_id] = $layout;
-    }
-
-    if (!isset($array_layout_func_data[0])) {
-        $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_modthemes
-			(func_id, layout, theme) VALUES
-			(0, :layout, :theme)');
-        $sth->bindParam(':layout', $layoutdefault, PDO::PARAM_STR);
-        $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
-        $sth->execute();
-
-        $set_layout_site = true;
-    } elseif ($array_layout_func_data[0] != $layoutdefault) {
-        $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_modthemes SET layout= :layout WHERE func_id=0 AND theme= :theme');
-        $sth->bindParam(':layout', $layoutdefault, PDO::PARAM_STR);
-        $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
-        $sth->execute();
-
-        $set_layout_site = true;
-    }
-
-    $array_layout_func = [];
-    $fnresult = $db->query('SELECT func_id, func_name, func_custom_name, in_module FROM ' . NV_MODFUNCS_TABLE . ' WHERE show_func=1 ORDER BY subweight ASC');
-    while ([$func_id, $func_name, $func_custom_name, $in_module] = $fnresult->fetch(3)) {
-        if (isset($array_layout_func_data[$func_id]) and !empty($array_layout_func_data[$func_id])) {
-            $layout_name = $array_layout_func_data[$func_id];
-
-            if (!in_array($layout_name, $layout_array, true)) {
-                $layout_name = $layoutdefault;
-
-                $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_modthemes SET layout= :layout WHERE func_id= :func_id AND theme= :theme');
+        foreach ($func_arr_save as $func_id => $layout_name) {
+            if (in_array($layout_name, $layout_array, true)) {
+                $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_modthemes SET layout=:layout WHERE func_id = :func_id AND theme= :theme');
                 $sth->bindParam(':layout', $layout_name, PDO::PARAM_STR);
                 $sth->bindParam(':func_id', $func_id, PDO::PARAM_INT);
                 $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
                 $sth->execute();
-
-                $set_layout_site = true;
             }
-        } else {
-            $layout_name = (isset($array_layout_func_default[$in_module][$func_name])) ? $array_layout_func_default[$in_module][$func_name] : $layoutdefault;
-            $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_modthemes (func_id, layout, theme) VALUES (:func_id, :layout, :theme)');
-            $sth->bindParam(':func_id', $func_id, PDO::PARAM_INT);
+        }
+
+        $nv_Cache->delMod('themes');
+        $nv_Cache->delMod('modules');
+
+        nv_jsonOutput([
+            'status' => 'success',
+            'mess' => $nv_Lang->getModule('setup_updated_layout'),
+            'refresh' => 1
+        ]);
+    }
+
+    // Thiết lập cho tất cả các functions
+    if ($nv_Request->isset_request('saveall', 'post') and $nv_Request->isset_request('layout', 'post')) {
+        $layout = $nv_Request->get_string('layout', 'post');
+        $module = $nv_Request->get_string('block_module', 'post');
+        if (!in_array($layout, $layout_array, true)) {
+            nv_jsonOutput([
+                'status' => 'error',
+                'mess' => $nv_Lang->getModule('setup_select_layout_error')
+            ]);
+        }
+        if (!empty($module) and !isset($site_mods[$module])) {
+            nv_jsonOutput([
+                'status' => 'error',
+                'mess' => 'Module not exists!!!'
+            ]);
+        }
+        if (empty($module)) {
+            // Thiết lập layout cho tất cả
+            $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_modthemes SET layout= :layout WHERE func_id IN (SELECT func_id FROM ' . NV_MODFUNCS_TABLE . ' WHERE show_func=1) AND theme= :theme');
+            $sth->bindParam(':layout', $layout, PDO::PARAM_STR);
+            $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
+            $sth->execute();
+        } elseif (isset($site_mods[$module])) {
+            // Thiết lập layout cho module
+            $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_modthemes SET layout= :layout WHERE func_id IN (SELECT func_id FROM ' . NV_MODFUNCS_TABLE . ' WHERE in_module = :in_module AND show_func=1) AND theme= :theme');
+            $sth->bindParam(':layout', $layout, PDO::PARAM_STR);
+            $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
+            $sth->bindParam(':in_module', $module, PDO::PARAM_STR);
+            $sth->execute();
+        }
+
+        $nv_Cache->delMod('themes');
+        $nv_Cache->delMod('modules');
+
+        nv_jsonOutput([
+            'status' => 'success',
+            'mess' => $nv_Lang->getModule('setup_updated_layout'),
+            'refresh' => 1
+        ]);
+    }
+}
+
+$array_layout_func_data = [];
+$sth = $db->prepare('SELECT func_id, layout FROM ' . NV_PREFIXLANG . '_modthemes WHERE theme= :theme');
+$sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
+$sth->execute();
+while ([$func_id, $layout] = $sth->fetch(3)) {
+    $array_layout_func_data[$func_id] = $layout;
+}
+
+if (!isset($array_layout_func_data[0])) {
+    $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_modthemes
+        (func_id, layout, theme) VALUES
+        (0, :layout, :theme)');
+    $sth->bindParam(':layout', $layoutdefault, PDO::PARAM_STR);
+    $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
+    $sth->execute();
+
+    $set_layout_site = true;
+} elseif ($array_layout_func_data[0] != $layoutdefault) {
+    $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_modthemes SET layout= :layout WHERE func_id=0 AND theme= :theme');
+    $sth->bindParam(':layout', $layoutdefault, PDO::PARAM_STR);
+    $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
+    $sth->execute();
+
+    $set_layout_site = true;
+}
+
+$array_layout_func = [];
+$fnresult = $db->query('SELECT func_id, func_name, func_custom_name, in_module FROM ' . NV_MODFUNCS_TABLE . ' WHERE show_func=1 ORDER BY subweight ASC');
+while ([$func_id, $func_name, $func_custom_name, $in_module] = $fnresult->fetch(3)) {
+    if (isset($array_layout_func_data[$func_id]) and !empty($array_layout_func_data[$func_id])) {
+        $layout_name = $array_layout_func_data[$func_id];
+
+        if (!in_array($layout_name, $layout_array, true)) {
+            $layout_name = $layoutdefault;
+
+            $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_modthemes SET layout= :layout WHERE func_id= :func_id AND theme= :theme');
             $sth->bindParam(':layout', $layout_name, PDO::PARAM_STR);
+            $sth->bindParam(':func_id', $func_id, PDO::PARAM_INT);
             $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
             $sth->execute();
 
             $set_layout_site = true;
         }
+    } else {
+        $layout_name = (isset($array_layout_func_default[$in_module][$func_name])) ? $array_layout_func_default[$in_module][$func_name] : $layoutdefault;
+        $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_modthemes (func_id, layout, theme) VALUES (:func_id, :layout, :theme)');
+        $sth->bindParam(':func_id', $func_id, PDO::PARAM_INT);
+        $sth->bindParam(':layout', $layout_name, PDO::PARAM_STR);
+        $sth->bindParam(':theme', $selectthemes, PDO::PARAM_STR);
+        $sth->execute();
 
-        $array_layout_func[$in_module][$func_name] = [$func_id, $func_custom_name, $layout_name];
+        $set_layout_site = true;
     }
 
-    if ($set_layout_site) {
-        $nv_Cache->delMod('themes');
-        $nv_Cache->delMod('modules');
-    }
-
-    foreach ($layout_array as $_layout) {
-        $xtpl->assign('LAYOUT', $_layout);
-        $xtpl->parse('main.layout');
-    }
-
-    $rows = $db->query('SELECT title, custom_title FROM ' . NV_MODULES_TABLE . ' ORDER BY weight ASC')->fetchAll();
-    $number_func = sizeof($rows);
-
-    $i = 1;
-    foreach ($rows as $row) {
-        if (isset($array_layout_func[$row['title']])) {
-            $xtpl->assign('MODULE', $row);
-            $xtpl->parse('main.module');
-
-            $array_layout_func_mod = $array_layout_func[$row['title']];
-
-            foreach ($array_layout_func_mod as $func_name => $func_arr_val) {
-                foreach ($layout_array as $value) {
-                    $xtpl->assign('OPTION', ['key' => $value, 'selected' => ($func_arr_val[2] == $value) ? ' selected="selected"' : '']);
-                    $xtpl->parse('main.loop.func.option');
-                }
-
-                $xtpl->assign('FUNC_ARR_VAL', $func_arr_val);
-                $xtpl->parse('main.loop.func');
-            }
-
-            if ($i % 3 == 0 and $i < $number_func) {
-                $xtpl->parse('main.loop.endtr');
-            } else {
-                $xtpl->parse('main.loop.endtd');
-            }
-
-            ++$i;
-
-            $xtpl->parse('main.loop');
-        }
-    }
-
-    --$i;
-
-    if ($i % 3 != 0) {
-        $i = $i % 3;
-        for ($j = $i; $j < 3; ++$j) {
-            $xtpl->parse('main.fixend');
-        }
-    }
-
-    $xtpl->parse('main');
-    $contents = $xtpl->text('main');
+    $array_layout_func[$in_module][$func_name] = [$func_id, $func_custom_name, $layout_name];
 }
+
+if ($set_layout_site) {
+    $nv_Cache->delMod('themes');
+    $nv_Cache->delMod('modules');
+}
+
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/setuplayout.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+$tpl->assign('CHECKSS', $checkss);
+$tpl->assign('LAYOUT_ARRAY', $layout_array);
+
+$rows = $db->query('SELECT title, custom_title FROM ' . NV_MODULES_TABLE . ' ORDER BY weight ASC')->fetchAll();
+$number_func = sizeof($rows);
+$array_modules = [];
+foreach ($rows as $row) {
+    if (isset($array_layout_func[$row['title']])) {
+        $array_modules[$row['title']] = [
+            'module' => $row,
+            'funcs' => $array_layout_func[$row['title']]
+        ];
+    }
+}
+$tpl->assign('ARRAY_MODULES', $array_modules);
+
+$contents = $tpl->fetch('setuplayout.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

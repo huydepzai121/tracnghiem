@@ -113,23 +113,40 @@ if ($set_by_func) {
     $sth->execute();
 }
 while ($row = $sth->fetch()) {
+    $row['module'] = ucfirst($row['module']);
+    $row['order_func'] = $set_by_func ? 'order_func' : 'order';
+    $row['checkss'] = md5(NV_CHECK_SESSION . '_' . $row['bid']);
+    $row['dtime_type_format'] = $nv_Lang->getModule('dtime_type_' . $row['dtime_type']);
+
+    // Lấy danh sách function hiển thị của mỗi block
+    $row['in_funcs'] = [];
+    if (empty($row['all_func'])) {
+        $result_func = $db->query('SELECT a.func_id, a.in_module, a.func_custom_name FROM ' . NV_MODFUNCS_TABLE . ' a INNER JOIN ' . NV_BLOCKS_TABLE . '_weight b ON a.func_id=b.func_id WHERE b.bid=' . $row['bid']);
+        while ($func = $result_func->fetch()) {
+            $row['in_funcs'][] = $func;
+        }
+        $result_func->closeCursor();
+    }
+
     $blocklist[$row['bid']] = $row;
     !isset($positionlist[$row['position']]) && $positionlist[$row['position']] = 0;
     ++$positionlist[$row['position']];
 }
 
 // Tiêu đề trang
-$page_title = $set_by_func ? $nv_Lang->getModule('theme', nv_ucfirst($selectthemes)) . ' -> ' . $nv_Lang->getModule('blocks_by_funcs') : $nv_Lang->getModule('theme', nv_ucfirst($selectthemes)) . ' -> ' . $nv_Lang->getModule('blocks');
+$page_title = $set_by_func ? $nv_Lang->getModule('theme', nv_ucfirst($selectthemes)) . ' &gt; ' . $nv_Lang->getModule('blocks_by_funcs') : $nv_Lang->getModule('theme', nv_ucfirst($selectthemes)) . ' &gt; ' . $nv_Lang->getModule('blocks');
 
-$xtpl = new XTemplate('blocks.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('BLOCKREDIRECT', '');
-$xtpl->assign('CHECKSS', md5($selectthemes . NV_CHECK_SESSION));
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('SELECTTHEMES', $selectthemes);
-$xtpl->assign('FUNC_ID', $func_id);
-$xtpl->assign('SELECTEDMODULE', $selectedmodule);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/blocks.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+$tpl->assign('CHECKSS', md5($selectthemes . NV_CHECK_SESSION));
+$tpl->assign('SELECTTHEMES', $selectthemes);
+$tpl->assign('FUNC_ID', $func_id);
+$tpl->assign('SELECTEDMODULE', $selectedmodule);
 
 // Xác đinh URL Kéo thả block
 $new_drag_block = $nv_Request->get_int('drag_block', 'session', 0) ? 0 : 1;
@@ -138,126 +155,22 @@ $url_dblock = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_
 if (empty($new_drag_block)) {
     $url_dblock .= '&amp;nv_redirect=' . nv_redirect_encrypt($page_url);
 }
-$xtpl->assign('URL_DBLOCK', $url_dblock);
-$xtpl->assign('LANG_DBLOCK', $lang_drag_block);
+$tpl->assign('URL_DBLOCK', $url_dblock);
+$tpl->assign('LANG_DBLOCK', $lang_drag_block);
+$tpl->assign('MODLIST', $modlist);
+$tpl->assign('SET_BY_FUNC', $set_by_func);
+$tpl->assign('FUNCLIST', $funclist);
+$tpl->assign('BLOCKLIST', $blocklist);
 
-// SELECT chọn module
-foreach ($modlist as $key => $title) {
-    $xtpl->assign('MODULE', [
-        'key' => $key,
-        'selected' => ($selectedmodule == $key) ? ' selected="selected"' : '',
-        'title' => nv_ucfirst($nv_Lang->getModule('module', $title))
-    ]);
-    $xtpl->parse('main.module');
+$array_theme_pos = [];
+$count = sizeof($theme_positionlist);
+for ($i = 0; $i < $count; ++$i) {
+    $array_theme_pos[(string) $theme_positionlist[$i]->tag] = (string) $theme_positionlist[$i]->name;
 }
+$tpl->assign('THEME_POS', $array_theme_pos);
+$tpl->assign('POSITIONLIST', $positionlist);
 
-// SELECT chọn function
-if ($set_by_func) {
-    foreach ($funclist as $key => $title) {
-        $xtpl->assign('FUNCTION', [
-            'key' => $key,
-            'selected' => ($func_id == $key) ? ' selected="selected"' : '',
-            'title' => nv_ucfirst($nv_Lang->getModule('function', $title))
-        ]);
-        $xtpl->parse('main.function.func');
-    }
-    $xtpl->parse('main.function');
-}
-
-// Hiển thị danh sách block
-$md = '';
-foreach ($blocklist as $row) {
-    $row['module'] = ucfirst($row['module']);
-    $row['order_func'] = $set_by_func ? 'order_func' : 'order';
-    $row['checkss'] = md5(NV_CHECK_SESSION . '_' . $row['bid']);
-    $row['dtime_type_format'] = $nv_Lang->getModule('dtime_type_' . $row['dtime_type']);
-    $xtpl->assign('ROW', $row);
-
-    // Thứ tự block
-    $numposition = $positionlist[$row['position']];
-    $weight = $set_by_func ? $row['bweight'] : $row['weight'];
-    for ($i = 1; $i <= $numposition; ++$i) {
-        $xtpl->assign('WEIGHT', [
-            'key' => $i,
-            'selected' => ($weight == $i) ? ' selected="selected"' : ''
-        ]);
-        $xtpl->parse('main.loop.weight');
-    }
-
-    // Vị trí block
-    $count = sizeof($theme_positionlist);
-    $position_name = '';
-    for ($i = 0; $i < $count; ++$i) {
-        $title = (string) $theme_positionlist[$i]->name;
-        $selected = '';
-        if ($row['position'] == $theme_positionlist[$i]->tag) {
-            $position_name = $title;
-            $selected = ' selected="selected"';
-        }
-
-        $xtpl->assign('POSITION', [
-            'key' => (string) $theme_positionlist[$i]->tag,
-            'selected' => $selected,
-            'title' => $title
-        ]);
-        $xtpl->parse('main.loop.position');
-    }
-
-    // Chia block theo vị trí
-    if (!empty($md) and $row['position'] != $md) {
-        $xtpl->parse('main.loop.tbody');
-    }
-    if ($row['position'] != $md) {
-        $xtpl->assign('POSITION_NAME', $position_name);
-        $xtpl->parse('main.loop.tbody2');
-    }
-    $md = $row['position'];
-
-    if ($row['all_func'] == 1) {
-        $xtpl->parse('main.loop.all_func');
-    } else {
-        $result_func = $db->query('SELECT a.func_id, a.in_module, a.func_custom_name FROM ' . NV_MODFUNCS_TABLE . ' a INNER JOIN ' . NV_BLOCKS_TABLE . '_weight b ON a.func_id=b.func_id WHERE b.bid=' . $row['bid']);
-        $count = 0;
-        while ([$funcid_inlist, $func_inmodule, $funcname_inlist] = $result_func->fetch(3)) {
-            $xtpl->assign('FUNCID_INLIST', $funcid_inlist);
-            $xtpl->assign('FUNC_INMODULE', $func_inmodule);
-            $xtpl->assign('FUNCNAME_INLIST', $funcname_inlist);
-
-            $xtpl->parse('main.loop.func_inmodule.item');
-            ++$count;
-        }
-        if ($count > 2) {
-            $xtpl->parse('main.loop.func_inmodule.more');
-            $xtpl->parse('main.loop.func_inmodule.more2');
-        }
-        $xtpl->parse('main.loop.func_inmodule');
-    }
-
-    $statuses = [$nv_Lang->getModule('act_0'), $nv_Lang->getModule('act_1')];
-    foreach ($statuses as $val => $name) {
-        $xtpl->assign('STATUS', [
-            'val' => $val,
-            'sel' => $val == $row['act'] ? ' selected="selected"' : '',
-            'name' => $name
-        ]);
-        $xtpl->parse('main.loop.status');
-    }
-
-    $xtpl->parse('main.loop');
-}
-
-$active_device = [1];
-for ($i = 1; $i <= 4; ++$i) {
-    $xtpl->assign('ACTIVE_DEVICE', [
-        'key' => $i,
-        'checked' => (in_array($i, $active_device, true)) ? ' checked="checked"' : '',
-        'title' => $nv_Lang->getModule('show_device_' . $i)
-    ]);
-    $xtpl->parse('main.active_device');
-}
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('blocks.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

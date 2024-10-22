@@ -96,6 +96,7 @@ $lang_module['package_noselect_module_theme'] = 'It is mandatory to choose the t
 $lang_module['setup_layout'] = 'Layout setup';
 $lang_module['setup_module'] = 'Module';
 $lang_module['setup_select_layout'] = 'Choose layout';
+$lang_module['setup_select_layout_error'] = 'Please select layout';
 $lang_module['setup_updated_layout'] = 'Layout setup is successful!';
 $lang_module['setup_error_layout'] = 'Unable to setup Layout';
 $lang_module['setup_save_layout'] = 'Save all changes';

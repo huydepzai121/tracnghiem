@@ -96,6 +96,7 @@ $lang_module['package_noselect_module_theme'] = 'Obligé de choisir un thème et
 $lang_module['setup_layout'] = 'Configuration de Layout';
 $lang_module['setup_module'] = 'Module';
 $lang_module['setup_select_layout'] = 'Sélectionner le Layout';
+$lang_module['setup_select_layout_error'] = 'Veuillez sélectionner la mise en page';
 $lang_module['setup_updated_layout'] = 'Configuration de Layout avec succès!';
 $lang_module['setup_error_layout'] = 'Impossible de configurer le Layout';
 $lang_module['setup_save_layout'] = 'Sauver';

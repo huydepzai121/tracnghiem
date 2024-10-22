@@ -96,6 +96,7 @@ $lang_module['package_noselect_module_theme'] = 'Bắt buộc phải chọn them
 $lang_module['setup_layout'] = 'Thiết lập layout';
 $lang_module['setup_module'] = 'Module';
 $lang_module['setup_select_layout'] = 'Chọn layout';
+$lang_module['setup_select_layout_error'] = 'Vui lòng chọn layout';
 $lang_module['setup_updated_layout'] = 'Thiết lập layout thành công!';
 $lang_module['setup_error_layout'] = 'Không thể thực hiện lệnh thiết lập layout';
 $lang_module['setup_save_layout'] = 'Lưu tất cả thay đổi';
