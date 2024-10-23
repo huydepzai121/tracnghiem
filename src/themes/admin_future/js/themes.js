@@ -482,4 +482,113 @@ $(function() {
             });
         });
     }
+
+    let mainthemes = $('#mainthemes');
+    if (mainthemes.length) {
+        // Thiết lập, kích hoạt
+        $(".activate", mainthemes).on('click', function(e) {
+            e.preventDefault();
+            let btn = $(this);
+            let icon = $('i', btn);
+            if (icon.is('.fa-spinner')) {
+                return;
+            }
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: "POST",
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + "=activatetheme",
+                data: "theme=" + btn.data('theme') + "&checkss=" + btn.data("checkss"),
+                success: function(data) {
+                    if (data != "OK_" + btn.data('theme')) {
+                        icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                        nvToast(data, 'error');
+                        return;
+                    }
+                    location.reload();
+                },
+                error: function(xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+
+        // Xóa các thiết lập
+        $(".delete", mainthemes).click(function(e) {
+            e.preventDefault();
+            let btn = $(this);
+            let icon = $('i', btn);
+            if (icon.is('.fa-spinner')) {
+                return;
+            }
+            nvConfirm(btn.data('confirm') + ' ' + btn.data('theme'), () => {
+                icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+                $.ajax({
+                    type: "POST",
+                    url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + "=deletetheme",
+                    data: "theme=" + btn.data('theme') + "&checkss=" + btn.data("checkss"),
+                    success: function(data) {
+                        icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                        nvToast(data, 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                    },
+                    error: function(xhr, text, err) {
+                        icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                        nvToast(text, 'error');
+                        console.log(xhr, text, err);
+                    }
+                });
+            });
+        });
+
+        // Cho phép xem trước
+        $('[data-toggle="previewtheme"]', mainthemes).on('click', function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            var $ctn = $this.closest('.modal');
+            if ($this.find('i').is(':visible')) {
+                return false;
+            }
+            $this.find('i').removeClass('d-none');
+            $.ajax({
+                type: "POST",
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + "=main",
+                data: "togglepreviewtheme=1&theme=" + $this.data('value'),
+                dataType: 'JSON',
+                success: function(data) {
+                    if (data.status == 'SUCCESS') {
+                        $this.find('span').html(data.spantext);
+                        if (data.mode == 'enable') {
+                            $('.preview-label', $ctn).removeClass('d-none');
+                            $('.preview-link', $ctn).removeClass('d-none');
+                            $('.preview-link', $ctn).find('[type="text"]').val(data.link);
+                            $this.closest('.d-flex').removeClass('justify-content-end').addClass('justify-content-between');
+                        } else {
+                            $('.preview-label', $ctn).addClass('d-none');
+                            $('.preview-link', $ctn).addClass('d-none');
+                            $this.closest('.d-flex').removeClass('justify-content-between').addClass('justify-content-end');
+                        }
+                    }
+                    $this.find('i').addClass('d-none');
+                },
+                error: function(xhr, text, err) {
+                    $this.find('i').addClass('d-none');
+                    nvToast(text, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+
+        $('.selectedfocus', mainthemes).on('focus', function() {
+            $(this).select();
+        });
+
+        let clipboard = new ClipboardJS('.preview-link-btn');
+        clipboard.on('success', function(e) {
+            nvToast($(e.trigger).data('success'), 'success');
+        });
+    }
 });

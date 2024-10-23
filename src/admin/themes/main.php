@@ -19,12 +19,6 @@ if (!empty($restrict_access)) {
     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=config');
 }
 
-$xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', $op);
-
 $theme_list = nv_scandir(NV_ROOTDIR . '/themes/', $global_config['check_theme']);
 $theme_mobile_list = nv_scandir(NV_ROOTDIR . '/themes/', $global_config['check_theme_mobile']);
 $theme_list = array_merge($theme_list, $theme_mobile_list);
@@ -77,6 +71,14 @@ if ($nv_Request->isset_request('togglepreviewtheme', 'post')) {
     nv_jsonOutput($array);
 }
 
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/main.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+$array = [];
 foreach ($theme_list as $value) {
     if (!$xml = @simplexml_load_file(NV_ROOTDIR . '/themes/' . $value . '/config.ini')) {
         $errorconfig[] = $value;
@@ -89,24 +91,7 @@ foreach ($theme_list as $value) {
 
     $info = $xml->xpath('info');
 
-    if ($global_config['site_theme'] == $value) {
-        $xtpl->assign('THEME_ACTIVE', ' active');
-        $xtpl->assign('BTN_ACTIVE', 'default');
-    } else {
-        $xtpl->assign('THEME_ACTIVE', '');
-        $xtpl->assign('BTN_ACTIVE', 'primary');
-    }
-
-    $xtpl->assign('ROW', [
-        'name' => (string) $info[0]->name,
-        'website' => (string) $info[0]->website,
-        'author' => (string) $info[0]->author,
-        'thumbnail' => (string) $info[0]->thumbnail,
-        'description' => (string) $info[0]->description,
-        'checkss' => md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $admin_info['userid'] . '_' . $value),
-        'value' => $value
-    ]);
-
+    // Các vị trí
     $position = $xml->xpath('positions');
     $positions = $position[0]->position;
     $pos = [];
@@ -115,57 +100,43 @@ foreach ($theme_list as $value) {
         $pos[] = $positions[$j]->name;
     }
 
-    $xtpl->assign('POSITION', implode('</code> <code>', $pos));
+    $array[$value] = [
+        'name' => (string) $info[0]->name,
+        'website' => (string) $info[0]->website,
+        'author' => (string) $info[0]->author,
+        'thumbnail' => (string) $info[0]->thumbnail,
+        'description' => (string) $info[0]->description,
+        'checkss' => md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $admin_info['userid'] . '_' . $value),
+        'value' => $value,
+        'pos' => $pos,
+        'allowed_delete' => 0,
+        'allowed_active' => 0,
+        'allowed_setting' => 0,
+        'allowed_preview' => 0,
+        'link_preview' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=nv-preview-theme&amp;theme=' . $value . '&amp;checksum=' . md5(NV_LANG_DATA . $value . $global_config['sitekey']), NV_MY_DOMAIN),
+    ];
 
-    $actions = 0;
     if ($global_config['site_theme'] != $value) {
-        $allow_preview = false;
         if (in_array($value, $array_site_theme, true)) {
             if ($value != 'default') {
-                $xtpl->parse('main.loop.actions.link_delete');
-                ++$actions;
+                $array[$value]['allowed_delete'] = 1;
             }
             if (!in_array($value, $theme_mobile_list, true)) {
-                $xtpl->parse('main.loop.actions.link_active');
-                ++$actions;
+                $array[$value]['allowed_active'] = 1;
             }
-            $allow_preview = true;
+            $array[$value]['allowed_preview'] = 1;
         } else {
-            $xtpl->parse('main.loop.actions.link_setting');
-            ++$actions;
-        }
-
-        if ($allow_preview) {
-            if (in_array($value, $array_allow_preview, true)) {
-                $xtpl->assign('SHOW_PREVIEW1', '');
-                $xtpl->assign('SHOW_PREVIEW2', '');
-                $xtpl->assign('TEXT_PREVIEW', $nv_Lang->getModule('preview_theme_off'));
-                $xtpl->assign('LINK_PREVIEW', urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=nv-preview-theme&theme=' . $value . '&checksum=' . md5(NV_LANG_DATA . $value . $global_config['sitekey']), NV_MY_DOMAIN));
-            } else {
-                $xtpl->assign('SHOW_PREVIEW1', ' hidden');
-                $xtpl->assign('SHOW_PREVIEW2', ' style="display: none;"');
-                $xtpl->assign('TEXT_PREVIEW', $nv_Lang->getModule('preview_theme_on'));
-                $xtpl->assign('LINK_PREVIEW', '');
-            }
-
-            $xtpl->parse('main.loop.preview');
+            $array[$value]['allowed_setting'] = 1;
         }
     }
-
-    if ($actions > 0) {
-        $xtpl->parse('main.loop.actions');
-    }
-
-    $xtpl->parse('main.loop');
 }
 
-if (!empty($errorconfig)) {
-    $xtpl->assign('ERROR', implode('<br />', $errorconfig));
-    $xtpl->parse('main.error');
-}
+$tpl->assign('ARRAY', $array);
+$tpl->assign('ERRORCONFIG', $errorconfig);
+$tpl->assign('GCONFIG', $global_config);
+$tpl->assign('ARRAY_ALLOW_PREVIEW', $array_allow_preview);
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('main.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
