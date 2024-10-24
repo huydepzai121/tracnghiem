@@ -31,7 +31,7 @@ nv_add_hook($module_name, 'get_global_admin_theme', $priority, function ($vars) 
     if (in_array($module_name, ['themes', 'emailtemplates', 'settings', 'seotools', 'modules', 'extensions', 'webtools', 'language', 'siteinfo', 'authors', 'database'])) {
         return $new_theme;
     }
-    if ($module_name == 'upload' and in_array($op, ['thumbconfig', 'uploadconfig'])) {
+    if ($module_name == 'upload' and in_array($op, ['config', 'thumbconfig', 'uploadconfig'])) {
         return $new_theme;
     }
 

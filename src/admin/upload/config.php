@@ -63,8 +63,11 @@ if ($nv_Request->isset_request('save', 'post')) {
     }
 
     $nv_Cache->delAll();
-
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&rand=' . nv_genpass());
+    nv_jsonOutput([
+        'status' => 'success',
+        'mess' => $nv_Lang->getGlobal('save_success'),
+        'refresh' => 1
+    ]);
 }
 
 $page_title = $nv_Lang->getModule('imgconfig');
@@ -82,65 +85,30 @@ $array_autologosize = [
     'autologosize3' => $global_config['autologosize3']
 ];
 
-$xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('ADMIN_THEME', $global_config['module_theme']);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('OP', $op);
-$xtpl->assign('AUTOLOGOSIZE', $array_autologosize);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/config.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
 
-$a = 0;
-$xtpl->assign('CLASS', '');
+$tpl->registerPlugin('modifier', 'is_dir', 'is_dir');
+
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+$tpl->assign('GCONFIG', $global_config);
+$tpl->assign('AUTOLOGOSIZE', $array_autologosize);
+$tpl->assign('LOGO_POSITION', $array_logo_position);
+$tpl->assign('SITE_MODS', $site_mods);
 
 if ($global_config['autologomod'] == 'all') {
     $autologomod = [];
 } else {
     $autologomod = explode(',', $global_config['autologomod']);
 }
+$tpl->assign('AUTOLOGOMOD', $autologomod);
+$tpl->assign('NO_TINIFY', !class_exists('Tinify\Tinify'));
 
-foreach ($site_mods as $mod => $value) {
-    if (is_dir(NV_UPLOADS_REAL_DIR . '/' . $value['module_upload'])) {
-        ++$a;
-        $xtpl->assign('MOD_VALUE', $mod);
-        $xtpl->assign('LEV_CHECKED', (in_array($mod, $autologomod, true)) ? 'checked="checked"' : '');
-        $xtpl->assign('CUSTOM_TITLE', $value['custom_title']);
-        $xtpl->parse('main.loop1.loop2');
-
-        if ($a % 3 == 0) {
-            $xtpl->parse('main.loop1');
-        }
-    }
-}
-
-++$a;
-$xtpl->assign('MOD_VALUE', 'all');
-$xtpl->assign('LEV_CHECKED', ($global_config['autologomod'] == 'all') ? 'checked="checked"' : '');
-$xtpl->assign('CUSTOM_TITLE', '<strong>' . $nv_Lang->getModule('autologomodall') . '</strong>');
-
-$xtpl->parse('main.loop1.loop2');
-$xtpl->parse('main.loop1');
-
-foreach ($array_logo_position as $pos => $posName) {
-    $upload_logo_pos = [
-        'key' => $pos,
-        'title' => $posName,
-        'selected' => $pos == $global_config['upload_logo_pos'] ? ' selected="selected"' : ''
-    ];
-
-    $xtpl->assign('UPLOAD_LOGO_POS', $upload_logo_pos);
-    $xtpl->parse('main.upload_logo_pos');
-}
-
-$xtpl->assign('TINIFY_CHECKED', !empty($global_config['tinify_active']) ? 'checked="checked"' : '');
-$xtpl->assign('TINIFY_KEY', !empty($global_config['tinify_api']) ? $global_config['tinify_api'] : '');
-if (!class_exists('Tinify\Tinify')) {
-    $xtpl->parse('main.tinify_class');
-}
-
-$xtpl->parse('main');
-
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('config.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
