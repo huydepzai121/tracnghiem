@@ -891,14 +891,25 @@ $(function() {
                         bootstrap.Tab.getOrCreateInstance(document.getElementById(a.tab)).show();
                     }
                     if (a.input) {
-                        let ele = $('[name^=' + a.input + ']', that);
+                        let eleCtn = null;
+                        if (a.input_parent) {
+                            // Trường hơp nhiều input cùng tên có chỉ định ra thẻ cha của nó
+                            eleCtn = $(a.input_parent, that);
+                        } else {
+                            eleCtn = that;
+                        }
+                        let ele = $('[name^=' + a.input + ']', eleCtn);
                         if (ele.length) {
                             let pr = ele.parent();
                             if (pr.is('.input-group')) {
                                 pr.addClass('is-invalid');
                                 pr = pr.parent();
                             }
-                            $('.invalid-feedback', pr).html(a.mess);
+                            if ($('.invalid-feedback', pr).length) {
+                                $('.invalid-feedback', pr).html(a.mess);
+                            } else {
+                                nvToast(a.mess, 'error');
+                            }
                             ele.addClass('is-invalid').focus();
                             return;
                         }
