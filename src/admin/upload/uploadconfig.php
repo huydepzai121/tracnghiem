@@ -49,6 +49,13 @@ sort($myini['mimes']);
 unset($myini['mimes'][0]);
 
 if ($nv_Request->isset_request('save', 'post')) {
+    if ($nv_Request->get_title('checkss', 'post', '') !== NV_CHECK_SESSION) {
+        nv_jsonOutput([
+            'status' => 'error',
+            'mess' => 'Error session!!!'
+        ]);
+    }
+
     // Quyền điều hành chung
     $array_config = [];
     $array_config['show_folder_size'] = (int) $nv_Request->get_bool('show_folder_size', 'post', false);
@@ -188,73 +195,48 @@ if ($nv_Request->isset_request('save', 'post')) {
     } else {
         $nv_Cache->delMod('settings');
     }
-
-    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&rand=' . nv_genpass());
+    nv_jsonOutput([
+        'status' => 'success',
+        'mess' => $nv_Lang->getGlobal('save_success')
+    ]);
 }
 
 $page_title = $nv_Lang->getModule('uploadconfig');
 
-$xtpl = new XTemplate('uploadconfig.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-$xtpl->assign('OP', $op);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('NV_MAX_WIDTH', NV_MAX_WIDTH);
-$xtpl->assign('NV_MAX_HEIGHT', NV_MAX_HEIGHT);
-$xtpl->assign('NV_MOBILE_MODE_IMG', NV_MOBILE_MODE_IMG);
+$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/uploadconfig.tpl');
+$tpl = new \NukeViet\Template\NVSmarty();
 
-$array_config = [];
-$array_config['show_folder_size'] = empty($global_config['show_folder_size']) ? '' : ' checked="checked"';
+$tpl->registerPlugin('modifier', 'floor', 'floor');
+$tpl->registerPlugin('modifier', 'dsize', 'nv_convertfromBytes');
 
-$xtpl->assign('CONFIG', $array_config);
+$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+$tpl->assign('OP', $op);
+
+$tpl->assign('GCONFIG', $global_config);
 
 if (defined('NV_IS_GODADMIN') and $global_config['idsite'] == 0) {
     $sys_max_size = min(nv_converttoBytes(ini_get('upload_max_filesize')), nv_converttoBytes(ini_get('post_max_size')));
     $p_size = $sys_max_size / 100;
 
-    $xtpl->assign('SYS_MAX_SIZE', nv_convertfromBytes($sys_max_size));
-    $xtpl->assign('NV_AUTO_RESIZE', ($global_config['nv_auto_resize']) ? ' checked="checked"' : '');
-    $xtpl->assign('UPLOAD_ALT_REQUIRE', ($global_config['upload_alt_require']) ? ' checked="checked"' : '');
-    $xtpl->assign('UPLOAD_AUTO_ALT', ($global_config['upload_auto_alt']) ? ' checked="checked"' : '');
+    $tpl->assign('SYS_MAX_SIZE', $sys_max_size);
+    $tpl->assign('STEP_SIZE', $p_size);
+    $tpl->assign('MYINI', $myini);
 
-    for ($index = 100; $index > 0; --$index) {
-        $size = floor($index * $p_size);
-
-        $xtpl->assign('SIZE', [
-            'key' => $size,
-            'title' => nv_convertfromBytes($size),
-            'selected' => ($size == $global_config['nv_max_size']) ? ' selected="selected"' : ''
-        ]);
-
-        $xtpl->parse('main.sys.size');
-    }
-
-    $_upload_checking_mode = [
+    $checking_mode = [
         'strong' => $nv_Lang->getModule('strong_mode'),
         'mild' => $nv_Lang->getModule('mild_mode'),
         'lite' => $nv_Lang->getModule('lite_mode'),
         'none' => $nv_Lang->getModule('none_mode')
     ];
+    $tpl->assign('CHECKING_MODE', $checking_mode);
 
-    foreach ($_upload_checking_mode as $m => $n) {
-        $xtpl->assign('UPLOAD_CHECKING_MODE', [
-            'key' => $m,
-            'title' => $n,
-            'selected' => ($m == $global_config['upload_checking_mode']) ? ' selected="selected"' : '',
-            'description' => $nv_Lang->getModule($m . '_mode_note')
-        ]);
-        $xtpl->parse('main.sys.upload_checking_mode');
-    }
-    $xtpl->assign('UPLOAD_CHECKING_MODE_DESC', $nv_Lang->getModule($global_config['upload_checking_mode'] . '_mode_note'));
-
-    $strong = false;
+    $supported_strong = false;
     if (nv_function_exists('finfo_open') or nv_class_exists('finfo', false) or nv_function_exists('mime_content_type') or (substr($sys_info['os'], 0, 3) != 'WIN' and (nv_function_exists('system') or nv_function_exists('exec')))) {
-        $strong = true;
+        $supported_strong = true;
     }
-
-    $xtpl->assign('UPLOAD_CHECKING_NOTE', !$strong ? $nv_Lang->getModule('upload_checking_note') : '');
+    $tpl->assign('SUPPORTED_STRONG', $supported_strong);
 
     $upload_chunk_size = '';
     $upload_chunk_size_text = '';
@@ -267,18 +249,8 @@ if (defined('NV_IS_GODADMIN') and $global_config['idsite'] == 0) {
     } elseif ($global_config['upload_chunk_size'] > 0) {
         $upload_chunk_size = $global_config['upload_chunk_size'];
     }
-
-    $xtpl->assign('UPLOAD_CHUNK_SIZE', $upload_chunk_size);
-    $array_chunk_size = ['KB', 'MB'];
-    foreach ($array_chunk_size as $chunk_size) {
-        $chunk_size_lev = [
-            'key' => $chunk_size,
-            'title' => $chunk_size,
-            'selected' => $chunk_size == $upload_chunk_size_text ? ' selected="selected"' : ''
-        ];
-        $xtpl->assign('CHUNK_SIZE_LEV', $chunk_size_lev);
-        $xtpl->parse('main.sys.chunk_size_lev');
-    }
+    $tpl->assign('UPLOAD_CHUNK_SIZE', $upload_chunk_size);
+    $tpl->assign('UPLOAD_CHUNK_SIZE_TEXT', $upload_chunk_size_text);
 
     $upload_overflow_size = '';
     $upload_overflow_size_text = '';
@@ -289,51 +261,11 @@ if (defined('NV_IS_GODADMIN') and $global_config['idsite'] == 0) {
         $upload_overflow_size = round($global_config['nv_overflow_size'] / 1048576, 2, PHP_ROUND_HALF_DOWN);
         $upload_overflow_size_text = 'MB';
     }
-
-    $xtpl->assign('UPLOAD_OVERFLOW_SIZE', $upload_overflow_size);
-    $array_overflow_size = ['MB', 'GB'];
-    foreach ($array_overflow_size as $overflow_size) {
-        $overflow_size_lev = [
-            'key' => $overflow_size,
-            'title' => $overflow_size,
-            'selected' => $overflow_size == $upload_overflow_size_text ? ' selected="selected"' : ''
-        ];
-        $xtpl->assign('OVERFLOW_SIZE_LEV', $overflow_size_lev);
-        $xtpl->parse('main.sys.overflow_size_lev');
-    }
-
-    foreach ($myini['types'] as $key => $name) {
-        $xtpl->assign('TYPES', [
-            'key' => $key,
-            'title' => $name,
-            'checked' => in_array($name, $global_config['file_allowed_ext'], true) ? ' checked="checked"' : ''
-        ]);
-        $xtpl->parse('main.sys.types');
-    }
-
-    foreach ($myini['exts'] as $key => $name) {
-        $xtpl->assign('EXTS', [
-            'key' => $key,
-            'title' => $name,
-            'checked' => in_array($name, $global_config['forbid_extensions'], true) ? ' checked="checked"' : ''
-        ]);
-        $xtpl->parse('main.sys.exts');
-    }
-
-    foreach ($myini['mimes'] as $key => $name) {
-        $xtpl->assign('MIMES', [
-            'key' => $key,
-            'title' => $name,
-            'checked' => in_array($name, $global_config['forbid_mimes'], true) ? ' checked="checked"' : ''
-        ]);
-        $xtpl->parse('main.sys.mimes');
-    }
-
-    $xtpl->parse('main.sys');
+    $tpl->assign('UPLOAD_OVERFLOW_SIZE', $upload_overflow_size);
+    $tpl->assign('UPLOAD_OVERFLOW_SIZE_TEXT', $upload_overflow_size_text);
 }
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$contents = $tpl->fetch('uploadconfig.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

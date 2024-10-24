@@ -1021,7 +1021,7 @@ $(function() {
     // Default toasts
     ([...document.querySelectorAll('.toast')].map(toastEl => new bootstrap.Toast(toastEl)));
 
-    // Default toasts
+    // Default Scrollbar
     ([...document.querySelectorAll('[data-nv-toggle="scroll"]')].map(scrollEl => new PerfectScrollbar(scrollEl, {
         wheelPropagation: true
     })));
