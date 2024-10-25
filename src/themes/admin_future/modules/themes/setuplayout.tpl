@@ -37,12 +37,12 @@
                     {foreach from=$mod.funcs item=func}
                     <li class="list-group-item">
                         <div class="row g-2 align-items-center">
-                            <div class="col-5 text-end">
+                            <div class="col-7 text-end">
                                 <div class="text-truncate">
                                     <span title="{$func.1}" data-bs-toggle="tooltip" data-bs-trigger="hover">{$func.1}</span>
                                 </div>
                             </div>
-                            <div class="col-7">
+                            <div class="col-5">
                                 <select class="form-select form-select-sm" name="func[{$func.0}]">
                                     {foreach from=$LAYOUT_ARRAY item=layout}
                                     <option value="{$layout}"{if $layout eq $func.2} selected{/if}>{$layout}</option>
