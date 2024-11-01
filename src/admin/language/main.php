@@ -43,6 +43,7 @@ if ($_lang_multi == $_md5_lang_multi) {
         'rewrite_endurl' => $global_config['rewrite_endurl'],
         'rewrite_exturl' => $global_config['rewrite_exturl'],
         'rewrite_op_mod' => $array_config_global['rewrite_op_mod'],
+        'admin_rewrite' => $global_config['admin_rewrite'],
         'ssl_https' => $global_config['ssl_https']
     ];
     $rewrite = nv_rewrite_change($array_config_rewrite);

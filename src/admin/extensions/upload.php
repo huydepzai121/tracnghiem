@@ -490,6 +490,8 @@ if (empty($error)) {
                     }
                 } elseif (!preg_match($arraySysOption['checkName'][$extConfig['extension']['type']], $extConfig['extension']['name'])) {
                     $error = $nv_Lang->getModule('autoinstall_error_cfg_name');
+                } elseif ($extConfig['extension']['name'] == NV_ADMINDIR) {
+                    $error = $nv_Lang->getModule('autoinstall_error_forbidden');
                 }
 
                 @nv_deletefile(NV_ROOTDIR . '/' . $temp_extract_dir . '/config.ini');

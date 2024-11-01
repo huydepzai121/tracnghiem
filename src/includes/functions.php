@@ -2348,8 +2348,6 @@ function is_localhost()
 }
 
 /**
- * nv_url_rewrite()
- *
  * @param string $buffer
  * @param bool   $is_url
  * @return string
@@ -2358,24 +2356,25 @@ function nv_url_rewrite($buffer, $is_url = false)
 {
     global $global_config;
 
+    $areas = [];
     if ($global_config['rewrite_enable']) {
-        if ($is_url) {
-            $buffer = '"' . $buffer . '"';
-        }
-
-        $buffer = preg_replace_callback('#"(' . preg_quote(NV_BASE_SITEURL, '#') . ')index.php\\?' . preg_quote(NV_LANG_VARIABLE, '#') . '=([^"]+)"#', 'nv_url_rewrite_callback', $buffer);
-
-        if ($is_url) {
-            $buffer = substr($buffer, 1, -1);
-        }
+        $areas[] = preg_quote(NV_BASE_SITEURL, '#');
     }
+    if ($global_config['admin_rewrite']) {
+        $areas[] = preg_quote(NV_BASE_ADMINURL, '#');
+    }
+    if (empty($areas)) {
+        return $buffer;
+    }
+
+    $is_url && ($buffer = '"' . $buffer . '"');
+    $buffer = preg_replace_callback('#"(' . implode('|', $areas) . ')index.php\\?' . preg_quote(NV_LANG_VARIABLE, '#') . '=([^"]+)"#', 'nv_url_rewrite_callback', $buffer);
+    $is_url && ($buffer = substr($buffer, 1, -1));
 
     return $buffer;
 }
 
 /**
- * nv_url_rewrite_callback()
- *
  * @param string $matches
  * @return string
  */
@@ -2386,6 +2385,7 @@ function nv_url_rewrite_callback($matches)
     $query_string = NV_LANG_VARIABLE . '=' . $matches[2];
     $query_array = [];
     $is_amp = str_contains($query_string, '&amp;');
+    $is_acp = $matches[1] == NV_BASE_ADMINURL;
     parse_str(str_replace('&amp;', '&', $query_string), $query_array);
 
     if (!empty($query_array)) {
@@ -2443,7 +2443,7 @@ function nv_url_rewrite_callback($matches)
             unset($query_array[NV_OP_VARIABLE]);
         }
 
-        $rewrite_string = nv_apply_hook('', 'get_rewrite_domain', [], '') . NV_BASE_SITEURL . ($global_config['check_rewrite_file'] ? '' : 'index.php/') . implode('/', $op_rewrite) . ($op_rewrite_count ? $rewrite_end : '');
+        $rewrite_string = nv_apply_hook('', 'get_rewrite_domain', [], '') . ($is_acp ? NV_BASE_ADMINURL : NV_BASE_SITEURL) . ($global_config['check_rewrite_file'] ? '' : 'index.php/') . implode('/', $op_rewrite) . ($op_rewrite_count ? $rewrite_end : '');
 
         if (!empty($query_array)) {
             $rewrite_string .= '?' . http_build_query($query_array, '', $is_amp ? '&amp;' : '&');

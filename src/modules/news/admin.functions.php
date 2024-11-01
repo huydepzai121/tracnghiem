@@ -316,7 +316,7 @@ function nv_show_cat_list($parentid = 0)
             }
             if (defined('NV_IS_ADMIN_MODULE') or ($parentid > 0 and isset($array_cat_admin[$admin_id][$parentid]) and $array_cat_admin[$admin_id][$parentid]['admin'] == 1)) {
                 $func_cat_disabled = false;
-                $admin_funcs[] = '<a title="' . $nv_Lang->getGlobal('edit') . '" href="' . NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=cat&amp;catid=' . $catid . '&amp;parentid=' . $parentid . '#edit" class="btn btn-info btn-xs" data-toggle="tooltip"><em class="fa fa-edit"></em><span class="visible-xs-inline-block">&nbsp;' . $nv_Lang->getGlobal('edit') . "</span></a>\n";
+                $admin_funcs[] = '<a title="' . $nv_Lang->getGlobal('edit') . '" href="' . NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=cat&amp;catid=' . $catid . '&amp;parentid=' . $parentid . '" class="btn btn-info btn-xs" data-toggle="tooltip"><em class="fa fa-edit"></em><span class="visible-xs-inline-block">&nbsp;' . $nv_Lang->getGlobal('edit') . "</span></a>\n";
             }
             if (defined('NV_IS_ADMIN_MODULE') or ($parentid > 0 and isset($array_cat_admin[$admin_id][$parentid]) and $array_cat_admin[$admin_id][$parentid]['admin'] == 1)) {
                 $weight_disabled = false;

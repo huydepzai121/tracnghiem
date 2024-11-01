@@ -24,7 +24,8 @@ var OP = -1 != navigator.userAgent.indexOf("Opera"),
     nv_specialchars = /\$|,|@|#|~|`|\%|\*|\^|\&|\(|\)|\+|\=|\[|\-|\_|\]|\[|\}|\{|\;|\:|\'|\"|\<|\>|\?|\||\\|\!|\$|\./g,
     nv_old_Minute = -1,
     strHref = window.location.href,
-    script_name = strHref,
+    script_name,
+    sn = strHref,
     query_string = "";
 
 void 0 === nv_base_siteurl && (nv_base_siteurl = "/");
@@ -47,7 +48,9 @@ void 0 === theme_responsive && (theme_responsive = 0);
 void 0 === nv_safemode && (nv_safemode = 0);
 
 -
-1 < strHref.indexOf("?") && ([script_name, query_string] = strHref.split("?"));
+1 < strHref.indexOf("?") && ([sn, query_string] = strHref.split("?"));
+
+'undefined' == typeof script_name && (script_name = sn);
 
 function nv_email_check(field_id) {
     return 7 <= field_id.value.length && nv_mailfilter.test(field_id.value)
@@ -244,7 +247,7 @@ function intval(mixed_var, base) {
  *
  * @param {string} str Input text
  * @param {boolean} replaceMode Use replace instead of insert
- * @param {boolean} isXhtml Use XHTML 
+ * @param {boolean} isXhtml Use XHTML
  * @return {string} Filtered text
  */
 function nl2br(str, replaceMode, isXhtml) {

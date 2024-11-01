@@ -27,30 +27,63 @@ use NukeViet\Site;
 class Sconfig
 {
     private $my_domains = '';
+
+    /**
+     * @var string Regex quote kí tự kết thúc link rewrite dir + detail thường là / và .html
+     */
     private $rewrite_exts = '';
+
+    /**
+     * @var string Regex quote kí tự kết thúc link rewrite dir thường là /
+     */
+    private $rewrite_end = '';
+
     private $server_configs = [];
     private $setup_langs = [];
+
+    /**
+     * @var string Regex quote thư mục quản trị. Thường là admin
+     */
+    private $admin_dir = '';
+
+    /**
+     * @var boolean có bật rewrite trong quản trị hay không?
+     */
+    private $admin_rewrite = false;
 
     public function __construct($global_configs)
     {
         $this->my_domains = self::genMyDomains($global_configs['my_domains']);
         $this->rewrite_exts = self::genRewriteExts([$global_configs['rewrite_endurl'], $global_configs['rewrite_exturl']]);
+        $this->rewrite_end = preg_quote($global_configs['rewrite_endurl']);
+        $this->admin_dir = preg_quote(NV_ADMINDIR);
 
         $server_config_file = NV_ROOTDIR . '/' . NV_DATADIR . '/server_config.json';
         $server_configs = file_get_contents($server_config_file);
         $this->server_configs = json_decode($server_configs, true);
         $this->setup_langs = !empty($global_configs['setup_langs']) ? $global_configs['setup_langs'] : [NV_LANG_DATA];
         asort($this->setup_langs);
+        $this->admin_rewrite = (bool) ($global_configs['admin_rewrite'] ?? false);
     }
 
     /**
-     * setMyDomains()
-     *
-     * @param mixed $domains
+     * @param array $domains
+     * @return \NukeViet\Core\Sconfig
      */
     public function setMyDomains($domains)
     {
         $this->my_domains = self::genMyDomains($domains);
+        return $this;
+    }
+
+    /**
+     * @param ?int|?bool $admin_rewrite
+     * @return \NukeViet\Core\Sconfig
+     */
+    public function setAdminRewrite($admin_rewrite)
+    {
+        $this->admin_rewrite = (bool) $admin_rewrite;
+        return $this;
     }
 
     /**
@@ -95,7 +128,6 @@ class Sconfig
     }
 
     /**
-     * setNginxContents()
      * Tạo nội dung khuyến cáo của file cấu hình máy chủ NGINX
      *
      * @return string
@@ -282,6 +314,13 @@ class Sconfig
                         $end = "/.*\.(" . $exec_files . ').*';
                     }
                     if (!empty($end)) {
+                        if ($key == 'include_dirs' and $this->admin_rewrite) {
+                            // Khi có bật rewrite trong quản trị, loại bỏ luật chặn
+                            $vals = array_diff($vals, ['{NV_ADMINDIR}']);
+                        }
+                        if (empty($vals)) {
+                            continue;
+                        }
                         $vals = self::contentsImplode($vals);
                         $config_contents .= $t . $t . 'if ($request_uri ~ "^/(' . $vals . ')' . $end . "\$\") {\n";
                         $config_contents .= $t . $t . $t . 'return ' . $sconfigs['deny_access_code'];
@@ -490,7 +529,6 @@ class Sconfig
     }
 
     /**
-     * apacheRewriteRule()
      * Chuyển phần Rewrite trong file cấu hình (.htaccess) về mặc định
      *
      * @return false|string
@@ -537,6 +575,13 @@ class Sconfig
         if ($full) {
             foreach ($this->server_configs['deny_access'] as $key => $vals) {
                 if (!empty($vals)) {
+                    if ($key == 'include_dirs' and $this->admin_rewrite) {
+                        // Khi có bật rewrite trong quản trị, loại bỏ luật chặn
+                        $vals = array_diff($vals, ['{NV_ADMINDIR}']);
+                    }
+                    if (empty($vals)) {
+                        continue;
+                    }
                     $vals = self::contentsImplode($vals);
 
                     if ($this->server_configs['deny_access_code'] == 301) {
@@ -666,7 +711,6 @@ class Sconfig
     }
 
     /**
-     * setApacheRewrite()
      * Tạo phần Rewrite khuyến cáo cho file cấu hình (.htaccess)
      *
      * @return string
@@ -692,25 +736,29 @@ class Sconfig
         $rewrite_rule .= "  RewriteRule ^.* robots.php [L]\n";
         $rewrite_rule .= "\n";
 
-        $rewrite_rule .= "  RewriteRule ^(.*?)sitemap\.xml$ index.php?" . NV_NAME_VARIABLE . "=SitemapIndex [L]\n";
-        $rewrite_rule .= "  RewriteRule ^(.*?)sitemap\-([a-z]{2})\.xml$ index.php?" . NV_LANG_VARIABLE . '=$2&' . NV_NAME_VARIABLE . "=SitemapIndex [L]\n";
-        $rewrite_rule .= "  RewriteRule ^(.*?)sitemap\-([a-z]{2})\.([a-zA-Z0-9\-]+)\.xml$ index.php?" . NV_LANG_VARIABLE . '=$2&' . NV_NAME_VARIABLE . '=$3&' . NV_OP_VARIABLE . "=sitemap [L]\n";
-        $rewrite_rule .= "  RewriteRule ^(.*?)sitemap\-([a-z]{2})\.([a-zA-Z0-9\-]+)\.([a-zA-Z0-9\-]+)\.xml$ index.php?" . NV_LANG_VARIABLE . '=$2&' . NV_NAME_VARIABLE . '=$3&' . NV_OP_VARIABLE . "=sitemap/$4 [L]\n";
-        $rewrite_rule .= "  RewriteRule ^(.*?)api\/(" . implode('|', $this->setup_langs) . ")\/([a-zA-Z0-9]+)\/([a-zA-Z0-9]+)\/?$ api.php?language=$2&module=$3&action=$4 [L]\n";
-        $rewrite_rule .= "  RewriteRule ^(.*?)api\/(" . implode('|', $this->setup_langs) . ")\/([a-zA-Z0-9]+)\/?$ api.php?language=$2&action=$3 [L]\n";
-        $rewrite_rule .= "  RewriteRule ^(.*?)api\/([a-zA-Z0-9]+)\/([a-zA-Z0-9]+)\/?$ api.php?module=$2&action=$3 [L]\n";
-        $rewrite_rule .= "  RewriteRule ^(.*?)api\/([a-zA-Z0-9]+)\/?$ api.php?action=$2 [L]\n";
+        $rewrite_rule .= "  RewriteRule ^sitemap\.xml$ index.php?" . NV_NAME_VARIABLE . "=SitemapIndex [L]\n";
+        $rewrite_rule .= "  RewriteRule ^sitemap-([a-z]{2})\.xml$ index.php?" . NV_LANG_VARIABLE . '=$1&' . NV_NAME_VARIABLE . "=SitemapIndex [L]\n";
+        $rewrite_rule .= "  RewriteRule ^sitemap-([a-z]{2})\.([a-zA-Z0-9\-]+)\.xml$ index.php?" . NV_LANG_VARIABLE . '=$1&' . NV_NAME_VARIABLE . '=$2&' . NV_OP_VARIABLE . "=sitemap [L]\n";
+        $rewrite_rule .= "  RewriteRule ^sitemap-([a-z]{2})\.([a-zA-Z0-9\-]+)\.([a-zA-Z0-9\-]+)\.xml$ index.php?" . NV_LANG_VARIABLE . '=$1&' . NV_NAME_VARIABLE . '=$2&' . NV_OP_VARIABLE . "=sitemap/$3 [L]\n";
+        $rewrite_rule .= "  RewriteRule ^api/(" . implode('|', $this->setup_langs) . ")/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)" . $this->rewrite_end . "?$ api.php?language=$1&module=$2&action=$3 [L]\n";
+        $rewrite_rule .= "  RewriteRule ^api/(" . implode('|', $this->setup_langs) . ")/([a-zA-Z0-9]+)" . $this->rewrite_end . "?$ api.php?language=$1&action=$2 [L]\n";
+        $rewrite_rule .= "  RewriteRule ^api/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)" . $this->rewrite_end . "?$ api.php?module=$1&action=$2 [L]\n";
+        $rewrite_rule .= "  RewriteRule ^api/([a-zA-Z0-9]+)" . $this->rewrite_end . "?$ api.php?action=$1 [L]\n";
         $rewrite_rule .= "\n";
 
         // Rewrite for other module's rule
         $rewrite_rule .= "  RewriteCond %{REQUEST_FILENAME} !-f\n";
         $rewrite_rule .= "  RewriteCond %{REQUEST_FILENAME} !-d\n";
+        if ($this->admin_rewrite) {
+            $rewrite_rule .= "  RewriteRule ^" . $this->admin_dir . "/(.*)" . $this->rewrite_end . "\$ " . $this->admin_dir . "/index.php [L]\n";
+            $rewrite_rule .= "  RewriteRule ^" . $this->admin_dir . $this->rewrite_end . "\$ " . $this->admin_dir . "/index.php [L]\n";
+        }
         $rewrite_rule .= '  RewriteRule (.*)(' . $this->rewrite_exts . ")\$ index.php [L]\n";
         $rewrite_rule .= "\n";
 
-        $rewrite_rule .= "  RewriteRule (.*)tag\/([^?]+)$ index.php [L]\n";
+        $rewrite_rule .= "  RewriteRule (.*)tag/([^?]+)$ index.php [L]\n";
 
-        $rewrite_rule .= "  RewriteRule ^([a-zA-Z0-9\-\/]+)\/([a-zA-Z0-9\-]+)$ " . NV_BASE_SITEURL . "$1/$2/ [L,R=301]\n";
+        $rewrite_rule .= "  RewriteRule ^([a-zA-Z0-9\-\/]+)/([a-zA-Z0-9\-]+)$ " . NV_BASE_SITEURL . "$1/$2/ [L,R=301]\n";
         $rewrite_rule .= '  RewriteRule ^([a-zA-Z0-9\-]+)$ ' . NV_BASE_SITEURL . "$1/ [L,R=301]\n";
         $rewrite_rule .= "</IfModule>\n\n";
         $rewrite_rule .= "#NUKEVIET_REWRITE_END\n";
@@ -850,7 +898,6 @@ class Sconfig
     }
 
     /**
-     * setApacheConfigs()
      * Tạo phần Cấu hình khuyến cáo cho file cấu hình (.htaccess)
      *
      * @return string
@@ -891,6 +938,13 @@ class Sconfig
                         $end = "/.*\.(" . $exec_files . ')($|\?|\/)';
                     }
                     if (!empty($start)) {
+                        if ($key == 'include_dirs' and $this->admin_rewrite) {
+                            // Khi có bật rewrite trong quản trị, loại bỏ luật chặn
+                            $vals = array_diff($vals, ['{NV_ADMINDIR}']);
+                        }
+                        if (empty($vals)) {
+                            continue;
+                        }
                         $vals = self::contentsImplode($vals);
                         $redirect = $this->server_configs['deny_access_code'] == '301' ? NV_BASE_SITEURL : '-';
                         $deny_access_contents .= '  ' . $start . '(' . $vals . ')' . $end . " [NC]\n";
@@ -1184,6 +1238,10 @@ class Sconfig
         }
     }
 
+    /**
+     * @param array $contents
+     * @return string
+     */
     public static function contentsImplode($contents)
     {
         $contents = array_map(function ($val) {

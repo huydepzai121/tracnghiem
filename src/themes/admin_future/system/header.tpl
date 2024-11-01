@@ -29,6 +29,7 @@
         nv_lang_variable = '{$smarty.const.NV_LANG_VARIABLE}',
         nv_module_name = '{$MODULE_NAME}',
         nv_func_name = '{$OP}',
+        script_name = '{$smarty.const.NV_BASE_ADMINURL}index.php',
         nv_my_ofs = {round($smarty.const.NV_SITE_TIMEZONE_OFFSET / 3600)},
         nv_my_abbr = '{$smarty.const.NV_CURRENTTIME}',
         nv_cookie_prefix = '{$GCONFIG.cookie_prefix}',

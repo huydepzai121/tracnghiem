@@ -173,7 +173,8 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
             $array_config_global['site_lang'] = $site_lang;
         }
 
-        $array_config_global['rewrite_enable'] = $nv_Request->get_int('rewrite_enable', 'post', 0);
+        $array_config_global['rewrite_enable'] = (int) $nv_Request->get_bool('rewrite_enable', 'post', false);
+        $array_config_global['admin_rewrite'] = (int) $nv_Request->get_bool('admin_rewrite', 'post', false);
         if ($array_config_global['lang_multi'] == 0) {
             if ($array_config_global['rewrite_enable']) {
                 $array_config_global['rewrite_optional'] = $nv_Request->get_int('rewrite_optional', 'post', 0);
@@ -230,6 +231,7 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
             'rewrite_endurl' => $global_config['rewrite_endurl'],
             'rewrite_exturl' => $global_config['rewrite_exturl'],
             'rewrite_op_mod' => $array_config_global['rewrite_op_mod'],
+            'admin_rewrite' => $array_config_global['admin_rewrite'],
         ];
         $rewrite = nv_rewrite_change($array_config_rewrite);
         if (empty($rewrite[0])) {
@@ -238,8 +240,8 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
 
         $diff1 = array_diff($my_domains, $global_config['my_domains']);
         $diff2 = array_diff($global_config['my_domains'], $my_domains);
-        if (!empty($diff1) or !empty($diff2)) {
-            $save_config = nv_server_config_change($my_domains);
+        if (!empty($diff1) or !empty($diff2) or $array_config_global['admin_rewrite'] != $global_config['admin_rewrite']) {
+            $save_config = nv_server_config_change($my_domains, $array_config_global['admin_rewrite']);
             if ($save_config[0] !== true) {
                 $errormess .= (!empty($errormess) ? '<br/>' : '') . $nv_Lang->getModule('err_save_sysconfig', $save_config[1]);
             }
@@ -255,10 +257,13 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
         ]);
     }
 
+    // Set giá trị này để hàm nv_url_rewrite nhận đúng config mới
+    $global_config['admin_rewrite'] = $array_config_global['admin_rewrite'];
+
     nv_jsonOutput([
         'status' => 'OK',
         'mess' => $nv_Lang->getGlobal('save_success'),
-        'refresh' => true
+        'redirect' => nv_url_rewrite(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op, $array_config_global['admin_rewrite'])
     ]);
 }
 

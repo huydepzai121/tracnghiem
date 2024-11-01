@@ -145,6 +145,7 @@ $lang_module['autoinstall_error_invalidfile'] = 'Error: Invalid File zip';
 $lang_module['autoinstall_error_check_fail'] = 'Error: This application does not match the structure and can cause harm to the website. To ensure safety, the system refuses to continue installing this app';
 $lang_module['autoinstall_error_check_warning'] = 'This app has a number of existing files already on your system. Continue the installation, the file will be replaced. If you\'re sure this is safe, click <strong /> <a href="#"> Click here </a>  to proceed with unpacking and installation.';
 $lang_module['autoinstall_error_check_success'] = 'This application is safe for your system. Click <strong /> <a href="#"> Click here </a>  to proceed with unpacking and installation.';
+$lang_module['autoinstall_error_forbidden'] = 'Prohibited extension name.';
 $lang_module['autoinstall_error_warning_permission_folder'] = 'Hosting can not create a folder so safe mode on';
 $lang_module['autoinstall_cantunzip'] = 'Error can not be unpacked. Please check chmod the directory.';
 $lang_module['autoinstall_unzip_success'] = 'The installation process is successful. The system will automatically transfer you to the appropriate area right now.';

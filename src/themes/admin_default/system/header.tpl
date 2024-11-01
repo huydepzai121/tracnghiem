@@ -25,6 +25,8 @@
                  nv_fc_variable = '{NV_OP_VARIABLE}',
                  nv_lang_variable = '{NV_LANG_VARIABLE}',
                  nv_module_name = '{MODULE_NAME}',
+                 nv_func_name = '{OP}',
+                 script_name = '{NV_BASE_ADMINURL}index.php',
                  nv_my_ofs = {NV_SITE_TIMEZONE_OFFSET},
                  nv_my_abbr = '{NV_CURRENTTIME}',
                  nv_cookie_prefix = '{NV_COOKIE_PREFIX}',

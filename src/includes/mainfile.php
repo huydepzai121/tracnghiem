@@ -56,6 +56,7 @@ define('NV_SERVER_PORT', $nv_Server->getServerPort());
 
 define('NV_MY_DOMAIN', $nv_Server->getOriginalDomain());
 define('NV_BASE_SITEURL', $nv_Server->getWebsitePath() . '/');
+define('NV_BASE_ADMINURL', NV_BASE_SITEURL . NV_ADMINDIR . '/');
 
 if (file_exists(NV_ROOTDIR . '/' . NV_CONFIG_FILENAME)) {
     require realpath(NV_ROOTDIR . '/' . NV_CONFIG_FILENAME);
@@ -168,8 +169,9 @@ if ($global_config['proxy_blocker'] != 0) {
     }
 }
 
-if (defined('NV_SYSTEM') and stripos($_SERVER['PHP_SELF'], 'index.php') !== false) {
-    require NV_ROOTDIR . '/includes/request_uri.php';
+if (stripos($_SERVER['PHP_SELF'], 'index.php') !== false) {
+    defined('NV_SYSTEM') && require NV_ROOTDIR . '/includes/request_uri.php';
+    defined('NV_ADMIN') && require NV_ROOTDIR . '/includes/request_uri_admin.php';
 }
 
 // Ket noi voi class xu ly request
@@ -183,8 +185,6 @@ if (!preg_match('/^[a-z0-9]{32}$/', $client_info['clid'])) {
 
 // vd: HTTP/1.0
 define('NV_HEADERSTATUS', $nv_Request->headerstatus);
-// vd: /ten_thu_muc_chua_site/admin/
-define('NV_BASE_ADMINURL', $nv_Request->base_adminurl . '/');
 // D:/AppServ/www
 define('NV_DOCUMENT_ROOT', $nv_Request->doc_root);
 // Hau to cua file cache

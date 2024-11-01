@@ -145,6 +145,7 @@ $lang_module['autoinstall_error_invalidfile'] = 'Erreur: Fichier .zip est incomp
 $lang_module['autoinstall_error_check_fail'] = 'Erreur: Application avec structure incompatible et pouvant menacer le site Web. Pour assurer la sécurité, système refuse le fait de continuer l\'installation de cette application';
 $lang_module['autoinstall_error_check_warning'] = 'Cette application a quelques fichiers existant déjà dans le système. Continuez l\'installation, ces fichiers va être remplacés. Si vous êtes sûrs qu\'ils sont assuré, cliquez <strong><a href="#">Ici</a></strong> pour commencer le déballage et l\'installation.';
 $lang_module['autoinstall_error_check_success'] = 'Cette application est bonne pour votre système. Cliquez <strong><a href="#">Ici</a></strong> pour commencer le déballage et l\'installation.';
+$lang_module['autoinstall_error_forbidden'] = 'Nom d\'extension interdit.';
 $lang_module['autoinstall_error_warning_permission_folder'] = 'Host ne peut pas créer le dossier car le mode sans échec est activé';
 $lang_module['autoinstall_cantunzip'] = 'Erreur: Ne peut pas déballer. Veuillez verifier chmod des dossier';
 $lang_module['autoinstall_unzip_success'] = 'Le processus d\'installation réussi. Le système va vous déplacer au zone favorable immédiatement.';

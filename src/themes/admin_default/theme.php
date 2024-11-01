@@ -103,6 +103,7 @@ function nv_admin_theme($contents, $head_site = 1)
     $xtpl->assign('JSDATE_GET', nv_region_config('jsdate_get'));
     $xtpl->assign('JSDATE_POST', nv_region_config('jsdate_post'));
     $xtpl->assign('MODULE_NAME', $module_name);
+    $xtpl->assign('OP', $op);
     $xtpl->assign('MODULE_FILE', $module_file);
     $xtpl->assign('NV_ADMIN_THEME', $admin_info['admin_theme']);
     $xtpl->assign('NV_SAFEMODE', $admin_info['safemode']);

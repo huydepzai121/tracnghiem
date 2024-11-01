@@ -47,7 +47,28 @@ foreach ($files as $file) {
     }
 }
 
-// Tải về
+// Tải từ phần update ngoài site
+if ($nv_Request->isset_request('getbackup,t,p,ext', 'get')) {
+    $time = $nv_Request->get_absint('t', 'get', 0);
+    $passphrase = $nv_Request->get_title('p', 'get', '');
+    $ext = $nv_Request->get_title('ext', 'get', '');
+    $checkss = $nv_Request->get_title('checkss', 'get', '');
+
+    $name = date('Y-m-d-H-i-s', $time);
+    $filename = $name . '_' . md5($passphrase . NV_CHECK_SESSION) . '.' . $ext;
+    $path = $log_dir . '/' . $filename;
+    if ($checkss !== md5($filename . NV_CHECK_SESSION) or !nv_is_file(NV_BASE_SITEURL . str_replace(NV_ROOTDIR . '/', '', $path), str_replace(NV_ROOTDIR . '/', '', $log_dir))) {
+        nv_info_die($nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_content'), 403);
+    }
+
+    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('download'), 'File name: ' . basename($path), $admin_info['userid']);
+
+    $name = change_alias($name) . '.' . $ext;
+    $download = new NukeViet\Files\Download($path, $log_dir, $name);
+    $download->download_file();
+}
+
+// Tải về từ phần quản lý trong quản trị
 if ($nv_Request->isset_request('getbackup,index,checkss', 'get')) {
     $filetime = $nv_Request->get_absint('getbackup', 'get', 0);
     $index = $nv_Request->get_absint('index', 'get', 0);

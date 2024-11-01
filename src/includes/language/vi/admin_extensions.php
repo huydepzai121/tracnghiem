@@ -145,6 +145,7 @@ $lang_module['autoinstall_error_invalidfile'] = 'Lỗi: File zip không hợp l�
 $lang_module['autoinstall_error_check_fail'] = 'Lỗi: Ứng dụng này có cấu trúc không phù hợp và có thể gây nguy hại đến website. Để đảm bảo an toàn, hệ thống từ chối việc tiếp tục cài đặt ứng dụng này';
 $lang_module['autoinstall_error_check_warning'] = 'Ứng dụng này có một số tệp tin hiện đã có trên hệ thống. Tiếp tục cài đặt, những tệp tin đó sẽ bị thay thế. Nếu bạn chắc chắn điều này là an toàn, nhấp <strong><a href="#">vào đây</a></strong> để tiến hành giải nén và cài đặt.';
 $lang_module['autoinstall_error_check_success'] = 'Ứng dụng này an toàn với hệ thống của bạn. Nhấp <strong><a href="#">vào đây</a></strong> để tiến hành giải nén và cài đặt.';
+$lang_module['autoinstall_error_forbidden'] = 'Tên ứng dụng bị cấm sử dụng.';
 $lang_module['autoinstall_error_warning_permission_folder'] = 'Host không thể tạo thư mục do chỉ thị safe_mode đang bật';
 $lang_module['autoinstall_cantunzip'] = 'Lỗi: không thể giải nén. Hãy thử CHMOD các thư mục.';
 $lang_module['autoinstall_unzip_success'] = 'Quá trình cài đặt thành công. Hệ thống đang tự động chuyển bạn tới khu vực thích hợp...';

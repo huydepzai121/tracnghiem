@@ -246,6 +246,14 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-8 col-lg-6 col-xxl-5 offset-sm-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="admin_rewrite" value="1"{if $GDATA.admin_rewrite} checked{/if} role="switch" id="element_admin_rewrite">
+                                <label class="form-check-label" for="element_admin_rewrite">{$LANG->getModule('rewrite_admin')}</label>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-sm-8 offset-sm-3">
                             <button type="submit" class="btn btn-primary">{$LANG->getModule('submit')}</button>

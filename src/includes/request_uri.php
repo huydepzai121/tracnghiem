@@ -9,7 +9,7 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-if (!defined('NV_MAINFILE')) {
+if (!defined('NV_MAINFILE') or !defined('NV_SYSTEM')) {
     exit('Stop!!!');
 }
 

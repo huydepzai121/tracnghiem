@@ -420,12 +420,10 @@ function nv_check_rewrite_file()
         return true;
     }
 
-    return (bool) $global_config['check_rewrite_file'];
+    return (bool) ($global_config['check_rewrite_file'] ?? false);
 }
 
 /**
- * nv_rewrite_change()
- *
  * @param array $array_config_global
  * @return mixed
  */
@@ -438,6 +436,9 @@ function nv_rewrite_change($array_config_global = [])
     $Sconfig = new NukeViet\Core\Sconfig($global_config);
     if ((!empty($array_config_global['rewrite_endurl']) and $array_config_global['rewrite_endurl'] != $global_config['rewrite_endurl']) or (!empty($array_config_global['rewrite_exturl']) and $array_config_global['rewrite_exturl'] != $global_config['rewrite_exturl'])) {
         $Sconfig->setRewriteExts([$array_config_global['rewrite_endurl'], $array_config_global['rewrite_exturl']]);
+    }
+    if (isset($array_config_global['admin_rewrite'])) {
+        $Sconfig->setAdminRewrite($array_config_global['admin_rewrite']);
     }
 
     if ($sys_info['supports_rewrite'] == 'nginx') {
@@ -472,7 +473,7 @@ function nv_rewrite_change($array_config_global = [])
             } else {
                 $md5_new_file = md5_file($filename);
             }
-        } catch (exception $e) {
+        } catch (Throwable $e) {
             $return = false;
         }
     }
@@ -485,12 +486,11 @@ function nv_rewrite_change($array_config_global = [])
 }
 
 /**
- * nv_server_config_change()
- *
  * @param array $my_domains
- * @return mixed
+ * @param ?int|?bool $admin_rewrite
+ * @return boolean[]|string[]
  */
-function nv_server_config_change($my_domains = [])
+function nv_server_config_change($my_domains = [], $admin_rewrite = null)
 {
     global $sys_info, $global_config, $module_name;
 
@@ -499,6 +499,9 @@ function nv_server_config_change($my_domains = [])
     $Sconfig = new NukeViet\Core\Sconfig($global_config);
     if (!empty($my_domains)) {
         $Sconfig->setMyDomains($my_domains);
+    }
+    if (!is_null($admin_rewrite)) {
+        $Sconfig->setAdminRewrite($admin_rewrite);
     }
 
     if ($sys_info['supports_rewrite'] == 'rewrite_mode_apache') {
@@ -521,7 +524,7 @@ function nv_server_config_change($my_domains = [])
             } else {
                 $md5_new_file = md5_file($filename);
             }
-        } catch (exception $e) {
+        } catch (Throwable $e) {
             $return = false;
         }
     }

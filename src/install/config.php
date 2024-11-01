@@ -59,6 +59,7 @@ $global_config['statistics_timezone'] = '';
 $global_config['gzip_method'] = 1;
 $global_config['blank_operation'] = 1;
 $global_config['rewrite_enable'] = 1;
+$global_config['admin_rewrite'] = 1;
 $global_config['rewrite_endurl'] = '/';
 $global_config['rewrite_exturl'] = '.html';
 $global_config['rewrite_optional'] = 0;
