@@ -1411,8 +1411,8 @@ function user_welcome($array_field_config, $custom_fields)
 
     $_user_info = $user_info;
 
-    $_user_info['gender'] = ($user_info['gender'] == 'M') ? $nv_Lang->getModule('male') : ($user_info['gender'] == 'F' ? $nv_Lang->getModule('female') : $nv_Lang->getModule('na'));
-    $_user_info['birthday'] = empty($user_info['birthday']) ? $nv_Lang->getModule('na') : nv_date_format(1, $user_info['birthday']);
+    $_user_info['gender'] = ($user_info['gender'] == 'M') ? $nv_Lang->getModule('male') : ($user_info['gender'] == 'F' ? $nv_Lang->getModule('female') : '');
+    $_user_info['birthday'] = empty($user_info['birthday']) ? '' : nv_date_format(1, $user_info['birthday']);
     $_user_info['regdate'] = nv_date_format(1, $user_info['regdate']);
     $_user_info['view_mail'] = empty($user_info['view_mail']) ? $nv_Lang->getModule('no') : $nv_Lang->getModule('yes');
     $_user_info['prev_login'] = empty($user_info['prev_login']) ? '' : nv_datetime_format($user_info['prev_login'], 0, 0);
@@ -1707,8 +1707,8 @@ function nv_memberslist_detail_theme($item, $array_field_config, $custom_fields,
         $xtpl->assign('SRC_IMG', NV_STATIC_URL . 'themes/' . $template . '/images/' . $module_info['module_theme'] . '/no_avatar.png');
     }
 
-    $item['gender'] = ($item['gender'] == 'M') ? $nv_Lang->getModule('male') : ($item['gender'] == 'F' ? $nv_Lang->getModule('female') : $nv_Lang->getModule('na'));
-    $item['birthday'] = empty($item['birthday']) ? $nv_Lang->getModule('na') : nv_date_format(1, $item['birthday']);
+    $item['gender'] = ($item['gender'] == 'M') ? $nv_Lang->getModule('male') : ($item['gender'] == 'F' ? $nv_Lang->getModule('female') : '');
+    $item['birthday'] = empty($item['birthday']) ? '' : nv_date_format(1, $item['birthday']);
     $item['regdate'] = nv_date_format(1, $item['regdate']);
     $item['last_login'] = empty($item['last_login']) ? '' : nv_datetime_format($item['last_login'], 0, 0);
 

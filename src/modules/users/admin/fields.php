@@ -392,7 +392,11 @@ if ($nv_Request->isset_request('save', 'post')) {
 
         if ($dataform['choicetypes'] == 'field_choicetypes_text') {
             if ($dataform['fid'] and $dataform['fieldid'] == 'gender') {
-                $dataform['field_choices'] = serialize(['N' => $global_array_genders['N']['title'], 'M' => $global_array_genders['M']['title'], 'F' => $global_array_genders['F']['title']]);
+                $dataform['field_choices'] = serialize([
+                    'N' => $global_array_genders['N']['title'],
+                    'M' => $global_array_genders['M']['title'],
+                    'F' => $global_array_genders['F']['title']
+                ]);
             } else {
                 $old_field_choices = !empty($dataform_old['field_choices']) ? unserialize($dataform_old['field_choices']) : [];
                 $field_choice_value = $nv_Request->get_typed_array('field_choice', 'post', 'title', []);
