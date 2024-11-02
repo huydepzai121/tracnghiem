@@ -24,7 +24,7 @@ class NewsAutoTagsCest
         $I->wantTo('Turn on auto tags');
         $I->login();
 
-        $I->amOnUrl($I->getDomain() . '/admin/index.php?language=vi&nv=news&op=setting');
+        $I->amOnUrl($I->getDomain() . '/admin/vi/news/setting/');
 
         $I->waitForElement('[name="auto_tags"]', 5);
         if ($I->tryToDontSeeCheckboxIsChecked('[name="auto_tags"]')) {
@@ -41,7 +41,7 @@ class NewsAutoTagsCest
         $title = 'Bảo đảm công bằng trong thu, nộp tiền cấp quyền khai thác khoáng sản';
         $content = '<p>Theo đó, một doanh nghiệp kinh doanh trong lĩnh vực khai thác khoáng sản đã dùng một số tài sản bảo đảm là quyền sử dụng đất thuê, quyền khai thác khoáng sản, phương tiện vận tải, máy móc… để bảo đảm cho khoản vay của mình tại Agribank Chi nhánh Hòa Bình.&nbsp;</p><p>Do không đủ khả năng trả nợ và khoản nợ tại Ngân hàng đã quá hạn, Agribank đã đưa lô tài sản này bán đấu giá để thu hồi nợ. Cụ thể, lô tài sản gồm: quyền sử dụng đất thuê với diện tích 11.828,3 m2 (đất sản xuất vật liệu xây dựng, gốm sứ tại xã Mông Hóa và xã Dân Hạ, huyện Kỳ Sơn, tỉnh Hòa Bình; quyền khai thác đá vôi làm vật liệu xây dựng thông thường tại vị trí khu vực khai thác núi Thau, xã Dân Hạ và núi Mu Đôi, xã Mông Hóa, huyện Kỳ Sơn (diện tích khu vực khai thác là 5,6ha, trữ lượng đá vôi khai thác ở cấp 121 là 3,6 triệu m3, thời hạn khai thác đến ngày 25/10/2040).</p><p>Được biết, phiên đấu giá sẽ được tổ chức theo hình thức bỏ phiếu trực tiếp tại cuộc đấu giá, phương thức trả giá lên.&nbsp;</p>';
 
-        $I->amOnUrl($I->getDomain() . '/admin/index.php?language=vi&nv=news&op=content');
+        $I->amOnUrl($I->getDomain() . '/admin/vi/news/content/');
         $I->see('Thêm bài viết');
 
         $I->fillField(['name' => 'title'], $title);
