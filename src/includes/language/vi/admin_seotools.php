@@ -94,6 +94,7 @@ $lang_module['linkTags_del_confirm'] = 'Bạn thục sự muốn xoá?';
 $lang_module['add_opensearch_link'] = 'Kích hoạt thẻ link OpenSearch cho plugin tìm kiếm tại các khu vực';
 $lang_module['add_opensearch_link_all'] = 'Trên toàn site';
 $lang_module['ShortName'] = 'Tên ngắn gọn';
+$lang_module['ShortName_required'] = 'Tên ngắn gọn bắt buộc phải nhập nếu kích hoạt khu vực này';
 $lang_module['Description'] = 'Mô tả';
 $lang_module['ShortName_note'] = 'Không hơn 16 ký tự';
 $lang_module['other_seo_tools'] = 'Các công cụ SEO khác';

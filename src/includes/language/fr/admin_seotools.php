@@ -94,6 +94,7 @@ $lang_module['linkTags_del_confirm'] = 'Voulez-vous vraiment supprimer?';
 $lang_module['add_opensearch_link'] = 'Activez la balise de lien OpenSearch pour le plug-in de recherche dans les zones suivantes';
 $lang_module['add_opensearch_link_all'] = 'Recherche sur tout le site';
 $lang_module['ShortName'] = 'Nom court';
+$lang_module['ShortName_required'] = 'Le nom court est requis si cette zone est activée';
 $lang_module['Description'] = 'La description';
 $lang_module['ShortName_note'] = '16 caractères ou moins';
 $lang_module['other_seo_tools'] = 'Autres outils SEO';

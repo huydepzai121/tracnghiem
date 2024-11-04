@@ -178,6 +178,13 @@ $(function() {
         });
     });
 
+    // Ẩn báo lỗi khi bật tắt link-tags
+    $('[name^=opensearch_link]').on('change', function() {
+        let ctn = $(this).closest('ul');
+        let it = $('[data-sarea="' + $(this).attr('value') + '"]', ctn);
+        $('.is-invalid', it).removeClass('is-invalid');
+    });
+
     // Thêm thuộc tính linktags
     $('[data-toggle="addLinkTagsAttr"]').on('click', function() {
         let tbl = $(this).closest('table');

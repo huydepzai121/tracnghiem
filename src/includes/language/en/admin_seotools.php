@@ -94,6 +94,7 @@ $lang_module['linkTags_del_confirm'] = 'Do you really want to delete?';
 $lang_module['add_opensearch_link'] = 'Enable the OpenSearch link tag for the search plugin in the following areas';
 $lang_module['add_opensearch_link_all'] = 'Sitewide search';
 $lang_module['ShortName'] = 'Short name';
+$lang_module['ShortName_required'] = 'Short name is required if this area is enabled';
 $lang_module['Description'] = 'Description';
 $lang_module['ShortName_note'] = '16 or fewer characters';
 $lang_module['other_seo_tools'] = 'Other SEO-tools';

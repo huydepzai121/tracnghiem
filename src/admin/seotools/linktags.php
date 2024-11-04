@@ -38,12 +38,28 @@ if ($nv_Request->isset_request('opensearch', 'post') and $checkss == $nv_Request
     $opensearch_link = $nv_Request->get_typed_array('opensearch_link', 'post', 'title', []);
     $shortname = $nv_Request->get_typed_array('shortname', 'post', 'title', []);
     $description = $nv_Request->get_typed_array('description', 'post', 'title', []);
+
     $config_value = [];
-    if (!empty($opensearch_link)) {
-        foreach ($opensearch_link as $ol) {
-            if (!empty($shortname[$ol])) {
-                $config_value[$ol] = [$shortname[$ol], $description[$ol]];
-            }
+    $mods = array_keys($site_mods);
+    array_unshift($mods, '_site');
+
+    foreach ($mods as $mod) {
+        $config_value[$mod] = [
+            'active' => intval(in_array($mod, $opensearch_link, true)),
+            'shortname' => $shortname[$mod] ?? '',
+            'description' => $description[$mod] ?? '',
+        ];
+
+        if ($config_value[$mod]['active'] and empty($config_value[$mod]['shortname'])) {
+            nv_jsonOutput([
+                'status' => 'error',
+                'input' => 'shortname',
+                'input_parent' => '[data-sarea="' . $mod . '"]',
+                'mess' => $nv_Lang->getModule('ShortName_required')
+            ]);
+        }
+        if (empty($config_value[$mod]['shortname'])) {
+            unset($config_value[$mod]);
         }
     }
 

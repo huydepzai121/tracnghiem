@@ -839,7 +839,10 @@ $(function() {
                 $(this).parent().removeClass('is-invalid is-valid');
             }
         });
-        $('[type="text"], [type="password"], [type="number"], [type="email"], textarea', formAj).on('change keyup', function() {
+        $('[type="text"], [type="password"], [type="number"], [type="email"], textarea', formAj).on('change keyup', function(e) {
+            if (e.type == "keyup" && e.which == 13) {
+                return;
+            }
             let pr = $(this).parent();
             let prAlso = $(this).parent().is('.input-group');
             if (trim($(this).val()) == '' && $(this).is('.required')) {

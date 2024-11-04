@@ -119,38 +119,40 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item list-group-item-primary">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" value="site" name="opensearch_link[site]" id="opensearch_link_site"{if isset($OPENSEARCH_LINK.site)} checked{/if}>
-                            <label class="form-check-label fw-medium" for="opensearch_link_site">{$LANG->getModule('add_opensearch_link_all')}</label>
+                            <input class="form-check-input" type="checkbox" role="switch" value="_site" name="opensearch_link[_site]" id="opensearch_link__site"{if isset($OPENSEARCH_LINK._site) and not empty($OPENSEARCH_LINK._site.active)} checked{/if}>
+                            <label class="form-check-label fw-medium" for="opensearch_link__site">{$LANG->getModule('add_opensearch_link_all')}</label>
                         </div>
                         <div class="invalid-feedback">{$LANG->getGlobal('required_invalid')}</div>
                     </li>
-                    <li class="list-group-item">
+                    <li class="list-group-item" data-sarea="_site">
                         <div class="mb-3">
-                            <label for="shortname_site" class="form-label">{$LANG->getModule('ShortName')}:</label>
-                            <input type="text" class="form-control" id="shortname_site" name="shortname[site]" value="{if isset($OPENSEARCH_LINK.site)}{$OPENSEARCH_LINK.site.0}{/if}" maxlength="16" placeholder="{$LANG->getModule('ShortName_note')}">
+                            <label for="shortname__site" class="form-label">{$LANG->getModule('ShortName')}:</label>
+                            <input type="text" class="form-control" id="shortname__site" name="shortname[_site]" value="{if isset($OPENSEARCH_LINK._site)}{$OPENSEARCH_LINK._site.shortname}{/if}" maxlength="16" placeholder="{$LANG->getModule('ShortName_note')}">
+                            <div class="invalid-feedback">{$LANG->getModule('ShortName_required')}</div>
                         </div>
                         <div class="mb-2">
-                            <label for="description_site" class="form-label">{$LANG->getModule('Description')}:</label>
-                            <input type="text" class="form-control" id="description_site" name="description[site]" value="{if isset($OPENSEARCH_LINK.site)}{$OPENSEARCH_LINK.site.1}{/if}" maxlength="1024" placeholder="{$LANG->getModule('description_note')}">
+                            <label for="description__site" class="form-label">{$LANG->getModule('Description')}:</label>
+                            <input type="text" class="form-control" id="description__site" name="description[_site]" value="{if isset($OPENSEARCH_LINK._site)}{$OPENSEARCH_LINK._site.description}{/if}" maxlength="1024" placeholder="{$LANG->getModule('description_note')}">
                         </div>
                     </li>
                     {foreach from=$SITE_MODS key=mod item=minfo}
                     {if not empty($minfo.is_search)}
                     <li class="list-group-item list-group-item-primary">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" value="{$mod}" name="opensearch_link[{$mod}]" id="opensearch_link_{$mod}"{if isset($OPENSEARCH_LINK[$mod])} checked{/if}>
+                            <input class="form-check-input" type="checkbox" role="switch" value="{$mod}" name="opensearch_link[{$mod}]" id="opensearch_link_{$mod}"{if isset($OPENSEARCH_LINK[$mod]) and not empty($OPENSEARCH_LINK[$mod].active)} checked{/if}>
                             <label class="form-check-label fw-medium" for="opensearch_link_{$mod}">{$minfo.custom_title}</label>
                         </div>
                         <div class="invalid-feedback">{$LANG->getGlobal('required_invalid')}</div>
                     </li>
-                    <li class="list-group-item">
+                    <li class="list-group-item" data-sarea="{$mod}">
                         <div class="mb-3">
                             <label for="shortname_{$mod}" class="form-label">{$LANG->getModule('ShortName')}:</label>
-                            <input type="text" class="form-control" id="shortname_{$mod}" name="shortname[{$mod}]" value="{if isset($OPENSEARCH_LINK[$mod])}{$OPENSEARCH_LINK[$mod].0}{/if}" maxlength="16" placeholder="{$LANG->getModule('ShortName_note')}">
+                            <input type="text" class="form-control" id="shortname_{$mod}" name="shortname[{$mod}]" value="{if isset($OPENSEARCH_LINK[$mod])}{$OPENSEARCH_LINK[$mod].shortname}{/if}" maxlength="16" placeholder="{$LANG->getModule('ShortName_note')}">
+                            <div class="invalid-feedback">{$LANG->getModule('ShortName_required')}</div>
                         </div>
                         <div class="mb-2">
                             <label for="description_{$mod}" class="form-label">{$LANG->getModule('Description')}:</label>
-                            <input type="text" class="form-control" id="description_{$mod}" name="description[{$mod}]" value="{if isset($OPENSEARCH_LINK[$mod])}{$OPENSEARCH_LINK[$mod].1}{/if}" maxlength="1024" placeholder="{$LANG->getModule('description_note')}">
+                            <input type="text" class="form-control" id="description_{$mod}" name="description[{$mod}]" value="{if isset($OPENSEARCH_LINK[$mod])}{$OPENSEARCH_LINK[$mod].description}{/if}" maxlength="1024" placeholder="{$LANG->getModule('description_note')}">
                         </div>
                     </li>
                     {/if}

@@ -208,22 +208,24 @@ function nv_site_theme($contents, $full = true)
 
     if (!empty($opensearch_link)) {
         foreach ($opensearch_link as $ol => $nd) {
-            if ($ol == 'site') {
-                $html_links[] = [
-                    'rel' => 'search',
-                    'type' => 'application/opensearchdescription+xml',
-                    'href' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=seek&' . NV_OP_VARIABLE . '=opensearch',
-                    'title' => $nd[0]
-                ];
-            } else {
-                if (!empty($site_mods[$ol]['is_search'])) {
+            if ($ol == '_site') {
+                if (!empty($nd['active'])) {
                     $html_links[] = [
                         'rel' => 'search',
                         'type' => 'application/opensearchdescription+xml',
-                        'href' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=seek&' . NV_OP_VARIABLE . '=opensearch/' . $ol,
-                        'title' => $nd[0]
+                        'href' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=seek&' . NV_OP_VARIABLE . '=opensearch',
+                        'title' => $nd['shortname']
                     ];
                 }
+                continue;
+            }
+            if (isset($site_mods[$ol]) and !empty($site_mods[$ol]['is_search']) and !empty($nd['active'])) {
+                $html_links[] = [
+                    'rel' => 'search',
+                    'type' => 'application/opensearchdescription+xml',
+                    'href' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=seek&' . NV_OP_VARIABLE . '=opensearch/' . $ol,
+                    'title' => $nd['shortname']
+                ];
             }
         }
     }
