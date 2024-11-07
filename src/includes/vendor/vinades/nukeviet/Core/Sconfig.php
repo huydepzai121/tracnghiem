@@ -346,6 +346,11 @@ class Sconfig
         $config_contents .= $t . $t . "rewrite ^/api\/([a-zA-Z0-9]+)\/([a-zA-Z0-9]+)\/?\$ api.php?module=\$1&action=\$2 last;\n";
         $config_contents .= $t . $t . "rewrite ^/api\/([a-zA-Z0-9]+)\/?\$ api.php?action=\$1 last;\n";
         $config_contents .= $t . $t . "if (!-e \$request_filename) {\n";
+
+        if ($this->admin_rewrite) {
+            $config_contents .= $t . $t . $t . "rewrite ^/" . $this->admin_dir . "/(.*)\$ /" . $this->admin_dir . "/index.php last;\n";
+        }
+
         $config_contents .= $t . $t . $t . 'rewrite ^/(.*)(' . $this->rewrite_exts . ")\$ /index.php;\n";
         $config_contents .= $t . $t . "}\n";
         $config_contents .= $t . $t . "rewrite ^/(.*)tag\/([^?]+)\$ /index.php;\n";
