@@ -687,6 +687,17 @@ class Sconfig
         $rewrite_rule .= '<action type="Rewrite" url="api.php?action={R:2}" appendQueryString="false" />';
         $rewrite_rule .= '</rule>';
 
+        if ($this->admin_rewrite) {
+            $rewrite_rule .= '<rule name="nv_rule_' . ++$rulename . '" stopProcessing="true">';
+            $rewrite_rule .= '<match url="^' . $this->admin_dir . '/(.*)$" ignoreCase="false" />';
+            $rewrite_rule .= '<conditions logicalGrouping="MatchAll">';
+            $rewrite_rule .= '<add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" negate="true" />';
+            $rewrite_rule .= '<add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" negate="true" />';
+            $rewrite_rule .= '</conditions>';
+            $rewrite_rule .= '<action type="Rewrite" url="' . $this->admin_dir . '/index.php" />';
+            $rewrite_rule .= '</rule>';
+        }
+
         $rewrite_rule .= '<rule name="nv_rule_' . ++$rulename . '">';
         $rewrite_rule .= '<match url="(.*)(' . $this->rewrite_exts . ')$" ignoreCase="false" />';
         $rewrite_rule .= '<conditions logicalGrouping="MatchAll">';
