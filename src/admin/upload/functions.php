@@ -28,11 +28,11 @@ $array_url_instruction['config'] = 'https://wiki.nukeviet.vn/nukeviet4:admin:upl
 $array_url_instruction['uploadconfig'] = 'https://wiki.nukeviet.vn/nukeviet4:admin:upload:uploadconfig';
 
 $allow_func = [
-    'main', 'imglist', 'delimg', 'createimg',
-    'dlimg', 'renameimg', 'moveimg', 'folderlist',
+    'main', 'delimg', 'createimg',
+    'dlimg', 'renameimg', 'moveimg',
     'delfolder', 'renamefolder', 'createfolder',
     'upload', 'addlogo', 'cropimg', 'rotateimg', 'download',
-    'webpconvert', 'compressimage', 'qualitychange'
+    'webpconvert', 'compressimage', 'qualitychange', 'js'
 ];
 
 if (defined('NV_IS_SPADMIN')) {
@@ -42,14 +42,18 @@ if (defined('NV_IS_SPADMIN')) {
     $allow_func[] = 'uploadconfig';
 }
 
+// Các module trong quản trị
+$sql = 'SELECT module FROM ' . NV_AUTHORS_GLOBALTABLE . '_module';
+$acp_mods = $db->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+
 /**
- * nv_check_allow_upload_dir()
+ * Trả lại các quyền thao tác với thư mục nếu có
  *
  * @param mixed $dir
  */
 function nv_check_allow_upload_dir($dir)
 {
-    global $site_mods, $allow_upload_dir, $admin_info, $global_config;
+    global $site_mods, $allow_upload_dir, $admin_info, $global_config, $acp_mods, $admin_mods;
 
     $dir = trim($dir);
     if (empty($dir)) {
@@ -66,12 +70,14 @@ function nv_check_allow_upload_dir($dir)
         if (NV_UPLOADS_DIR == $arr_dir[0] . '/' . $arr_dir[1]) {
             $_dir_mod = $arr_dir[2] ?? '';
             $_dir_mod_sub = $arr_dir[3] ?? '';
+            $_dir_mod_2 = $arr_dir[4] ?? '';
         } else {
             return $level;
         }
     } elseif (in_array($arr_dir[0], $allow_upload_dir, true)) {
         $_dir_mod = $arr_dir[1] ?? '';
         $_dir_mod_sub = $arr_dir[2] ?? '';
+        $_dir_mod_2 = $arr_dir[3] ?? '';
     } else {
         return $level;
     }
@@ -84,7 +90,7 @@ function nv_check_allow_upload_dir($dir)
         }
     }
 
-    // Quyen cua dieu hanh toi cao va dieu hanh chung
+    // Quyền điều hành tối cao và điều hành chung
     if (defined('NV_IS_SPADMIN')) {
         $level['view_dir'] = true;
 
@@ -98,8 +104,12 @@ function nv_check_allow_upload_dir($dir)
             $level['rename_dir'] = true;
             $level['delete_dir'] = true;
 
-            // Khong doi ten, xoa thu muc upload cua module
+            // Không đổi tên, xóa thư mục upload của module ngoài site đang có
             if (isset($site_mods[$mod_name]) and $dir == NV_UPLOADS_DIR . '/' . $mod_name) {
+                unset($level['rename_dir'], $level['delete_dir']);
+            }
+            // Không đổi tên, xóa thư mục upload của module quản trị
+            if (in_array($_dir_mod, $acp_mods, true) and empty($_dir_mod_sub)) {
                 unset($level['rename_dir'], $level['delete_dir']);
             }
         }
@@ -119,7 +129,7 @@ function nv_check_allow_upload_dir($dir)
             $level['crop_file'] = true;
             $level['rotate_file'] = true;
         }
-    } elseif (isset($site_mods[$mod_name])) {
+    } elseif (isset($site_mods[$mod_name]) or isset($admin_mods[$_dir_mod])) {
         $level['view_dir'] = true;
 
         if ($admin_info['allow_create_subdirectories']) {
@@ -129,8 +139,12 @@ function nv_check_allow_upload_dir($dir)
         if (!empty($_dir_mod_sub) and $admin_info['allow_modify_subdirectories']) {
             $level['rename_dir'] = true;
             $level['delete_dir'] = true;
-            // Khong doi ten, xoa thu muc upload cua module hoac thu muc co chua thu muc con
-            if (isset($site_mods[$mod_name]) and !empty($_dir_mod_sub)) {
+            // Không đổi tên, xóa thư mục con cấp 1 của module ngoài site
+            if (isset($site_mods[$mod_name]) and !empty($_dir_mod_sub) and empty($_dir_mod_2)) {
+                unset($level['rename_dir'], $level['delete_dir']);
+            }
+            // Không đổi tên, xóa thư mục upload của module quản trị
+            if (isset($admin_mods[$_dir_mod]) and empty($_dir_mod_sub)) {
                 unset($level['rename_dir'], $level['delete_dir']);
             }
         }
@@ -149,6 +163,9 @@ function nv_check_allow_upload_dir($dir)
             $level['rotate_file'] = true;
         }
     }
+    if (empty($level)) {
+        return [];
+    }
 
     // Tự động chèn logo
     $level['auto_logo'] = false;
@@ -165,9 +182,9 @@ function nv_check_allow_upload_dir($dir)
 }
 
 /**
- * nv_check_path_upload()
+ * Kiểm tra thư mục có thuộc trình quản lý tệp tin không
  *
- * @param mixed $path
+ * @param string $path
  */
 function nv_check_path_upload($path)
 {
@@ -630,7 +647,7 @@ $array_documents = ['doc', 'xls', 'chm', 'pdf', 'docx', 'xlsx'];
 $array_dirname = [];
 $array_thumb_config = [];
 
-$refresh = $nv_Request->isset_request('refresh', 'get');
+$refresh = $nv_Request->isset_request('refresh', 'post');
 $path = nv_check_path_upload($nv_Request->get_string('path', 'get', NV_UPLOADS_DIR));
 
 $sql = 'SELECT * FROM ' . NV_UPLOAD_GLOBALTABLE . '_dir ORDER BY dirname ASC';
@@ -646,7 +663,7 @@ while ($row = $result->fetch()) {
 }
 unset($array_dirname['']);
 
-if ($nv_Request->isset_request('dirListRefresh', 'get')) {
+if ($nv_Request->isset_request('dirListRefresh', 'post')) {
     $real_dirlist = nv_listUploadDir(NV_UPLOADS_DIR);
     $dirlist = array_keys($array_dirname);
     $result_no_exit = array_diff($dirlist, $real_dirlist);
