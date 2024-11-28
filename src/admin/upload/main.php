@@ -275,6 +275,7 @@ if ($nv_Request->isset_request('checkss', 'post')) {
             while ($row = $result->fetch()) {
                 $file = [];
                 $file['src'] = NV_BASE_SITEURL . $row['src'] . '?' . $row['mtime'];
+                $file['thumb'] = NV_BASE_SITEURL . $row['src'];
                 $file['alt'] = $row['alt'];
                 $file['name'] = $row['name'];
                 $file['real_name'] = $row['title'];

@@ -15,6 +15,7 @@
                 data-alt="{$file.alt}"
                 data-mtime="{$file.mtime}"
                 data-thumb-src="{$file.src}"
+                data-thumb="{$file.thumb}"
                 data-preview-size="{$file.size_detail}"
                 data-type="{$file.type}"
                 data-width="{$file.width}"

@@ -183,7 +183,8 @@ var nukeviet = nukeviet || {};
             CKEditorFuncNum: 0, // >0 là mở cho CKEditor4
             editorId: '', // Khác rỗng là mở cho CKEditor5
             area: '', // ID thẻ đổ src về khi pick.
-            alt: '' // ID thẻ đổ alt về khi pick.
+            alt: '', // ID thẻ đổ alt về khi pick.
+            onSelect: null // Hàm trả về khi select
         }, options);
 
         this.fmm = null;
@@ -277,6 +278,15 @@ var nukeviet = nukeviet || {};
             return;
         }
         self.showModal();
+    }
+
+    // Đóng popup qua lệnh
+    hide() {
+        const self = this;
+        if (self.settings.show == 'inline' || !self.fmm) {
+            return;
+        }
+        self.hideModal();
     }
 
     // Xử lý các sự kiện sau khi dựng được container
@@ -3248,7 +3258,7 @@ var nukeviet = nukeviet || {};
         let html = '<li><div class="dropdown-header fw-medium text-truncate-2 mb-2 pb-0 text-break text-wrap text-primary" title="' + menuHeader + '">' + menuHeader + '</div></li>';
 
         if (files.length == 1) {
-            if (self.settings.editorId != '' || self.settings.CKEditorFuncNum > 0 || self.settings.area != '') {
+            if (typeof self.settings.onSelect == 'function' || self.settings.editorId != '' || self.settings.CKEditorFuncNum > 0 || self.settings.area != '') {
                 actions++;
                 html += '<li><a class="dropdown-item" href="#" data-toggle="menu-file-select" data-uuid="' + files.data('uuid') + '"><i class="fa-solid fa-check text-success fa-fw"></i> ' + self.lang.select + '</a></li>';
             }
@@ -3396,6 +3406,23 @@ var nukeviet = nukeviet || {};
     // Xử lý trả về khi chọn file
     handleSelectFile(file) {
         const self = this;
+        // Trả về dạng hàm callback
+        if (typeof self.settings.onSelect == 'function') {
+            self.settings.onSelect({
+                name: file.data('name'),
+                ext: file.data('ext'),
+                thumb: file.data('thumb'),
+                path: file.data('path'),
+                absPath: file.data('abs-path'),
+                alt: file.data('alt'),
+                type: file.data('type'),
+                width: file.data('width'),
+                height: file.data('height'),
+                size: file.data('filesize')
+            }, self);
+            return;
+        }
+
         // Trả về cho CKEditor 4 cũ
         if (self.settings.CKEditorFuncNum > 0 && window.opener && window.opener.CKEDITOR) {
             window.opener.CKEDITOR.tools.callFunction(self.settings.CKEditorFuncNum, file.data('path'), function() {
