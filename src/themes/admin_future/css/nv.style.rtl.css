@@ -27773,6 +27773,33 @@ p + .image-style-side {
     display: block;
   }
 }
+.fms-wraper.touch-only .fms-files-wraper .sel .form-check-input {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.fms-wraper.touch-only .fms-files-wraper .btn-menu {
+  --bs-btn-padding-y: 2px;
+  --bs-btn-padding-x: 3px;
+}
+.fms-wraper.touch-only .view-list > .fms-files-wraper .file .sel {
+  flex-basis: 1.5rem;
+  max-width: 1.5rem;
+}
+
+@media (max-width: 575.98px) {
+  .view-list > .fms-files-wraper .file .sel {
+    flex-basis: 1.5rem;
+    max-width: 1.5rem;
+  }
+  .fms-files-wraper .sel .form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .fms-files-wraper .btn-menu {
+    --bs-btn-padding-y: 2px;
+    --bs-btn-padding-x: 3px;
+  }
+}
 .view-list > .fms-files-wraper {
   padding-bottom: 1px;
 }

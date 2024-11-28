@@ -287,7 +287,7 @@ var nukeviet = nukeviet || {};
         if (input == 'none') {
             nvToast('Your browser does not support, please upgrade to modern browsers', 'warning');
         }
-        self.setContainerInput(input);
+        self.setContainerType(input);
 
         // Xử lý lọc theo loại file
         const ftype = $('[data-toggle="filter-type"]', self.fms);
@@ -3457,13 +3457,12 @@ var nukeviet = nukeviet || {};
         return $('[data-toggle="toggle-trees"]', this.fms).is(':visible');
     }
 
-    // Các class touch hay mouse
-    setContainerInput(input) {
-        const self = this;
-        if (input == 'touch') {
-            self.fms.addClass('touch-only');
+    // Phát hiện thiết bị không có con trỏ chuột, show các nút tool
+    setContainerType(input) {
+        if (window.matchMedia('(pointer: coarse) and (hover: none)').matches && (input == 'both' || input == 'touch')) {
+            this.fms.addClass('touch-only');
         } else {
-            self.fms.removeClass('touch-only');
+            this.fms.removeClass('touch-only');
         }
     }
 
