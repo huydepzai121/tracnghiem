@@ -2400,7 +2400,7 @@ function nv_url_rewrite_callback($matches)
         if (!in_array($query_array[NV_LANG_VARIABLE], $allow_langkeys, true) or (isset($query_array[NV_NAME_VARIABLE]) and (!isset($query_array_keys[1]) or $query_array_keys[1] != NV_NAME_VARIABLE)) or (isset($query_array[NV_OP_VARIABLE]) and (!isset($query_array_keys[2]) or $query_array_keys[2] != NV_OP_VARIABLE))) {
             return $matches[0];
         }
-        if (!$global_config['rewrite_optional']) {
+        if (!$global_config['rewrite_optional'] or $is_acp) {
             $op_rewrite[] = $query_array[NV_LANG_VARIABLE];
             ++$op_rewrite_count;
         }
@@ -2415,7 +2415,7 @@ function nv_url_rewrite_callback($matches)
                 unset($name_variable[0]);
                 $query_array[NV_OP_VARIABLE] = implode('/', $name_variable);
             }
-            if ($global_config['rewrite_op_mod'] != $query_array[NV_NAME_VARIABLE]) {
+            if ($global_config['rewrite_op_mod'] != $query_array[NV_NAME_VARIABLE] or $is_acp) {
                 $op_rewrite[] = $query_array[NV_NAME_VARIABLE];
                 ++$op_rewrite_count;
             }
