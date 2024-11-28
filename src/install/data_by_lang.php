@@ -548,7 +548,7 @@ $company['company_mapurl'] = 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3
 $company['company_phone'] = '+84-24-85872007[+842485872007]';
 $company['company_fax'] = '+84-24-35500914';
 $company['company_email'] = 'contact@vinades.vn';
-$company['company_website'] = 'http://vinades.vn';
+$company['company_website'] = 'https://vinades.vn';
 $company = serialize($company);
 
 /**
@@ -567,7 +567,7 @@ $copyright = [];
 $copyright['copyright_by'] = '';
 $copyright['copyright_url'] = '';
 $copyright['design_by'] = 'VINADES.,JSC';
-$copyright['design_url'] = 'http://vinades.vn/';
+$copyright['design_url'] = 'https://vinades.vn/';
 $copyright['siteterms_url'] = NV_BASE_SITEURL . 'index.php?language=' . $lang_data . '&amp;nv=siteterms';
 $copyright = serialize($copyright);
 

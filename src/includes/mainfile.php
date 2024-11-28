@@ -101,7 +101,7 @@ define('SYSTEM_CACHEDIR', NV_CACHEDIR);
 define('NV_USERS_GLOBALTABLE', $db_config['prefix'] . '_users');
 define('NV_GROUPS_GLOBALTABLE', $db_config['prefix'] . '_users_groups');
 define('NV_GROUPSDETAIL_GLOBALTABLE', $db_config['prefix'] . '_users_groups_detail');
-define('NUKEVIET_USER_AGENT', 'NUKEVIET CMS ' . $global_config['version'] . '. Developed by VINADES. Url: http://nukeviet.vn. Code: ' . md5($global_config['sitekey']));
+define('NUKEVIET_USER_AGENT', 'NUKEVIET CMS ' . $global_config['version'] . '. Developed by VINADES. Url: https://nukeviet.vn. Code: ' . md5($global_config['sitekey']));
 
 // Neu khong co IP
 if (NV_CLIENT_IP == 'none') {

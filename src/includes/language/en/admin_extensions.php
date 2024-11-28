@@ -93,7 +93,7 @@ $lang_module['download_error_save'] = 'Error: Save the file fails';
 $lang_module['download_ok'] = 'Download file successfully, the system will switch to the installation page in a moment';
 $lang_module['login_pagetitle'] = 'Login Merchant Site';
 $lang_module['login_require'] = 'This feature requires you to login. Click <a href="%s"> Click here to login </a>';
-$lang_module['login_creat_merchant'] = 'If you do not have an account, click <a href="http://nukeviet.vn/store/merchant/manager/"> Click here </a> to create';
+$lang_module['login_creat_merchant'] = 'If you do not have an account, click <a href="https://nukeviet.vn/store/merchant/manager/"> Click here </a> to create';
 $lang_module['login_success'] = 'Login successful, the system will redirect momentarily';
 $lang_module['extUpd'] = 'Upgrading applications';
 $lang_module['extUpdCheck'] = 'Check the upgrade package';

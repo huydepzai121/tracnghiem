@@ -122,7 +122,7 @@ $lang_module['admin_repass'] = 'Confirmer le mot de passe';
 $lang_module['admin_repass_note'] = 'Confirmez le mot de passe.';
 $lang_module['success'] = 'Installation réussie!';
 $lang_module['congratulations'] = 'Félicitation!!! Vous avez réussi d\'installer le système de NukeViet. Entrer à l\'Administration pour commencer à configurer votre site.';
-$lang_module['notesupport'] = 'En cas de tous les besoins d\'aides techniques, contactez au <a href="http://nukeviet.vn" target="_blank"><strong>site Web Nukeviet.VN</strong></a>.';
+$lang_module['notesupport'] = 'En cas de tous les besoins d\'aides techniques, contactez au <a href="https://nukeviet.vn" target="_blank"><strong>site Web Nukeviet.VN</strong></a>.';
 $lang_module['noteuploads'] = '<strong>Notification:</strong> <strong>CHMOD le dossier des "uploads"</strong> sur webroot et les dossiers fils à l\'intérieur  en état 777. Si on ne le fait pas immédiatement, le système ne vous permet pas à mettre vos fichiers dans votre host en ligne';
 $lang_module['thanks'] = 'Remerciements';
 $lang_module['gohome'] = 'Accueil';

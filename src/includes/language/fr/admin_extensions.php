@@ -93,7 +93,7 @@ $lang_module['download_error_save'] = 'Erreur: Echec de sauvegarder les fichiers
 $lang_module['download_ok'] = 'Réussir de télécharger les fichiers, le système va passer à la page d\'installation dans quelques secondes';
 $lang_module['login_pagetitle'] = 'Connexion au Merchant Site';
 $lang_module['login_require'] = 'Ce fonctionnement vous demande de vous connecter. Cliquer <a href="%s">Ici</a> pour vous connecter';
-$lang_module['login_creat_merchant'] = 'Si vous n\'avez pas encore un compte, cliquer <a href="http://nukeviet.vn/store/merchant/manager/">Ici</a> pour le créer.';
+$lang_module['login_creat_merchant'] = 'Si vous n\'avez pas encore un compte, cliquer <a href="https://nukeviet.vn/store/merchant/manager/">Ici</a> pour le créer.';
 $lang_module['login_success'] = 'Connection réussie, le système va passer la page dans quelques secondes';
 $lang_module['extUpd'] = 'Mise à jour de l\'application';
 $lang_module['extUpdCheck'] = 'Verifier le paquage  de la mise à jour';

@@ -925,6 +925,9 @@ if ($step == 1) {
                             $global_config['upload_logo'] = '';
                             $admin_info['userid'] = 1;
 
+                            if (!defined('NV_AUTHORS_GLOBALTABLE')) {
+                                define('NV_AUTHORS_GLOBALTABLE', $db_config['prefix'] . '_authors');
+                            }
                             define('NV_UPLOAD_GLOBALTABLE', $db_config['prefix'] . '_upload');
                             define('SYSTEM_UPLOADS_DIR', NV_UPLOADS_DIR);
                             require_once NV_ROOTDIR . '/' . NV_ADMINDIR . '/upload/functions.php';

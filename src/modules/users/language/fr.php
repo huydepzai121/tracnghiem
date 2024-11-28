@@ -675,7 +675,7 @@ $lang_module['import'] = 'Importer à partir de fichier Excel';
 $lang_module['import_note'] = 'Pour importer les données a partir d\'un fichier Excel, vous devez <a title="Download file dữ liệu mẫu" href="%1$s"><strong>Télécharger les données modèles </strong></a>, après remplir toutes les données dans chaque fichier avec au maximum 2.000 comptes, les mettre en ligne ensuite sur le dossier <strong>%2$s</strong>';
 $lang_module['export'] = 'Exporter les donnes dans un fichier excel';
 $lang_module['export_example'] = 'Fichier modèle du module users';
-$lang_module['required_phpexcel'] = 'Pour utiliser ce fonctionnement, vous devez installer le bibliothèque PHPExcel, vous pouvez le télécharger au <a title="Download PHPExcel" href="http://nukeviet.vn/vi/store/other/phpexcel/">NukeViet Store</a>';
+$lang_module['required_phpexcel'] = 'Pour utiliser ce fonctionnement, vous devez installer le bibliothèque PHPExcel, vous pouvez le télécharger au <a title="Download PHPExcel" href="https://nukeviet.vn/vi/store/other/phpexcel/">NukeViet Store</a>';
 $lang_module['export_comment_userid'] = 'Vaut mieux de ne pas remplir ces données, si vous les donnez, le système va remplacer le compte avec userid existant';
 $lang_module['export_comment_password'] = 'Si vous ne remplissez pas ces données, le système va prendre le mot de passe par défaut qui est la date actuelles';
 $lang_module['export_comment_gender'] = 'Accepte la valeur: M=Homme, F=Femme';

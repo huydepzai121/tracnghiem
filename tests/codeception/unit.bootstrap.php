@@ -16,7 +16,7 @@ $_SERVER['REQUEST_URI'] = '';
 $_SERVER['SERVER_NAME'] = $_ENV['HTTP_HOST'];
 $_SERVER['SERVER_PORT'] = '80';
 $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
-$_SERVER['HTTP_USER_AGENT'] = 'NUKEVIET CMS. Developed by VINADES. Url: http://nukeviet.vn';
+$_SERVER['HTTP_USER_AGENT'] = 'NUKEVIET CMS. Developed by VINADES. Url: https://nukeviet.vn';
 $_SERVER['SERVER_SOFTWARE'] = 'Apache';
 
 require NV_ROOTDIR . '/includes/vendor/autoload.php';

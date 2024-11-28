@@ -177,6 +177,7 @@ $lang_module['order1'] = 'Sort by date old';
 $lang_module['order2'] = 'Sort by file name';
 $lang_module['searchdir'] = 'Search in folder';
 $lang_module['searchkey'] = 'Search key';
+$lang_module['filter_title'] = 'Filter by multiple conditions';
 $lang_module['original_image'] = 'Original image';
 $lang_module['thumb_image'] = 'thumb mage';
 $lang_module['crop'] = 'Crop image';

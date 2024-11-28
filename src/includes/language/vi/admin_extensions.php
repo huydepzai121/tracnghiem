@@ -93,7 +93,7 @@ $lang_module['download_error_save'] = 'Lỗi: Lưu file thất bại';
 $lang_module['download_ok'] = 'Tải file thành công! Bạn đang được chuyển đến trang cài đặt...';
 $lang_module['login_pagetitle'] = 'Đăng nhập Merchant Site';
 $lang_module['login_require'] = 'Chức năng này yêu cầu bạn phải đăng nhập. Nhấp <a href="%s">vào đây</a> để đăng nhập';
-$lang_module['login_creat_merchant'] = 'Nếu chưa có tài khoản, hãy click <a href="http://nukeviet.vn/store/merchant/manager/">vào đây</a> để tạo';
+$lang_module['login_creat_merchant'] = 'Nếu chưa có tài khoản, hãy click <a href="https://nukeviet.vn/store/merchant/manager/">vào đây</a> để tạo';
 $lang_module['login_success'] = 'Đăng nhập thành công!';
 $lang_module['extUpd'] = 'Nâng cấp ứng dụng';
 $lang_module['extUpdCheck'] = 'Kiểm tra gói nâng cấp';

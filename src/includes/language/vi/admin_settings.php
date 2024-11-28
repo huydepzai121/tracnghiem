@@ -160,7 +160,7 @@ $lang_module['proxy_blocker_3'] = 'Tuyệt đối';
 $lang_module['str_referer_blocker'] = 'Chuyển hướng đến trang chủ các truy vấn có REFERER bên ngoài';
 $lang_module['my_domains'] = 'Các domain của site';
 $lang_module['searchEngineUniqueID'] = 'Google search Engine ID';
-$lang_module['searchEngineUniqueID_note'] = 'Có định dạng kiểu như 000329275761967753447:sr7yxqgv294, <a href="http://nukeviet.vn/vi/faq/Su-dung-Google-Custom-Search-tren-NukeViet/" target="_blank">xem chi tiết</a>';
+$lang_module['searchEngineUniqueID_note'] = 'Có định dạng kiểu như 000329275761967753447:sr7yxqgv294, <a href="https://nukeviet.vn/vi/faq/Su-dung-Google-Custom-Search-tren-NukeViet/" target="_blank">xem chi tiết</a>';
 $lang_module['variables'] = 'Cấu hình cookie, session';
 $lang_module['cookie_prefix'] = 'Tiến tố cookie';
 $lang_module['session_prefix'] = 'Tiền tố session';

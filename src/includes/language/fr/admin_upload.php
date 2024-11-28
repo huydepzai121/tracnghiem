@@ -177,6 +177,7 @@ $lang_module['order1'] = 'Mettre en ordre de date la plus loin';
 $lang_module['order2'] = 'Mettre en ordre de nom de fichier';
 $lang_module['searchdir'] = 'Recherche dans le dossier';
 $lang_module['searchkey'] = 'Le mot clé de recherche';
+$lang_module['filter_title'] = 'Filtrer par plusieurs conditions';
 $lang_module['original_image'] = 'l\'image originale';
 $lang_module['thumb_image'] = 'photo pouce';
 $lang_module['crop'] = 'Couper image';
