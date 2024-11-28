@@ -177,6 +177,7 @@ if ($nv_Request->isset_request('del', 'post') and $request_tokend === NV_CHECK_S
     }
 
     $db->query('DELETE FROM ' . NV_MOD_TABLE . '_groups WHERE group_id = ' . $group_id);
+    $db->query('DELETE FROM ' . NV_MOD_TABLE . '_groups_detail WHERE group_id = ' . $group_id);
     $db->query('DELETE FROM ' . NV_MOD_TABLE . '_groups_users WHERE group_id = ' . $group_id);
 
     // Cập nhật lại thứ tự
@@ -218,6 +219,7 @@ if ($nv_Request->isset_request('deleteinactive', 'post') and $request_tokend ===
             }
 
             $db->query('DELETE FROM ' . NV_MOD_TABLE . '_groups WHERE group_id = ' . $group_id);
+            $db->query('DELETE FROM ' . NV_MOD_TABLE . '_groups_detail WHERE group_id = ' . $group_id);
             $db->query('DELETE FROM ' . NV_MOD_TABLE . '_groups_users WHERE group_id = ' . $group_id);
             ++$num_deleted;
         }
