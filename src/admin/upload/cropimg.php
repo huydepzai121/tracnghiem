@@ -93,7 +93,7 @@ if ($nv_Request->isset_request('path', 'post') and $nv_Request->isset_request('x
                 ) VALUES (
                     '" . $info['name'] . "', '" . $info['ext'] . "', '" . $info['type'] . "',
                     " . $info['filesize'] . ", '" . $info['src'] . "', " . $info['srcwidth'] . ',
-                    ' . $info['srcheight'] . ", '" . $info['size'] . "', " . $info['userid'] . ',
+                    ' . $info['srcheight'] . ", '" . $info['size'] . "', " . $admin_info['userid'] . ',
                     ' . $info['mtime'] . ', ' . $did . ", '" . $file . "', :newalt
                 )");
 
