@@ -1338,8 +1338,7 @@ function nv_get_keywords($content, $keyword_limit = 20, $isArr = false)
 }
 
 /**
- * mailAddHtml()
- * Thêm khung HTML vào nội dung mail
+ * Thêm khung HTML vào nội dung mail.
  *
  * @param string $subject
  * @param string $body
@@ -1349,39 +1348,39 @@ function nv_get_keywords($content, $keyword_limit = 20, $isArr = false)
  */
 function mailAddHtml($subject, $body, $gconfigs, $lang)
 {
+    global $nv_Lang;
+
     $subject = nv_autoLinkDisable($subject);
 
-    if ($lang != NV_LANG_DATA) {
-        $lang_global = [];
-        include NV_ROOTDIR . '/includes/language/' . $lang . '/global.php';
-        $maillang = $lang_global;
-    } else {
-        $maillang = \NukeViet\Core\Language::$lang_global;
+    // Gửi mail trên ngôn ngữ khác giao diện hiện tại thì đọc tạm ngôn ngữ mới
+    if ($lang != NV_LANG_INTERFACE) {
+        $nv_Lang->loadGlobal(false, true);
     }
 
     $mail_tpl = NV_ROOTDIR . '/' . NV_ASSETS_DIR . '/tpl/mail.tpl';
+    $template_tpl = 'default';
     if (!empty($gconfigs['mail_tpl'])) {
+        $path_tpl = '';
         if (file_exists(NV_ROOTDIR . '/' . $gconfigs['mail_tpl'])) {
             $mail_tpl = NV_ROOTDIR . '/' . $gconfigs['mail_tpl'];
+            $path_tpl = $gconfigs['mail_tpl'];
         } elseif (file_exists($gconfigs['mail_tpl'])) {
             $mail_tpl = $gconfigs['mail_tpl'];
+            $path_tpl = substr($gconfigs['mail_tpl'], strlen(NV_ROOTDIR . '/'));
+        }
+        if (preg_match('/\/([a-zA-Z0-9\-\_]+)\/system\//', $path_tpl, $m)) {
+            $template_tpl = get_tpl_dir($m[1], $template_tpl, 'theme_email.php');
         }
     }
 
-    $xtpl = new XTemplate($mail_tpl);
-    $xtpl->assign('SITE_URL', NV_MY_DOMAIN);
-    $xtpl->assign('GCONFIG', $gconfigs);
-    $xtpl->assign('LANG', $maillang);
-    $xtpl->assign('MESSAGE_TITLE', $subject);
-    $xtpl->assign('MESSAGE_CONTENT', $body);
+    $html = require NV_ROOTDIR . '/themes/' . $template_tpl . '/theme_email.php';
 
-    if (!empty($gconfigs['phonenumber'])) {
-        $xtpl->parse('main.phonenumber');
+    // Trả về ngôn ngữ hiện tại sau khi xử lý nội dung email
+    if ($lang != NV_LANG_INTERFACE) {
+        $nv_Lang->changeLang(NV_LANG_INTERFACE);
     }
 
-    $xtpl->parse('main');
-
-    return $xtpl->text('main');
+    return $html;
 }
 
 /**

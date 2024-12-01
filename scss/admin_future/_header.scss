@@ -177,6 +177,12 @@
                 width: 100%;
                 height: 100%;
                 display: block;
+
+                // Các thuộc tính áp dụng khi ảnh không tồn tại
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-size: calc($header-avatar-size / 2);
+                line-height: $header-avatar-size;
             }
         }
 

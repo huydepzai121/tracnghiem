@@ -25797,6 +25797,10 @@ readers do not read off random characters that represent icons */
   width: 100%;
   height: 100%;
   display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1.25rem;
+  line-height: 2.5rem;
 }
 .header-right .admin-info .dropdown-menu {
   --bs-dropdown-min-width: 16rem;

@@ -138,18 +138,19 @@ class Language
     /**
      * Language::loadGlobal()
      *
-     * @param bool $admin
+     * @param bool $admin Đọc của quản trị hay toàn site (cả quản trị)
+     * @param bool $loadtmp Đọc tạm hay đọc chính thức
      */
-    public function loadGlobal($admin = false)
+    public function loadGlobal($admin = false, $loadtmp = false)
     {
         if ($admin and !defined('NV_ADMIN')) {
             return false;
         }
         $fileName = ($admin ? 'admin_' : '') . 'global.php';
         if ($this->lang != $this->defaultLang) {
-            $this->load(NV_ROOTDIR . '/includes/language/' . $this->defaultLang . '/' . $fileName);
+            $this->load(NV_ROOTDIR . '/includes/language/' . $this->defaultLang . '/' . $fileName, $loadtmp);
         }
-        $this->load(NV_ROOTDIR . '/includes/language/' . $this->lang . '/' . $fileName);
+        $this->load(NV_ROOTDIR . '/includes/language/' . $this->lang . '/' . $fileName, $loadtmp);
     }
 
     /**
