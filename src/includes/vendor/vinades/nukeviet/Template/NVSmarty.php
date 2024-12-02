@@ -49,7 +49,7 @@ class NVSmarty extends Smarty
         } else {
             //$this->force_compile = false;
             $this->debugging = false;
-            $this->compile_check = Smarty::COMPILECHECK_OFF;
+            $this->compile_check = NV_DEBUG ? Smarty::COMPILECHECK_ON : Smarty::COMPILECHECK_OFF;
         }
 
         $this->enableSecurity();

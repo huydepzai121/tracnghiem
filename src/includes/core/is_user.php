@@ -40,7 +40,7 @@ if (defined('NV_IS_ADMIN')) {
                         a.view_mail, a.remember, a.in_groups, a.active2step, a.checknum, a.password, a.question, a.answer, a.safemode, a.pass_creation_time,
                         a.pass_reset_request, a.email_verification_time, a.last_agent, a.last_ip, a.last_login, a.last_openid, a.language,
                         b.agent AS current_agent, b.ip AS current_ip, b.logtime AS current_login, b.openid AS current_openid
-                        FROM ' . NV_USERS_GLOBALTABLE . ' AS a INNER JOIN ' . NV_USERS_GLOBALTABLE . '_login AS b ON a.userid=b.userid 
+                        FROM ' . NV_USERS_GLOBALTABLE . ' AS a INNER JOIN ' . NV_USERS_GLOBALTABLE . '_login AS b ON a.userid=b.userid
                         WHERE a.userid = ' . $user_cookie['userid'] . ' AND b.clid=' . $db->quote($client_info['clid']) . ' AND a.active=1';
 
                     $user_info = $db->query($_sql)->fetch();
@@ -61,7 +61,7 @@ if (defined('NV_IS_ADMIN')) {
                             $user_info['avata'] = !empty($user_info['photo']) ? NV_STATIC_URL . $user_info['photo'] : '';
                             $check_in_groups = nv_user_groups($user_info['in_groups'], true);
                             $user_info['in_groups'] = $check_in_groups[0];
-                            $user_info['2step_require'] = $check_in_groups[1];
+                            $user_info['2step_require'] = $check_in_groups[1] || !empty($user_cookie['admin_prelogin']);
                             $user_info['prev_login'] = (int) ($user_cookie['prev_login']);
                             $user_info['prev_agent'] = $user_cookie['prev_agent'];
                             $user_info['prev_ip'] = $user_cookie['prev_ip'];

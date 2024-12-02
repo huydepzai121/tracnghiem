@@ -59,6 +59,8 @@ function validUserLog($array_user, $remember, $oauth_data, $current_mode = 0)
     $remember = (int) $remember;
     $checknum = get_checknum($array_user['userid']);
     $opid = empty($oauth_data) ? '' : $oauth_data['id'];
+
+    // Thay đổi rule tạo hash, login ở đây cần xem xét tương tự tại includes/core/admin_login.php
     $user = [
         'userid' => $array_user['userid'],
         'current_mode' => $current_mode,

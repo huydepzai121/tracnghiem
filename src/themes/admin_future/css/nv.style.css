@@ -25668,6 +25668,15 @@ readers do not read off random characters that represent icons */
     padding-bottom: 0;
   }
 }
+.captcha-img {
+  width: auto;
+  height: calc(1.96875rem + 2 * var(--bs-border-width));
+}
+
+.grecaptcha-badge {
+  display: none;
+}
+
 .header-outer {
   background-color: var(--nv-header-bg-color);
   position: sticky;
@@ -26345,6 +26354,57 @@ html:not([data-bs-theme=dark]) .btn-default {
 .form-check-input:not(:checked):disabled {
   background-color: var(--nv-form-check-input-disabled-bg);
   border-color: var(--nv-form-check-input-disabled-border-color);
+}
+
+.btn-facebook {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #4267b2;
+  --bs-btn-border-color: #4267b2;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #385897;
+  --bs-btn-hover-border-color: #35528e;
+  --bs-btn-focus-shadow-rgb: 94, 126, 190;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #35528e;
+  --bs-btn-active-border-color: #324d86;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #4267b2;
+  --bs-btn-disabled-border-color: #4267b2;
+}
+
+.btn-google {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #ea4335;
+  --bs-btn-border-color: #ea4335;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #c7392d;
+  --bs-btn-hover-border-color: #bb362a;
+  --bs-btn-focus-shadow-rgb: 237, 95, 83;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #bb362a;
+  --bs-btn-active-border-color: #b03228;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #ea4335;
+  --bs-btn-disabled-border-color: #ea4335;
+}
+
+.btn-zalo {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #0067ff;
+  --bs-btn-border-color: #0067ff;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #0058d9;
+  --bs-btn-hover-border-color: #0052cc;
+  --bs-btn-focus-shadow-rgb: 38, 126, 255;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #0052cc;
+  --bs-btn-active-border-color: #004dbf;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #0067ff;
+  --bs-btn-disabled-border-color: #0067ff;
 }
 
 .site-toasts {
@@ -28087,6 +28147,29 @@ p + .image-style-side {
   object-fit: contain;
   max-width: 100%;
   max-height: 100%;
+}
+
+.login-page .login-header {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-top-left-radius: var(--bs-border-radius);
+  border-top-right-radius: var(--bs-border-radius);
+}
+.login-page .login-footer {
+  border-bottom-left-radius: var(--bs-border-radius);
+  border-bottom-right-radius: var(--bs-border-radius);
+}
+.login-page .card-login {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+.login-box {
+  width: 304px;
+  max-width: calc(100vw - 2rem);
+}
+
+.recaptcha-holder {
+  height: 78px;
 }
 
 /*# sourceMappingURL=nv.style.css.map */

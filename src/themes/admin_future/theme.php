@@ -96,6 +96,9 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $tpl->assign('SELECT_OPTIONS', $select_options);
     $tpl->assign('HELP_URLS', $array_url_instruction);
 
+    // Biến này để sử dụng trên các tệp khác gọi tpl
+    $tpl->assign('ADMIN_THEME', $admin_info['admin_theme']);
+
     // Menu của các module
     $array_mod_menu = $array_mod_current = [];
     foreach ($admin_menu_mods as $m => $v) {

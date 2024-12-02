@@ -64,6 +64,17 @@ $admin_login_success = false;
 // Đăng xuất tài khoản login bước 1 để login lại
 if (!empty($admin_pre_data) and $nv_Request->isset_request('pre_logout', 'get') and $nv_Request->get_title('checkss', 'get') == NV_CHECK_SESSION) {
     $nv_Request->unset_request('admin_pre', 'session');
+
+    // Gỡ phiên đăng nhập của user nếu trước đó setup xác thực 2 bước
+    $user_cookie = NukeViet\Core\User::get_userlogin_hash();
+    if (!empty($user_cookie['admin_prelogin'])) {
+        if ($global_config['allowuserloginmulti']) {
+            $db->query('DELETE FROM ' . NV_USERS_GLOBALTABLE . '_login WHERE userid=' . $admin_pre_data['userid'] . ' AND clid=' . $db->quote($client_info['clid']));
+        } else {
+            $db->query('DELETE FROM ' . NV_USERS_GLOBALTABLE . '_login WHERE userid=' . $admin_pre_data['userid']);
+        }
+    }
+
     exit(0);
 }
 
@@ -127,13 +138,15 @@ if (!empty($admin_pre_data) and in_array(($opt = $nv_Request->get_title('auth', 
             'checknum' => $checknum,
             'checkhash' => md5($admin_pre_data['userid'] . $checknum . $global_config['sitekey'] . $client_info['clid']),
             'current_agent' => NV_USER_AGENT,
-            'last_agent' => $admin_pre_data['user_last_agent'],
+            'prev_agent' => $admin_pre_data['user_last_agent'],
             'current_ip' => NV_CLIENT_IP,
-            'last_ip' => $admin_pre_data['user_last_ip'],
+            'prev_ip' => $admin_pre_data['user_last_ip'],
             'current_login' => NV_CURRENTTIME,
-            'last_login' => (int) ($admin_pre_data['user_last_login']),
-            'last_openid' => $admin_pre_data['user_last_openid'],
-            'current_openid' => ''
+            'prev_login' => (int) ($admin_pre_data['user_last_login']),
+            'prev_openid' => $admin_pre_data['user_last_openid'],
+            'current_openid' => '',
+            'language' => $admin_pre_data['language'],
+            'admin_prelogin' => true
         ];
 
         $stmt = $db->prepare('UPDATE ' . NV_USERS_GLOBALTABLE . ' SET
@@ -149,6 +162,22 @@ if (!empty($admin_pre_data) and in_array(($opt = $nv_Request->get_title('auth', 
         $stmt->bindValue(':last_ip', NV_CLIENT_IP, PDO::PARAM_STR);
         $stmt->bindValue(':last_agent', NV_USER_AGENT, PDO::PARAM_STR);
         $stmt->execute();
+
+        if ($global_config['allowuserloginmulti']) {
+            $db->query('DELETE FROM ' . NV_USERS_GLOBALTABLE . '_login WHERE userid=' . $admin_pre_data['userid'] . ' AND clid=' . $db->quote($client_info['clid']));
+        } else {
+            $db->query('DELETE FROM ' . NV_USERS_GLOBALTABLE . '_login WHERE userid=' . $admin_pre_data['userid']);
+        }
+
+        $sth = $db->prepare('INSERT INTO ' . NV_USERS_GLOBALTABLE . '_login (
+            userid, clid, logtime, mode, agent, ip, openid
+        ) VALUES (
+            ' . $admin_pre_data['userid'] . ', :clid, ' . NV_CURRENTTIME . ', 0, :agent, :ip, \'\'
+        )');
+        $sth->bindValue(':clid', $client_info['clid'], PDO::PARAM_STR);
+        $sth->bindValue(':agent', NV_USER_AGENT, PDO::PARAM_STR);
+        $sth->bindValue(':ip', NV_CLIENT_IP, PDO::PARAM_STR);
+        $sth->execute();
 
         NukeViet\Core\User::set_userlogin_hash($user, true);
 

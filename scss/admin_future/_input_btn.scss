@@ -27,3 +27,10 @@ html:not([data-bs-theme="dark"]) {
     background-color: var(--nv-form-check-input-disabled-bg);
     border-color: var(--nv-form-check-input-disabled-border-color);
 }
+
+// Các nút màu sắc thương hiệu
+@each $color, $value in $brand-colors {
+    .btn-#{$color} {
+        @include button-variant($value, $value);
+    }
+}
