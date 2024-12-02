@@ -13,6 +13,11 @@ if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }
 
+/*
+ * Tệp này không bắt buộc trong giao diện nếu không có hệ thống lấy từ giao diện admin_default
+ * Giữ tệp này, chỉnh sửa nó nếu muốn phát triển giao diện đăng nhập riêng
+ */
+
 use NukeViet\Client\Browser;
 
 $dir_tpl = get_tpl_dir($global_config['admin_theme'], 'admin_default', '/system/login.tpl');

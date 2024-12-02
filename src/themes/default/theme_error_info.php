@@ -13,6 +13,11 @@ if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }
 
+/*
+ * Tệp này không bắt buộc trong giao diện nếu không có hệ thống lấy từ giao diện default
+ * Giữ tệp này, chỉnh sửa nó nếu muốn phát triển giao diện thông báo lỗi riêng
+ */
+
 $errortype = [
     E_ERROR => [
         $nv_Lang->getGlobal('error_error'),
