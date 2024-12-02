@@ -31,8 +31,7 @@ function nv_error_info()
     } else {
         $php_dir = get_tpl_dir($global_config['site_theme'], 'default', '/theme_error_info.php');
     }
-    require NV_ROOTDIR . '/themes/' . $php_dir . '/theme_error_info.php';
-    return nv_error_info_theme($php_dir);
+    return require NV_ROOTDIR . '/themes/' . $php_dir . '/theme_error_info.php';
 }
 
 /**
