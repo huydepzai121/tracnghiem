@@ -618,52 +618,16 @@ function nv_theme_alert($message_title, $message_content, $type = 'info', $url_b
 {
     global $global_config, $module_info, $page_title;
 
+    $dir_basenames = [];
     if (defined('NV_ADMIN')) {
-        $template = get_tpl_dir($global_config['admin_theme'], 'admin_default', '/system/alert.tpl');
-    } else {
-        $template = get_tpl_dir($global_config['site_theme'], 'default', '/system/alert.tpl');
+        !empty($global_config['admin_theme']) && $dir_basenames[] = $global_config['admin_theme'];
+        $dir_basenames[] = 'admin_default';
     }
-    $tpl_path = NV_ROOTDIR . '/themes/' . $template . '/system';
-    $xtpl = new XTemplate('alert.tpl', $tpl_path);
-    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-    $xtpl->assign('LANG_BACK', $lang_back);
-    $xtpl->assign('CONTENT', $message_content);
+    !empty($global_config['module_theme']) && $dir_basenames[] = $global_config['module_theme'];
+    !empty($global_config['site_theme']) && $dir_basenames[] = $global_config['site_theme'];
 
-    if ($type == 'success') {
-        $xtpl->parse('main.success');
-    } elseif ($type == 'warning') {
-        $xtpl->parse('main.warning');
-    } elseif ($type == 'danger') {
-        $xtpl->parse('main.danger');
-    } else {
-        $xtpl->parse('main.info');
-    }
-
-    if (!empty($message_title)) {
-        $page_title = $message_title;
-        $xtpl->assign('TITLE', $message_title);
-        $xtpl->parse('main.title');
-    } elseif (!empty($module_info['site_title'])) {
-        // For admin if use in admin area
-        $page_title = $module_info['site_title'];
-    } else {
-        $page_title = $module_info['custom_title'];
-    }
-
-    if (!empty($url_back)) {
-        $xtpl->assign('TIME', $time_back);
-        $xtpl->assign('URL', $url_back);
-        $xtpl->parse('main.url_back');
-        $xtpl->parse('main.loading_icon');
-
-        if (!empty($lang_back)) {
-            $xtpl->parse('main.url_back_button');
-        }
-    }
-
-    $xtpl->parse('main');
-
-    return $xtpl->text('main');
+    $php_dir = get_tpl_dir($dir_basenames, 'default', '/theme_alert.php');
+    return require NV_ROOTDIR . '/themes/' . $php_dir . '/theme_alert.php';
 }
 
 /**
