@@ -955,47 +955,30 @@ function nv_html_site_js($html = true, $other_js = [], $language_js = true, $glo
 }
 
 /**
- * nv_admin_menu()
+ * Lấy giao diện thanh công cụ của quản trị khi đăng nhập ngoài site
  *
  * @return string
  */
 function nv_admin_menu()
 {
-    global $nv_Lang, $admin_info, $module_info, $module_name, $global_config, $client_info, $db_config, $db, $nv_Cache;
+    global $module_info, $global_config, $db_config, $admin_info, $nv_Cache;
 
     $dir_basenames = [$global_config['site_theme']];
     if ($module_info['theme'] == $module_info['template']) {
         array_unshift($dir_basenames, $module_info['template']);
     }
-    $block_theme = get_tpl_dir($dir_basenames, 'default', '/system/admin_toolbar.tpl');
-    $xtpl = new XTemplate('admin_toolbar.tpl', NV_ROOTDIR . '/themes/' . $block_theme . '/system');
-    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    $xtpl->assign('NV_ADMINDIR', NV_BASE_SITEURL . NV_ADMINDIR . '/index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA);
-    $xtpl->assign('URL_AUTHOR', NV_BASE_SITEURL . NV_ADMINDIR . '/index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=authors&amp;id=' . $admin_info['admin_id']);
-    $xtpl->assign('TEMPLATE', $block_theme);
+    $php_dir = get_tpl_dir($dir_basenames, 'default', '/theme_toolbar.php');
 
+    $enable_drag = false;
     if (defined('NV_IS_SPADMIN')) {
         $sql = 'SELECT COUNT(*) AS count FROM ' . $db_config['dbsystem'] . '.' . NV_AUTHORS_GLOBALTABLE . '_module WHERE act_' . $admin_info['level'] . ' = 1 AND module=\'themes\'';
         $list = $nv_Cache->db($sql, '', 'authors');
         if (!empty($list[0]['count'])) {
-            $new_drag_block = (defined('NV_IS_DRAG_BLOCK')) ? 0 : 1;
-            $lang_drag_block = ($new_drag_block) ? $nv_Lang->getGlobal('drag_block') : $nv_Lang->getGlobal('no_drag_block');
-
-            $xtpl->assign('URL_DBLOCK', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;drag_block=' . $new_drag_block . '&amp;nv_redirect=' . nv_redirect_encrypt($client_info['selfurl']));
-            $xtpl->assign('LANG_DBLOCK', $lang_drag_block);
-            $xtpl->parse('main.is_spadmin');
+            $enable_drag = true;
         }
     }
 
-    if (defined('NV_IS_MODADMIN') and !empty($module_info['admin_file'])) {
-        $xtpl->assign('URL_MODULE', NV_BASE_SITEURL . NV_ADMINDIR . '/index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name);
-        $xtpl->assign('MODULENAME', $module_info['custom_title']);
-        $xtpl->parse('main.is_modadmin');
-    }
-
-    $xtpl->parse('main');
-
-    return $xtpl->text('main');
+    return require NV_ROOTDIR . '/themes/' . $php_dir . '/theme_toolbar.php';
 }
 
 /**
