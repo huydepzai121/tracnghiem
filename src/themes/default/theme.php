@@ -425,7 +425,7 @@ function nv_site_theme($contents, $full = true)
 }
 
 /**
- * nv_error_theme()
+ * Giao diện thông báo lỗi ví dụ lỗi 404, 403, 500
  *
  * @param string $title
  * @param string $content
@@ -434,4 +434,24 @@ function nv_site_theme($contents, $full = true)
 function nv_error_theme($title, $content, $code)
 {
     nv_info_die($title, $title, $content, $code);
+}
+
+/**
+ * Giao diện xử lý khung các block
+ *
+ * @param string $content
+ * @param array $row
+ * @param string $template
+ * @return string
+ */
+function nv_block_theme($content, $row, $template)
+{
+    $xtpl = new XTemplate('block.' . $row['template'] . '.tpl', NV_ROOTDIR . '/themes/' . $template . '/layout');
+    $xtpl->assign('BLOCK_ID', $row['bid']);
+    $xtpl->assign('BLOCK_TITLE', $row['blockTitle']);
+    $xtpl->assign('BLOCK_CONTENT', $content);
+    $xtpl->assign('TEMPLATE', $template);
+
+    $xtpl->parse('mainblock');
+    return $xtpl->text('mainblock');
 }

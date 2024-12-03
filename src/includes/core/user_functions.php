@@ -272,18 +272,10 @@ function nv_blocks_content($sitecontent)
                 unset($block_config);
 
                 if (!empty($content) or defined('NV_IS_DRAG_BLOCK')) {
-                    $xtpl = null;
                     $_row['template'] = empty($_row['template']) ? 'default' : $_row['template'];
                     $_template = get_tpl_dir([(!empty($module_info['theme']) ? $module_info['theme'] : ''), (!empty($global_config['module_theme']) ? $global_config['module_theme'] : ''), $global_config['site_theme'], 'default'], '', '/layout/block.' . $_row['template'] . '.tpl');
-                    if (!empty($_template)) {
-                        $xtpl = new XTemplate('block.' . $_row['template'] . '.tpl', NV_ROOTDIR . '/themes/' . $_template . '/layout');
-                        $xtpl->assign('BLOCK_ID', $_row['bid']);
-                        $xtpl->assign('BLOCK_TITLE', $_row['blockTitle']);
-                        $xtpl->assign('BLOCK_CONTENT', $content);
-                        $xtpl->assign('TEMPLATE', $_template);
-
-                        $xtpl->parse('mainblock');
-                        $content = $xtpl->text('mainblock');
+                    if (!empty($_template) and function_exists('nv_block_theme')) {
+                        $content = nv_block_theme($content, $_row, $_template);
                     } else {
                         $content = $_row['blockTitle'] . '<br />' . $content . '<br />';
                     }
