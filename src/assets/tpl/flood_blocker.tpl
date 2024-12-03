@@ -1,18 +1,17 @@
-<!-- BEGIN: main -->
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" prefix="og: http://ogp.me/ns#">
 
 <head>
-    <title>{PAGE_TITLE}</title>
+    <title>{$LANG->getGlobal('flood_page_title')}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta http-equiv="expires" content="0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <style>
-    body{padding-top:20px;margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:16px;font-weight:400;line-height:1.5;color:#212529;background-color:#6c757d}.wrap{display:flex;justify-content:center}.card{width:90%;max-width:500px;text-align:center;border-radius:5px;border:1px solid #dee2e6;background-color:#fff}@media (min-width:768px){.card{width:450px}}.card-body{padding:15px 20px}.card-footer{padding:10px 20px;border-bottom-left-radius:5px;border-bottom-right-radius:5px}.img{margin-bottom:10px}.title{font-size:16px;margin-bottom:8px}.message{margin-bottom:6px}.g-recaptcha{display:flex;justify-content:center}.img-color-1{fill:#495057;fill-rule:nonzero}.img-color-2{fill:#dc3545;fill-rule:nonzero}.loader{display:block;position:relative;height:16px;width:100%;background:#e9ecef;border-radius:10px;overflow:hidden}.loader::before{content:'';background:#dc3545;position:absolute;left:0;top:0;width:0;height:100%;animation:loading 10s linear infinite}.loader:after{content:'';position:absolute;left:0;top:0;width:100%;height:100%;text-align:center;font-size:12px;letter-spacing:1px;line-height:16px;font-weight:700;color:#6c757d;text-shadow:1px 1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,-1px -1px 0 #fff,1px 0 0 #fff,0 1px 0 #fff,-1px 0 0 #fff,0px -1px 0 #fff,1px 1px 1px rgba(255,255,255,0);animation:percentage 10s linear infinite}@keyframes loading{0%{width:0}100%{width:100%}}@keyframes percentage{0%{content:"0%"}5%{content:"5%"}10%{content:"10%"}20%{content:"20%"}30%{content:"30%"}40%{content:"40%"}50%{content:"50%"}60%{content:"60%"}70%{content:"70%"}80%{content:"80%"}90%{content:"90%"}95%{content:"95%"}96%{content:"96%"}97%{content:"97%"}98%{content:"98%"}99%{content:"99%"}100%{content:"100%"}}
+    {literal}body{padding-top:20px;margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:16px;font-weight:400;line-height:1.5;color:#212529;background-color:#6c757d}.wrap{display:flex;justify-content:center}.card{width:90%;max-width:500px;text-align:center;border-radius:5px;border:1px solid #dee2e6;background-color:#fff}@media (min-width:768px){.card{width:450px}}.card-body{padding:15px 20px}.card-footer{padding:10px 20px;border-bottom-left-radius:5px;border-bottom-right-radius:5px}.img{margin-bottom:10px}.title{font-size:16px;margin-bottom:8px}.message{margin-bottom:6px}.g-recaptcha{display:flex;justify-content:center}.img-color-1{fill:#495057;fill-rule:nonzero}.img-color-2{fill:#dc3545;fill-rule:nonzero}.loader{display:block;position:relative;height:16px;width:100%;background:#e9ecef;border-radius:10px;overflow:hidden}.loader::before{content:'';background:#dc3545;position:absolute;left:0;top:0;width:0;height:100%;animation:loading 10s linear infinite}.loader:after{content:'';position:absolute;left:0;top:0;width:100%;height:100%;text-align:center;font-size:12px;letter-spacing:1px;line-height:16px;font-weight:700;color:#6c757d;text-shadow:1px 1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,-1px -1px 0 #fff,1px 0 0 #fff,0 1px 0 #fff,-1px 0 0 #fff,0px -1px 0 #fff,1px 1px 1px rgba(255,255,255,0);animation:percentage 10s linear infinite}@keyframes loading{0%{width:0}100%{width:100%}}@keyframes percentage{0%{content:"0%"}5%{content:"5%"}10%{content:"10%"}20%{content:"20%"}30%{content:"30%"}40%{content:"40%"}50%{content:"50%"}60%{content:"60%"}70%{content:"70%"}80%{content:"80%"}90%{content:"90%"}95%{content:"95%"}96%{content:"96%"}97%{content:"97%"}98%{content:"98%"}99%{content:"99%"}100%{content:"100%"}}{/literal}
     .loader::before,
     .loader::after {
-        animation-duration: {FLOOD_BLOCKER_TIME}s;
+        animation-duration: {$FLB->flood_block_time}s;
     }
     </style>
 </head>
@@ -27,37 +26,36 @@
                         <path d="M2499.97 0C1121.48 0 0 1121.54 0 2500.12.14 3878.56 1121.62 5000 2499.97 5000c1378.46 0 2499.91-1121.45 2499.91-2499.91C4999.88 1121.54 3878.43 0 2499.97 0zm0 455.47c481.8 0 925.11 167.64 1274.94 447.53L902.96 3774.93c-279.83-349.8-447.44-793.08-447.49-1274.82 0-1127.42 917.16-2044.64 2044.5-2044.64zm0 4089.06c-481.78 0-925.13-167.64-1274.98-447.53l2871.99-2871.91c279.83 349.85 447.44 793.19 447.44 1275.01-.01 1127.3-917.14 2044.43-2044.45 2044.43z" class="img-color-2"/>
                     </svg>
                 </div>
-                <div class="title"><strong>{FLOOD_BLOCKER_INFO1}</strong></div>
-                <div class="message">{FLOOD_BLOCKER_INFO2} <span id="secField">{FLOOD_BLOCKER_TIME}</span> {FLOOD_BLOCKER_INFO3}...</div>
-                <!-- BEGIN: captchapass -->
+                <div class="title"><strong>{$LANG->getGlobal('flood_info1')}</strong></div>
+                <div class="message">{$LANG->getGlobal('flood_info2')} <span id="secField">{$FLB->flood_block_time}</span> {$LANG->getGlobal('sec')}...</div>
+                {if $CAPTCHA_PASS}
                 <form method="post" action="{NV_BASE_SITEURL}" id="formPassFlood">
-                    <!-- BEGIN: recaptcha2 -->
-                    <p>{GLANG.flood_captcha_pass}.</p>
-                    <script src="https://www.google.com/recaptcha/api.js?hl={CATPCHA_LANG}&amp;onload=buildRecaptcha&amp;render=explicit" async defer></script>
+                    {if $GCONFIG.recaptcha_ver eq 2}
+                    <p>{$LANG->getGlobal('flood_captcha_pass')}.</p>
+                    <script src="https://www.google.com/recaptcha/api.js?hl={$smarty.const.NV_LANG_INTERFACE}&amp;onload=buildRecaptcha&amp;render=explicit" async defer></script>
                     <script type="text/javascript">
                     function buildRecaptcha() {
                         grecaptcha.render('g-recaptcha', {
-                            'sitekey' : '{SITE_KEY}',
+                            'sitekey' : '{$GCONFIG.recaptcha_sitekey}',
                             'callback' : function(code) {
                                 if (code) {
                                     document.getElementById("formPassFlood").submit();
                                 }
                             },
-                            'type' : '{CATPCHA_TYPE}'
+                            'type' : '{$GCONFIG.recaptcha_type}'
                         });
                     }
                     </script>
                     <div class="g-recaptcha" id="g-recaptcha"></div>
-                    <!-- END: recaptcha2 -->
-                    <!-- BEGIN: recaptcha3 -->
-                    <a href="javascript: void(0);" onclick="formSubmit(event)">{GLANG.flood_continue_access}</a>
-                    <script src="https://www.google.com/recaptcha/api.js?hl={CATPCHA_LANG}&amp;render={SITE_KEY}"></script>
+                    {elseif $GCONFIG.recaptcha_ver eq 3}
+                    <a href="javascript: void(0);" onclick="formSubmit(event)">{$LANG->getGlobal('flood_continue_access')}</a>
+                    <script src="https://www.google.com/recaptcha/api.js?hl={$smarty.const.NV_LANG_INTERFACE}&amp;render={$GCONFIG.recaptcha_sitekey}"></script>
                     <script>
                     function formSubmit(e) {
                         e.preventDefault();
                         var form = document.getElementById("formPassFlood");
                         grecaptcha.ready(function () {
-                            grecaptcha.execute('{SITE_KEY}', {action: 'floodBlockerPage'}).then(function (token) {
+                            grecaptcha.execute('{$GCONFIG.recaptcha_sitekey}', { action: 'floodBlockerPage' }).then(function (token) {
                                 var el = document.createElement("input");
                                 el.type = "hidden";
                                 el.name = "g-recaptcha-response";
@@ -68,18 +66,18 @@
                         });
                     }
                     </script>
-                    <!-- END: recaptcha3 -->
+                    {/if}
                     <input type="hidden" name="captcha_pass_flood" value="1">
-                    <input type="hidden" name="tokend" value="{TOKEND}">
-                    <input type="hidden" name="redirect" value="{REDIRECT}">
+                    <input type="hidden" name="tokend" value="{$smarty.const.NV_CHECK_SESSION}">
+                    <input type="hidden" name="redirect" value="{$REDIRECT}">
                 </form>
-                <!-- END: captchapass -->
+                {/if}
             </div>
             <div class="card-footer"><span class="loader"></span></div>
         </div>
     </div>
     <script type="text/javascript">
-        var Timeout = '{FLOOD_BLOCKER_TIME}',
+        var Timeout = '{$FLB->flood_block_time}',
             timeBegin = new Date(),
             msBegin = timeBegin.getTime();
         function showSeconds() {
@@ -95,6 +93,4 @@
         timerID = setInterval("showSeconds()", 1000);
     </script>
 </body>
-
 </html>
-<!-- END: main -->

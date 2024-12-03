@@ -77,7 +77,6 @@ class NVSmarty extends Smarty
         $this->assign('NV_FILES_DIR', NV_FILES_DIR);
         $this->assign('NV_CLIENT_IP', NV_CLIENT_IP);
         $this->assign('NV_MY_DOMAIN', NV_MY_DOMAIN);
-        $this->assign('NV_MAIN_DOMAIN', NV_MAIN_DOMAIN);
         $this->assign('NV_STATIC_URL', NV_STATIC_URL);
         $this->assign('NV_GFX_WIDTH', NV_GFX_WIDTH);
         $this->assign('NV_GFX_HEIGHT', NV_GFX_HEIGHT);
