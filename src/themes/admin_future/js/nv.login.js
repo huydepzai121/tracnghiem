@@ -226,4 +226,9 @@ $(function() {
         nv_open_browse($(this)[0], "NVADMINOAUTH", 550, 500, "resizable=no,scrollbars=1,toolbar=no,location=no,titlebar=no,menubar=0,location=no,status=no");
         e.preventDefault();
     });
+
+    // Để sẵn chuột vào ô nhập tài khoản
+    if ($('#nv_login').length) {
+        $('#nv_login').focus();
+    }
 });
