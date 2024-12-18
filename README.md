@@ -89,6 +89,19 @@ If you want to quickly test the PHP unit tests, use the command. With unit tests
 php vendor/bin/codecept run Unit
 ```
 
+If you want to test according to specific needs, use the command:
+
+```bash
+php vendor/bin/codecept run -g install
+php vendor/bin/codecept run -g users
+...
+```
+
+We offer different groups of needs as follows:
+
+- `install` serving system installation tasks.
+- `users` functional groups for logged-in users.
+
 **Next step:**
 
 Please see the [technical manual](https://wiki.nukeviet.vn/technical_manual4) for more information.

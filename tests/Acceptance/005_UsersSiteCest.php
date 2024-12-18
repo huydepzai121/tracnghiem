@@ -13,7 +13,10 @@ namespace Tests\Acceptance;
 
 use Tests\Support\AcceptanceTester;
 
-class AdminLoginCest
+/**
+ *
+ */
+class UsersSiteCest
 {
     public function _before(AcceptanceTester $I)
     {
@@ -21,11 +24,18 @@ class AdminLoginCest
 
     /**
      * @param AcceptanceTester $I
+     * @link https://github.com/nukeviet/nukeviet/issues/3807
      *
-     * @group install
+     * @group users
      */
-    public function login(AcceptanceTester $I)
+    public function testErrorUrlEditInfo(AcceptanceTester $I)
     {
-        $I->login();
+        $I->wantTo('Check for errors when entering arbitrary parameters into the URL while editing account information');
+        $I->userLogin();
+
+        $I->amOnUrl($I->getDomain() . '/vi/users/editinfo/basic//');
+
+        // Không được phép xuất hiện json này
+        $I->cantSee('"error"');
     }
 }

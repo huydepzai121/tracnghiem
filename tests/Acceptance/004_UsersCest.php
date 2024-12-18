@@ -19,6 +19,11 @@ class UsersCest
     {
     }
 
+    /**
+     * @param AcceptanceTester $I
+     *
+     * @group install
+     */
     public function addUserInAdminPanel(AcceptanceTester $I)
     {
         $I->wantTo('Add one user account in admin area');

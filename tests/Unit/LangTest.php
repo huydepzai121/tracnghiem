@@ -27,6 +27,8 @@ class LangTest extends \Codeception\Test\Unit
 
     /**
      * Kiểm tra file ngôn ngữ hệ thống không tồn tại trong các ngôn ngữ khác Tiếng Việt
+     *
+     * @group install
      */
     public function testLangSystemNotExistsOtherLang()
     {
@@ -45,6 +47,8 @@ class LangTest extends \Codeception\Test\Unit
 
     /**
      * Kiểm tra file ngôn ngữ module thừa
+     *
+     * @group install
      */
     public function testFileLangModuleRedundancy()
     {
@@ -57,6 +61,8 @@ class LangTest extends \Codeception\Test\Unit
 
     /**
      * Kiểm tra file ngôn ngữ theme thừa
+     *
+     * @group install
      */
     public function testFileLangThemeRedundancy()
     {
@@ -69,6 +75,8 @@ class LangTest extends \Codeception\Test\Unit
 
     /**
      * Kiểm tra file ngôn ngữ module không tồn tại trong các ngôn ngữ khác Tiếng Việt
+     *
+     * @group install
      */
     public function testLangModuleNotExistsOtherLang()
     {
@@ -87,6 +95,8 @@ class LangTest extends \Codeception\Test\Unit
 
     /**
      * Kiểm tra file ngôn ngữ giao diện không tồn tại trong các ngôn ngữ khác Tiếng Việt
+     *
+     * @group install
      */
     public function testLangThemeNotExistsOtherLang()
     {
@@ -110,6 +120,8 @@ class LangTest extends \Codeception\Test\Unit
     /**
      * Kiểm tra ngôn ngữ hệ thống bị thừa so với Tiếng Việt
      * Kiểm tra ngôn ngữ hệ thống chưa dịch so với Tiếng Việt
+     *
+     * @group install
      */
     public function testLangSystemRedundantOrNotTranslated()
     {
@@ -165,6 +177,8 @@ class LangTest extends \Codeception\Test\Unit
     /**
      * Kiểm tra ngôn ngữ module bị thừa so với Tiếng Việt
      * Kiểm tra ngôn ngữ module chưa dịch so với Tiếng Việt
+     *
+     * @group install
      */
     public function testLangModuleRedundantOrNotTranslated()
     {
@@ -198,6 +212,8 @@ class LangTest extends \Codeception\Test\Unit
     /**
      * Kiểm tra ngôn ngữ theme bị thừa so với Tiếng Việt
      * Kiểm tra ngôn ngữ theme chưa dịch so với Tiếng Việt
+     *
+     * @group install
      */
     public function testLangThemeRedundantOrNotTranslated()
     {
@@ -250,6 +266,8 @@ class LangTest extends \Codeception\Test\Unit
     /**
      * Kiểm tra các biến $lang_module, $lang_global, $lang_block trong các file không phải ngôn ngữ + vendor
      * Nếu có chứng tỏ còn sót theo cách viết 4.5
+     *
+     * @group install
      */
     public function testOldLangRedundant()
     {

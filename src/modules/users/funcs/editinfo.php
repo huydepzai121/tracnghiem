@@ -289,6 +289,9 @@ $array_data['awaitinginfo'] = [];
 $array_data['editcensor'] = $global_users_config['active_editinfo_censor'];
 $checkss = $nv_Request->get_title('checkss', 'post', '');
 if (isset($array_op[2]) and !defined('ACCESS_EDITUS')) {
+    if (empty($_POST)) {
+        nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
+    }
     nv_jsonOutput([
         'status' => 'error',
         'input' => '',

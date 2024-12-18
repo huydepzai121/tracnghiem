@@ -19,6 +19,11 @@ class NewsAutoTagsCest
     {
     }
 
+    /**
+     * @param AcceptanceTester $I
+     *
+     * @group install
+     */
     public function activeAutoTags(AcceptanceTester $I)
     {
         $I->wantTo('Turn on auto tags');
@@ -33,6 +38,11 @@ class NewsAutoTagsCest
         $I->click('#btn_savesetting');
     }
 
+    /**
+     * @param AcceptanceTester $I
+     *
+     * @group install
+     */
     public function postNews(AcceptanceTester $I)
     {
         $I->wantTo('Post a new article');

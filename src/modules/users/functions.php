@@ -430,36 +430,48 @@ function checkLoginName($type, $name)
 }
 
 $group_id = 0;
-if (defined('NV_IS_USER') and isset($array_op[0]) and isset($array_op[1]) and ($array_op[0] == 'register' or $array_op[0] == 'editinfo')) {
-    $sql = 'SELECT g.group_id, d.title, g.config FROM ' . NV_MOD_TABLE . '_groups AS g LEFT JOIN ' . NV_MOD_TABLE . "_groups_detail d ON ( g.group_id = d.group_id AND d.lang='" . NV_LANG_DATA . "' )";
+// Xử lý cho trường hợp trưởng nhóm tạo và sửa thông tin tài khoản nhóm mình quản lý
+if (defined('NV_IS_USER') and isset($array_op[1]) and ($array_op[0] == 'register' or $array_op[0] == 'editinfo')) {
+    $sql = 'SELECT g.group_id, d.title, g.config FROM ' . NV_MOD_TABLE . '_groups g
+    LEFT JOIN ' . NV_MOD_TABLE . "_groups_detail d ON ( g.group_id = d.group_id AND d.lang='" . NV_LANG_DATA . "' )";
     $_query = $db->query($sql);
     $group_lists = [];
     while ($_row = $_query->fetch()) {
         $group_lists[$_row['group_id']] = $_row;
     }
+    $_query->closeCursor();
 
-    //$group_lists = $nv_Cache->db($sql, 'group_id', $module_name);
+    /*
+     * Trường hợp trưởng nhóm truy cập sửa thông tin member thì $array_op[1]= group_id
+     * ngoài trường hợp này thì $array_op[1] có thể là các string loại chỉnh sửa của thành viên thông thường
+     */
+    if (isset($group_lists[$array_op[1]])) {
+        $sql = 'SELECT group_id FROM ' . NV_MOD_TABLE . '_groups_users WHERE group_id = ' . $array_op[1] . '
+        AND userid = ' . $user_info['userid'] . ' AND is_leader = 1';
+        $result = $db->query($sql);
+        $row = $result->fetch();
 
-    if (isset($group_lists[$array_op[1]])) { // trường hợp trưởng nhóm truy cập sửa thông tin member thì $array_op[1]= group_id
-        $result = $db->query('SELECT group_id FROM ' . NV_MOD_TABLE . '_groups_users WHERE group_id = ' . $array_op[1] . ' AND userid = ' . $user_info['userid'] . ' AND is_leader = 1');
-
-        if ($row = $result->fetch()) {
+        if (!empty($row)) {
             $group = $group_lists[$row['group_id']];
             $group['config'] = unserialize($group['config']);
 
-            if ($group['config']['access_addus'] and $array_op[0] == 'register') { // đăng kí
+            if ($group['config']['access_addus'] and $array_op[0] == 'register') {
+                // Trưởng nhóm tạo tài khoản
                 $op = 'register';
                 $module_info['funcs'][$op] = $sys_mods[$module_name]['funcs'][$op];
                 $group_id = $row['group_id'];
                 define('ACCESS_ADDUS', $group['config']['access_addus']);
-            } elseif ($group['config']['access_editus'] and $array_op[0] == 'editinfo') { // sửa thông tin
+            } elseif ($group['config']['access_editus'] and $array_op[0] == 'editinfo' and !empty($array_op[2]) and is_numeric($array_op[2])) {
+                // Trưởng nhóm sửa tài khoản trong nhóm mình
                 $group_id = $row['group_id'];
 
                 $result = $db->query('SELECT group_id FROM ' . NV_MOD_TABLE . '_groups_users
-                        WHERE group_id = ' . $group_id . ' and userid = ' . $array_op[2] . ' and is_leader = 0');
+                WHERE group_id = ' . $group_id . ' AND userid = ' . intval($array_op[2]) . ' AND is_leader = 0');
+                $row = $result->fetch();
 
-                if ($row = $result->fetch()) { // nếu tài khoản nằm trong nhóm đó thì được quyền sửa
-                    $userid = $array_op[2];
+                if (!empty($row)) {
+                    // Nếu tài khoản nằm trong nhóm đó thì được quyền sửa
+                    $userid = intval($array_op[2]);
 
                     if ($group['config']['access_passus']) {
                         define('ACCESS_PASSUS', $group['config']['access_passus']);

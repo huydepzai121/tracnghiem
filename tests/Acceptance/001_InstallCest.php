@@ -66,6 +66,11 @@ class InstallCest
         }
     }
 
+    /**
+     * @param AcceptanceTester $I
+     *
+     * @group install
+     */
     public function installStep1(AcceptanceTester $I)
     {
         $I->wantTo('Install NukeViet for testing');
