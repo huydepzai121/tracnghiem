@@ -31,7 +31,7 @@ if (!empty($savesetting)) {
     $array_config = [];
     $array_config['indexfile'] = $nv_Request->get_title('indexfile', 'post', '', 1);
     $array_config['mobile_indexfile'] = $nv_Request->get_title('mobile_indexfile', 'post', '', 1);
-    $array_config['per_page'] = $nv_Request->get_int('per_page', 'post', 0);
+    $array_config['per_page'] = $nv_Request->get_page('per_page', 'post', 20);
     $array_config['st_links'] = $nv_Request->get_int('st_links', 'post', 0);
     $array_config['homewidth'] = $nv_Request->get_int('homewidth', 'post', 0);
     $array_config['homeheight'] = $nv_Request->get_int('homeheight', 'post', 0);

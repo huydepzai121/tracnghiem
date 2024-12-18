@@ -114,7 +114,7 @@ if ($type == 'private') {
     $page_url .= '&amp;type=private';
 }
 $base_url = $page_url;
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 if ($page > 1) {
     $page_url .= '&amp;page=' . $page;
 }

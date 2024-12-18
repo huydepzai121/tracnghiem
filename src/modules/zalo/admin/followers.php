@@ -756,7 +756,7 @@ if (!empty($_tag) and !empty($tags) and !empty($tags[$_tag])) {
     $base_url .= '&amp;tag=' . $tag;
 }
 
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $per_page = 50;
 
 // Lấy danh sách followers từ CSDL

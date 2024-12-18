@@ -296,7 +296,7 @@ if ($nv_Request->isset_request('manager', 'get')) {
 
     // Danh sách thông báo của nhóm
     $per_page = 20;
-    $page = $nv_Request->get_int('page', 'get', 1);
+    $page = $nv_Request->get_page('page', 'get', 1);
     $filter = $nv_Request->get_title('filter', 'get', '');
     !in_array($filter, ['active', 'waiting', 'expired'], true) && $filter = '';
     if (!empty($filter)) {
@@ -505,7 +505,7 @@ if (defined('NV_IS_AJAX') or $nv_Request->isset_request('ajax', 'get')) {
         $base_url .= '&amp;ajax=' . nv_genpass(10);
     }
     $page_url = $base_url;
-    $page = $nv_Request->get_int('page', 'get', 1);
+    $page = $nv_Request->get_page('page', 'get', 1);
     if ($page > 1) {
         $page_url .= '&page=' . $page;
     }

@@ -153,7 +153,7 @@ if ($nv_Request->isset_request('toggle', 'post')) {
     nv_jsonOutput($respon);
 }
 
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $last_id = $nv_Request->get_int('last_id', 'get', 0);
 $is_ajax = $nv_Request->isset_request('ajax', 'post,get');
 $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op;

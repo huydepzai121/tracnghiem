@@ -1431,6 +1431,23 @@ class Request
     }
 
     /**
+     * get_page()
+     *
+     * @param string $name
+     * @param string|null $mode
+     * @param mixed|null $default
+     * @return int
+     */
+    public function get_page($name, $mode = null, $default = 1, $max = 99999999)
+    {
+        $page = (int) $this->get_value($name, $mode, $default);
+        if ($page > $max or $page < 1) {
+            $page = 1;
+        }
+        return $page;
+    }
+
+    /**
      * get_float()
      *
      * @param string      $name

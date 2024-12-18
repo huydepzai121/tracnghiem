@@ -463,7 +463,7 @@ if ($action == 'role') {
 }
 
 $base_url = $page_url;
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $per_page = 30;
 
 $type = $nv_Request->get_title('type', 'get', '');

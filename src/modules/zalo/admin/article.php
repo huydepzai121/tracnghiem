@@ -824,7 +824,7 @@ if ($action == 'add' or $action == 'edit') {
     include NV_ROOTDIR . '/includes/footer.php';
 }
 
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $per_page = 10;
 
 $db->sqlreset()

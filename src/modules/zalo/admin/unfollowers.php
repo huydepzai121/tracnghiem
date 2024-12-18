@@ -18,7 +18,7 @@ if (!$myZalo->isValid()) {
 }
 
 $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=unfollowers';
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $per_page = 50;
 
 $page_title = $nv_Lang->getModule('unfollowers');

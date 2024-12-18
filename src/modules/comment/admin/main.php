@@ -15,9 +15,9 @@ if (!defined('NV_IS_FILE_ADMIN')) {
 
 $page_title = $nv_Lang->getModule('admin_comment');
 
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $module = $nv_Request->get_title('module', 'get');
-$per_page = $nv_Request->get_int('per_page', 'get', 20);
+$per_page = $nv_Request->get_page('per_page', 'get', 20);
 $stype = $nv_Request->get_string('stype', 'get', '');
 $sstatus = $nv_Request->get_title('sstatus', 'get', 2);
 $from['q'] = $nv_Request->get_title('q', 'get', '');

@@ -243,7 +243,7 @@ if ($nv_Request->isset_request('gid, getuserid', 'post, get')) {
             $array_where[] = "( email LIKE '%" . $db->dblikeescape($array['email']) . "%' )";
         }
 
-        $page = $nv_Request->get_int('page', 'get', 1);
+        $page = $nv_Request->get_page('page', 'get', 1);
         $per_page = 10;
 
         $db->sqlreset()
@@ -713,7 +713,7 @@ if (sizeof($array_op) == 2 and $array_op[0] == 'groups' and $array_op[1]) {
 // Danh sach thanh vien (AJAX)
 if ($nv_Request->isset_request('listUsers', 'get')) {
     $group_id = $nv_Request->get_int('listUsers', 'get', 0);
-    $page = $nv_Request->get_int('page', 'get', 1);
+    $page = $nv_Request->get_page('page', 'get', 1);
     $type = $nv_Request->get_title('type', 'get', '');
     $per_page = 15;
     $base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=groups&listUsers=' . $group_id;

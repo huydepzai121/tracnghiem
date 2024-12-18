@@ -14,7 +14,7 @@ if (!defined('NV_IS_FILE_ADMIN')) {
 }
 
 $topicid = $nv_Request->get_int('topicid', 'get');
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 
 $topictitle = $db_slave->query('SELECT title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_topics WHERE topicid =' . $topicid)->fetchColumn();
 if (empty($topictitle)) {

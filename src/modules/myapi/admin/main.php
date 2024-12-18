@@ -116,7 +116,7 @@ if ($type == 'private') {
     $base_url .= '&amp;type=private';
 }
 
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $per_page = 30;
 
 [$roleCount, $roleList] = myApiRoleList($type, $page, $per_page);

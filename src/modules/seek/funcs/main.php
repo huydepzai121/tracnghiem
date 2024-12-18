@@ -39,7 +39,7 @@ if ($nv_Request->isset_request('q', 'get')) {
     $search['key'] = str_replace('+', ' ', urldecode($search['key']));
     $search['mod'] = $nv_Request->get_title('m', 'get', 'all', $search['mod']);
     $search['logic'] = $nv_Request->get_int('l', 'get', $search['logic']);
-    $search['page'] = $nv_Request->get_int('page', 'get', 1);
+    $search['page'] = $nv_Request->get_page('page', 'get', 1);
 
     if ($search['logic'] != 1) {
         $search['logic'] = 0;

@@ -23,7 +23,7 @@ if (!empty($module) and isset($module_config[$module]['activecomm'])) {
     $id = $nv_Request->get_title('id', 'post,get', '');
     $allowed_comm = $nv_Request->get_title('allowed', 'post,get', 0);
     $checkss = $nv_Request->get_title('checkss', 'post,get');
-    $page = $nv_Request->get_int('page', 'get', 1);
+    $page = $nv_Request->get_page('page', 'get', 1);
     $status_comment = $nv_Request->get_title('status_comment', 'post,get', '');
 
     $comment_load = $nv_Request->get_int('comment_load', 'post,get', 0);

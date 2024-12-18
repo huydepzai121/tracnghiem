@@ -155,7 +155,7 @@ if ($reg_to_t != 0) {
     $reg_to = '';
 }
 
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $per_page = 30;
 
 $db->sqlreset()

@@ -23,7 +23,7 @@ $result = $db->query('SELECT COUNT(*), MAX(c_count) FROM ' . NV_COUNTER_GLOBALTA
 
 if ($num_items) {
     $base_url = $page_url;
-    $page = $nv_Request->get_int('page', 'get', 1);
+    $page = $nv_Request->get_page('page', 'get', 1);
     $per_page = 50;
 
     if ($page > 1) {

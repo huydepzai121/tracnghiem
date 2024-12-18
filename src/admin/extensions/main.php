@@ -16,7 +16,7 @@ if (!defined('NV_IS_FILE_EXTENSIONS')) {
 $page_title = $nv_Lang->getGlobal('mod_extensions');
 
 $request = [];
-$request['page'] = $nv_Request->get_int('page', 'get', 1);
+$request['page'] = $nv_Request->get_page('page', 'get', 1);
 $request['mode'] = $nv_Request->get_title('mode', 'get', '');
 $request['q'] = nv_substr($nv_Request->get_title('q', 'get', ''), 0, 64);
 $request['per_page'] = 10;

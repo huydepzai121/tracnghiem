@@ -755,7 +755,7 @@ if (!empty($ar_where)) {
     $db->where(implode(' AND ', $ar_where));
 }
 
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $per_page = 30;
 
 $num_items = $db->query($db->sql())

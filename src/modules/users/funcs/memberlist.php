@@ -113,7 +113,7 @@ if (isset($array_op[1]) and !empty($array_op[1])) {
     // danh sach thanh vien
     $orderby = $nv_Request->get_string('orderby', 'get', 'username');
     $sortby = $nv_Request->get_string('sortby', 'get', 'ASC');
-    $page = $nv_Request->get_int('page', 'get', 1);
+    $page = $nv_Request->get_page('page', 'get', 1);
 
     if (!($orderby == 'username' and $sortby == 'ASC')) {
         $page_url .= '&orderby=' . $orderby . '&sortby=' . $sortby;

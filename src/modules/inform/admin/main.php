@@ -494,7 +494,7 @@ if ($action == 'inform_action') {
 }
 
 $per_page = 20;
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 
 if (defined('NV_IS_SPADMIN')) {
     $filter = $nv_Request->get_title('filter', 'get', '');

@@ -510,7 +510,7 @@ $xtpl->assign('MODULE_NAME', $module_name);
 if (!empty($contact_allowed['view'])) {
     $in = implode(',', array_keys($contact_allowed['view']));
 
-    $page = $nv_Request->get_int('page', 'get', 1);
+    $page = $nv_Request->get_page('page', 'get', 1);
     $per_page = 30;
     $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name;
 

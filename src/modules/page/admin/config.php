@@ -21,7 +21,7 @@ $socialbuttons = ['facebook', 'twitter', 'zalo'];
 if ($nv_Request->isset_request('save', 'post')) {
     $array_config['viewtype'] = $nv_Request->get_int('viewtype', 'post', 0);
     $array_config['facebookapi'] = $nv_Request->get_string('facebookapi', 'post', '');
-    $array_config['per_page'] = $nv_Request->get_int('per_page', 'post', '0');
+    $array_config['per_page'] = $nv_Request->get_page('per_page', 'post', 20);
     $array_config['related_articles'] = $nv_Request->get_int('related_articles', 'post', '0');
     $array_config['news_first'] = $nv_Request->get_int('news_first', 'post', 0);
     $array_config['copy_page'] = $nv_Request->get_int('copy_page', 'post', 0);

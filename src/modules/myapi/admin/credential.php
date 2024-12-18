@@ -149,7 +149,7 @@ if ($action == 'getUser' and $nv_Request->isset_request('q', 'post')) {
     $q = nv_htmlspecialchars($q);
     $dbkeyhtml = $db->dblikeescape($q);
 
-    $page = $nv_Request->get_int('page', 'post', 1);
+    $page = $nv_Request->get_page('page', 'post', 1);
 
     $where = "(tb1.username LIKE '%" . $dbkeyhtml . "%' OR tb1.email LIKE '%" . $dbkeyhtml . "%' OR tb1.first_name like '%" . $dbkeyhtml . "%' OR tb1.last_name like '%" . $dbkeyhtml . "%') AND tb1.userid NOT IN (SELECT tb2.userid FROM " . $db_config['prefix'] . '_api_role_credential tb2 WHERE tb2.role_id=' . $role_id . ')';
     if ($rolelist[$role_id]['role_object'] == 'admin') {
@@ -381,7 +381,7 @@ $base_url = $page_url;
 if (!empty($role_id)) {
     $base_url .= '&role_id=' . $role_id;
 
-    $page = $nv_Request->get_int('page', 'get', 1);
+    $page = $nv_Request->get_page('page', 'get', 1);
     $per_page = 30;
 
     [$credentialcount, $credentiallist] = getCredentialList($role_id, $rolelist[$role_id]['role_object'] == 'admin', $page, $per_page);

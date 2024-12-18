@@ -20,7 +20,7 @@ if ($nv_Request->isset_request('getUser, q', 'post')) {
     $q = nv_htmlspecialchars($q);
     $dbkeyhtml = $db->dblikeescape($q);
 
-    $page = $nv_Request->get_int('page', 'post', 1);
+    $page = $nv_Request->get_page('page', 'post', 1);
 
     $where = "(tb1.username LIKE '%" . $dbkeyhtml . "%' OR tb1.email LIKE '%" . $dbkeyhtml . "%' OR tb1.first_name like '%" . $dbkeyhtml . "%' OR tb1.last_name like '%" . $dbkeyhtml . "%') AND tb1.userid IN (SELECT tb2.userid FROM " . $db_config['prefix'] . '_api_role_logs tb2)';
 
@@ -133,7 +133,7 @@ if ($get_data['todate'] !== false) {
     $where[] = 'tb1.log_time <= ' . $get_data['todate'];
 }
 
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $per_page = 30;
 
 $db->sqlreset()

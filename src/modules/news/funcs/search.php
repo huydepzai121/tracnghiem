@@ -166,7 +166,7 @@ if (!empty($to_date)) {
     $date_array['to_date'] = '';
 }
 
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 if ($page > 1) {
     $is_search = true;
 }

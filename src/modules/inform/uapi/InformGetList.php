@@ -70,8 +70,8 @@ class InformGetList implements UiApi
             return $gr >= 10 ? (int) $gr : 0;
         }, $user_groups)));
 
-        $page = $nv_Request->get_int('page', 'post', 1);
-        $per_page = $nv_Request->get_int('per_page', 'post', 20);
+        $page = $nv_Request->get_page('page', 'post', 1);
+        $per_page = $nv_Request->get_page('per_page', 'post', 20);
         $filter = $nv_Request->get_title('filter', 'post', '');
         !in_array($filter, ['unviewed', 'favorite', 'hidden'], true) && $filter = '';
 

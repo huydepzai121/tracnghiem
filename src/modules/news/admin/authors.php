@@ -78,7 +78,7 @@ if ($nv_Request->isset_request('get_account_json', 'post, get')) {
     $q = nv_htmlspecialchars($q);
     $dbkeyhtml = $db->dblikeescape($q);
 
-    $page = $nv_Request->get_int('page', 'post, get', 1);
+    $page = $nv_Request->get_page('page', 'post, get', 1);
     $array_data = [];
 
     $where = "(username LIKE '%" . $dbkeyhtml . "%' OR email LIKE '%" . $dbkeyhtml . "%' OR first_name like '%" . $dbkeyhtml . "%' OR last_name like '%" . $dbkeyhtml . "%') AND userid NOT IN (SELECT uid FROM " . NV_PREFIXLANG . '_' . $module_data . '_author)';
@@ -231,7 +231,7 @@ $num = $db_slave->query('SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_
 $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=authors';
 $num_items = ($num > 1) ? $num : 1;
 $per_page = 20;
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $authors = [];
 $uids = [];
 if ($num) {

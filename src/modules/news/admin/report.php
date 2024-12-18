@@ -61,7 +61,7 @@ if ($action == 'multidel' and $nv_Request->isset_request('list', 'post')) {
 $page_title = $nv_Lang->getModule('report');
 
 $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op;
-$page = $nv_Request->get_int('page', 'get', 1);
+$page = $nv_Request->get_page('page', 'get', 1);
 $per_page = 30;
 $db->sqlreset()
     ->select('COUNT(*)')

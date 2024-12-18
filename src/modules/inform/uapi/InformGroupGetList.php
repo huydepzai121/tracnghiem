@@ -89,8 +89,8 @@ class InformGroupGetList implements UiApi
         $where = "(mtb.sender_role='group' AND mtb.sender_group=" . $group_id . ')';
 
         $postdata = [];
-        $postdata['page'] = $nv_Request->get_int('page', 'post', 1);
-        $postdata['per_page'] = $nv_Request->get_int('per_page', 'post', 20);
+        $postdata['page'] = $nv_Request->get_page('page', 'post', 1);
+        $postdata['per_page'] = $nv_Request->get_page('per_page', 'post', 20);
         $postdata['filter'] = $nv_Request->get_title('filter', 'post', '');
 
         if ($postdata['filter'] == 'active') {
