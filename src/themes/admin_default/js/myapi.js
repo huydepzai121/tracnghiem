@@ -97,11 +97,12 @@ $(function() {
         var type = $('#rolelist .role-type').val(),
             object = $('#rolelist .role-object').val(),
             url = $('#rolelist').data('page-url');
+        const separator = (url.includes('?') ? '&' : '?');
         if (type != '') {
-            url += '&type=' + type
+            url += separator + 'type=' + type
         }
         if (object != '') {
-            url += '&object=' + object
+            url += separator + 'object=' + object
         }
         window.location.href = url
     });
@@ -146,11 +147,11 @@ $(function() {
 
     if ($('#credentiallist').length) {
         var credentiallist = $('#credentiallist'),
-            credential_page_url = credentiallist.data('page-url');
+            credential_page_url = credentiallist.data('page-url'); ;
         // Lọc quyền truy cập API-role
         $('.role-id', credentiallist).on('change', function() {
             var role_id = parseInt($(this).val());
-            window.location.href = credential_page_url + '&role_id=' + role_id
+            window.location.href = credential_page_url + (url.includes('?') ? '&' : '?') + 'role_id=' + role_id
         }).select2();
 
         // Thêm/sửa quyền truy cập API-role

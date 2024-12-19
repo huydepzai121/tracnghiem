@@ -20,7 +20,7 @@ $(function() {
         var url = pageUrl,
             filter = $(this).val();
         if ('' != filter) {
-            url += '&filter=' + filter
+            url += (url.includes('?') ? '&' : '?') + 'filter=' + filter
         }
         window.location.href = url
     });
