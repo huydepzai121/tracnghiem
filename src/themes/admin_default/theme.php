@@ -102,6 +102,8 @@ function nv_admin_theme($contents, $head_site = 1)
     $xtpl->assign('NV_WHITELISTED_ATTR', "['" . implode("', '", $whitelisted_attr). "']");
     $xtpl->assign('JSDATE_GET', nv_region_config('jsdate_get'));
     $xtpl->assign('JSDATE_POST', nv_region_config('jsdate_post'));
+    $xtpl->assign('JS_AM', nv_region_config('am_char'));
+    $xtpl->assign('JS_PM', nv_region_config('pm_char'));
     $xtpl->assign('TIMESTAMP', $global_config['timestamp']);
     $xtpl->assign('MODULE_NAME', $module_name);
     $xtpl->assign('OP', $op);

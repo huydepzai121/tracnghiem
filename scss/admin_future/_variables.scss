@@ -45,6 +45,8 @@ $spacer: 1rem;
 // Shadow một số và tắt một số
 $enable-shadows: true;
 $btn-box-shadow: none;
+$focus-ring-box-shadow: 0 0 0 0 transparent;
+$focus-ring-width: 0;
 
 // Border radius
 $border-radius: .1875rem; // 3px
@@ -138,7 +140,7 @@ $card-border-color: var(--bs-border-color);
 $card-box-shadow: 0 0.0625rem 0.125rem rgba($black, .075);
 $card-border-width: 0;
 $card-cap-bg: transparent;
-$card-cap-padding-y: $spacer;
+$card-cap-padding-y: $spacer * .625;
 
 // Dropdown
 $dropdown-border-color: var(--bs-body-bg);
@@ -166,3 +168,4 @@ $accordion-icon-active-color: $gray-100;
 
 // Form
 $form-text-font-size: 0.75rem; // 12px
+$form-label-font-weight: 500;

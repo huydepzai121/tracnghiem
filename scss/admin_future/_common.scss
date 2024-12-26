@@ -133,6 +133,10 @@
     }
 }
 
+.bg-table-head {
+    background-color: var(--nv-table-thead-bg);
+}
+
 .card-header-tabs {
     margin-right: calc(-1 * var(--bs-card-cap-padding-x));
     margin-left: calc(-1 * var(--bs-card-cap-padding-x));
@@ -160,6 +164,10 @@
     .maxw-#{$i * 25} {
         max-width: #{$i * 25}px!important;
     }
+
+    .maxh-#{$i * 25} {
+        max-height: #{$i * 25}px!important;
+    }
 }
 
 // Block ellipsis: Chú ý class này chỉ dùng khi không thiết lập font-size, line-height mà dùng mặc định của body
@@ -167,6 +175,7 @@
     .text-truncate-#{$i} {
         max-height: calc($font-size-base * $line-height-base * $i);
         -webkit-line-clamp: #{$i};
+        line-clamp: #{$i};
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;

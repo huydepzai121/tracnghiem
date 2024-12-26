@@ -16,7 +16,7 @@ if (!defined('NV_IS_FILE_ADMIN')) {
 $page_title = $nv_Lang->getModule('tags_manage');
 
 // Lấy tags từ nội dung bài viết
-if ($nv_Request->isset_request('getTagsFromContent', 'post')) {
+if ($nv_Request->isset_request('getTagsFromContent', 'post') and $nv_Request->get_title('checkss', 'post', '') === NV_CHECK_SESSION) {
     $content = $nv_Request->get_title('content', 'post', '');
     $tags = nv_get_mod_tags($content);
     nv_jsonOutput($tags);

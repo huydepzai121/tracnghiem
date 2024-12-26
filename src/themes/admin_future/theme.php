@@ -187,6 +187,8 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $tpl->assign('WHITELISTED_ATTR', "['" . implode("', '", $whitelisted_attr). "']");
     $tpl->assign('JSDATE_GET', nv_region_config('jsdate_get'));
     $tpl->assign('JSDATE_POST', nv_region_config('jsdate_post'));
+    $tpl->assign('JS_AM', nv_region_config('am_char'));
+    $tpl->assign('JS_PM', nv_region_config('pm_char'));
 
     $tpl->assign('MODULE_CONTENT', $contents);
 

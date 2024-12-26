@@ -15,37 +15,49 @@ if (!defined('NV_IS_FILE_ADMIN')) {
 
 $my_author_detail = my_author_detail($admin_info['userid']);
 
-// searchAjax
-if ($nv_Request->isset_request('searchAjax', 'get')) {
-    $q = $nv_Request->get_title('term', 'get', '', 1);
-    if (empty($q)) {
-        return;
-    }
-    $aids = $nv_Request->get_title('aids', 'get', '');
-    $aids = preg_replace("/[^0-9\,]/", '', $aids);
+// Tìm tác giả thuộc quyền quản lý qua ajax
+if ($nv_Request->isset_request('searchAjax', 'post') and $nv_Request->get_title('checkss', 'post', '') === NV_CHECK_SESSION) {
+    $respon = [
+        'results' => [],
+        'pagination' => [
+            'more' => false
+        ]
+    ];
 
-    $where = '(alias LIKE :alias OR pseudonym LIKE :pseudonym)';
-    if (!empty($aids)) {
-        $where .= ' AND id NOT IN (' . $aids . ')';
+    $q = $nv_Request->get_title('q', 'post', '');
+    $page = $nv_Request->get_page('page', 'post', 1);
+    $per_page = 20;
+
+    if (nv_strlen($q) < 2) {
+        nv_jsonOutput($respon);
     }
 
     $db_slave->sqlreset()
-        ->select('id,pseudonym')
+        ->select('COUNT(id)')
         ->from(NV_PREFIXLANG . '_' . $module_data . '_author')
-        ->where($where)
-        ->order('alias ASC')
-        ->limit(50);
+        ->where('(alias LIKE :alias OR pseudonym LIKE :pseudonym)');
+    $sth = $db_slave->prepare($db_slave->sql());
+    $sth->bindValue(':alias', '%' . $q . '%', PDO::PARAM_STR);
+    $sth->bindValue(':pseudonym', '%' . $q . '%', PDO::PARAM_STR);
+    $sth->execute();
+    $num_items = $sth->fetchColumn();
+    $sth->closeCursor();
+
+    $db_slave->select('id, pseudonym')->order('alias ASC')->limit($per_page)->offset(($page - 1) * $per_page);
+
     $sth = $db_slave->prepare($db_slave->sql());
     $sth->bindValue(':alias', '%' . $q . '%', PDO::PARAM_STR);
     $sth->bindValue(':pseudonym', '%' . $q . '%', PDO::PARAM_STR);
     $sth->execute();
 
-    $array_data = [];
     while ([$id, $pseudonym] = $sth->fetch(3)) {
-        $array_data[$id] = $pseudonym;
+        $respon['results'][] = [
+            'id' => $id,
+            'text' => $pseudonym
+        ];
     }
-
-    nv_jsonOutput($array_data);
+    $respon['pagination']['more'] = ($page * $per_page) < $num_items;
+    nv_jsonOutput($respon);
 }
 
 // Xoa tac gia

@@ -115,7 +115,7 @@
                 margin-left: calc($form-select-padding-x / 2);
                 margin-top: $form-select-padding-y;
                 vertical-align: bottom;
-                transform: translate(0, -.1875rem);
+                transform: translate(0, 1px);
                 color: $form-select-color;
                 border: none;
             }
@@ -333,4 +333,11 @@
     position: absolute;
     width: 1px;
     white-space: nowrap;
+}
+
+.select2,
+.select2 * {
+    &:focus-visible {
+        outline: none;
+    }
 }

@@ -683,37 +683,33 @@ function GetCatidInParent($catid)
  */
 function redriect($msg1, $msg2, $nv_redirect, $autoSaveKey = '', $go_back = '')
 {
-    global $global_config, $module_file, $module_name;
-    $xtpl = new XTemplate('redriect.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
+    global $global_config, $module_file, $module_name, $nv_Lang, $op;
+
+    $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/redriect.tpl');
+    $tpl = new \NukeViet\Template\NVSmarty();
+    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+    $tpl->assign('LANG', $nv_Lang);
+    $tpl->assign('MODULE_NAME', $module_name);
+    $tpl->assign('OP', $op);
 
     if (empty($nv_redirect)) {
         $nv_redirect = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name;
     }
-    $xtpl->assign('NV_REDIRECT', $nv_redirect);
-    $xtpl->assign('MSG1', $msg1);
-    $xtpl->assign('MSG2', $msg2);
-
-    if (!empty($autoSaveKey)) {
-        $xtpl->assign('AUTOSAVEKEY', $autoSaveKey);
-        $xtpl->parse('main.removelocalstorage');
-    }
+    $tpl->assign('NV_REDIRECT', $nv_redirect);
+    $tpl->assign('MSG1', $msg1);
+    $tpl->assign('MSG2', $msg2);
+    $tpl->assign('AUTOSAVEKEY', $autoSaveKey);
 
     if (nv_strlen($msg1) > 255) {
-        $xtpl->assign('REDRIECT_T1', 20);
-        $xtpl->assign('REDRIECT_T2', 20000);
+        $tpl->assign('REDRIECT_T1', 20);
+        $tpl->assign('REDRIECT_T2', 20000);
     } else {
-        $xtpl->assign('REDRIECT_T1', 5);
-        $xtpl->assign('REDRIECT_T2', 5000);
+        $tpl->assign('REDRIECT_T1', 5);
+        $tpl->assign('REDRIECT_T2', 5000);
     }
+    $tpl->assign('GO_BACK', $go_back ? 1 : 0);
 
-    if ($go_back) {
-        $xtpl->parse('main.go_back');
-    } else {
-        $xtpl->parse('main.meta_refresh');
-    }
-
-    $xtpl->parse('main');
-    $contents = $xtpl->text('main');
+    $contents = $tpl->fetch('redriect.tpl');
 
     include NV_ROOTDIR . '/includes/header.php';
     echo nv_admin_theme($contents);

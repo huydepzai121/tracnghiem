@@ -253,3 +253,7 @@ p + .image-style-side {
 .text-huge {
     font-size: var(--nv-font-size-xxl);
 }
+
+.is-invalid {
+    --ck-color-base-border: #{$danger};
+}

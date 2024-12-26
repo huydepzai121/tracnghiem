@@ -13,17 +13,34 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
-$q = $nv_Request->get_title('term', 'get', '', 1);
-if (empty($q)) {
-    return;
+$respon = [
+    'results' => [],
+    'pagination' => [
+        'more' => false
+    ]
+];
+
+$q = $nv_Request->get_title('q', 'post', '');
+$page = $nv_Request->get_page('page', 'post', 1);
+$per_page = 20;
+
+if (nv_strlen($q) < 2 or $nv_Request->get_title('checkss', 'post', '') != NV_CHECK_SESSION) {
+    nv_jsonOutput($respon);
 }
 
 $db_slave->sqlreset()
-    ->select('keywords')
+    ->select('COUNT(tid)')
     ->from(NV_PREFIXLANG . '_' . $module_data . '_tags')
-    ->where('alias LIKE :alias OR keywords LIKE :keywords')
-    ->order('alias ASC')
-    ->limit(50);
+    ->where('alias LIKE :alias OR keywords LIKE :keywords');
+
+$sth = $db_slave->prepare($db_slave->sql());
+$sth->bindValue(':alias', '%' . $q . '%', PDO::PARAM_STR);
+$sth->bindValue(':keywords', '%' . $q . '%', PDO::PARAM_STR);
+$sth->execute();
+$num_items = $sth->fetchColumn();
+$sth->closeCursor();
+
+$db_slave->select('keywords')->order('alias ASC')->limit($per_page)->offset(($page - 1) * $per_page);
 
 $sth = $db_slave->prepare($db_slave->sql());
 $sth->bindValue(':alias', '%' . $q . '%', PDO::PARAM_STR);
@@ -38,7 +55,7 @@ while ([$keywords] = $sth->fetch(3)) {
     }
 }
 
-if (sizeof($array_data) < 50) {
+if (sizeof($array_data) < $per_page and $page == 1) {
     if (file_exists(NV_ROOTDIR . '/includes/keywords/' . NV_LANG_DATA . '.php')) {
         $contents = file_get_contents(NV_ROOTDIR . '/includes/keywords/' . NV_LANG_DATA . '.php');
         preg_match_all('/\'([^\']*' . nv_preg_quote($q) . '[^\']*)\'/', $contents, $matches);
@@ -48,4 +65,11 @@ if (sizeof($array_data) < 50) {
     }
 }
 
-nv_jsonOutput($array_data);
+foreach ($array_data as $_keyword) {
+    $respon['results'][] = [
+        'id' => $_keyword,
+        'text' => $_keyword
+    ];
+}
+$respon['pagination']['more'] = ($page * $per_page) < $num_items;
+nv_jsonOutput($respon);

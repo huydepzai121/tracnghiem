@@ -32,7 +32,7 @@ function nv_aleditor($textareaname, $width = '100%', $height = '450px', $val = '
     $textareaid = preg_replace('/[^a-z0-9\-\_ ]/i', '_', $textareaname);
     $editor_id = $module_data . '_' . $textareaid;
 
-    $return = '<div id="outer_' . $editor_id . '"><textarea class="form-control" style="width: ' . $width . '; height:' . $height . ';" id="' . $editor_id . '" name="' . $textareaname . '">' . $val . '</textarea></div>';
+    $return = '<div id="outer_' . $editor_id . '" class="nv-ckeditor5classic"><textarea class="form-control" style="width: ' . $width . '; height:' . $height . ';" id="' . $editor_id . '" name="' . $textareaname . '">' . $val . '</textarea></div>';
 
     if (!defined('CKEDITOR5_CLASSIC')) {
         define('CKEDITOR5_CLASSIC', true);
@@ -44,6 +44,7 @@ function nv_aleditor($textareaname, $width = '100%', $height = '450px', $val = '
     $create[] = 'language: "' . NV_LANG_INTERFACE . '"';
 
     $custom_toolbar = false;
+    $responsive_editor = $customtoolbar == 'responsive' ? true : false;
     if (!empty($customtoolbar)) {
         $customtoolbar = json_decode($customtoolbar, true);
         if (is_array($customtoolbar)) {
@@ -121,7 +122,7 @@ function nv_aleditor($textareaname, $width = '100%', $height = '450px', $val = '
                     'restrictedEditingException',
                     'removeFormat'
                 ],
-                shouldNotGroupWhenFull: true
+                shouldNotGroupWhenFull: " . ($responsive_editor ? 'false' : 'true') . "
             }";
         }
     } else {
@@ -173,7 +174,7 @@ function nv_aleditor($textareaname, $width = '100%', $height = '450px', $val = '
                     'restrictedEditingException',
                     'removeFormat'
                 ],
-                shouldNotGroupWhenFull: true
+                shouldNotGroupWhenFull: " . ($responsive_editor ? 'false' : 'true') . "
             }";
         }
     }

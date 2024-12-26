@@ -42,7 +42,9 @@
         nv_whitelisted_tags = [{if not empty($GCONFIG.allowed_html_tags)}'{join($GCONFIG.allowed_html_tags, ', ')}'{/if}],
         nv_whitelisted_attr = {$WHITELISTED_ATTR},
         nv_jsdate_get = '{$JSDATE_GET}',
-        nv_jsdate_post = '{$JSDATE_POST}';
+        nv_jsdate_post = '{$JSDATE_POST}',
+        nv_js_am = '{$JS_AM}',
+        nv_js_pm = '{$JS_PM}';
     </script>
 
     <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/jquery/jquery.min.js"></script>
