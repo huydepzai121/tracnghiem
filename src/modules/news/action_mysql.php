@@ -249,6 +249,8 @@ $sql_create_module[] = 'CREATE TABLE IF NOT EXISTS ' . $db_config['prefix'] . '_
   auto_nav TINYINT(1) NOT NULL DEFAULT '0',
   group_view VARCHAR(255) NULL DEFAULT '',
   localization text NULL DEFAULT NULL COMMENT 'Json url ngôn ngữ khác của bài viết',
+  related_ids varchar(255) NOT NULL DEFAULT '' COMMENT 'ID bài đăng liên quan',
+  related_pos tinyint(1) NOT NULL DEFAULT '2' COMMENT 'Vị trí bài liên quan: 0 tắt, 1 dưới mô tả ngắn gọn, 2 dưới cùng bài đăng',
   PRIMARY KEY (id)
 ) ENGINE=MyISAM";
 

@@ -345,6 +345,28 @@
             </div>
             <div class="card mb-3">
                 <div class="card-header fw-medium fs-5">
+                    {$LANG->getModule('related_articles')}
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <select id="newcontent_related_ids" data-id="{$DATA.id}" class="form-control" aria-label="{$LANG->getModule('related_articles')}" name="related_ids[]" multiple data-placeholder="{$LANG->getModule('related_articles_ph')}">
+                            {foreach from=$RELATED_NEWS item=news}
+                            <option value="{$news.id}" selected>{$news.title}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    <div class="mb-0">
+                        <label for="related_pos" class="form-label">{$LANG->getModule('showtooltip_position')}:</label>
+                        <select id="related_pos" name="related_pos" class="form-select">
+                            {for $pos=0 to 2}
+                            <option value="{$pos}"{if $pos eq $DATA.related_pos} selected{/if}>{$LANG->getModule("related_articles_p`$pos`")}</option>
+                            {/for}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-header fw-medium fs-5">
                     {$LANG->getModule('content_extra')}
                 </div>
                 <div class="card-body">

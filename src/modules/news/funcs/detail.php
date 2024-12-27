@@ -30,7 +30,7 @@ if (empty($news_contents)) {
     nv_info_die($nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_content') . $redirect, 404);
 }
 
-$body_contents = $db_slave->query('SELECT titlesite, description, bodyhtml, voicedata, keywords, sourcetext, files, layout_func, imgposition, copyright, allowed_send, allowed_print, allowed_save, auto_nav, group_view, localization FROM ' . NV_PREFIXLANG . '_' . $module_data . '_detail where id=' . $news_contents['id'])->fetch();
+$body_contents = $db_slave->query('SELECT titlesite, description, bodyhtml, voicedata, keywords, sourcetext, files, layout_func, imgposition, copyright, allowed_send, allowed_print, allowed_save, auto_nav, group_view, localization, related_ids, related_pos FROM ' . NV_PREFIXLANG . '_' . $module_data . '_detail where id=' . $news_contents['id'])->fetch();
 $news_contents = array_merge($news_contents, $body_contents);
 unset($body_contents);
 
@@ -550,6 +550,34 @@ if (!empty($news_contents['auto_nav']) and !empty($news_contents['bodyhtml'])) {
             $news_contents['bodyhtml'] = str_replace($match[0], $html, $news_contents['bodyhtml']);
         }
     }
+}
+
+// Tin liên quan cố định do người đăng bài viết chọn
+$news_contents['related_articles'] = [];
+if ($news_contents['related_pos'] != 0 and !empty($news_contents['related_ids'])) {
+    $db_slave->sqlreset()
+        ->select('id, catid, title, alias, publtime, homeimgfile, homeimgthumb, hometext, external_link')
+        ->from(NV_PREFIXLANG . '_' . $module_data . '_rows')
+        ->where('id IN(' . $news_contents['related_ids'] . ') AND status=1')
+        ->order($order_articles_by . ' DESC');
+
+    $result = $db_slave->query($db_slave->sql());
+    while ($row = $result->fetch()) {
+        $row['imghome'] = $row['imgmobile'] = '';
+        get_homeimgfile($row);
+
+        $link = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$row['catid']]['alias'] . '/' . $row['alias'] . '-' . $row['id'] . $global_config['rewrite_exturl'];
+        $news_contents['related_articles'][] = [
+            'title' => $row['title'],
+            'time' => $row['publtime'],
+            'link' => $link,
+            'newday' => $global_array_cat[$row['catid']]['newday'],
+            'hometext' => $row['hometext'],
+            'imghome' => $row['imghome'],
+            'external_link' => $row['external_link']
+        ];
+    }
+    $result->closeCursor();
 }
 
 [$news_contents, $array_keyword, $related_new_array, $related_array, $topic_array, $content_comment] = nv_apply_hook($module_name, 'before_detail_theme', [$news_contents, $array_keyword, $related_new_array, $related_array, $topic_array, $content_comment], [$news_contents, $array_keyword, $related_new_array, $related_array, $topic_array, $content_comment]);

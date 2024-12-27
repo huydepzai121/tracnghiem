@@ -1027,6 +1027,30 @@ h6 {
 
 .bodytext {
     word-break: keep-all;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    line-height: 1.7em;
+}
+
+.bodytext p {
+    margin-bottom: 15px !important;
+}
+
+.bodytext ol {
+    list-style-type: decimal !important;
+}
+
+.bodytext ul,
+.inline-related-articles {
+    list-style-type: disc !important;
+    padding-left: 30px !important;
+    margin-bottom: 10px !important;
+}
+
+.bodytext li,
+.inline-related-articles li {
+    margin-bottom: 0 !important;
 }
 
 .m-bottom {
@@ -1081,6 +1105,10 @@ a.btn {
 .container-simple {
     margin-top: -48px;
     margin-bottom: -40px;
+}
+
+.text-bold {
+    font-weight: 700;
 }
 
 /* Header */

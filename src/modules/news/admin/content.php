@@ -66,6 +66,52 @@ if ($nv_Request->isset_request('get_topic_json', 'post')) {
     nv_jsonOutput($respon);
 }
 
+// Xuất ajax tin liên quan
+if ($nv_Request->isset_request('get_article_json', 'post')) {
+    $respon = [
+        'results' => [],
+        'pagination' => [
+            'more' => false
+        ]
+    ];
+
+    $id = $nv_Request->get_absint('id', 'post', 0);
+    $q = $nv_Request->get_title('q', 'post', '');
+    $page = $nv_Request->get_page('page', 'post', 1);
+    $per_page = 20;
+
+    if (nv_strlen($q) < 2 or $nv_Request->get_title('checkss', 'post', '') != NV_CHECK_SESSION) {
+        nv_jsonOutput($respon);
+    }
+
+    $db->sqlreset()
+        ->select('COUNT(id)')
+        ->from(NV_PREFIXLANG . '_' . $module_data . '_rows')
+        ->where('title LIKE :q_title AND id!=' . $id);
+
+    $sth = $db_slave->prepare($db_slave->sql());
+    $sth->bindValue(':q_title', '%' . $q . '%', PDO::PARAM_STR);
+    $sth->execute();
+    $num_items = $sth->fetchColumn();
+    $sth->closeCursor();
+
+    $db_slave->select('id, title')->order($order_articles_by . ' DESC')->limit($per_page)->offset(($page - 1) * $per_page);
+
+    $sth = $db->prepare($db->sql());
+    $sth->bindValue(':q_title', '%' . $q . '%', PDO::PARAM_STR);
+    $sth->execute();
+
+    while ([$id, $title] = $sth->fetch(3)) {
+        $respon['results'][] = [
+            'id' => $id,
+            'text' => nv_unhtmlspecialchars($title)
+        ];
+    }
+
+    $respon['pagination']['more'] = ($page * $per_page) < $num_items;
+    nv_jsonOutput($respon);
+}
+
 // Kiểm tra xem đang sửa có bị cướp quyền hay không, cập nhật thêm thời gian chỉnh sửa
 if ($nv_Request->isset_request('id', 'post') and $nv_Request->isset_request('check_edit', 'post') and $nv_Request->get_title('checkss', 'post', '') === NV_CHECK_SESSION) {
     $id = $nv_Request->get_int('id', 'post', 0);
@@ -246,7 +292,9 @@ $rowcontent = [
     'mode' => 'add',
     'voicedata' => [],
     'group_view' => '',
-    'localversions' => []
+    'localversions' => [],
+    'related_ids' => '',
+    'related_pos' => 2
 ];
 
 $page_title = $nv_Lang->getModule('content_add');
@@ -764,6 +812,21 @@ if ($is_submit_form) {
         }
     }
 
+    // Tin liên quan
+    $rowcontent['related_pos'] = $nv_Request->get_int('related_pos', 'post', 0);
+    if (!in_array($rowcontent['related_pos'], [0, 1, 2], true)) {
+        $rowcontent['related_pos'] = 0;
+    }
+    $related_ids = $nv_Request->get_typed_array('related_ids', 'post', 'int', []);
+    if (!empty($rowcontent['id'])) {
+        $related_ids = array_diff($related_ids, [$rowcontent['id']]);
+    }
+    if (!empty($related_ids)) {
+        $sql = "SELECT id FROM " . NV_PREFIXLANG . "_" . $module_data . "_rows WHERE id IN(" . implode(',', $related_ids) . ")";
+        $related_ids = array_intersect($related_ids, $db->query($sql)->fetchAll(PDO::FETCH_COLUMN));
+    }
+    $rowcontent['related_ids'] = empty($related_ids) ? '' : implode(',', $related_ids);
+
     if (empty($error)) {
         if (!empty($rowcontent['topictext']) and empty($rowcontent['topicid'])) {
             $weightopic = $db->query('SELECT max(weight) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_topics')->fetchColumn();
@@ -941,7 +1004,8 @@ if ($is_submit_form) {
                 $stmt = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_detail (
                     id, titlesite, description, bodyhtml, voicedata, keywords, sourcetext,
                     files, imgposition, layout_func, copyright,
-                    allowed_send, allowed_print, allowed_save, auto_nav, group_view, localization
+                    allowed_send, allowed_print, allowed_save, auto_nav, group_view, localization,
+                    related_ids, related_pos
                 ) VALUES (
                     ' . $rowcontent['id'] . ',
                     :titlesite,
@@ -959,7 +1023,9 @@ if ($is_submit_form) {
                     ' . $rowcontent['allowed_save'] . ',
                     ' . $rowcontent['auto_nav'] . ',
                     :group_view,
-                    :localization
+                    :localization,
+                    ' . $db->quote($rowcontent['related_ids']) . ',
+                    ' . $rowcontent['related_pos'] . '
                 )');
 
                 $voicedata = empty($rowcontent['voicedata']) ? '' : json_encode($rowcontent['voicedata']);
@@ -1089,7 +1155,9 @@ if ($is_submit_form) {
                     allowed_save=' . (int) ($rowcontent['allowed_save']) . ',
                     auto_nav=' . (int) ($rowcontent['auto_nav']) . ',
                     group_view=:group_view,
-                    localization=:localization
+                    localization=:localization,
+                    related_ids=' . $db->quote($rowcontent['related_ids']) . ',
+                    related_pos=' . $rowcontent['related_pos'] . '
                 WHERE id =' . $rowcontent['id']);
 
                 $voicedata = empty($rowcontent['voicedata']) ? '' : json_encode($rowcontent['voicedata']);
@@ -1500,6 +1568,22 @@ if (!empty($global_array_voices)) {
     }
 }
 $tpl->assign('ARRAY_VOICES', $array_voices);
+
+// Tin bài liên quan
+$related_news = [];
+if (!empty($rowcontent['related_ids'])) {
+    $sql = "SELECT id, title FROM " . NV_PREFIXLANG . "_" . $module_data . "_rows WHERE id IN(" . $rowcontent['related_ids'] . ")
+    ORDER BY " . $order_articles_by . " DESC";
+    $result = $db->query($sql);
+    while ($_row = $result->fetch()) {
+        $related_news[] = [
+            'id' => $_row['id'],
+            'title' => $_row['title']
+        ];
+    }
+    $result->closeCursor();
+}
+$tpl->assign('RELATED_NEWS', $related_news);
 
 $contents = $tpl->fetch('content.tpl');
 

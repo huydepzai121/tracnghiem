@@ -185,7 +185,7 @@
 }
 
 .text-bold {
-    font-weight: 800;
+    font-weight: 700;
 }
 
 /* Fix bootstrap */
@@ -1078,13 +1078,15 @@ h6 {
     list-style-type: decimal !important;
 }
 
-.bodytext ul {
+.bodytext ul,
+.inline-related-articles {
     list-style-type: disc !important;
-    padding-left: 40px !important;
+    padding-left: 30px !important;
     margin-bottom: 10px !important;
 }
 
-.bodytext li {
+.bodytext li,
+.inline-related-articles li {
     margin-bottom: 0 !important;
 }
 

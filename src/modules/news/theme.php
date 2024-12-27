@@ -1044,6 +1044,37 @@ function detail_theme($news_contents, $array_keyword, $related_new_array, $relat
         $xtpl->parse('main.no_public');
     }
 
+    // Bài viết cố định liên quan
+    if (!empty($news_contents['related_articles'])) {
+        foreach ($news_contents['related_articles'] as $article) {
+            $article['target_blank'] = !empty($article['external_link']) ? ' target="_blank"' : '';
+            $article['hometext_clean'] = empty($module_config[$module_name]['showtooltip']) ? '' : nv_clean60(strip_tags($article['hometext']), $module_config[$module_name]['tooltip_length'], true);
+
+            $xtpl->assign('ARTICLE', $article);
+
+            $newday = $article['time'] + (86400 * $article['newday']);
+            if ($newday >= NV_CURRENTTIME) {
+                $xtpl->parse('related_articles.loop.newday');
+            }
+
+            if (!empty($module_config[$module_name]['showtooltip'])) {
+                $xtpl->parse('related_articles.loop.tooltip');
+            }
+
+            $xtpl->parse('related_articles.loop');
+        }
+
+        $xtpl->parse('related_articles');
+        $related_html = $xtpl->text('related_articles');
+        $xtpl->assign('RELATED_HTML', $related_html);
+
+        if ($news_contents['related_pos'] == 1) {
+            $xtpl->parse('main.related_top');
+        } else {
+            $xtpl->parse('main.related_bottom');
+        }
+    }
+
     $xtpl->parse('main');
     $contents = $xtpl->text('main');
     if (!empty($module_config[$module_name]['report_active']) and (!empty($module_config[$module_name]['report_group']) and nv_user_in_groups($module_config[$module_name]['report_group']))) {

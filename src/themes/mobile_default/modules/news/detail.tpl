@@ -89,6 +89,9 @@
         </div>
         <!-- END: imgfull -->
         <!-- END: showhometext -->
+        <!-- BEGIN: related_top -->
+        {RELATED_HTML}
+        <!-- END: related_top -->
         <!-- BEGIN: navigation -->
         <script type="text/javascript" src="{ASSETS_STATIC_URL}/js/clipboard/clipboard.min.js"></script>
         <div id="navigation" class="navigation-cont auto_nav{DETAIL.auto_nav}" data-copied="{LANG.link_copied}">
@@ -118,6 +121,9 @@
         <div class="bodytext">
             {DETAIL.bodyhtml}
         </div>
+        <!-- BEGIN: related_bottom -->
+        {RELATED_HTML}
+        <!-- END: related_bottom -->
         <!-- BEGIN: files -->
         <h3 class="newh3"><i class="fa fa-download"></i> <strong>{LANG.files}</strong></h3>
         <div class="list-group news-download-file">
@@ -299,8 +305,25 @@ $(document).ready(function() {
 <script type="text/javascript" src="{ASSETS_STATIC_URL}/js/highlight/highlight.min.js"></script>
 <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 <!-- END: main -->
+
 <!-- BEGIN: no_permission -->
 <div class="alert alert-info">
     {NO_PERMISSION}
 </div>
 <!-- END: no_permission -->
+
+<!-- BEGIN: related_articles -->
+<div class="margin-bottom-lg">
+    <div class="h3 text-bold">{LANG.related_sarticles}:</div>
+    <ul class="inline-related-articles">
+        <!-- BEGIN: loop -->
+        <li>
+            <a href="{ARTICLE.link}"{ARTICLE.target_blank} title="{ARTICLE.title}">{ARTICLE.title}</a>
+            <!-- BEGIN: newday -->
+            <span class="icon_new">&nbsp;</span>
+            <!-- END: newday -->
+        </li>
+        <!-- END: loop -->
+    </ul>
+</div>
+<!-- END: related_articles -->

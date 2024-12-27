@@ -1290,6 +1290,33 @@ $(function () {
             });
         });
     });
+
+    const iptRelated = $('#newcontent_related_ids');
+    if (iptRelated.length) {
+        iptRelated.select2({
+            language: nv_lang_interface,
+            dir: $('html').attr('dir'),
+            width: '100%',
+            ajax: {
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=content&nocache=' + new Date().getTime(),
+                dataType: 'json',
+                delay: 250,
+                type: 'POST',
+                data: function (params) {
+                    return {
+                        id: iptRelated.data('id'),
+                        q: params.term,
+                        page: params.page || 1,
+                        checkss: $('body').data('checksess'),
+                        get_article_json: 1
+                    };
+                },
+                cache: false
+            },
+            minimumInputLength: 2,
+            placeholder: iptRelated.data('placeholder')
+        });
+    }
 });
 
 $(window).on('load', function() {
