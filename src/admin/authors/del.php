@@ -123,8 +123,10 @@ if ($nv_Request->get_title('checkss', 'post') == $checkss) {
     $db->query('DELETE FROM ' . NV_AUTHORS_GLOBALTABLE . '_vars WHERE admin_id = ' . $admin_id);
 
     if ($action_account == 1) {
+        // Đình chỉ tài khoản
         $db->query('UPDATE ' . NV_USERS_GLOBALTABLE . ' SET active=0 WHERE userid=' . $admin_id);
     } elseif ($action_account == 2) {
+        // Xóa tài khoản
         try {
             $db->query('UPDATE ' . NV_GROUPS_GLOBALTABLE . ' SET numbers = numbers-1 WHERE group_id IN (SELECT group_id FROM ' . NV_GROUPS_GLOBALTABLE . '_users WHERE userid=' . $admin_id . ' AND approved = 1)');
         } catch (PDOException $e) {
@@ -139,6 +141,7 @@ if ($nv_Request->get_title('checkss', 'post') == $checkss) {
         }
         // Xóa API
         $db->query('DELETE FROM ' . $db_config['prefix'] . '_api_role_credential WHERE userid=' . $admin_id);
+        nv_apply_hook('users', 'user_delete', [$admin_id, $row_user]);
     }
 
     if ($action_account != 2) {

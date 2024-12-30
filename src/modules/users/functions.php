@@ -309,7 +309,7 @@ function nv_del_user($userid)
     FROM ' . NV_MOD_TABLE . ' WHERE userid=' . $userid;
     $row = $db->query($sql)->fetch(3);
     if (empty($row)) {
-        $return = 0;
+        return 0;
     }
 
     [$group_id, $username, $first_name, $last_name, $gender, $email, $photo, $in_groups, $idsite, $lang] = $row;
@@ -358,6 +358,8 @@ function nv_del_user($userid)
         ]
     ]];
     nv_sendmail_template_async([$module_name, Emails::USER_DELETE], $send_data, $lang);
+
+    nv_apply_hook($module_name, 'user_delete', [$userid, $row]);
 
     return $userid;
 }

@@ -122,6 +122,8 @@ if (md5(NV_CHECK_SESSION . '_' . $module_name . '_main') == $nv_Request->get_str
                 ]];
                 nv_sendmail_template_async([$module_name, Emails::USER_DELETE], $send_data, $maillang);
             }
+
+            nv_apply_hook($module_name, 'user_delete', [$userid, $row]);
         }
     }
 
