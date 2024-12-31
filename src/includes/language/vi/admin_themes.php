@@ -82,6 +82,7 @@ $lang_module['block_select_function'] = 'Chọn function';
 $lang_module['block_error_fileconfig_title'] = 'Lỗi file cấu hình giao diện';
 $lang_module['block_error_fileconfig_content'] = 'File cấu hình của giao diện không đúng hoặc không tồn tại. Hãy kiểm tra lại trong thư mục theme của bạn';
 $lang_module['block_error_bconfig'] = 'Lỗi file INI cấu hình block, hệ thống không đọc được';
+$lang_module['block_error_bconfig2'] = 'Lỗi tệp json cấu hình của block';
 $lang_module['package_theme_module'] = 'Đóng gói theme module';
 $lang_module['autoinstall_continue'] = 'Tiếp tục';
 $lang_module['back'] = 'Quay lại';

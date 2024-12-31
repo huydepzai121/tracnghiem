@@ -99,6 +99,48 @@ function get_dtime_details($dtime_type, $dtime_details)
 }
 
 /**
+ * @param string $file_ini
+ * @param string $file_json
+ * @return array
+ */
+function get_block_info(string $file_ini, string $file_json)
+{
+    $block_name = '';
+    $has_config = 0;
+
+    // Lấy thông tin theo thứ tự ngược từ json (mới) đến ini (cũ)
+    if (file_exists($file_json)) {
+        $json = json_decode(file_get_contents($file_json), true);
+        if (!empty($json) and is_array($json)) {
+            // Xác định có config không
+            if (!empty($json['datafunction']) and is_string($json['datafunction'])) {
+                $has_config = 1;
+            }
+            // Xác định tên block
+            if (!empty($json['i18n']) and is_array($json['i18n'])) {
+                if (!empty($json['i18n'][NV_LANG_INTERFACE]) and is_array($json['i18n'][NV_LANG_INTERFACE]) and !empty($json['i18n'][NV_LANG_INTERFACE]['info']) and is_array($json['i18n'][NV_LANG_INTERFACE]['info'])) {
+                    $block_name = strval($json['i18n'][NV_LANG_INTERFACE]['info']['name'] ?? '');
+                }
+                if (empty($block_name) and !empty($json['i18n']['en']) and is_array($json['i18n']['en']) and !empty($json['i18n']['en']['info']) and is_array($json['i18n']['en']['info'])) {
+                    $block_name = strval($json['i18n']['en']['info']['name'] ?? '');
+                }
+            }
+        }
+    }
+    if (empty($has_config) and file_exists($file_ini)) {
+        $xml = simplexml_load_file($file_ini);
+        if ($xml !== false and trim((string) $xml->datafunction) != '') {
+            $has_config = 1;
+        }
+    }
+
+    return [
+        'config' => $has_config,
+        'name' => $block_name
+    ];
+}
+
+/**
  * Lấy danh sách option block của module/giao diện khi thêm/sửa block
  *
  * @param string $module
@@ -118,6 +160,7 @@ function loadblock($module, $bid, $selectthemes = '')
     $return = '<option value="">' . $nv_Lang->getModule('block_select') . '</option>';
 
     if ($module == 'theme') {
+        // Block của giao diện
         if (empty($row['theme'])) {
             $row['theme'] = !empty($selectthemes) ? $selectthemes : $global_config['site_theme'];
         }
@@ -126,7 +169,11 @@ function loadblock($module, $bid, $selectthemes = '')
         foreach ($block_file_list as $file_name) {
             if (preg_match($global_config['check_block_theme'], $file_name, $matches)) {
                 $sel = ($file_name == $row['file_name']) ? ' selected="selected"' : '';
-                $load_config = (file_exists(NV_ROOTDIR . '/themes/' . $row['theme'] . '/blocks/' . $matches[1] . '.' . $matches[2] . '.ini')) ? 1 : 0;
+
+                $file_ini = NV_ROOTDIR . '/themes/' . $row['theme'] . '/blocks/' . $matches[1] . '.' . $matches[2] . '.ini';
+                $file_json = NV_ROOTDIR . '/themes/' . $row['theme'] . '/blocks/' . $matches[1] . '.' . $matches[2] . '.json';
+                $block_info = get_block_info($file_ini, $file_json);
+
                 $load_mod_array = [];
                 if ($matches[1] != 'global') {
                     foreach ($site_mods as $mod => $row_i) {
@@ -135,25 +182,29 @@ function loadblock($module, $bid, $selectthemes = '')
                         }
                     }
                 }
-                $return .= '<option value="' . $file_name . '|' . $load_config . '|' . implode('.', $load_mod_array) . '" ' . $sel . '>' . $matches[1] . ' ' . $matches[2] . ' </option>';
+
+                $block_name = nv_ucfirst($matches[1]) . ': ' . ($block_info['name'] ?: $matches[2]);
+                $return .= '<option value="' . $file_name . '|' . $block_info['config'] . '|' . implode('.', $load_mod_array) . '" ' . $sel . '>' . $block_name . ' </option>';
             }
         }
     } elseif (isset($site_mods[$module]['module_file'])) {
+        // Block của module
         $module_file = $site_mods[$module]['module_file'];
-        if (!empty($module_file)) {
-            if (file_exists(NV_ROOTDIR . '/modules/' . $module_file . '/blocks')) {
-                $block_file_list = nv_scandir(NV_ROOTDIR . '/modules/' . $module_file . '/blocks', $global_config['check_block_module']);
+        if (!empty($module_file) and file_exists(NV_ROOTDIR . '/modules/' . $module_file . '/blocks')) {
+            $block_file_list = nv_scandir(NV_ROOTDIR . '/modules/' . $module_file . '/blocks', $global_config['check_block_module']);
 
-                foreach ($block_file_list as $file_name) {
-                    $sel = ($file_name == $row['file_name']) ? ' selected="selected"' : '';
+            foreach ($block_file_list as $file_name) {
+                $sel = ($file_name == $row['file_name']) ? ' selected="selected"' : '';
 
-                    unset($matches);
-                    preg_match($global_config['check_block_module'], $file_name, $matches);
+                unset($matches);
+                preg_match($global_config['check_block_module'], $file_name, $matches);
 
-                    $load_config = (file_exists(NV_ROOTDIR . '/modules/' . $module_file . '/blocks/' . $matches[1] . '.' . $matches[2] . '.ini')) ? 1 : 0;
+                $file_ini = NV_ROOTDIR . '/modules/' . $module_file . '/blocks/' . $matches[1] . '.' . $matches[2] . '.ini';
+                $file_json = NV_ROOTDIR . '/modules/' . $module_file . '/blocks/' . $matches[1] . '.' . $matches[2] . '.json';
+                $block_info = get_block_info($file_ini, $file_json);
 
-                    $return .= '<option value="' . $file_name . '|' . $load_config . '|" ' . $sel . '>' . $matches[1] . ' ' . $matches[2] . ' </option>';
-                }
+                $block_name = nv_ucfirst($matches[1]) . ': ' . ($block_info['name'] ?: $matches[2]);
+                $return .= '<option value="' . $file_name . '|' . $block_info['config'] . '|" ' . $sel . '>' . $block_name . ' </option>';
             }
         }
     }

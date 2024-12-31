@@ -128,18 +128,20 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
         preg_match($global_config['check_block_module'], $row['file_name'], $matches);
     }
 
-    $path_file_php = $path_file_ini = $block_type = $block_dir = '';
-    if ($module == 'theme' and file_exists(NV_ROOTDIR . '/themes/' . $selectthemes . '/blocks/' . $file_name) and file_exists(NV_ROOTDIR . '/themes/' . $selectthemes . '/blocks/' . $matches[1] . '.' . $matches[2] . '.ini')) {
+    $path_file_php = $path_file_ini = $path_file_json = $block_type = $block_dir = '';
+    if ($module == 'theme' and file_exists(NV_ROOTDIR . '/themes/' . $selectthemes . '/blocks/' . $file_name)) {
         $path_file_php = NV_ROOTDIR . '/themes/' . $selectthemes . '/blocks/' . $file_name;
         $path_file_ini = NV_ROOTDIR . '/themes/' . $selectthemes . '/blocks/' . $matches[1] . '.' . $matches[2] . '.ini';
+        $path_file_json = NV_ROOTDIR . '/themes/' . $selectthemes . '/blocks/' . $matches[1] . '.' . $matches[2] . '.json';
         $block_type = 'theme';
         $block_dir = $selectthemes;
     } elseif (isset($site_mods[$module])) {
         $mod_file = $site_mods[$module]['module_file'];
 
-        if (file_exists(NV_ROOTDIR . '/modules/' . $mod_file . '/blocks/' . $file_name) and file_exists(NV_ROOTDIR . '/modules/' . $mod_file . '/blocks/' . $matches[1] . '.' . $matches[2] . '.ini')) {
+        if (file_exists(NV_ROOTDIR . '/modules/' . $mod_file . '/blocks/' . $file_name)) {
             $path_file_php = NV_ROOTDIR . '/modules/' . $mod_file . '/blocks/' . $file_name;
             $path_file_ini = NV_ROOTDIR . '/modules/' . $mod_file . '/blocks/' . $matches[1] . '.' . $matches[2] . '.ini';
+            $path_file_json = NV_ROOTDIR . '/modules/' . $mod_file . '/blocks/' . $matches[1] . '.' . $matches[2] . '.json';
             $block_type = 'module';
             $block_dir = $mod_file;
         }
@@ -317,61 +319,80 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     $row['all_func'] = $all_func;
     $row['config'] = '';
 
-    if (!empty($path_file_php) and !empty($path_file_ini)) {
-        // Load cac cau hinh cua block
-        $xml = simplexml_load_file($path_file_ini);
+    // Xử lý khi block có cấu hình
+    if (!empty($path_file_php) and (!empty($path_file_ini) or !empty($path_file_json))) {
+        $submit_function = '';
+        $lang_block = [];
 
-        if ($xml !== false) {
-            $submit_function = trim($xml->submitfunction);
+        // Đọc tệp ini (cũ)
+        if (!empty($path_file_ini) and file_exists($path_file_ini)) {
+            $xml = simplexml_load_file($path_file_ini);
+            if ($xml !== false) {
+                $submit_function = trim($xml->submitfunction);
 
-            if (!empty($submit_function)) {
-                // Neu ton tai function de xay dung cau truc cau hinh block
-                include_once $path_file_php;
+                $xmllanguage = $xml->xpath('language');
+                if (!empty($xmllanguage)) {
+                    $language = (array) $xmllanguage[0];
 
-                if (nv_function_exists($submit_function) and ($block_type == 'module' or $block_type == 'theme')) {
-                    if ($block_type == 'module') {
-                        $nv_Lang->loadModule($block_dir, false, true);
-                    } elseif ($block_type == 'theme') {
-                        $nv_Lang->loadTheme($block_dir, true);
+                    if (isset($language[NV_LANG_INTERFACE])) {
+                        $lang_block = (array) $language[NV_LANG_INTERFACE];
+                    } elseif (isset($language['en'])) {
+                        $lang_block = (array) $language['en'];
                     }
+                }
+            }
+        }
 
-                    $xmllanguage = $xml->xpath('language');
-                    if (!empty($xmllanguage)) {
-                        $language = (array) $xmllanguage[0];
+        // Đọc tệp json (mới)
+        if (!empty($path_file_json) and file_exists($path_file_json)) {
+            $json = json_decode(file_get_contents($path_file_json), true);
 
-                        if (isset($language[NV_LANG_INTERFACE])) {
-                            $lang_block = (array) $language[NV_LANG_INTERFACE];
-                        } elseif (isset($language['en'])) {
-                            $lang_block = (array) $language['en'];
-                        } else {
-                            $xmlkey = $xml->xpath('config');
-                            $language = (array) $xmlkey[0];
+            if (!empty($json['submitfunction'])) {
+                $submit_function = trim($json['submitfunction']);
+            }
 
-                            $key = array_keys($language);
-                            $lang_block = array_combine($key, $key);
-                        }
+            // Ngôn ngữ cấu hình block
+            if (!empty($json['i18n']) and is_array($json['i18n'])) {
+                if (!empty($json['i18n'][NV_LANG_INTERFACE]) and is_array($json['i18n'][NV_LANG_INTERFACE]) and !empty($json['i18n'][NV_LANG_INTERFACE]['language']) and is_array($json['i18n'][NV_LANG_INTERFACE]['language'])) {
+                    $lang_block = array_merge($lang_block, (array) $json['i18n'][NV_LANG_INTERFACE]['language']);
+                }
+                if (empty($lang_block) and !empty($json['i18n']['en']) and is_array($json['i18n']['en']) and !empty($json['i18n']['en']['language']) and is_array($json['i18n']['en']['language'])) {
+                    $lang_block = array_merge($lang_block, (array) $json['i18n']['en']['language']);
+                }
+            }
+        }
 
-                        $nv_Lang->setModule($lang_block, '', true);
-                    }
+        // Xử lý cấu hình block khi nó tồn tại
+        if (!empty($submit_function)) {
+            include_once $path_file_php;
 
-                    // Goi ham xu ly hien thi block
-                    $array_config = call_user_func($submit_function, $module);
+            if (nv_function_exists($submit_function) and ($block_type == 'module' or $block_type == 'theme')) {
+                if ($block_type == 'module') {
+                    $nv_Lang->loadModule($block_dir, false, true);
+                } elseif ($block_type == 'theme') {
+                    $nv_Lang->loadTheme($block_dir, true);
+                }
+                if (!empty($lang_block)) {
+                    $nv_Lang->setModule($lang_block, '', true);
+                }
 
-                    // Xóa lang tạm giải phóng bộ nhớ
-                    $nv_Lang->changeLang();
+                // Gọi hàm xử lý hiển thị block
+                $array_config = call_user_func($submit_function, $module);
 
-                    if (!empty($array_config['config'])) {
-                        $row['config'] = serialize($array_config['config']);
-                    } else {
-                        $row['config'] = '';
-                    }
+                // Xóa lang tạm giải phóng bộ nhớ
+                $nv_Lang->changeLang();
 
-                    if (!empty($array_config['error'])) {
-                        nv_jsonOutput([
-                            'status' => 'error',
-                            'mess' => implode(', ', $array_config['error'])
-                        ]);
-                    }
+                if (!empty($array_config['config'])) {
+                    $row['config'] = serialize($array_config['config']);
+                } else {
+                    $row['config'] = '';
+                }
+
+                if (!empty($array_config['error'])) {
+                    nv_jsonOutput([
+                        'status' => 'error',
+                        'mess' => implode(', ', $array_config['error'])
+                    ]);
                 }
             }
         }

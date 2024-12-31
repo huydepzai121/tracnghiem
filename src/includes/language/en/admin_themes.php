@@ -82,6 +82,7 @@ $lang_module['block_select_function'] = 'Select function';
 $lang_module['block_error_fileconfig_title'] = 'Interface configuration file error';
 $lang_module['block_error_fileconfig_content'] = 'Interface configuration file is incorrect or does not exist. Check in your theme directory';
 $lang_module['block_error_bconfig'] = 'Block configuration INI file error, system cannot read';
+$lang_module['block_error_bconfig2'] = 'Configuration block\'s JSON file error';
 $lang_module['package_theme_module'] = 'Pack by module';
 $lang_module['autoinstall_continue'] = 'Next';
 $lang_module['back'] = 'Back';
