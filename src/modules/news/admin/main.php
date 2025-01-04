@@ -630,10 +630,16 @@ if (!empty($module_config[$module_name]['elas_use'])) {
 
         $admin_funcs = [];
         if ($check_permission_edit) {
-            $admin_funcs['edit'] = nv_link_edit_page($id);
+            $admin_funcs['edit'] = nv_link_edit_page([
+                'id' => $id,
+                'listcatid' => $listcatid
+            ]);
         }
         if ($check_permission_delete) {
-            $admin_funcs['delete'] = nv_link_delete_page($id);
+            $admin_funcs['delete'] = nv_link_delete_page([
+                'id' => $id,
+                'listcatid' => $listcatid
+            ]);
             $_permission_action['delete'] = true;
         }
         $data[$id] = [
@@ -847,10 +853,16 @@ if (!empty($module_config[$module_name]['elas_use'])) {
 
         $admin_funcs = [];
         if ($check_permission_edit) {
-            $admin_funcs['edit'] = nv_link_edit_page($id);
+            $admin_funcs['edit'] = nv_link_edit_page([
+                'id' => $id,
+                'listcatid' => $listcatid
+            ]);
         }
         if ($check_permission_delete) {
-            $admin_funcs['delete'] = nv_link_delete_page($id);
+            $admin_funcs['delete'] = nv_link_delete_page([
+                'id' => $id,
+                'listcatid' => $listcatid
+            ]);
             $_permission_action['delete'] = true;
         }
 

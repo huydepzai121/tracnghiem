@@ -64,8 +64,11 @@ function viewcat_grid_new($array_catpage, $catid, $generate_page)
         ++$a;
         if ($a == 1) {
             if (defined('NV_IS_MODADMIN')) {
-                $xtpl->assign('ADMINLINK', nv_link_edit_page($array_row_i['id']) . ' ' . nv_link_delete_page($array_row_i['id']));
-                $xtpl->parse('main.featuredloop.adminlink');
+                $adminlink = trim(nv_link_edit_page($array_row_i) . ' ' . nv_link_delete_page($array_row_i));
+                if (!empty($adminlink)) {
+                    $xtpl->assign('ADMINLINK', $adminlink);
+                    $xtpl->parse('main.featuredloop.adminlink');
+                }
             }
 
             if ($array_row_i['imghome'] != '') {
@@ -91,8 +94,11 @@ function viewcat_grid_new($array_catpage, $catid, $generate_page)
             }
 
             if (defined('NV_IS_MODADMIN')) {
-                $xtpl->assign('ADMINLINK', nv_link_edit_page($array_row_i['id']) . ' ' . nv_link_delete_page($array_row_i['id']));
-                $xtpl->parse('main.viewcatloop.adminlink');
+                $adminlink = trim(nv_link_edit_page($array_row_i) . ' ' . nv_link_delete_page($array_row_i));
+                if (!empty($adminlink)) {
+                    $xtpl->assign('ADMINLINK', $adminlink);
+                    $xtpl->parse('main.viewcatloop.adminlink');
+                }
             }
 
             if ($array_row_i['imghome'] != '') {
@@ -172,8 +178,11 @@ function viewcat_list_new($array_catpage, $catid, $page, $generate_page)
         }
 
         if (defined('NV_IS_MODADMIN')) {
-            $xtpl->assign('ADMINLINK', nv_link_edit_page($array_row_i['id']) . ' ' . nv_link_delete_page($array_row_i['id']));
-            $xtpl->parse('main.viewcatloop.adminlink');
+            $adminlink = trim(nv_link_edit_page($array_row_i) . ' ' . nv_link_delete_page($array_row_i));
+            if (!empty($adminlink)) {
+                $xtpl->assign('ADMINLINK', $adminlink);
+                $xtpl->parse('main.viewcatloop.adminlink');
+            }
         }
 
         if ($array_row_i['imghome'] != '') {
@@ -256,8 +265,11 @@ function viewcat_page_new($array_catpage, $array_cat_other, $generate_page)
             $xtpl->assign('CONTENT', $array_row_i);
 
             if (defined('NV_IS_MODADMIN')) {
-                $xtpl->assign('ADMINLINK', nv_link_edit_page($array_row_i['id']) . ' ' . nv_link_delete_page($array_row_i['id']));
-                $xtpl->parse('main.viewcatloop.featured.adminlink');
+                $adminlink = trim(nv_link_edit_page($array_row_i) . ' ' . nv_link_delete_page($array_row_i));
+                if (!empty($adminlink)) {
+                    $xtpl->assign('ADMINLINK', $adminlink);
+                    $xtpl->parse('main.viewcatloop.featured.adminlink');
+                }
             }
 
             if ($array_row_i['imghome'] != '') {
@@ -285,8 +297,11 @@ function viewcat_page_new($array_catpage, $array_cat_other, $generate_page)
             $xtpl->assign('CONTENT', $array_row_i);
 
             if (defined('NV_IS_MODADMIN')) {
-                $xtpl->assign('ADMINLINK', nv_link_edit_page($array_row_i['id']) . ' ' . nv_link_delete_page($array_row_i['id']));
-                $xtpl->parse('main.viewcatloop.news.adminlink');
+                $adminlink = trim(nv_link_edit_page($array_row_i) . ' ' . nv_link_delete_page($array_row_i));
+                if (!empty($adminlink)) {
+                    $xtpl->assign('ADMINLINK', $adminlink);
+                    $xtpl->parse('main.viewcatloop.news.adminlink');
+                }
             }
 
             if ($array_row_i['imghome'] != '') {
@@ -387,8 +402,11 @@ function viewcat_top($array_catcontent, $generate_page)
                 }
 
                 if (defined('NV_IS_MODADMIN')) {
-                    $xtpl->assign('ADMINLINK', nv_link_edit_page($array_catcontent_i['id']) . ' ' . nv_link_delete_page($array_catcontent_i['id']));
-                    $xtpl->parse('main.catcontent.adminlink');
+                    $adminlink = trim(nv_link_edit_page($array_catcontent_i) . ' ' . nv_link_delete_page($array_catcontent_i));
+                    if (!empty($adminlink)) {
+                        $xtpl->assign('ADMINLINK', $adminlink);
+                        $xtpl->parse('main.catcontent.adminlink');
+                    }
                 }
                 if ($newday >= NV_CURRENTTIME) {
                     $xtpl->parse('main.catcontent.newday');
@@ -517,8 +535,11 @@ function viewsubcat_main($viewcat, $array_cat)
                     }
 
                     if (defined('NV_IS_MODADMIN')) {
-                        $xtpl->assign('ADMINLINK', nv_link_edit_page($array_row_i['id']) . ' ' . nv_link_delete_page($array_row_i['id']));
-                        $xtpl->parse('main.listcat.adminlink');
+                        $adminlink = trim(nv_link_edit_page($array_row_i) . ' ' . nv_link_delete_page($array_row_i));
+                        if (!empty($adminlink)) {
+                            $xtpl->assign('ADMINLINK', $adminlink);
+                            $xtpl->parse('main.listcat.adminlink');
+                        }
                     }
                 } else {
                     if ($newday >= NV_CURRENTTIME) {
@@ -606,8 +627,11 @@ function viewcat_two_column($array_content, $array_catpage)
                 }
 
                 if (defined('NV_IS_MODADMIN')) {
-                    $xtpl->assign('ADMINLINK', nv_link_edit_page($array_content_i['id']) . ' ' . nv_link_delete_page($array_content_i['id']));
-                    $xtpl->parse('main.catcontent.content.adminlink');
+                    $adminlink = trim(nv_link_edit_page($array_content_i) . ' ' . nv_link_delete_page($array_content_i));
+                    if (!empty($adminlink)) {
+                        $xtpl->assign('ADMINLINK', $adminlink);
+                        $xtpl->parse('main.catcontent.content.adminlink');
+                    }
                 }
 
                 if ($newday >= NV_CURRENTTIME) {
@@ -664,8 +688,11 @@ function viewcat_two_column($array_content, $array_catpage)
             }
 
             if (defined('NV_IS_MODADMIN')) {
-                $xtpl->assign('ADMINLINK', nv_link_edit_page($array_content_i['id']) . ' ' . nv_link_delete_page($array_content_i['id']));
-                $xtpl->parse('main.loopcat.content.adminlink');
+                $adminlink = trim(nv_link_edit_page($array_content_i) . ' ' . nv_link_delete_page($array_content_i));
+                if (!empty($adminlink)) {
+                    $xtpl->assign('ADMINLINK', $adminlink);
+                    $xtpl->parse('main.loopcat.content.adminlink');
+                }
             }
 
             if ($newday >= NV_CURRENTTIME) {
@@ -925,9 +952,12 @@ function detail_theme($news_contents, $array_keyword, $related_new_array, $relat
     }
 
     if (defined('NV_IS_MODADMIN')) {
-        $xtpl->assign('ADMINLINK', nv_link_edit_page($news_contents['id']) . ' ' . nv_link_delete_page($news_contents['id'], 1));
-        $xtpl->assign('EDITLINK', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=content&amp;id=' . $news_contents['id']);
-        $xtpl->parse('main.adminlink');
+        $adminlink = trim(nv_link_edit_page($news_contents) . ' ' . nv_link_delete_page($news_contents, 1));
+        if (!empty($adminlink)) {
+            $xtpl->assign('EDITLINK', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=content&amp;id=' . $news_contents['id']);
+            $xtpl->assign('ADMINLINK', $adminlink);
+            $xtpl->parse('main.adminlink');
+        }
     }
 
     if (!empty($module_config[$module_name]['socialbutton'])) {
@@ -1186,8 +1216,11 @@ function topic_theme($topic_array, $topic_other_array, $generate_page, $page_tit
             }
 
             if ($topicid and defined('NV_IS_MODADMIN')) {
-                $xtpl->assign('ADMINLINK', nv_link_edit_page($topic_array_i['id']) . ' ' . nv_link_delete_page($topic_array_i['id']));
-                $xtpl->parse('main.topic.adminlink');
+                $adminlink = trim(nv_link_edit_page($topic_array_i) . ' ' . nv_link_delete_page($topic_array_i));
+                if (!empty($adminlink)) {
+                    $xtpl->assign('ADMINLINK', $adminlink);
+                    $xtpl->parse('main.topic.adminlink');
+                }
             }
 
             $xtpl->parse('main.topic');
@@ -1259,8 +1292,11 @@ function author_theme($author_info, $topic_array, $topic_other_array, $generate_
             }
 
             if (defined('NV_IS_MODADMIN')) {
-                $xtpl->assign('ADMINLINK', nv_link_edit_page($topic_array_i['id']) . ' ' . nv_link_delete_page($topic_array_i['id']));
-                $xtpl->parse('main.topic.adminlink');
+                $adminlink = trim(nv_link_edit_page($topic_array_i) . ' ' . nv_link_delete_page($topic_array_i));
+                if (!empty($adminlink)) {
+                    $xtpl->assign('ADMINLINK', $adminlink);
+                    $xtpl->parse('main.topic.adminlink');
+                }
             }
 
             $xtpl->parse('main.topic');

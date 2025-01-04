@@ -70,7 +70,7 @@ $num_items = $db_slave->query($db_slave->sql())
 // Không cho tùy ý đánh số page + xác định trang trước, trang sau
 betweenURLs($page, ceil($num_items / $per_page), $base_url, '/page-', $prevPage, $nextPage);
 
-$db_slave->select('id, catid, topicid, admin_id, author, sourceid, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, external_link, hitstotal, hitscm, total_rating, click_rating')
+$db_slave->select('id, catid, listcatid, topicid, admin_id, author, sourceid, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, external_link, hitstotal, hitscm, total_rating, click_rating')
     ->order($order_articles_by . ' DESC')
     ->limit($per_page)
     ->offset(($page - 1) * $per_page);
@@ -93,7 +93,7 @@ unset($query, $row);
 $item_array_other = [];
 if ($st_links > 0) {
     $db_slave->sqlreset()
-        ->select('id, catid, addtime, edittime, publtime, title, alias, hitstotal, external_link')
+        ->select('id, catid, listcatid, addtime, edittime, publtime, title, alias, hitstotal, external_link')
         ->from(NV_PREFIXLANG . '_' . $module_data . '_rows')
         ->where($where . ' AND publtime < ' . $end_publtime)
         ->order($order_articles_by . ' DESC')

@@ -59,6 +59,45 @@ if ($nv_Request->isset_request('setAutoPlayVoice', 'post') and $nv_Request->get_
     ]);
 }
 
+// Xác định quyền hạn khi admin thao tác ngoài site
+$admin_permissions = [];
+if (defined('NV_IS_MODADMIN')) {
+    if (!defined('NV_IS_SPADMIN')) {
+        // Check quyền theo CSDL
+        $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_admins WHERE userid=' . $admin_info['admin_id'];
+        $permissions_info = $db->query($sql)->fetchAll();
+        if (!empty($permissions_info)) {
+            if (isset($permissions_info[0]) and $permissions_info[0]['admin'] > 0) {
+                define('NV_IS_ADMIN_MODULE', true);
+            } else {
+                // Lấy quyền hạn của admin
+                unset($permissions_info[0]);
+                foreach ($permissions_info as $item) {
+                    if (!empty($item['add_content'])) {
+                        $admin_permissions['add_content'][] = $item['catid'];
+                    }
+                    if (!empty($item['pub_content'])) {
+                        $admin_permissions['pub_content'][] = $item['catid'];
+                    }
+                    if (!empty($item['edit_content'])) {
+                        $admin_permissions['edit_content'][] = $item['catid'];
+                    }
+                    if (!empty($item['del_content'])) {
+                        $admin_permissions['del_content'][] = $item['catid'];
+                    }
+                    if (!empty($item['app_content'])) {
+                        $admin_permissions['app_content'][] = $item['catid'];
+                    }
+                }
+            }
+        }
+        unset($permissions_info, $item);
+    } else {
+        // Điều hành chung trở lên có toàn quyền
+        define('NV_IS_ADMIN_MODULE', true);
+    }
+}
+
 // Xac dinh RSS
 if ($module_info['rss']) {
     $rss[] = [

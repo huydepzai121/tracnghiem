@@ -198,7 +198,7 @@ if (empty($contents)) {
 
         if ($st_links > 0) {
             $db_slave->sqlreset()
-                ->select('id, catid, addtime, edittime, publtime, title, alias, external_link, hitstotal')
+                ->select('id, catid, listcatid, addtime, edittime, publtime, title, alias, external_link, hitstotal')
                 ->from(NV_PREFIXLANG . '_' . $module_data . '_rows');
 
             if ($viewcat == 'viewcat_page_new') {
@@ -346,7 +346,7 @@ if (empty($contents)) {
         // Không cho tùy ý đánh số page + xác định trang trước, trang sau
         betweenURLs($page, ceil($num_items / $per_page), $base_url, '&amp;' . NV_OP_VARIABLE . '=page-', $prevPage, $nextPage);
 
-        $db_slave->select('id, catid, topicid, admin_id, author, sourceid, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, external_link, hitstotal, hitscm, total_rating, click_rating')
+        $db_slave->select('id, catid, listcatid, topicid, admin_id, author, sourceid, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, external_link, hitstotal, hitscm, total_rating, click_rating')
             ->order($order_by)
             ->limit($per_page)
             ->offset(($page - 1) * $per_page);
@@ -386,7 +386,7 @@ if (empty($contents)) {
         // Không cho tùy ý đánh số page + xác định trang trước, trang sau
         betweenURLs($page, ceil($num_items / $per_page), $base_url, '&amp;' . NV_OP_VARIABLE . '=page-', $prevPage, $nextPage);
 
-        $db_slave->select('id, catid, topicid, admin_id, author, sourceid, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, external_link, hitstotal, hitscm, total_rating, click_rating')
+        $db_slave->select('id, catid, listcatid, topicid, admin_id, author, sourceid, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, external_link, hitstotal, hitscm, total_rating, click_rating')
             ->order($order_by)
             ->limit($per_page)
             ->offset(($page - 1) * $per_page);

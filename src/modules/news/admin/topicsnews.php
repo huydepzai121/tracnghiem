@@ -37,7 +37,8 @@ $per_page = 50;
 $sql = 'SELECT count(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE topicid=' . $topicid;
 $num_items = $db_slave->query($sql)->fetchColumn();
 
-$sql = 'SELECT id, catid, alias, title, publtime, status, hitstotal, hitscm FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE topicid=' . $topicid . ' ORDER BY ' . $order_articles_by . ' DESC LIMIT ' . $per_page . ' OFFSET ' . (($page - 1) * $per_page);
+$sql = 'SELECT id, catid, listcatid, alias, title, publtime, status, hitstotal, hitscm FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows
+WHERE topicid=' . $topicid . ' ORDER BY ' . $order_articles_by . ' DESC LIMIT ' . $per_page . ' OFFSET ' . (($page - 1) * $per_page);
 $result = $db_slave->query($sql);
 
 $generate_page = nv_generate_page(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;topicid=' . $topicid, $num_items, $per_page, $page);
@@ -56,7 +57,7 @@ while ($row = $result->fetch()) {
     $row['hitstotal'] = nv_number_format($row['hitstotal']);
     $row['hitscm'] = nv_number_format($row['hitscm']);
     $row['link'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $global_array_cat[$row['catid']]['alias'] . '/' . $row['alias'] . '-' . $row['id'] . $global_config['rewrite_exturl'];
-    $row['delete'] = nv_link_edit_page($row['id']);
+    $row['delete'] = nv_link_edit_page($row);
     $xtpl->assign('ROW', $row);
     $xtpl->parse('main.data.loop');
 }

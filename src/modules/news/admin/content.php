@@ -14,6 +14,7 @@ if (!defined('NV_IS_FILE_ADMIN')) {
 }
 
 use NukeViet\Module\news\Shared\Logs;
+use NukeViet\Module\news\Shared\Posts;
 
 // Xuất ajax các dòng sự kiện
 if ($nv_Request->isset_request('get_topic_json', 'post')) {
@@ -1520,8 +1521,10 @@ while ([$sourceid_i, $title_i] = $result->fetch(3)) {
 
 if ($rowcontent['status'] == 1 and $rowcontent['publtime'] > NV_CURRENTTIME) {
     $array_cat_check_content = $array_cat_pub_content;
-} elseif ($rowcontent['status'] == 1) {
+} elseif ($rowcontent['status'] == Posts::STATUS_PUBLISH) {
     $array_cat_check_content = $array_cat_edit_content;
+} elseif ($rowcontent['status'] == Posts::STATUS_REVIEW_TRANSFER) {
+    $array_cat_check_content = $array_censor_content;
 } else {
     $array_cat_check_content = $array_cat_add_content;
 }
