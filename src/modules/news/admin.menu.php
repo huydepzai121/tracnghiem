@@ -69,6 +69,7 @@ if (defined('NV_IS_SPADMIN')) {
 
 $allow_func = [
     'main',
+    'drafts',
     'view',
     'stop',
     'publtime',
@@ -86,7 +87,12 @@ $allow_func = [
 ];
 
 if (!isset($site_mods['cms'])) {
-    $submenu['content'] = $nv_Lang->getModule('content_add');
+    $submenu['content'] = [
+        'title' => $nv_Lang->getModule('content_add'),
+        'submenu' => [
+            'drafts' => $nv_Lang->getModule('draft_menu')
+        ]
+    ];
 }
 
 if ($NV_IS_ADMIN_MODULE) {

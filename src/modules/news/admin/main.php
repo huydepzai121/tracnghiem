@@ -186,18 +186,20 @@ $val_cat_content[] = [
     'title' => $nv_Lang->getModule('search_cat_all')
 ];
 
-$array_cat_view = [];
+$array_cat_view = $array_cat_edit = [];
 $check_declined = false;
 foreach ($global_array_cat as $catid_i => $array_value) {
     $lev_i = $array_value['lev'];
-    $check_cat = false;
+    $check_cat = $check_cat_edit = false;
     if (defined('NV_IS_ADMIN_MODULE')) {
         $check_cat = true;
+        $check_cat_edit = true;
     } elseif (isset($array_cat_admin[$admin_id][$catid_i])) {
         $_cat_admin_i = $array_cat_admin[$admin_id][$catid_i];
         if ($_cat_admin_i['admin'] == 1) {
             $check_cat = true;
             $check_declined = true;
+            $check_cat_edit = true;
         } elseif ($_cat_admin_i['add_content'] == 1) {
             $check_cat = true;
         } elseif ($_cat_admin_i['pub_content'] == 1 or $_cat_admin_i['app_content'] == 1) {
@@ -205,11 +207,15 @@ foreach ($global_array_cat as $catid_i => $array_value) {
             $check_declined = true;
         } elseif ($_cat_admin_i['edit_content'] == 1) {
             $check_cat = true;
+            $check_cat_edit = true;
         } elseif ($_cat_admin_i['del_content'] == 1) {
             $check_cat = true;
         }
     }
 
+    if ($check_cat_edit) {
+        $array_cat_edit[] = $catid_i;
+    }
     if ($check_cat) {
         $xtitle_i = '';
         if ($lev_i > 0) {
@@ -885,14 +891,14 @@ if (!empty($array_ids)) {
         $data[$id]['numtags'] = nv_number_format($numtags);
     }
 
-    // Xác định người sửa bài viết
+    // Xác định người đang sửa bài viết
     $db_slave->sqlreset()
     ->select('*')
     ->from(NV_PREFIXLANG . '_' . $module_data . '_tmp')
-    ->where('id IN( ' . implode(',', $array_ids) . ' )');
+    ->where('new_id IN( ' . implode(',', $array_ids) . ') AND type=0');
     $result = $db_slave->query($db_slave->sql());
     while ($_row = $result->fetch()) {
-        $array_editdata[$_row['id']] = $_row;
+        $array_editdata[$_row['new_id']] = $_row;
         $array_userid[$_row['admin_id']] = $_row['admin_id'];
     }
 
@@ -931,7 +937,7 @@ if (!empty($array_userid)) {
 $array_removeid = [];
 foreach ($array_editdata as $_id => $_row) {
     if (!isset($array_userid[$_row['admin_id']]) or $_row['time_late'] < (NV_CURRENTTIME - $global_code_defined['edit_timeout'])) {
-        $array_removeid[$_id] = $_id;
+        $array_removeid[$_row['id']] = $_row['id'];
     }
     if ($_row['admin_id'] == $admin_info['userid'] or !isset($array_userid[$_row['admin_id']]) or $array_userid[$_row['admin_id']]['admin_lev'] > $admin_info['level']) {
         $array_editdata[$_id]['allowtakeover'] = true;
@@ -1231,6 +1237,63 @@ if ($loadhistory) {
     echo $contents;
     include NV_ROOTDIR . '/includes/footer.php';
 }
+
+// Hiển thị thông báo bài viết đang sửa, bài viết nháp đang viết nếu không tìm kiếm
+$array_drafts = [
+    'count' => 0,
+    'list' => []
+];
+if (!$is_search) {
+    $db->sqlreset()->select('COUNT(id)')->from(NV_PREFIXLANG . '_' . $module_data . '_tmp')
+        ->where('admin_id=' . $admin_info['admin_id'] . ' AND type=1');
+    $array_drafts['count'] = $db->query($db->sql())->fetchColumn();
+
+    $db->select('id, new_id, time_edit, time_late, properties')->order('time_late DESC')
+        ->limit(10)
+        ->offset(0);
+    $result = $db->query($db->sql());
+
+    $new_ids = [];
+    while ($row = $result->fetch()) {
+        if (!empty($row['new_id'])) {
+            $new_ids[$row['new_id']] = $row['new_id'];
+        }
+        $row['allowed_edit'] = true;
+
+        $row['properties'] = json_decode($row['properties'], true);
+        if (!is_array($row['properties'])) {
+            $row['properties'] = [];
+        }
+        $row['title'] = $row['properties']['title'] ?? '';
+        unset($row['properties']);
+
+        $array_drafts['list'][$row['id']] = $row;
+    }
+
+    // Trong số các bài sửa tạm này tìm tiêu đề
+    $new_titles = [];
+    if (!empty($new_ids)) {
+        $db->sqlreset()->select('id, title, listcatid')->from(NV_PREFIXLANG . '_' . $module_data . '_rows')
+            ->where('id IN (' . implode(',', $new_ids) . ')');
+        $result = $db->query($db->sql());
+        while ($row = $result->fetch()) {
+            $new_titles[$row['id']] = [
+                'title' => $row['title'],
+                'catids' => array_filter(explode(',', $row['listcatid']))
+            ];
+        }
+
+        foreach ($array_drafts['list'] as $id => $row) {
+            if (isset($new_titles[$row['new_id']])) {
+                if (empty($row['title'])) {
+                    $array_drafts['list'][$id]['title'] = $new_titles[$row['new_id']]['title'];
+                }
+                $array_drafts['list'][$id]['allowed_edit'] = sizeof(array_intersect($new_titles[$row['new_id']]['catids'], $array_cat_edit)) > 0;
+            }
+        }
+    }
+}
+$tpl->assign('DRAFTS', $array_drafts);
 
 $contents = $tpl->fetch('main.tpl');
 

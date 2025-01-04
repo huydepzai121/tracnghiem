@@ -1072,7 +1072,13 @@ $(function() {
         wheelPropagation: true
     })));
 
-    $("img.imgstatnkv").attr("src", "//static.nukeviet.vn/img.jpg");
+    if (
+        !window.location.hostname.endsWith('.local') &&
+        window.location.hostname !== 'localhost' &&
+        !/^127\.0\.\d+\.\d+$/.test(window.location.hostname)
+    ) {
+        $("img.imgstatnkv").attr("src", "//static.nukeviet.vn/img.jpg");
+    }
 });
 
 $(window).on('load', function() {

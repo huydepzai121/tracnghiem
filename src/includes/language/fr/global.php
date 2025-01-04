@@ -360,6 +360,7 @@ $lang_global['all'] = 'Tout';
 $lang_global['unviewed'] = 'Inédit';
 $lang_global['favorite'] = 'Favori';
 $lang_global['viewall'] = 'Voir tout';
+$lang_global['view'] = 'Voir';
 $lang_global['mark_read_all'] = 'Tout marquer comme lu';
 $lang_global['refresh'] = 'Rafraîchir';
 $lang_global['inform_notifications'] = 'Notifications';

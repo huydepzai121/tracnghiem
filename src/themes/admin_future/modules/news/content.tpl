@@ -27,8 +27,11 @@
     data-mdata="{$MODULE_DATA}" data-editor="{if $HAS_EDITOR}1{else}0{/if}"
     data-editor-hometext="{if $HAS_EDITOR and not empty($MCONFIG.htmlhometext)}1{else}0{/if}"
     data-auto-submit="{if $RESTORE_ID and not $IS_SUBMIT}1{else}0{/if}"
+    data-auto-save="{if not empty($MCONFIG.auto_save)}1{else}0{/if}"
     data-is-edit="{if $DATA.mode eq 'edit'}1{else}0{/if}"
     data-id="{$DATA.id}"
+    data-draft-id="{$DATA.draft_id ?? 0}"
+    data-last-data-saved="{$smarty.const.NV_CURRENTTIME}"
     data-notice-empty-alias="{$LANG->getModule('alias_empty_notice')}"
     data-notice-empty-tags="{$LANG->getModule('content_tags_empty')}.{if not empty($MCONFIG.auto_tags)} {$LANG->getModule('content_tags_empty_auto')}.{/if}"
 >
@@ -558,11 +561,13 @@
         </div>
     </div>
     <input type="hidden" value="1" name="save">
+    <input type="hidden" value="{$smarty.const.NV_CHECK_SESSION}" name="checkss">
     <input type="hidden" value="{$ISCOPY}" name="copy">
     <input type="hidden" value="{$DATA.id}" name="id">
     <input type="hidden" value="{$DATA.referer}" name="referer">
     <input type="hidden" value="{$RESTORE_ID}" name="restore">
     <input type="hidden" value="{$RESTORE_HASH}" name="restorehash">
+    <input type="hidden" value="{$DATA.uuid}" name="uuid">
     <div class="hstack gap-2 flex-wrap justify-content-center">
         {if $DATA.status eq 1 and $DATA.id gt 0}
         <button class="btn btn-primary submit-post" type="submit" name="statussave" value="1">{$LANG->getModule('save')}</button>

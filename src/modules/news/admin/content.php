@@ -112,13 +112,18 @@ if ($nv_Request->isset_request('get_article_json', 'post')) {
     nv_jsonOutput($respon);
 }
 
+$is_submit_form = (($nv_Request->get_int('save', 'post') == 1 and $nv_Request->get_title('checkss', 'post', '') === NV_CHECK_SESSION) ? true : false);
+$is_auto_save = ($is_submit_form and $nv_Request->get_int('ajax_content', 'post', 0) == 1) ? true : false;
+
 // Kiểm tra xem đang sửa có bị cướp quyền hay không, cập nhật thêm thời gian chỉnh sửa
-if ($nv_Request->isset_request('id', 'post') and $nv_Request->isset_request('check_edit', 'post') and $nv_Request->get_title('checkss', 'post', '') === NV_CHECK_SESSION) {
+if ($nv_Request->isset_request('id', 'post') and $nv_Request->isset_request('check_edit', 'post') and $is_submit_form) {
     $id = $nv_Request->get_int('id', 'post', 0);
-    $_query = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tmp WHERE id =' . $id);
+    $_query = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tmp WHERE new_id=' . $id . ' AND type=0');
     if ($row_tmp = $_query->fetch()) {
         if ($row_tmp['admin_id'] == $admin_info['admin_id']) {
-            $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tmp SET  time_late=' . NV_CURRENTTIME . ', ip=' . $db->quote($client_info['ip']) . ' WHERE id=' . $id);
+            $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tmp SET
+                time_late=' . NV_CURRENTTIME . ', ip=' . $db->quote($client_info['ip']) . '
+            WHERE id=' . $row_tmp['id']);
         } else {
             $_username = $db->query('SELECT username FROM ' . NV_USERS_GLOBALTABLE . ' WHERE userid =' . $row_tmp['admin_id'])->fetchColumn();
             nv_jsonOutput([
@@ -127,10 +132,6 @@ if ($nv_Request->isset_request('id', 'post') and $nv_Request->isset_request('che
             ]);
         }
     }
-    nv_jsonOutput([
-        'status' => 'success',
-        'mess' => ''
-    ]);
 }
 
 // Lấy keywords từ nội dung bài viết
@@ -233,7 +234,6 @@ $array_imgposition = [
     2 => $nv_Lang->getModule('imgposition_2')
 ];
 $total_news_current = nv_get_mod_countrows();
-$is_submit_form = (($nv_Request->get_int('save', 'post') == 1) ? true : false);
 $restore_id = $nv_Request->get_absint('restore', 'post,get', 0);
 $restore_hash = $nv_Request->get_title('restorehash', 'post,get', '');
 
@@ -294,7 +294,8 @@ $rowcontent = [
     'group_view' => '',
     'localversions' => [],
     'related_ids' => '',
-    'related_pos' => 2
+    'related_pos' => 2,
+    'uuid' => ''
 ];
 
 $page_title = $nv_Lang->getModule('content_add');
@@ -363,6 +364,12 @@ if ($rowcontent['id'] == 0) {
 
     // Không có quyền sửa thì kết thúc
     if (!$check_permission) {
+        if ($is_auto_save) {
+            nv_jsonOutput([
+                'status' => 'not_allowed',
+                'mess' => $nv_Lang->getModule('action_not_allowed')
+            ]);
+        }
         nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
     }
 
@@ -451,10 +458,32 @@ if ($rowcontent['id'] == 0) {
         $currentpath = dirname(NV_UPLOADS_DIR . '/' . $module_upload . '/' . $rowcontent['homeimgfile']);
     }
 
-    // Loại bỏ HTML khỏi giới thiệu ngắn gọn nếu không cho phép HTML
-    if (empty($module_config[$module_name]['htmlhometext'])) {
-        $rowcontent['hometext'] = strip_tags($rowcontent['hometext'], 'br');
+}
+
+// Tiếp tục từ bản nháp
+$draft_id = $nv_Request->get_absint('draft_id', 'get', 0);
+if ($draft_id) {
+    $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_tmp
+    WHERE id=" . $draft_id . " AND type=1 AND admin_id=" . $admin_info['admin_id'];
+    if ($rowcontent['mode'] == 'add') {
+        $sql .= " AND new_id=0";
+    } else {
+        $sql .= " AND new_id=" . $rowcontent['id'];
     }
+    $draft = $db->query($sql)->fetch() ?: [];
+    $draft['properties'] = !empty($draft['properties']) ? json_decode($draft['properties'], true) : [];
+    if (empty($draft['properties']) or !is_array($draft['properties'])) {
+        nv_error404();
+    }
+    $rowcontent = array_merge($rowcontent, $draft['properties']);
+    $rowcontent['uuid'] = $draft['uuid'];
+    $rowcontent['draft_id'] = $draft_id;
+    unset($draft);
+}
+
+// Loại bỏ HTML khỏi giới thiệu ngắn gọn nếu không cho phép HTML
+if (empty($module_config[$module_name]['htmlhometext'])) {
+    $rowcontent['hometext'] = strip_tags($rowcontent['hometext'], 'br');
 }
 $old_rowcontent = $rowcontent;
 
@@ -528,7 +557,7 @@ $tpl->assign('OP', $op);
  * sau đó tiếp tục nhấn submit thì dữ liệu vẫn được lưu
  */
 if ($rowcontent['mode'] == 'edit') {
-    $row_tmp = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tmp WHERE id=' . $rowcontent['id'])->fetch();
+    $row_tmp = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tmp WHERE new_id=' . $rowcontent['id'] . ' AND type=0')->fetch();
     if ($row_tmp) {
         // Xác định người đang sửa
         $_username = $db->query('SELECT username FROM ' . NV_USERS_GLOBALTABLE . ' WHERE userid =' . $row_tmp['admin_id'])->fetchColumn();
@@ -539,7 +568,7 @@ if ($rowcontent['mode'] == 'edit') {
             $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tmp SET
                 time_late=' . NV_CURRENTTIME . ',
                 ip=' . $db->quote($client_info['ip']) . '
-            WHERE id=' . $rowcontent['id']);
+            WHERE id=' . $row_tmp['id']);
         } elseif ($row_tmp['time_late'] < (NV_CURRENTTIME - $global_code_defined['edit_timeout']) or empty($_username)) {
             /*
              * Cho phép sửa nếu:
@@ -551,7 +580,7 @@ if ($rowcontent['mode'] == 'edit') {
                 time_edit=' . NV_CURRENTTIME . ',
                 time_late=' . NV_CURRENTTIME . ',
                 ip=' . $db->quote($client_info['ip']) . '
-            WHERE id=' . $rowcontent['id']);
+            WHERE id=' . $row_tmp['id']);
         } else {
             $link_takeover = '';
             $_authors_lev = $db->query('SELECT lev FROM ' . NV_AUTHORS_GLOBALTABLE . ' WHERE admin_id =' . $row_tmp['admin_id'])->fetchColumn();
@@ -564,7 +593,7 @@ if ($rowcontent['mode'] == 'edit') {
                         time_edit=' . NV_CURRENTTIME . ',
                         time_late=' . NV_CURRENTTIME . ',
                         ip=' . $db->quote($client_info['ip']) . '
-                    WHERE id=' . $rowcontent['id']);
+                    WHERE id=' . $row_tmp['id']);
                     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&id=' . $rowcontent['id'] . '&rand=' . nv_genpass());
                 }
                 $message = $nv_Lang->getModule('dulicate_edit_admin', $rowcontent['title'], $_username, date('H:i d/m/Y', $row_tmp['time_edit']));
@@ -587,9 +616,10 @@ if ($rowcontent['mode'] == 'edit') {
         // Khi bắt đầu sửa bài thì lưu thông tin người sửa
         // Không lưu nếu submit
         $db->query('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_tmp (
-            id, admin_id, time_edit, time_late, ip
+            type, new_id, admin_id, time_edit, time_late, ip
         ) VALUES (
-            ' . $rowcontent['id'] . ', ' . $admin_info['admin_id'] . ', ' . NV_CURRENTTIME . ', ' . NV_CURRENTTIME . ', ' . $db->quote($client_info['ip']) . '
+            0, ' . $rowcontent['id'] . ', ' . $admin_info['admin_id'] . ', ' . NV_CURRENTTIME . ',
+            ' . NV_CURRENTTIME . ', ' . $db->quote($client_info['ip']) . '
         )');
     }
 }
@@ -784,13 +814,6 @@ if ($is_submit_form) {
         $error[] = $nv_Lang->getModule('error_bodytext');
     }
 
-    if (!empty($error)) {
-        // Nếu có lỗi thì chuyển sang trạng thái đăng nháp, cho đến khi nào đủ thông tin mới cho xuất bản
-        $rowcontent['status'] = 4;
-        $error_data = $error;
-        $error = [];
-    }
-
     // Thao tác xử lý bài viết tức thời
     if (!empty($module_config[$module_name]['instant_articles_active'])) {
         $rowcontent['instant_active'] = (int) $nv_Request->get_bool('instant_active', 'post');
@@ -826,6 +849,85 @@ if ($is_submit_form) {
         $related_ids = array_intersect($related_ids, $db->query($sql)->fetchAll(PDO::FETCH_COLUMN));
     }
     $rowcontent['related_ids'] = empty($related_ids) ? '' : implode(',', $related_ids);
+
+    // Xử lý tự động lưu
+    $uuid = $nv_Request->get_title('uuid', 'post', '');
+    if ($is_auto_save) {
+        // Chỉ lưu 30s mỗi lần
+        if (NV_CURRENTTIME - $nv_Request->get_absint('last_data_saved', 'post', 0) < 30) {
+            nv_jsonOutput([
+                'status' => 'not_yet_time',
+                'mess' => 'Not yet time'
+            ]);
+        }
+        // Chỉ lưu nếu có nội dung, hoặc tiêu đề
+        if (empty($rowcontent['title']) and empty($rowcontent['bodyhtml'])) {
+            nv_jsonOutput([
+                'status' => 'not_save',
+                'mess' => 'Not save'
+            ]);
+        }
+        unset($rowcontent['referer'], $rowcontent['uuid'], $rowcontent['internal_authors_old'], $rowcontent['old_listcatid'], $rowcontent['old_status'], $rowcontent['tags_old']);
+
+        if ($rowcontent['mode'] == 'add') {
+            // Lưu mới
+            $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_tmp WHERE uuid=" . $db->quote($uuid) . " AND type=1 AND new_id=0 AND admin_id=" . $admin_info['admin_id'];
+            $tmp = $db->query($sql)->fetch();
+            if (empty($tmp)) {
+                $stmt = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_tmp (
+                    type, new_id, admin_id, time_edit, time_late, ip, uuid, properties
+                ) VALUES (
+                    1, 0, ' . $admin_info['admin_id'] . ', ' . NV_CURRENTTIME . ', ' . NV_CURRENTTIME . ', ' . $db->quote($client_info['ip']) . ', :uuid, :properties
+                )');
+                $stmt->bindParam(':uuid', $uuid, PDO::PARAM_STR);
+                $stmt->bindValue(':properties', json_encode($rowcontent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), PDO::PARAM_STR);
+                $stmt->execute();
+            } else {
+                $stmt = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tmp SET
+                    time_late=' . NV_CURRENTTIME . ',
+                    ip=' . $db->quote($client_info['ip']) . ',
+                    properties= :properties
+                WHERE uuid=' . $db->quote($uuid) . ' AND type=1 AND new_id=0 AND admin_id=' . $admin_info['admin_id']);
+                $stmt->bindValue(':properties', json_encode($rowcontent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), PDO::PARAM_STR);
+                $stmt->execute();
+            }
+        } else {
+            // Sửa bài
+            $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_tmp WHERE new_id=" . $rowcontent['id'] . " AND type=1 AND admin_id=" . $admin_info['admin_id'];
+            $tmp = $db->query($sql)->fetch();
+            if (empty($tmp)) {
+                $stmt = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_tmp (
+                    type, new_id, admin_id, time_edit, time_late, ip, properties
+                ) VALUES (
+                    1, ' . $rowcontent['id'] . ', ' . $admin_info['admin_id'] . ', ' . NV_CURRENTTIME . ', ' . NV_CURRENTTIME . ', ' . $db->quote($client_info['ip']) . ', :properties
+                )');
+                $stmt->bindValue(':properties', json_encode($rowcontent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), PDO::PARAM_STR);
+                $stmt->execute();
+            } else {
+                $stmt = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tmp SET
+                    time_late=' . NV_CURRENTTIME . ',
+                    ip=' . $db->quote($client_info['ip']) . ',
+                    properties= :properties
+                WHERE new_id=' . $rowcontent['id'] . ' AND type=1 AND admin_id=' . $admin_info['admin_id']);
+                $stmt->bindValue(':properties', json_encode($rowcontent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), PDO::PARAM_STR);
+                $stmt->execute();
+            }
+        }
+
+        nv_jsonOutput([
+            'status' => 'success',
+            'mess' => '',
+            'last_data_saved' => NV_CURRENTTIME
+        ]);
+    }
+    $rowcontent['uuid'] = $uuid;
+
+    if (!empty($error)) {
+        // Nếu có lỗi thì chuyển sang trạng thái đăng nháp, cho đến khi nào đủ thông tin mới cho xuất bản
+        $rowcontent['status'] = 4;
+        $error_data = $error;
+        $error = [];
+    }
 
     if (empty($error)) {
         if (!empty($rowcontent['topictext']) and empty($rowcontent['topicid'])) {
@@ -1215,7 +1317,7 @@ if ($is_submit_form) {
                 }
 
                 // Sau khi sửa, tiến hành xóa bản ghi lưu trạng thái sửa trong csdl
-                $db->exec('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tmp WHERE id = ' . $rowcontent['id']);
+                $db->exec('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tmp WHERE new_id=' . $rowcontent['id'] . ' AND type=0');
 
                 // Lưu lịch sử sửa bài viết nếu bật và đây không phải là hành động khôi phục
                 if (!empty($module_config[$module_name]['active_history']) and empty($restore_id)) {
@@ -1333,6 +1435,11 @@ if ($is_submit_form) {
 
             // Lưu lịch sử thay đổi trạng thái của bài viết
             Logs::saveLogStatusPost($rowcontent['id'], $rowcontent['status']);
+
+            // Xóa trạng thái nháp
+            $sql = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_tmp
+            WHERE type=1 AND admin_id=" . $admin_info['admin_id'] . " AND (new_id=" . $rowcontent['id'] . " OR uuid=" . $db->quote($rowcontent['uuid']) . ")";
+            $db->query($sql);
 
             if (!empty($error_data)) {
                 $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&id=' . $rowcontent['id'];
@@ -1470,6 +1577,9 @@ if (!empty($rowcontent['publtime'])) {
 }
 if (!empty($rowcontent['exptime'])) {
     $rowcontent['exp_date'] = nv_u2d_post($rowcontent['exptime']) . ' ' . nv_date('H:i', $rowcontent['exptime']);
+}
+if (empty($rowcontent['uuid'])) {
+    $rowcontent['uuid'] = nv_uuid4();
 }
 
 $tpl->assign('DATA', $rowcontent);

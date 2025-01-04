@@ -4,7 +4,58 @@
 <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/jquery-ui/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/language/jquery.ui.datepicker-{$smarty.const.NV_LANG_INTERFACE}.js"></script>
 <script type="text/javascript" src="{$smarty.const.ASSETS_STATIC_URL}/js/clipboard/clipboard.min.js"></script>
+
+{if $DRAFTS.count gt 0}
+<div class="card border-0 mb-3">
+    <div class="card-header text-bg-info rounded-top-2 d-flex gap-2 justify-content-between align-items-center">
+        <div class="fw-medium"><i class="fa-brands fa-firstdraft"></i> {$LANG->getModule('draft_count', $DRAFTS.count|nformat)}</div>
+        <a href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=drafts" class="btn btn-sm btn-secondary"><i class="fa-solid fa-caret-right"></i> {$LANG->getModule('content_allshow')}</a>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive-lg table-card pb-1">
+            <table class="table table-striped align-middle table-sticky mb-0 list" data-del-confirm="{$LANG->getModule('draft_del_confirm')}">
+                <thead class="text-muted">
+                    <tr>
+                        <th class="text-nowrap" style="width: 50%;">{$LANG->getModule('name')}</th>
+                        <th class="text-nowrap" style="width: 30%;">{$LANG->getModule('post_time')}</th>
+                        <th class="text-nowrap text-center" style="width: 20%;">{$LANG->getModule('function')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach from=$DRAFTS.list key=key item=row}
+                    <tr>
+                        <td>
+                            {$row.title ?: $LANG->getModule('name_empty')}
+                            {if not $row.allowed_edit}
+                            <div class="text-danger small">{$LANG->getModule('draft_not_allowed')}</div>
+                            {/if}
+                        </td>
+                        <td>
+                            {$row.time_late|dformat}
+                        </td>
+                        <td class="text-center">
+                            <div class="hstack gap-1 justify-content-center">
+                                {if $row.allowed_edit}
+                                <a href="{$smarty.const.NV_BASE_ADMINURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$smarty.const.NV_LANG_DATA}&amp;{$smarty.const.NV_NAME_VARIABLE}={$MODULE_NAME}&amp;{$smarty.const.NV_OP_VARIABLE}=content{if not empty($row.new_id)}&amp;id={$row.new_id}{/if}&amp;draft_id={$row.id}" class="btn btn-sm btn-secondary text-nowrap"><i class="fa-solid fa-pencil"></i> {$LANG->getModule('draft_continue')}</a>
+                                {/if}
+                                <button type="button" class="btn btn-sm btn-danger" data-toggle="draft_cancel" data-id="{$row.id}"><i class="fa-solid fa-circle-xmark" data-icon="fa-circle-xmark"></i> {$LANG->getGlobal('cancel')}</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{/if}
+
 <div class="card">
+    {if $DRAFTS.count gt 0}
+    <div class="card-header text-bg-primary rounded-top-2">
+        <div class="fw-medium"><i class="fa-solid fa-newspaper"></i> {$LANG->getModule('all_articles')}</div>
+    </div>
+    {/if}
     <div class="card-body">
         <form method="get" action="{$smarty.const.NV_BASE_ADMINURL}index.php" id="form-search-post">
             <input type="hidden" name="{$smarty.const.NV_LANG_VARIABLE}" value="{$smarty.const.NV_LANG_DATA}">
@@ -31,9 +82,9 @@
                     </select>
                 </div>
                 <div class="flex-grow-0 flex-shrink-1 w-auto">
-                    <label class="form-label d-none d-sm-block">&nbsp;</label>
+                    <label for="submit_search" class="form-label d-none d-sm-block">&nbsp;</label>
                     <div class="d-flex align-items-center">
-                        <button type="submit" class="btn btn-primary text-nowrap me-2"><i class="fa-solid fa-magnifying-glass"></i> {$LANG->getModule('search')}</button>
+                        <button id="submit_search" type="submit" class="btn btn-primary text-nowrap me-2"><i class="fa-solid fa-magnifying-glass"></i> {$LANG->getModule('search')}</button>
                         <div data-bs-toggle="tooltip" data-bs-title="{$LANG->getModule('search_title_adv')}" data-bs-trigger="hover" aria-label="{$LANG->getModule('search_title_adv')}">
                             <button type="button" class="btn btn-secondary text-nowrap" data-bs-toggle="collapse" data-bs-target="#search-adv" aria-expanded="{$SEARCH.adv ? 'true' : 'false'}" aria-controls="search-adv"><i class="fa-solid fa-expand"></i></button>
                         </div>
@@ -63,42 +114,42 @@
                         <label for="element_add_from" class="form-label text-truncate">{$LANG->getModule('content_publ_date')} {$LANG->getModule('from_date_short')}</label>
                         <div class="input-group flex-nowrap">
                             <input type="text" name="add_from" id="element_add_from" value="{$SEARCH.addtime_from}" class="form-control datepicker" aria-describedby="element_add_from_btn" autocomplete="off">
-                            <button class="btn btn-secondary" type="button" id="element_add_from_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('from_date_short')}"><i class="fa-regular fa-calendar"></i></button>
+                            <button class="btn btn-secondary" data-toggle="focusDate" type="button" id="element_add_from_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('from_date_short')}"><i class="fa-regular fa-calendar"></i></button>
                         </div>
                     </div>
                     <div class="col-6 col-lg-3 flex-xxl-fill">
                         <label for="element_add_to" class="form-label text-truncate">{$LANG->getModule('content_publ_date')} {$LANG->getModule('to_date_short')}</label>
                         <div class="input-group flex-nowrap">
                             <input type="text" name="add_to" id="element_add_to" value="{$SEARCH.addtime_to}" class="form-control datepicker" aria-describedby="element_add_to_btn" autocomplete="off">
-                            <button class="btn btn-secondary" type="button" id="element_add_to_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('to_date_short')}"><i class="fa-regular fa-calendar"></i></button>
+                            <button class="btn btn-secondary" data-toggle="focusDate" type="button" id="element_add_to_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('to_date_short')}"><i class="fa-regular fa-calendar"></i></button>
                         </div>
                     </div>
                     <div class="col-6 col-lg-3 flex-xxl-fill">
                         <label for="element_pub_from" class="form-label text-truncate">{$LANG->getModule('search_public_time')} {$LANG->getModule('from_date_short')}</label>
                         <div class="input-group flex-nowrap">
                             <input type="text" name="pub_from" id="element_pub_from" value="{$SEARCH.publtime_from}" class="form-control datepicker" aria-describedby="element_pub_from_btn" autocomplete="off">
-                            <button class="btn btn-secondary" type="button" id="element_pub_from_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('from_date_short')}"><i class="fa-regular fa-calendar"></i></button>
+                            <button class="btn btn-secondary" data-toggle="focusDate" type="button" id="element_pub_from_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('from_date_short')}"><i class="fa-regular fa-calendar"></i></button>
                         </div>
                     </div>
                     <div class="col-6 col-lg-3 flex-xxl-fill">
                         <label for="element_pub_to" class="form-label text-truncate">{$LANG->getModule('search_public_time')} {$LANG->getModule('to_date_short')}</label>
                         <div class="input-group flex-nowrap">
                             <input type="text" name="pub_to" id="element_pub_to" value="{$SEARCH.publtime_to}" class="form-control datepicker" aria-describedby="element_pub_to_btn" autocomplete="off">
-                            <button class="btn btn-secondary" type="button" id="element_pub_to_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('to_date_short')}"><i class="fa-regular fa-calendar"></i></button>
+                            <button class="btn btn-secondary" data-toggle="focusDate" type="button" id="element_pub_to_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('to_date_short')}"><i class="fa-regular fa-calendar"></i></button>
                         </div>
                     </div>
                     <div class="col-6 col-lg-3 flex-xxl-fill">
                         <label for="element_exp_from" class="form-label text-truncate">{$LANG->getModule('content_exp_date')} {$LANG->getModule('from_date_short')}</label>
                         <div class="input-group flex-nowrap">
                             <input type="text" name="exp_from" id="element_exp_from" value="{$SEARCH.exptime_from}" class="form-control datepicker" aria-describedby="element_exp_from_btn" autocomplete="off">
-                            <button class="btn btn-secondary" type="button" id="element_exp_from_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('from_date_short')}"><i class="fa-regular fa-calendar"></i></button>
+                            <button class="btn btn-secondary" data-toggle="focusDate" type="button" id="element_exp_from_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('from_date_short')}"><i class="fa-regular fa-calendar"></i></button>
                         </div>
                     </div>
                     <div class="col-6 col-lg-3 flex-xxl-fill">
                         <label for="element_exp_to" class="form-label text-truncate">{$LANG->getModule('content_exp_date')} {$LANG->getModule('to_date_short')}</label>
                         <div class="input-group flex-nowrap">
                             <input type="text" name="exp_to" id="element_exp_to" value="{$SEARCH.exptime_to}" class="form-control datepicker" aria-describedby="element_exp_to_btn" autocomplete="off">
-                            <button class="btn btn-secondary" type="button" id="element_exp_to_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('to_date_short')}"><i class="fa-regular fa-calendar"></i></button>
+                            <button class="btn btn-secondary" data-toggle="focusDate" type="button" id="element_exp_to_btn" aria-label="{$LANG->getModule('content_publ_date')} {$LANG->getModule('to_date_short')}"><i class="fa-regular fa-calendar"></i></button>
                         </div>
                     </div>
                 </div>
@@ -112,7 +163,7 @@
                 <thead class="text-muted">
                     <tr>
                         <th class="text-nowrap" style="width: 1%;">
-                            <input type="checkbox" data-toggle="checkAll" class="form-check-input m-0 align-middle" aria-label="{$LANG->getGlobal('toggle_checkall')}">
+                            <input type="checkbox" data-toggle="checkAll" name="checkAll[]" class="form-check-input m-0 align-middle" aria-label="{$LANG->getGlobal('toggle_checkall')}">
                         </th>
                         <th class="text-nowrap" style="width: 25%;">
                             <a href="{$BASE_URL_ORDER}{if $ARRAY_ORDER.field neq 'title' or $ARRAY_ORDER.value neq 'desc'}&amp;of=title{if $ARRAY_ORDER.field neq 'title' or empty($ARRAY_ORDER.value)}&amp;ov=asc{else}&amp;ov=desc{/if}{/if}" class="d-flex align-items-center justify-content-between">
@@ -150,7 +201,7 @@
                     {foreach from=$DATA key=key item=row}
                     <tr>
                         <td class="indicator-{$STATUS_INDICATOR[$row.status_id] ?? $STATUS_INDICATOR['----']}">
-                            <input type="checkbox" data-toggle="checkSingle" value="{$row.id}" class="form-check-input m-0 align-middle" aria-label="{$LANG->getGlobal('toggle_checksingle')}"{if $row.is_locked} disabled{/if}>
+                            <input type="checkbox" data-toggle="checkSingle" name="checkSingle[]" value="{$row.id}" class="form-check-input m-0 align-middle" aria-label="{$LANG->getGlobal('toggle_checksingle')}"{if $row.is_locked} disabled{/if}>
                         </td>
                         <td>
                             <div class="text-truncate-2">
@@ -207,7 +258,7 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center">
             <div class="d-flex flex-wrap flex-sm-nowrap align-items-center">
                 <div class="me-2">
-                    <input type="checkbox" data-toggle="checkAll" class="form-check-input m-0 align-middle" aria-label="{$LANG->getGlobal('toggle_checkall')}">
+                    <input type="checkbox" data-toggle="checkAll" name="checkAll[]" class="form-check-input m-0 align-middle" aria-label="{$LANG->getGlobal('toggle_checkall')}">
                 </div>
                 <div class="input-group me-1 my-1">
                     <select id="element_action" class="form-select fw-150" aria-label="{$LANG->getGlobal('select_actions')}" aria-describedby="element_action_btn">

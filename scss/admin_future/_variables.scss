@@ -35,6 +35,7 @@ $h6-font-size: $font-size-base; // 16px
 
 $border-width: 1px;
 $border-color: $gray-200;
+$border-color-translucent: rgba($black, .1);
 $body-color: $gray-600;
 $link-decoration: none;
 $main-bg: #eee;
@@ -136,7 +137,6 @@ $breadcrumb-bg: $white;
 $toast-spacing: 1rem;
 
 // Card
-$card-border-color: var(--bs-border-color);
 $card-box-shadow: 0 0.0625rem 0.125rem rgba($black, .075);
 $card-border-width: 0;
 $card-cap-bg: transparent;

@@ -212,7 +212,17 @@
                         <!-- END: order_articles -->
                     </select></td>
                 </tr>
-
+                <tr>
+                    <th>{LANG.setting_auto_save}</th>
+                    <td>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="1" name="auto_save"{AUTO_SAVE}>
+                                {LANG.setting_auto_save_help}
+                            </label>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>

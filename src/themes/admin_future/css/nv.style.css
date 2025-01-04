@@ -196,7 +196,7 @@
   --bs-border-width: 1px;
   --bs-border-style: solid;
   --bs-border-color: #e5e5e5;
-  --bs-border-color-translucent: rgba(0, 0, 0, 0.175);
+  --bs-border-color-translucent: rgba(0, 0, 0, 0.1);
   --bs-border-radius: 0.1875rem;
   --bs-border-radius-sm: 0.125rem;
   --bs-border-radius-lg: 0.5rem;
@@ -4439,7 +4439,7 @@ textarea.form-control-lg {
   --bs-card-title-color: ;
   --bs-card-subtitle-color: ;
   --bs-card-border-width: 0;
-  --bs-card-border-color: var(--bs-border-color);
+  --bs-card-border-color: var(--bs-border-color-translucent);
   --bs-card-border-radius: var(--bs-border-radius);
   --bs-card-box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.075);
   --bs-card-inner-border-radius: calc(var(--bs-border-radius) - 0);

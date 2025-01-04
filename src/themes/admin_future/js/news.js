@@ -43,6 +43,11 @@ $(function () {
             isRTL: $('html').attr('dir') == 'rtl'
         });
     }
+    // Nút chọn ngày tháng
+    $('[data-toggle="focusDate"]').on('click', function(e) {
+        e.preventDefault();
+        $('input', $(this).parent()).focus();
+    });
 
     // Mở rộng thu gọn tìm kiếm tin tức
     const postAdvBtn = document.getElementById('search-adv');
@@ -994,37 +999,81 @@ $(function () {
             locale: nv_lang_interface
         });
 
-        // Duy trì trạng thái sửa bài đăng mỗi 10s, sau đó thì trạng thái xem như đang mở
-        if (formContent.data('is-edit')) {
-            let timer = 0;
-            function runCheck() {
-                clearTimeout(timer);
+        /**
+         * Định kì gửi dữ liệu lên máy chủ để:
+         * - Duy trì trạng thái sửa bài nếu đang sửa bài mỗi 10s
+         * - Lưu dữ liệu định kì 30s 1 lần, lần đầu sau 2 phút vào viết bài mà có nhập liệu hoặc sửa bài
+         * Không lưu nếu đang tự khôi phục lịch sử
+         */
+        let contentTimer = null;
+        let contentInterval = 0, contentIntervalInit = 0;
+        if (!formContent.data('auto-submit')) {
+            if (formContent.data('is-edit')) {
+                contentInterval = 10000;
+                contentIntervalInit = 10000;
+            } else if (formContent.data('auto-save')) {
+                if (formContent.data('draft-id')) {
+                    contentInterval = 30000;
+                    contentIntervalInit = 30000;
+                } else {
+                    contentInterval = 30000;
+                    contentIntervalInit = 120000;
+                }
+            }
+        }
+
+        if (contentIntervalInit > 0) {
+            function contentRun() {
+                clearTimeout(contentTimer);
+
+                // Cập nhật trình soạn thảo vào textarea ở hometext
+                if (typeof window.nveditor != "undefined" && window.nveditor[formContent.data('mdata') + '_hometext']) {
+                    $('[name="hometext"]', formContent).val(window.nveditor[formContent.data('mdata') + '_hometext'].getData());
+                } else if (typeof CKEDITOR != 'undefined' && CKEDITOR.instances[formContent.data('mdata') + '_hometext']) {
+                    $('[name="hometext"]', formContent).val(CKEDITOR.instances[formContent.data('mdata') + '_hometext'].getData());
+                }
+                // Cập nhật trình soạn thảo vào textarea ở bodyhtml
+                if (typeof window.nveditor != "undefined" && window.nveditor[formContent.data('mdata') + '_bodyhtml']) {
+                    $('[name="bodyhtml"]', formContent).val(window.nveditor[formContent.data('mdata') + '_bodyhtml'].getData());
+                } else if (typeof CKEDITOR != 'undefined' && CKEDITOR.instances[formContent.data('mdata') + '_bodyhtml']) {
+                    $('[name="bodyhtml"]', formContent).val(CKEDITOR.instances[formContent.data('mdata') + '_bodyhtml'].getData());
+                }
+                const formData = new FormData(formContent[0]);
+                formData.append('last_data_saved', formContent.data('last-data-saved'));
+                formData.append('ajax_content', 1);
+
+                if (formContent.data('is-edit')) {
+                    formData.append('check_edit', 1);
+                }
+
                 $.ajax({
-                    type: 'POST',
                     url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=' + nv_func_name + '&nocache=' + new Date().getTime(),
-                    data: {
-                        checkss: $('body').data('checksess'),
-                        id: formContent.data('id'),
-                        check_edit: 1
-                    },
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     dataType: 'json',
                     cache: false,
-                    success: function (respon) {
+                    success: function(respon) {
                         if (respon.status == 'compromised') {
                             // Bị chiếm quyền sửa
                             nvAlert(respon.mess);
                             $('.submit-post', formContent).remove();
                             return;
                         }
-                        timer = setTimeout(runCheck, 10000);
+                        contentTimer = setTimeout(contentRun, contentInterval);
+                        if (respon.status == 'success') {
+                            formContent.data('last-data-saved', respon.last_data_saved);
+                        }
                     },
                     error: function (xhr, text, err) {
                         console.log(xhr, text, err);
-                        timer = setTimeout(runCheck, 10000);
+                        nvToast(err, 'error');
+                        contentTimer = setTimeout(contentRun, contentInterval);
                     }
                 });
             }
-            timer = setTimeout(runCheck, 10000);
+            contentTimer = setTimeout(contentRun, contentIntervalInit);
         }
 
         // Kiểm tra form đăng bài trước khi submit
@@ -1107,6 +1156,9 @@ $(function () {
 
             if (errorCount > 0) {
                 e.preventDefault();
+            } else if (contentTimer) {
+                clearTimeout(contentTimer);
+                contentTimer = null;
             }
         });
         // Gỡ bỏ lỗi đỏ ở chuyên mục khi chọn
@@ -1317,6 +1369,92 @@ $(function () {
             placeholder: iptRelated.data('placeholder')
         });
     }
+
+    // Hủy một bản nháp
+    $('[data-toggle="draft_cancel"]').on('click', function(e) {
+        e.preventDefault();
+        const btn = $(this);
+        const icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        const ctn = btn.closest('.list');
+        nvConfirm(ctn.data('del-confirm'), () => {
+            icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+            $.ajax({
+                type: 'POST',
+                url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=drafts&nocache=' + new Date().getTime(),
+                data: {
+                    delete: $('body').data('checksess'),
+                    id: btn.data('id')
+                },
+                dataType: 'json',
+                cache: false,
+                success: function (respon) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    if (!respon.success) {
+                        nvToast(respon.text, 'error');
+                        return;
+                    }
+                    location.reload();
+                },
+                error: function (xhr, text, err) {
+                    icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                    nvToast(err, 'error');
+                    console.log(xhr, text, err);
+                }
+            });
+        });
+    });
+
+    // Chọn 1/nhiều bản nháp và thực hiện các chức năng
+    $('[data-toggle="actionDrafts"]').on('click', function (e) {
+        e.preventDefault();
+        let btn = $(this);
+        if (btn.is(':disabled')) {
+            return;
+        }
+        let listid = [];
+        $('[data-toggle="checkSingle"]:checked').each(function () {
+            listid.push($(this).val());
+        });
+        if (listid.length < 1) {
+            nvAlert(nv_please_check);
+            return;
+        }
+        let action = $('#element_action').val();
+        const ctn = btn.closest('.list');
+
+        if (action == 'cancel') {
+            nvConfirm(ctn.data('del-confirm'), () => {
+                btn.prop('disabled', true);
+                $('#element_action').prop('disabled', true);
+                $.ajax({
+                    type: 'POST',
+                    url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=drafts&nocache=' + new Date().getTime(),
+                    data: {
+                        delete: $('body').data('checksess'),
+                        listid: listid.join(',')
+                    },
+                    success: function (respon) {
+                        btn.prop('disabled', false);
+                        $('#element_action').prop('disabled', false);
+                        if (!respon.success) {
+                            nvToast(respon.text, 'error');
+                            return;
+                        }
+                        location.reload();
+                    },
+                    error: function (xhr, text, err) {
+                        btn.prop('disabled', false);
+                        $('#element_action').prop('disabled', false);
+                        nvToast(err, 'error');
+                        console.log(xhr, text, err);
+                    }
+                });
+            });
+        }
+    });
 });
 
 $(window).on('load', function() {

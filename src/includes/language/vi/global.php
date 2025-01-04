@@ -360,6 +360,7 @@ $lang_global['all'] = 'Tất cả';
 $lang_global['unviewed'] = 'Chưa đọc';
 $lang_global['favorite'] = 'Yêu thích';
 $lang_global['viewall'] = 'Xem tất cả';
+$lang_global['view'] = 'Xem';
 $lang_global['mark_read_all'] = 'Đánh dấu đọc tất cả';
 $lang_global['refresh'] = 'Làm mới';
 $lang_global['inform_notifications'] = 'Thông báo';

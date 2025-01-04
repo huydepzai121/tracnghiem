@@ -150,6 +150,9 @@ function nv_del_content_module($id)
         $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_author SET numnews = numnews-1 WHERE id IN (SELECT aid FROM ' . NV_PREFIXLANG . '_' . $module_data . '_authorlist WHERE id=' . $id . ')');
         $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_authorlist WHERE id = ' . $id);
 
+        // Xóa bản chỉnh sửa tạm
+        $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tmp WHERE new_id=' . $id);
+
         nv_delete_notification(NV_LANG_DATA, $module_name, 'post_queue', $id);
 
         /*conenct to elasticsearch*/

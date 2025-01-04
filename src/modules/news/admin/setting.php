@@ -66,6 +66,7 @@ if (!empty($savesetting)) {
     $array_config['tags_remind'] = $nv_Request->get_int('tags_remind', 'post', 0);
     $array_config['keywords_tag'] = $nv_Request->get_int('keywords_tag', 'post', 0);
     $array_config['copy_news'] = $nv_Request->get_int('copy_news', 'post', 0);
+    $array_config['auto_save'] = (int) $nv_Request->get_bool('auto_save', 'post', false);
     $array_config['order_articles'] = $nv_Request->get_int('order_articles', 'post', 0);
     $array_config['identify_cat_change'] = $nv_Request->get_int('identify_cat_change', 'post', 0);
     $array_config['active_history'] = (int) $nv_Request->get_bool('active_history', 'post', false);
@@ -231,6 +232,7 @@ $xtpl->assign('AUTO_TAGS', $module_config[$module_name]['auto_tags'] ? ' checked
 $xtpl->assign('TAGS_REMIND', $module_config[$module_name]['tags_remind'] ? ' checked="checked"' : '');
 $xtpl->assign('KEYWORDS_TAG', $module_config[$module_name]['keywords_tag'] ? ' checked="checked"' : '');
 $xtpl->assign('COPY_NEWS', $module_config[$module_name]['copy_news'] ? ' checked="checked"' : '');
+$xtpl->assign('AUTO_SAVE', $module_config[$module_name]['auto_save'] ? ' checked="checked"' : '');
 $xtpl->assign('ELAS_USE', $module_config[$module_name]['elas_use'] ? ' checked="checked"' : '');
 $xtpl->assign('HIDE_AUTHOR', $module_config[$module_name]['hide_author'] ? ' checked="checked"' : '');
 $xtpl->assign('HIDE_INAUTHOR', $module_config[$module_name]['hide_inauthor'] ? ' checked="checked"' : '');
