@@ -143,6 +143,7 @@ $lang_module['autoinstall_error_downloaded'] = 'Lỗi: Không tìm thấy file �
 $lang_module['autoinstall_error_createfile'] = 'Lỗi: không thể lưu đệm danh sách file. Hãy thử CHMOD thư mục tmp';
 $lang_module['autoinstall_error_invalidfile'] = 'Lỗi: File zip không hợp lệ';
 $lang_module['autoinstall_error_check_fail'] = 'Lỗi: Ứng dụng này có cấu trúc không phù hợp và có thể gây nguy hại đến website. Để đảm bảo an toàn, hệ thống từ chối việc tiếp tục cài đặt ứng dụng này';
+$lang_module['autoinstall_error_check_failpass'] = 'Ứng dụng này có cấu trúc không phù hợp và có thể gây nguy hại đến website. Tuy nhiên chế độ không kiểm soát gói tải lên đang bật, vì thế bạn có thể nhấp <strong><a href="#">vào đây</a></strong> để tiến hành giải nén và cài đặt. Bằng việc tiếp tục, bạn chịu hoàn toàn trách nhiệm về việc cài đặt ứng dụng này';
 $lang_module['autoinstall_error_check_warning'] = 'Ứng dụng này có một số tệp tin hiện đã có trên hệ thống. Tiếp tục cài đặt, những tệp tin đó sẽ bị thay thế. Nếu bạn chắc chắn điều này là an toàn, nhấp <strong><a href="#">vào đây</a></strong> để tiến hành giải nén và cài đặt.';
 $lang_module['autoinstall_error_check_success'] = 'Ứng dụng này an toàn với hệ thống của bạn. Nhấp <strong><a href="#">vào đây</a></strong> để tiến hành giải nén và cài đặt.';
 $lang_module['autoinstall_error_forbidden'] = 'Tên ứng dụng bị cấm sử dụng.';
@@ -159,7 +160,7 @@ $lang_module['autoinstall_error_cfg_version'] = 'Phiên bản ứng dụng khôn
 $lang_module['autoinstall_error_cfg_name'] = 'Tên ứng dụng theo loại ứng dụng không đúng hợp chuẩn';
 $lang_module['autoinstall_error_mimetype'] = 'Cảnh báo: Hệ thống không kiểm tra được loại file của các tệp tin sau đây. Nếu chắc chắn là chúng không chứa mã độc, hãy nhấp nút &quot;Bỏ qua cảnh báo&quot;';
 $lang_module['autoinstall_error_mimetype_pass'] = 'Bỏ qua cảnh báo';
-$lang_module['autoinstall_note_invaild'] = 'Vị trí không được phép';
+$lang_module['autoinstall_note_invaild'] = 'Vị trí không hợp lệ';
 $lang_module['autoinstall_note_exists'] = 'Tệp tin đã tồn tại';
 $lang_module['autoinstall_package_processing'] = 'Đang xử lý, vui lòng đợi';
 $lang_module['package'] = 'Đóng gói ứng dụng';
@@ -168,3 +169,5 @@ $lang_module['delele_ext_theme_note_module'] = 'Bạn không thể xóa giao di�
 $lang_module['delele_ext_success'] = 'Đã xóa thành công ứng dụng ra khỏi hệ thống!';
 $lang_module['delele_ext_unsuccess'] = 'Có lỗi trong quá trình xóa!';
 $lang_module['delele_ext_theme_delete_current_theme'] = 'Bạn không thể xóa giao diện hiện tại hệ thống đang sử dụng!';
+$lang_module['uncontrolled_mode_warning'] = 'Chế độ không kiểm soát gói tải lên đang bật. Với chế độ này bạn hoàn toàn tự chịu rủi ro nếu sử dụng các gói mà mình không biết rõ cấu trúc cũng như tính an toàn của nó';
+$lang_module['loose_mode_warning'] = 'Chế độ kiểm soát lỏng lẻo gói tải lên đang bật. Với chế độ này hệ thống chỉ kiểm tra cấu trúc gói, không kiểm tra các tệp bên trong. Bạn cần chắc chắn gói an toàn nếu tiếp tục';

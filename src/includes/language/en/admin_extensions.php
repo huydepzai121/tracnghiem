@@ -143,7 +143,8 @@ $lang_module['autoinstall_error_downloaded'] = 'Error: Could not find file uploa
 $lang_module['autoinstall_error_createfile'] = 'Error: Unable to save file buffer list. Please check back or chmod tmp directory';
 $lang_module['autoinstall_error_invalidfile'] = 'Error: Invalid File zip';
 $lang_module['autoinstall_error_check_fail'] = 'Error: This application does not match the structure and can cause harm to the website. To ensure safety, the system refuses to continue installing this app';
-$lang_module['autoinstall_error_check_warning'] = 'This app has a number of existing files already on your system. Continue the installation, the file will be replaced. If you\'re sure this is safe, click <strong /> <a href="#"> Click here </a>  to proceed with unpacking and installation.';
+$lang_module['autoinstall_error_check_failpass'] = 'This application has an inappropriate structure and may harm the website. However, the uncontrolled upload package mode is enabled, so you can click <strong><a href="#">here</a></strong> to proceed with unpacking and installation. By continuing, you fully assume responsibility for installing this application';
+$lang_module['autoinstall_error_check_warning'] = 'This app has a number of existing files already on your system. Continue the installation, the file will be replaced. If you\'re sure this is safe, click <strong /> <a href="#"> Click here </a>  to proceed with unpacking and installation';
 $lang_module['autoinstall_error_check_success'] = 'This application is safe for your system. Click <strong /> <a href="#"> Click here </a>  to proceed with unpacking and installation.';
 $lang_module['autoinstall_error_forbidden'] = 'Prohibited extension name.';
 $lang_module['autoinstall_error_warning_permission_folder'] = 'Hosting can not create a folder so safe mode on';
@@ -159,7 +160,7 @@ $lang_module['autoinstall_error_cfg_version'] = 'Application version is invalid'
 $lang_module['autoinstall_error_cfg_name'] = 'The application name by incorrect application of the regulation';
 $lang_module['autoinstall_error_mimetype'] = 'Warning: The system does not check the file type of the file follows. If the file to make sure it does not contain malicious code, click the button &quot;Ignore warnings&quot;';
 $lang_module['autoinstall_error_mimetype_pass'] = 'Ignore warnings';
-$lang_module['autoinstall_note_invaild'] = 'Location not allowed';
+$lang_module['autoinstall_note_invaild'] = 'Invalid location';
 $lang_module['autoinstall_note_exists'] = 'The file already exists';
 $lang_module['autoinstall_package_processing'] = 'Processing, please wait';
 $lang_module['package'] = 'Packaged Applications';
@@ -168,3 +169,5 @@ $lang_module['delele_ext_theme_note_module'] = 'You can not delete the theme bec
 $lang_module['delele_ext_success'] = 'Successfully removed the application from the system!';
 $lang_module['delele_ext_unsuccess'] = 'There was an error during deleted!';
 $lang_module['delele_ext_theme_delete_current_theme'] = 'You can not delete the current theme system is used!';
+$lang_module['uncontrolled_mode_warning'] = 'Uncontrolled upload package mode is enabled. With this mode, you fully assume the risk if you use packages that you are not sure about';
+$lang_module['loose_mode_warning'] = 'Loose control upload package mode is enabled. With this mode, the system only checks the package structure, not the files inside. You need to ensure the package is safe if you continue';

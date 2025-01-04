@@ -143,6 +143,7 @@ $lang_module['autoinstall_error_downloaded'] = 'Erreur: Ne trouve pas le fichier
 $lang_module['autoinstall_error_createfile'] = 'Erreur: N\'arrive pas à sauvegarder le nombre de fichier. Verifier-les ou chmod le dossier tmp';
 $lang_module['autoinstall_error_invalidfile'] = 'Erreur: Fichier .zip est incompatible';
 $lang_module['autoinstall_error_check_fail'] = 'Erreur: Application avec structure incompatible et pouvant menacer le site Web. Pour assurer la sécurité, système refuse le fait de continuer l\'installation de cette application';
+$lang_module['autoinstall_error_check_failpass'] = 'Cette application a une structure incompatible et peut menacer le site Web. Cependant, le mode non contrôlé pour les paquets téléchargés est activé, vous pouvez donc cliquer <strong><a href="#">ici</a></strong> pour continuer le déballage et l\'installation. En continuant, vous assumez l\'entière responsabilité de l\'installation de cette application';
 $lang_module['autoinstall_error_check_warning'] = 'Cette application a quelques fichiers existant déjà dans le système. Continuez l\'installation, ces fichiers va être remplacés. Si vous êtes sûrs qu\'ils sont assuré, cliquez <strong><a href="#">Ici</a></strong> pour commencer le déballage et l\'installation.';
 $lang_module['autoinstall_error_check_success'] = 'Cette application est bonne pour votre système. Cliquez <strong><a href="#">Ici</a></strong> pour commencer le déballage et l\'installation.';
 $lang_module['autoinstall_error_forbidden'] = 'Nom d\'extension interdit.';
@@ -159,7 +160,7 @@ $lang_module['autoinstall_error_cfg_version'] = 'Version d\'application incompat
 $lang_module['autoinstall_error_cfg_name'] = 'Nom d\'application selon type d\'application ne respecte pas la règle';
 $lang_module['autoinstall_error_mimetype'] = 'Attention: Le système ne vérifie pas le type du fichier de fichier suit. Si le fichier pour vous assurer qu\'il ne contient pas de code malveillant, cliquez sur le bouton &quot;Ignorer les avertissements&quot;';
 $lang_module['autoinstall_error_mimetype_pass'] = 'Ignorer l\'avertissement';
-$lang_module['autoinstall_note_invaild'] = 'La location interdite';
+$lang_module['autoinstall_note_invaild'] = 'Emplacement non valide';
 $lang_module['autoinstall_note_exists'] = 'Fichier existe déjà';
 $lang_module['autoinstall_package_processing'] = 'Traitement en cours, veuillez patienter';
 $lang_module['package'] = 'Emballer application';
@@ -168,3 +169,5 @@ $lang_module['delele_ext_theme_note_module'] = 'Vous ne pouvez pas supprimer le 
 $lang_module['delele_ext_success'] = 'Suppression des applications du système réussite';
 $lang_module['delele_ext_unsuccess'] = 'Erreur dans la processus de suppression';
 $lang_module['delele_ext_theme_delete_current_theme'] = 'Vous ne pouvez pas effacer les thèmes actuels du système utilisé';
+$lang_module['uncontrolled_mode_warning'] = 'Le mode non contrôlé pour les paquets téléchargés est activé. Avec ce mode, vous assumez entièrement les risques si vous utilisez des paquets dont vous n\'êtes pas sûr';
+$lang_module['loose_mode_warning'] = 'Le mode de contrôle lâche pour les paquets téléchargés est activé. Avec ce mode, le système ne vérifie que la structure du paquet, sans vérifier les fichiers à l\'intérieur. Vous devez vous assurer que le paquet est sûr si vous continuez';

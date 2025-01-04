@@ -21,7 +21,14 @@
                             </div>
                         </form>
                         <div class="mt-3">
+                            {assign var="mode" value=($GCONFIG.extension_upload_mode ?? 0)}
+                            {if $mode eq 2}
+                            <div class="alert alert-danger mb-0" role="alert">{$LANG->getModule('uncontrolled_mode_warning')}</div>
+                            {elseif $mode eq 1}
+                            <div class="alert alert-danger mb-0" role="alert">{$LANG->getModule('loose_mode_warning')}</div>
+                            {else}
                             <i class="fa-solid fa-triangle-exclamation text-warning"></i> {$LANG->getModule('install_package_alert')}
+                            {/if}
                         </div>
                         {/if}
                     </div>

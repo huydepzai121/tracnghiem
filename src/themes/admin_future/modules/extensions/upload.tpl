@@ -51,6 +51,8 @@
         <div class="alert alert-success mb-0" role="alert">{$LANG->getModule('autoinstall_error_check_success')}</div>
         {elseif $INFO.checkresult eq 'warning'}
         <div class="alert alert-warning mb-0" role="alert">{$LANG->getModule('autoinstall_error_check_warning')}</div>
+        {elseif ($GCONFIG.extension_upload_mode ?? 0) eq 2}
+        <div class="alert alert-danger mb-0" role="alert">{$LANG->getModule('autoinstall_error_check_failpass')}</div>
         {else}
         <div class="alert alert-danger mb-0" role="alert">{$LANG->getModule('autoinstall_error_check_fail')}</div>
         {/if}

@@ -22,6 +22,7 @@ $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('OP', $op);
+$tpl->assign('GCONFIG', $global_config);
 
 $filename = NV_ROOTDIR . '/' . NV_TEMP_DIR . '/' . NV_TEMPNAM_PREFIX . 'auto_' . NV_CHECK_SESSION . '.zip';
 
@@ -156,7 +157,7 @@ if ($nv_Request->isset_request('extract', 'get')) {
             $dimiss_mime = $nv_Request->get_title('dismiss', 'get', '') == md5('dismiss' . $filename . NV_CHECK_SESSION) ? true : false;
 
             // Kiểm tra mime các tệp
-            if (!$dimiss_mime) {
+            if (!$dimiss_mime and empty($global_config['extension_upload_mode'])) {
                 $all_ini = [];
 
                 $data = file(NV_ROOTDIR . '/includes/ini/mime.ini');
@@ -543,7 +544,9 @@ if (empty($error)) {
                     $info['checkresult'] = 'fail';
 
                     // Delete file
-                    nv_deletefile($filename);
+                    if (($global_config['extension_upload_mode'] ?? 0) !== 2) {
+                        nv_deletefile($filename);
+                    }
                 }
             }
         }
