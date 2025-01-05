@@ -13,83 +13,141 @@ if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }
 
-//Neu thay doi bat ky gia tri trong file nay ban can vao admin phan cau hinh he thong va luu lai
-//Luu y: Tat ca ten thu muc va file can viet thuong, chi bao gom chu cai, so va dau -, ten file co the bao gom dau _
+/*
+ * Nếu thay đổi bất kỳ giá trị nào trong file này bạn cần vào admin phần cấu hình hệ thống và lưu lại.
+ * Lưu ý:
+ * - Tất cả tên thư mục và file cần viết thường, chỉ bao gồm chữ cái, số và dấu -, tên file có thể bao gồm dấu _.
+ * - Tất cả các giá trị không được chứa kí tự '
+ * - Không chỉnh sửa hoặc thay đổi bất kỳ dòng nào bắt đầu bằng // trong tệp này
+ * Nếu không tuân thủ các quy tắc trên, hệ thống của bạn có thể bị lỗi khi thực hiện cập nhật
+ */
 
-//Ten file config
+// Tên tệp config
+// begin: NV_CONFIG_FILENAME
 define('NV_CONFIG_FILENAME', 'config.php');
+// end
 
-//Ten thu muc admin
+// Thư mục quản trị
+// begin: NV_ADMINDIR
 define('NV_ADMINDIR', 'admin');
+// end
 
-//Ten thu muc luu data
+// Tên thư mục lưu data
+// begin: NV_DATADIR
 define('NV_DATADIR', 'data/config');
+// end
 
-//Thu muc chua cac file logs
+// Thư mục chứa các file logs
+// begin: NV_LOGS_DIR
 define('NV_LOGS_DIR', 'data/logs');
+// end
 
-//Thu muc chua cac file tam thoi
+// Thư mục chứa các file tạm thời
+// begin: NV_TEMP_DIR
 define('NV_TEMP_DIR', 'data/tmp');
+// end
 
-//Ten thu muc cache
+// Tên thư mục cache
+// begin: NV_CACHEDIR
 define('NV_CACHEDIR', 'data/cache');
+// end
 
-//Thu muc chua IP
+// Thư mục chứa IP
+// begin: NV_IP_DIR
 define('NV_IP_DIR', 'data/ip');
+// end
 
-//Thu muc chua certificates SMIME
+// Thư mục chứa certificates SMIME
+// begin: NV_CERTS_DIR
 define('NV_CERTS_DIR', 'data/certs');
+// end
 
-//Thu muc assets
+// Thư mục assets
+// begin: NV_ASSETS_DIR
 define('NV_ASSETS_DIR', 'assets');
+// end
 
-//Ten thu muc editors
+// Tên thư mục editors
 define('NV_EDITORSDIR', NV_ASSETS_DIR . '/editors');
 
-//Thu muc uploads
+// Thư mục uploads
+// begin: NV_UPLOADS_DIR
 define('NV_UPLOADS_DIR', 'uploads');
+// end
 
-//Thu muc uploads banner
+// Thư mục uploads banner
+// begin: NV_BANNER_DIR
 define('NV_BANNER_DIR', 'banners');
+// end
 
-//TDT file tam thoi, toi da 3 ky tu
+// TDT file tạm thời, tối đa 3 ký tự
+// begin: NV_TEMPNAM_PREFIX
 define('NV_TEMPNAM_PREFIX', 'nv_');
+// end
 
-// Ten file error_log
+// Tên file error_log
+// begin: NV_ERRORLOGS_FILENAME
 define('NV_ERRORLOGS_FILENAME', 'error_log');
+// end
 
-// Ten file notice_log
+// Tên file notice_log
+// begin: NV_NOTICELOGS_FILENAME
 define('NV_NOTICELOGS_FILENAME', 'notice_log');
+// end
 
-//duoi cua file log
+// Đuôi của file log
+// begin: NV_LOGS_EXT
 define('NV_LOGS_EXT', 'log');
+// end
 
-//Ten thay the cho bien $name
+// Tên thay thế cho biến $name
+// begin: NV_NAME_VARIABLE
 define('NV_NAME_VARIABLE', 'nv');
+// end
 
-//Ten thay the cho bien $op
+// Tên thay thế cho biến $op
+// begin: NV_OP_VARIABLE
 define('NV_OP_VARIABLE', 'op');
+// end
 
-//Ten thay the cho bien ngon ngu
+// Tên thay thế cho biến ngôn ngữ
+// begin: NV_LANG_VARIABLE
 define('NV_LANG_VARIABLE', 'language');
+// end
 
-//Do nen trang khi bat che do nen
+// Độ nén trang khi bật chế độ nén
+// begin: ZLIB_OUTPUT_COMPRESSION_LEVEL
 define('ZLIB_OUTPUT_COMPRESSION_LEVEL', 6);
+// end
 
-//Thoi gian de tinh online, tinh bang giay, 300 = 5 phut
+// Thời gian để tính online, tính bằng giây, 300 = 5 phút
+// begin: NV_ONLINE_UPD_TIME
 define('NV_ONLINE_UPD_TIME', 300);
+// end
 
-//Thoi gian luu tru referer, 2592000 = 30 ngay
+// Thời gian lưu trữ referer, 2592000 = 30 ngày
+// begin: NV_REF_LIVE_TIME
 define('NV_REF_LIVE_TIME', 2592000);
+// end
 
-//So ky tu toi thieu cua input tim kiem
+// Số ký tự tối thiểu của input tìm kiếm
+// begin: NV_MIN_SEARCH_LENGTH
 define('NV_MIN_SEARCH_LENGTH', 3);
+// end
 
-//So ky tu toi da cua input tim kiem
+// Số ký tự tối đa của input tìm kiếm
+// begin: NV_MAX_SEARCH_LENGTH
 define('NV_MAX_SEARCH_LENGTH', 60);
+// end
 
-//ky tu phan cach trong title
+// Ký tự phân cách trong title
+// begin: NV_TITLEBAR_DEFIS
 define('NV_TITLEBAR_DEFIS', ' - ');
+// end
+
+/*
+ * Các thiết lập bên dưới vui lòng không chỉnh sửa
+ */
 
 //Cac thiet lap trong siteword
 define('NV_SITEWORDS_MIN_WORD_LENGTH', 4);
