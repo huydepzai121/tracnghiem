@@ -47,6 +47,7 @@ class StatisticsTest extends \Codeception\Test\Unit
      * Thống kê giờ trong ngày
      *
      * @group install
+     * @group all
      */
     public function testStatHours()
     {

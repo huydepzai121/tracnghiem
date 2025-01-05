@@ -23,6 +23,7 @@ class UsersCest
      * @param AcceptanceTester $I
      *
      * @group install
+     * @group all
      */
     public function addUserInAdminPanel(AcceptanceTester $I)
     {

@@ -5,6 +5,7 @@ modules:
         - WebDriver:
             url: 'about:blank'
             browser: chrome # 'chrome' or 'firefox'
+            window_size: 1366x768
 
 step_decorators:
     - Codeception\Step\ConditionalAssertion

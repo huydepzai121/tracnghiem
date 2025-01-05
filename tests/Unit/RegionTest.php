@@ -26,6 +26,7 @@ class RegionTest extends \Codeception\Test\Unit
      * Kiểm tra định dạng số
      *
      * @group install
+     * @group all
      */
     public function testNumberFormat()
     {
@@ -50,6 +51,7 @@ class RegionTest extends \Codeception\Test\Unit
      * Kiểm tra định dạng tiền
      *
      * @group install
+     * @group all
      */
     public function testCurrencyFormat()
     {
@@ -74,6 +76,7 @@ class RegionTest extends \Codeception\Test\Unit
      * Kiểm tra định dạng ngày
      *
      * @group install
+     * @group all
      */
     public function testDateFormat()
     {
@@ -87,6 +90,7 @@ class RegionTest extends \Codeception\Test\Unit
      * Kiểm tra chuyển get date thành timestamp
      *
      * @group install
+     * @group all
      */
     public function testD2UGet()
     {
@@ -110,6 +114,7 @@ class RegionTest extends \Codeception\Test\Unit
      * Kiểm tra chuyển post date thành timestamp
      *
      * @group install
+     * @group all
      */
     public function testD2UPost()
     {
@@ -133,6 +138,7 @@ class RegionTest extends \Codeception\Test\Unit
      * Kiểm tra chuyển timestamp thành get date
      *
      * @group install
+     * @group all
      */
     public function testU2DGet()
     {
@@ -144,6 +150,7 @@ class RegionTest extends \Codeception\Test\Unit
      * Kiểm tra chuyển timestamp thành post date
      *
      * @group install
+     * @group all
      */
     public function testU2DPost()
     {

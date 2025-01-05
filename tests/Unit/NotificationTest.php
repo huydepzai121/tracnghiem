@@ -26,6 +26,7 @@ class NotificationTest extends \Codeception\Test\Unit
      * Kiểm tra lưu thông báo vào CSDL
      *
      * @group install
+     * @group all
      */
     public function testInsertNotification()
     {

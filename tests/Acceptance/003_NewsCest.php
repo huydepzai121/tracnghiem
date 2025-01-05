@@ -23,6 +23,7 @@ class NewsAutoTagsCest
      * @param AcceptanceTester $I
      *
      * @group install
+     * @group all
      */
     public function activeAutoTags(AcceptanceTester $I)
     {
@@ -42,6 +43,7 @@ class NewsAutoTagsCest
      * @param AcceptanceTester $I
      *
      * @group install
+     * @group all
      */
     public function postNews(AcceptanceTester $I)
     {
@@ -55,11 +57,13 @@ class NewsAutoTagsCest
         $I->see('Thêm bài viết');
 
         $I->fillField(['name' => 'title'], $title);
-        $I->checkOption('[name="catids[]"][value="1"]');
+        //$I->checkOption('[name="catids[]"][value="1"]');
+        $I->click('label[for="catid_1"]');
 
         $I->executeJS("window.nveditor.news_bodyhtml.setData('" . $content . "');");
 
-        $I->click('[name="status1"]');
+        //$I->click('[name="status1"]');
+        $I->executeJS('document.querySelector("[name=\"status1\"]").click();');
         $I->waitForText('Đã ghi dữ liệu thành công', 5);
     }
 }

@@ -23,6 +23,7 @@ class AdminLoginCest
      * @param AcceptanceTester $I
      *
      * @group install
+     * @group all
      */
     public function login(AcceptanceTester $I)
     {

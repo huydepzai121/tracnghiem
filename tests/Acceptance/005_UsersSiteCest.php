@@ -27,6 +27,7 @@ class UsersSiteCest
      * @link https://github.com/nukeviet/nukeviet/issues/3807
      *
      * @group users
+     * @group all
      */
     public function testErrorUrlEditInfo(AcceptanceTester $I)
     {

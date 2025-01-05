@@ -94,6 +94,7 @@ If you want to test according to specific needs, use the command:
 ```bash
 php vendor/bin/codecept run -g install
 php vendor/bin/codecept run -g users
+php vendor/bin/codecept run -g all
 ...
 ```
 
