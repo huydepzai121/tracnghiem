@@ -1,7 +1,7 @@
 # Introduction about NukeViet
-NukeViet is the first opensource CMS in Vietnam. The lastest version - NukeViet 4 coding ground up support lastest web technologies, include reponsive web design (use HTML 5, CSS 3, Composer, XTemplate), jQuery, Ajax...) enables you to build websites and online applications rapidly.
+NukeViet is the first opensource CMS in Vietnam. The lastest version - NukeViet 5 coding ground up support lastest web technologies, include reponsive web design (use HTML 5, CSS 3, Composer, Smarty), jQuery, Ajax...) enables you to build websites and online applications rapidly.
 
-With it own core libraries built in, NukeViet 4 is cross platforms and frameworks independent. By basic knowledge of PHP and MySQL, you can easily extend NukeViet for your purposes.
+With it own core libraries built in, NukeViet 5 is cross platforms and frameworks independent. By basic knowledge of PHP and MySQL, you can easily extend NukeViet for your purposes.
 
 NukeViet core is simply but powerful. It supports abstract modules which can be duplicate. So, it helps you create automatically many modules without any line of code from existing abstract modules.
 
@@ -32,7 +32,7 @@ Detailed information about Nukeviet at Wikipedia Encyclopedia: http://vi.wikiped
 
 **Next step:**
 
-Please see the [user manual](https://wiki.nukeviet.vn/nukeviet4) for more information.
+Please see the [user manual](https://wiki.nukeviet.vn/nukeviet5) for more information.
 
 ### For developers
 
@@ -52,7 +52,7 @@ Get the source code:
 ```bash
 git clone https://github.com/nukeviet/nukeviet.git
 cd nukeviet
-git checkout nukeviet4.6
+git checkout nukeviet5.0
 ```
 
 Install the necessary libraries:
@@ -101,11 +101,13 @@ php vendor/bin/codecept run -g all
 We offer different groups of needs as follows:
 
 - `install` serving system installation tasks.
+- `install-only` only test the installation.
 - `users` functional groups for logged-in users.
+- `all` test everything.
 
 **Next step:**
 
-Please see the [technical manual](https://wiki.nukeviet.vn/technical_manual4) for more information.
+Please see the [technical manual](https://wiki.nukeviet.vn/technical_manual5) for more information.
 
 ## Licensing
 NukeViet is released under GNU/GPL version 2 or any later version.

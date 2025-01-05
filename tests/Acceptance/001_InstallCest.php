@@ -70,6 +70,7 @@ class InstallCest
      * @param AcceptanceTester $I
      *
      * @group install
+     * @group install-only
      * @group all
      */
     public function installStep1(AcceptanceTester $I)
