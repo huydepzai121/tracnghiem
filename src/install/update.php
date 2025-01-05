@@ -227,7 +227,7 @@ class NvUpdate
     }
 
     /**
-     * NvUpdate::move_file()
+     * Di chuyển các tệp thay đổi về thư mục cơ sở
      *
      * @param mixed $nv_update_config
      * @param mixed $files
@@ -290,6 +290,36 @@ class NvUpdate
                     $logs_status[] = true;
                 }
                 $cp .= $p . '/';
+            }
+        }
+
+        // Chỉnh sửa nội dung trong tệp /update/includes/constants.php nếu có cho khớp với các hằng trên máy chủ đã định nghĩa
+        if (file_exists(NV_ROOTDIR . '/install/update/includes/constants.php')) {
+            $error = '';
+            $constants = preg_replace_callback('/\/\/[ \t]+begin\:[ \t]*([A-Z_][A-Z0-9_]*)(.*?)\/\/[ \t]+end/s', function ($m) use (&$error) {
+                if (!defined($m[1])) {
+                    return $m[0];
+                }
+                $const_type = gettype(constant($m[1]));
+                if ($const_type == 'boolean') {
+                    // Hằng kiểu true false
+                    return "// begin: " . $m[1] . "\ndefine('" . $m[1] . "', " . (constant($m[1]) ? 'true' : 'false') . ");\n// end";
+                } elseif ($const_type == 'integer' or $const_type == 'double' or $const_type == 'float') {
+                    // Hằng kiểu số
+                    return "// begin: " . $m[1] . "\ndefine('" . $m[1] . "', " . constant($m[1]) . ");\n// end";
+                } elseif ($const_type == 'string') {
+                    // Hằng kiểu chuỗi
+                    return "// begin: " . $m[1] . "\ndefine('" . $m[1] . "', '" . str_replace("'", "\'", constant($m[1])) . "');\n// end";
+                }
+                // Không xác định được kiểu, trả về mặc định
+                return $m[0];
+            }, file_get_contents(NV_ROOTDIR . '/install/update/includes/constants.php'));
+            if (!empty($error)) {
+                return $error;
+            }
+            $check = file_put_contents(NV_ROOTDIR . '/install/update/includes/constants.php', $constants, LOCK_EX);
+            if ($check === false) {
+                return $this->lang->getModule('file_not_writable', 'install/update/includes/constants.php');
             }
         }
 
@@ -1534,9 +1564,6 @@ if ($nv_update_config['step'] == 1) {
 
             $ftp->close();
             exit('OK|' . $ftp_root);
-
-            $ftp->close();
-            exit('ERROR|' . $nv_Lang->getModule('ftp_error_detect_root'));
         }
 
         // Danh sach cac file con lai
