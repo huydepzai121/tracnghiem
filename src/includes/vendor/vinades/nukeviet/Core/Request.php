@@ -223,7 +223,7 @@ class Request
     private $allowNullOriginIps = [];
 
     /**
-     * @since 4.6.00
+     * @since 5.0.00
      */
     private $autoACAO = false;
     private $nat_ports = [];

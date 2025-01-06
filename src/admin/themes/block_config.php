@@ -58,7 +58,7 @@ if ($module == 'theme' and (preg_match($global_config['check_theme'], $selectthe
 
 /*
  * Đọc lấy tên hàm xử lý, data và ngôn ngữ của block nếu có tệp config
- * đọc cả tệp xml (chuẩn cũ) và json (chuẩn mới từ 4.6.00) theo thứ tự json ưu tiên hơn,
+ * đọc cả tệp xml (chuẩn cũ) và json (chuẩn mới từ 5.0.00) theo thứ tự json ưu tiên hơn,
  * nội dung trong json nếu có sẽ đè trong xml
  */
 $function_name = '';
