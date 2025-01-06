@@ -73,7 +73,8 @@ if (!$ip_exclusion) {
             echo $tpl->fetch('flood_blocker.tpl');
             include NV_ROOTDIR . '/includes/footer.php';
         }
-        trigger_error($nv_Lang->getGlobal('flood_info1'), 256);
+        $headers = ['Retry-After: ' . $flb->flood_block_time];
+        nv_info_die($nv_Lang->getGlobal('flood_page_title'), $nv_Lang->getGlobal('flood_page_title'), $nv_Lang->getGlobal('flood_info1'), 429, '', '', '', '', $headers);
     }
 
     unset($rules, $flb);
