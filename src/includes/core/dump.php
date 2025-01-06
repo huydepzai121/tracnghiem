@@ -14,11 +14,11 @@ if (!defined('NV_MAINFILE')) {
 }
 
 /**
- * dumpsave
- *
+ * Dumpsave class
+ * @package dumpsave
  * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2021 VINADES.,JSC. All rights reserved
- * @version 4.5.00
+ * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
+ * @version 5.x
  * @access public
  */
 class dumpsave

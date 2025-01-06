@@ -43,7 +43,7 @@ function updateFile($file)
     $content = file_get_contents($file);
 
     $newContent = preg_replace_callback('/\/\*[ ]*\*[\r\n]+(.*?)\*\//s', function ($matches) use ($relativePath, $defaultBanner) {
-        if (stripos($matches[1], 'NukeViet') === false or stripos($matches[1], '@Copyright') === false) {
+        if (stripos($matches[1], 'VINADES') === false or stripos($matches[1], '@Copyright') === false) {
             // Không phải đoạn banner của NukeViet thì bỏ qua
             return $matches[0];
         }
@@ -82,7 +82,7 @@ function updateFile($file)
                 } elseif ($annotations == 'package') {
                     $classDoc = true;
                 } elseif ($annotations == 'version') {
-                    $checkNukeVietStructre++;
+                    //$checkNukeVietStructre++;
                     $line = '5.x';
                 } elseif ($annotations == 'author') {
                     $checkNukeVietStructre++;
@@ -98,7 +98,7 @@ function updateFile($file)
             }
         }
         // Case không có version, author, hoặc copyright => không phải banner NukeViet
-        if ($checkNukeVietStructre < 3 and !$oldStructreDetected) {
+        if ($checkNukeVietStructre < 2 and !$oldStructreDetected) {
             return $matches[0];
         }
 
