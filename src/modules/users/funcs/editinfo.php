@@ -376,6 +376,8 @@ if ((int) $row['safemode'] > 0) {
             ]);
         }
 
+        nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('safe_deactivate'), $client_info['ip'] . ' | ' . $edit_userid, $user_info['userid']);
+
         $stmt = $db->prepare('UPDATE ' . NV_MOD_TABLE . " SET safemode=0, safekey='', last_update=" . NV_CURRENTTIME . ' WHERE userid=' . $edit_userid);
         $stmt->execute();
 
@@ -621,6 +623,8 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
         $array_data['first_name'] = !empty($row['first_name']) ? $row['first_name'] : $row['username'];
     }
 
+    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('edit_title'), $client_info['ip'] . ' | ' . $edit_userid, $user_info['userid']);
+
     if ($array_data['editcensor'] and !defined('ACCESS_EDITUS') and !defined('NV_IS_MODADMIN')) {
         // Lưu thông tin và thông báo kiểm duyệt
         if (empty($array_data['awaitinginfo'])) {
@@ -682,6 +686,8 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
         $langinterface = '';
     }
     if ($langinterface != $row['language']) {
+        nv_insert_logs(NV_LANG_DATA, $module_name, 'Change langinterface', $client_info['ip'] . ' | ' . $edit_userid, $user_info['userid']);
+
         $stmt = $db->prepare('UPDATE ' . NV_MOD_TABLE . ' SET language= :language WHERE userid=' . $edit_userid);
         $stmt->bindParam(':language', $langinterface, PDO::PARAM_STR);
         $stmt->execute();
@@ -716,6 +722,8 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
             ]);
         }
     }
+
+    nv_insert_logs(NV_LANG_DATA, $module_name, 'Change username', $client_info['ip'] . ' | ' . $nv_username . ' | ' . $edit_userid, $user_info['userid']);
 
     $md5_username = nv_md5safe($nv_username);
 
@@ -869,6 +877,8 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
 
         $nv_Request->unset_request('verifykey', 'session');
 
+        nv_insert_logs(NV_LANG_DATA, $module_name, 'Change email', $client_info['ip'] . ' | ' . $nv_email . ' | ' . $edit_userid, $user_info['userid']);
+
         $stmt = $db->prepare('UPDATE ' . NV_MOD_TABLE . ' SET email=:email, email_verification_time=' . NV_CURRENTTIME . ', last_update=' . NV_CURRENTTIME . ' WHERE userid=' . $edit_userid);
         $stmt->bindParam(':email', $nv_email, PDO::PARAM_STR);
         $stmt->execute();
@@ -955,6 +965,8 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
         ]);
     }
 
+    nv_insert_logs(NV_LANG_DATA, $module_name, 'Change password', $client_info['ip'] . ' | ' . $edit_userid, $user_info['userid']);
+
     $re_password = $crypt->hash_password($new_password, $global_config['hashprefix']);
 
     $stmt = $db->prepare('UPDATE ' . NV_MOD_TABLE . ' SET password= :password, pass_creation_time=' . NV_CURRENTTIME . ', pass_reset_request=0, last_update=' . NV_CURRENTTIME . ' WHERE userid=' . $edit_userid);
@@ -1018,6 +1030,8 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
         ]);
     }
 
+    nv_insert_logs(NV_LANG_DATA, $module_name, 'Change question', $client_info['ip'] . ' | ' . $edit_userid, $user_info['userid']);
+
     $stmt = $db->prepare('UPDATE ' . NV_MOD_TABLE . ' SET question= :question, answer= :answer, last_update=' . NV_CURRENTTIME . ' WHERE userid=' . $edit_userid);
     $stmt->bindParam(':question', $array_data['question'], PDO::PARAM_STR);
     $stmt->bindParam(':answer', $array_data['answer'], PDO::PARAM_STR);
@@ -1044,6 +1058,8 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
     foreach ($openid_del as $o) {
         [$opid, $server] = explode('_', $o, 2);
         if (!(!empty($user_info['openid_server']) and $user_info['openid_server'] == $server and !empty($user_info['current_openid'] and $user_info['current_openid'] == $opid))) {
+            nv_insert_logs(NV_LANG_DATA, $module_name, 'Delete oauth', $client_info['ip'] . ' | ' . $edit_userid . ' | ' . $server, $user_info['userid']);
+
             $stmt = $db->prepare('DELETE FROM ' . NV_MOD_TABLE . '_openid WHERE openid=:openid AND opid=:opid');
             $stmt->bindParam(':openid', $server, PDO::PARAM_STR);
             $stmt->bindParam(':opid', $opid, PDO::PARAM_STR);
@@ -1323,6 +1339,8 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
             'mess' => $nv_Lang->getModule('verifykey_error')
         ]);
     }
+
+    nv_insert_logs(NV_LANG_DATA, $module_name, 'Activate safemode', $client_info['ip'] . ' | ' . $edit_userid, $user_info['userid']);
 
     $stmt = $db->prepare('UPDATE ' . NV_MOD_TABLE . ' SET safemode=1, safekey= :safekey, last_update=' . NV_CURRENTTIME . ' WHERE userid=' . $edit_userid);
     $stmt->bindParam(':safekey', $row['safekey'], PDO::PARAM_STR);
