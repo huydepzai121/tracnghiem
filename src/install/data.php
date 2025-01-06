@@ -30,92 +30,93 @@ $sql_create_table[] = 'INSERT INTO ' . NV_AUTHORS_GLOBALTABLE . "_module (mid, m
 $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_upload_dir (did, dirname, time, thumb_type, thumb_width, thumb_height, thumb_quality) VALUES ('-1', '', 0, 3, 100, 150, 90)";
 $sql_create_table[] = 'UPDATE ' . $db_config['prefix'] . "_upload_dir SET did = '0' WHERE did = '-1'";
 
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'admin_theme', 'admin_default')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'online_upd', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'statistic', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'site_phone', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'googleAnalyticsID', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'googleAnalyticsSetDomainName', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'googleAnalyticsMethod', 'classic')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'googleAnalytics4ID', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'searchEngineUniqueID', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'zaloOfficialAccountID', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'zaloAppID', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'zaloAppSecretKey', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'zaloOAAccessToken', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'zaloOARefreshToken', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'zaloOAAccessTokenTime', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'zaloOASecretKey', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'metaTagsOgp', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'pageTitleMode', 'pagetitle')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'description_length', '170')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_unickmin', '" . $global_config['nv_unickmin'] . "')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_unickmax', '" . $global_config['nv_unickmax'] . "')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_upassmin', '" . $global_config['nv_upassmin'] . "')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_upassmax', '" . $global_config['nv_upassmax'] . "')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'dir_forum', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_unick_type', '" . $global_config['nv_unick_type'] . "')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_upass_type', '" . $global_config['nv_upass_type'] . "')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'allowmailchange', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'allowuserpublic', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'allowquestion', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'allowloginchange', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'allowuserlogin', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'allowuserloginmulti', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'allowuserreg', '2')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'is_user_forum', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'openid_servers', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'openid_processing', 'connect,create,auto')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'user_check_pass_time', '1800')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'auto_login_after_reg', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'email_dot_equivalent', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'email_plus_equivalent', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'whoviewuser', '2')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'ssl_https', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'facebook_client_id', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'facebook_client_secret', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'google_client_id', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'google_client_secret', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'referer_blocker', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'private_site', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'max_user_admin', 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'max_user_number', 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'captcha_area', 'r,m,p')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'captcha_type', 'captcha')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . ' (lang, module, config_name, config_value) VALUES (\'sys\', \'site\', \'nv_csp\', \'{"default-src":{"self":1},"script-src":{"self":1,"unsafe-inline":1,"unsafe-eval":1,"hosts":["*.google.com","*.google-analytics.com","*.googletagmanager.com","*.gstatic.com","*.facebook.com","*.facebook.net","*.twitter.com","*.zalo.me","*.zaloapp.com","*.tawk.to","*.cloudflareinsights.com"]},"style-src":{"self":1,"data":1,"unsafe-inline":1,"hosts":["*.google.com","*.googleapis.com","*.tawk.to"]},"img-src":{"self":1,"data":1,"hosts":["*.twitter.com","*.google.com","*.googleapis.com","*.google-analytics.com","*.gstatic.com","*.facebook.com","tawk.link","*.tawk.to","static.nukeviet.vn"]},"font-src":{"self":1,"data":1,"hosts":["*.googleapis.com","*.gstatic.com","*.tawk.to"]},"connect-src":{"self":1,"hosts":["*.google-analytics.com","*.zalo.me","*.tawk.to","wss:\/\/*.tawk.to"]},"media-src":{"self":1,"hosts":["*.tawk.to"]},"frame-src":{"self":1,"hosts":["*.google.com","*.youtube.com","*.facebook.com","*.facebook.net","*.twitter.com","*.zalo.me","*.live.com"]},"form-action":{"self":1,"hosts":["*.google.com"]}}\')';
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_csp_act', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_csp_script_nonce', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_rp', 'no-referrer-when-downgrade, strict-origin-when-cross-origin')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_rp_act', '1')";
-$sql_create_table[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_pp', 'accelerometer=(self), autoplay=(self \"https://youtube.com\" \"https://www.youtube.com\" \"https://*.youtube.com\"), camera=(self), display-capture=(self), encrypted-media=(self), fullscreen=(self \"https://youtube.com\" \"https://www.youtube.com\" \"https://*.youtube.com\"), gamepad=(self), geolocation=(self), gyroscope=(self), hid=(self), identity-credentials-get=(self), idle-detection=(self), local-fonts=(self), magnetometer=(self), microphone=(self), midi=(self), otp-credentials=(self), payment=(self), picture-in-picture=(self \"https://youtube.com\" \"https://www.youtube.com\" \"https://*.youtube.com\"), publickey-credentials-get=(self), screen-wake-lock=(self), serial=(self), storage-access=(self), usb=(self), web-share=(self), window-management=(self), xr-spatial-tracking=(self)')";
-$sql_create_table[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_pp_act', '1')";
-$sql_create_table[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_fp', 'accelerometer \'self\'; autoplay \'self\' https://youtube.com https://www.youtube.com; camera \'self\'; display-capture \'self\'; encrypted-media \'self\'; fullscreen \'self\' https://youtube.com https://www.youtube.com; gamepad \'self\'; geolocation \'self\'; gyroscope \'self\'; hid \'self\'; identity-credentials-get \'self\'; idle-detection \'self\'; local-fonts \'self\'; magnetometer \'self\'; microphone \'self\'; midi \'self\'; otp-credentials \'self\'; payment \'self\'; picture-in-picture \'self\' https://youtube.com https://www.youtube.com; publickey-credentials-get \'self\'; screen-wake-lock \'self\'; serial \'self\'; storage-access \'self\'; usb \'self\'; web-share \'self\'; window-management \'self\'; xr-spatial-tracking \'self\'')";
-$sql_create_table[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'nv_fp_act', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'pass_timeout', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'oldpass_num', '5')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'send_pass', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'login_name_type', 'username')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'remove_2step_method', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'remove_2step_allow', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'ogp_image', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'cronjobs_last_time', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'cronjobs_interval', '5')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'cronjobs_launcher', 'system')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'inform_active', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'inform_default_exp', '604800')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'inform_exp_del', '604800')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'inform_refresh_time', '30')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'inform_max_characters', '200')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'inform_numrows', '10')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'over_capacity', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'show_folder_size', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'sitelinks_search_box_schema', '1')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'organization_logo', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'breadcrumblist', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'localbusiness', '0')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'google_tag_manager', '')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'thumb_max_width', '350')";
-$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', 'thumb_max_height', '350')";
+$sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES
+('sys', 'site', 'admin_theme', 'admin_default'),
+('sys', 'site', 'online_upd', '1'),
+('sys', 'site', 'statistic', '1'),
+('sys', 'site', 'site_phone', ''),
+('sys', 'site', 'googleAnalyticsID', ''),
+('sys', 'site', 'googleAnalyticsSetDomainName', '0'),
+('sys', 'site', 'googleAnalyticsMethod', 'classic'),
+('sys', 'site', 'googleAnalytics4ID', ''),
+('sys', 'site', 'searchEngineUniqueID', ''),
+('sys', 'site', 'zaloOfficialAccountID', ''),
+('sys', 'site', 'zaloAppID', ''),
+('sys', 'site', 'zaloAppSecretKey', ''),
+('sys', 'site', 'zaloOAAccessToken', ''),
+('sys', 'site', 'zaloOARefreshToken', ''),
+('sys', 'site', 'zaloOAAccessTokenTime', '0'),
+('sys', 'site', 'zaloOASecretKey', ''),
+('sys', 'site', 'metaTagsOgp', '1'),
+('sys', 'site', 'pageTitleMode', 'pagetitle'),
+('sys', 'site', 'description_length', '170'),
+('sys', 'site', 'nv_unickmin', '" . $global_config['nv_unickmin'] . "'),
+('sys', 'site', 'nv_unickmax', '" . $global_config['nv_unickmax'] . "'),
+('sys', 'site', 'nv_upassmin', '" . $global_config['nv_upassmin'] . "'),
+('sys', 'site', 'nv_upassmax', '" . $global_config['nv_upassmax'] . "'),
+('sys', 'site', 'dir_forum', ''),
+('sys', 'site', 'nv_unick_type', '" . $global_config['nv_unick_type'] . "'),
+('sys', 'site', 'nv_upass_type', '" . $global_config['nv_upass_type'] . "'),
+('sys', 'site', 'allowmailchange', '1'),
+('sys', 'site', 'allowuserpublic', '1'),
+('sys', 'site', 'allowquestion', '0'),
+('sys', 'site', 'allowloginchange', '0'),
+('sys', 'site', 'allowuserlogin', '1'),
+('sys', 'site', 'allowuserloginmulti', '0'),
+('sys', 'site', 'allowuserreg', '2'),
+('sys', 'site', 'is_user_forum', '0'),
+('sys', 'site', 'openid_servers', ''),
+('sys', 'site', 'openid_processing', 'connect,create,auto'),
+('sys', 'site', 'user_check_pass_time', '1800'),
+('sys', 'site', 'auto_login_after_reg', '1'),
+('sys', 'site', 'email_dot_equivalent', '1'),
+('sys', 'site', 'email_plus_equivalent', '1'),
+('sys', 'site', 'whoviewuser', '2'),
+('sys', 'site', 'ssl_https', '0'),
+('sys', 'site', 'facebook_client_id', ''),
+('sys', 'site', 'facebook_client_secret', ''),
+('sys', 'site', 'google_client_id', ''),
+('sys', 'site', 'google_client_secret', ''),
+('sys', 'site', 'referer_blocker', '1'),
+('sys', 'site', 'private_site', '0'),
+('sys', 'site', 'max_user_admin', 0),
+('sys', 'site', 'max_user_number', 0),
+('sys', 'site', 'captcha_area', 'r,m,p'),
+('sys', 'site', 'captcha_type', 'captcha'),
+('sys', 'site', 'nv_csp', '{\"default-src\":{\"self\":1},\"script-src\":{\"self\":1,\"unsafe-inline\":1,\"unsafe-eval\":1,\"hosts\":[\"*.google.com\",\"*.google-analytics.com\",\"*.googletagmanager.com\",\"*.gstatic.com\",\"*.facebook.com\",\"*.facebook.net\",\"*.twitter.com\",\"*.zalo.me\",\"*.zaloapp.com\",\"*.tawk.to\",\"*.cloudflareinsights.com\"]},\"style-src\":{\"self\":1,\"data\":1,\"unsafe-inline\":1,\"hosts\":[\"*.google.com\",\"*.googleapis.com\",\"*.tawk.to\"]},\"img-src\":{\"self\":1,\"data\":1,\"hosts\":[\"*.twitter.com\",\"*.google.com\",\"*.googleapis.com\",\"*.google-analytics.com\",\"*.gstatic.com\",\"*.facebook.com\",\"tawk.link\",\"*.tawk.to\",\"static.nukeviet.vn\"]},\"font-src\":{\"self\":1,\"data\":1,\"hosts\":[\"*.googleapis.com\",\"*.gstatic.com\",\"*.tawk.to\"]},\"connect-src\":{\"self\":1,\"hosts\":[\"*.google-analytics.com\",\"*.zalo.me\",\"*.tawk.to\",\"wss:\\/\\/*.tawk.to\"]},\"media-src\":{\"self\":1,\"hosts\":[\"*.tawk.to\"]},\"frame-src\":{\"self\":1,\"hosts\":[\"*.google.com\",\"*.youtube.com\",\"*.facebook.com\",\"*.facebook.net\",\"*.twitter.com\",\"*.zalo.me\",\"*.live.com\"]},\"form-action\":{\"self\":1,\"hosts\":[\"*.google.com\"]}}'),
+('sys', 'site', 'nv_csp_act', '0'),
+('sys', 'site', 'nv_csp_script_nonce', '0'),
+('sys', 'site', 'nv_rp', 'no-referrer-when-downgrade, strict-origin-when-cross-origin'),
+('sys', 'site', 'nv_rp_act', '1'),
+('sys', 'site', 'nv_pp', 'accelerometer=(self), autoplay=(self \"https://youtube.com\" \"https://www.youtube.com\" \"https://*.youtube.com\"), camera=(self), display-capture=(self), encrypted-media=(self), fullscreen=(self \"https://youtube.com\" \"https://www.youtube.com\" \"https://*.youtube.com\"), gamepad=(self), geolocation=(self), gyroscope=(self), hid=(self), identity-credentials-get=(self), idle-detection=(self), local-fonts=(self), magnetometer=(self), microphone=(self), midi=(self), otp-credentials=(self), payment=(self), picture-in-picture=(self \"https://youtube.com\" \"https://www.youtube.com\" \"https://*.youtube.com\"), publickey-credentials-get=(self), screen-wake-lock=(self), serial=(self), storage-access=(self), usb=(self), web-share=(self), window-management=(self), xr-spatial-tracking=(self)'),
+('sys', 'site', 'nv_pp_act', '1'),
+('sys', 'site', 'nv_fp', 'accelerometer \'self\'; autoplay \'self\' https://youtube.com https://www.youtube.com; camera \'self\'; display-capture \'self\'; encrypted-media \'self\'; fullscreen \'self\' https://youtube.com https://www.youtube.com; gamepad \'self\'; geolocation \'self\'; gyroscope \'self\'; hid \'self\'; identity-credentials-get \'self\'; idle-detection \'self\'; local-fonts \'self\'; magnetometer \'self\'; microphone \'self\'; midi \'self\'; otp-credentials \'self\'; payment \'self\'; picture-in-picture \'self\' https://youtube.com https://www.youtube.com; publickey-credentials-get \'self\'; screen-wake-lock \'self\'; serial \'self\'; storage-access \'self\'; usb \'self\'; web-share \'self\'; window-management \'self\'; xr-spatial-tracking \'self\''),
+('sys', 'site', 'nv_fp_act', '1'),
+('sys', 'site', 'pass_timeout', '0'),
+('sys', 'site', 'oldpass_num', '5'),
+('sys', 'site', 'send_pass', '0'),
+('sys', 'site', 'login_name_type', 'username'),
+('sys', 'site', 'remove_2step_method', '0'),
+('sys', 'site', 'remove_2step_allow', '0'),
+('sys', 'site', 'ogp_image', ''),
+('sys', 'site', 'cronjobs_last_time', '0'),
+('sys', 'site', 'cronjobs_interval', '5'),
+('sys', 'site', 'cronjobs_launcher', 'system'),
+('sys', 'site', 'inform_active', '1'),
+('sys', 'site', 'inform_default_exp', '604800'),
+('sys', 'site', 'inform_exp_del', '604800'),
+('sys', 'site', 'inform_refresh_time', '30'),
+('sys', 'site', 'inform_max_characters', '200'),
+('sys', 'site', 'inform_numrows', '10'),
+('sys', 'site', 'over_capacity', '0'),
+('sys', 'site', 'show_folder_size', '0'),
+('sys', 'site', 'sitelinks_search_box_schema', '1'),
+('sys', 'site', 'organization_logo', ''),
+('sys', 'site', 'breadcrumblist', '0'),
+('sys', 'site', 'localbusiness', '0'),
+('sys', 'site', 'google_tag_manager', ''),
+('sys', 'site', 'thumb_max_width', '350'),
+('sys', 'site', 'thumb_max_height', '350')";
 
 $sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES
 ('sys', 'define', 'nv_gfx_num', '6'),
@@ -225,40 +226,42 @@ $sql_create_table[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, 
 ('sys', 'define', 'nv_allowed_html_tags', '" . NV_ALLOWED_HTML_TAGS . "'),
 ('sys', 'define', 'nv_debug', '" . NV_DEBUG . "')";
 
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 5, 'online_expired_del.php', 'cron_online_expired_del', '', 0, 1, 1, 0, 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 1440, 'dump_autobackup.php', 'cron_dump_autobackup', '', 0, 1, 1, 0, 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 60, 'temp_download_destroy.php', 'cron_auto_del_temp_download', '', 0, 1, 1, 0, 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 30, 'ip_logs_destroy.php', 'cron_del_ip_logs', '', 0, 1, 1, 0, 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 1440, 'error_log_destroy.php', 'cron_auto_del_error_log', '', 0, 1, 1, 0, 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 360, 'error_log_sendmail.php', 'cron_auto_sendmail_error_log', '', 0, 1, 0, 0, 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 60, 'ref_expired_del.php', 'cron_ref_expired_del', '', 0, 1, 1, 0, 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 60, 'check_version.php', 'cron_auto_check_version', '', 0, 1, 1, 0, 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 1440, 'notification_autodel.php', 'cron_notification_autodel', '', 0, 1, 1, 0, 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 1440, 'remove_expired_inform.php', 'cron_remove_expired_inform', '', 0, 1, 1, 0, 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 60, 'apilogs_autodel.php', 'cron_apilogs_autodel', '', 0, 1, 1, 0, 0)";
-$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES (' . NV_CURRENTTIME . ", 60, 'expadmin_handling.php', 'cron_expadmin_handling', '', 0, 1, 1, 0, 0)";
+$sql_create_table[] = 'INSERT INTO ' . NV_CRONJOBS_GLOBALTABLE . ' (start_time, inter_val, run_file, run_func, params, del, is_sys, act, last_time, last_result) VALUES
+(' . NV_CURRENTTIME . ', 5, "online_expired_del.php", "cron_online_expired_del", "", 0, 1, 1, 0, 0),
+(' . NV_CURRENTTIME . ', 1440, "dump_autobackup.php", "cron_dump_autobackup", "", 0, 1, 1, 0, 0),
+(' . NV_CURRENTTIME . ', 60, "temp_download_destroy.php", "cron_auto_del_temp_download", "", 0, 1, 1, 0, 0),
+(' . NV_CURRENTTIME . ', 30, "ip_logs_destroy.php", "cron_del_ip_logs", "", 0, 1, 1, 0, 0),
+(' . NV_CURRENTTIME . ', 1440, "error_log_destroy.php", "cron_auto_del_error_log", "", 0, 1, 1, 0, 0),
+(' . NV_CURRENTTIME . ', 360, "error_log_sendmail.php", "cron_auto_sendmail_error_log", "", 0, 1, 0, 0, 0),
+(' . NV_CURRENTTIME . ', 60, "ref_expired_del.php", "cron_ref_expired_del", "", 0, 1, 1, 0, 0),
+(' . NV_CURRENTTIME . ', 60, "check_version.php", "cron_auto_check_version", "", 0, 1, 1, 0, 0),
+(' . NV_CURRENTTIME . ', 1440, "notification_autodel.php", "cron_notification_autodel", "", 0, 1, 1, 0, 0),
+(' . NV_CURRENTTIME . ', 1440, "remove_expired_inform.php", "cron_remove_expired_inform", "", 0, 1, 1, 0, 0),
+(' . NV_CURRENTTIME . ', 60, "apilogs_autodel.php", "cron_apilogs_autodel", "", 0, 1, 1, 0, 0),
+(' . NV_CURRENTTIME . ', 60, "expadmin_handling.php", "cron_expadmin_handling", "", 0, 1, 1, 0, 0)';
 
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (0, 'module', 'about', 0, 0, 'page', 'about', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (0, 'module', 'siteterms', 0, 0, 'page', 'siteterms', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (19, 'module', 'banners', 1, 0, 'banners', 'banners', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (517, 'module', 'zalo', 1, 0, 'zalo', 'zalo', '4.6.00 1637048941', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (20, 'module', 'contact', 0, 1, 'contact', 'contact', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (1, 'module', 'news', 0, 1, 'news', 'news', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (21, 'module', 'voting', 0, 0, 'voting', 'voting', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (22, 'module', 'forum', 0, 0, 'forum', 'forum', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (284, 'module', 'seek', 1, 0, 'seek', 'seek', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (24, 'module', 'users', 1, 1, 'users', 'users', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (27, 'module', 'statistics', 0, 0, 'statistics', 'statistics', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (29, 'module', 'menu', 0, 0, 'menu', 'menu', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (283, 'module', 'feeds', 1, 0, 'feeds', 'feeds', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (282, 'module', 'page', 1, 1, 'page', 'page', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (281, 'module', 'comment', 1, 0, 'comment', 'comment', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (312, 'module', 'freecontent', 0, 1, 'freecontent', 'freecontent', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (327, 'module', 'two-step-verification', 1, 0, 'two-step-verification', 'two_step_verification', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (307, 'theme', 'default', 0, 0, 'default', 'default', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (311, 'theme', 'mobile_default', 0, 0, 'mobile_default', 'mobile_default', '4.5.00 1626512400', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (22, 'module', 'inform', 1, 0, 'inform', 'inform', '4.6.00 1666092814', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
-$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES (22, 'module', 'myapi', 1, 0, 'myapi', 'myapi', '4.6.00 1666092814', " . NV_CURRENTTIME . ", 'VINADES <contact@vinades.vn>', '')";
+$sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_setup_extensions (id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note) VALUES
+(0, 'module', 'about', 0, 0, 'page', 'about', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(0, 'module', 'siteterms', 0, 0, 'page', 'siteterms', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(19, 'module', 'banners', 1, 0, 'banners', 'banners', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(517, 'module', 'zalo', 1, 0, 'zalo', 'zalo', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(20, 'module', 'contact', 0, 1, 'contact', 'contact', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(1, 'module', 'news', 0, 1, 'news', 'news', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(21, 'module', 'voting', 0, 0, 'voting', 'voting', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(22, 'module', 'forum', 0, 0, 'forum', 'forum', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(284, 'module', 'seek', 1, 0, 'seek', 'seek', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(24, 'module', 'users', 1, 1, 'users', 'users', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(27, 'module', 'statistics', 0, 0, 'statistics', 'statistics', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(29, 'module', 'menu', 0, 0, 'menu', 'menu', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(283, 'module', 'feeds', 1, 0, 'feeds', 'feeds', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(282, 'module', 'page', 1, 1, 'page', 'page', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(281, 'module', 'comment', 1, 0, 'comment', 'comment', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(312, 'module', 'freecontent', 0, 1, 'freecontent', 'freecontent', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(327, 'module', 'two-step-verification', 1, 0, 'two-step-verification', 'two_step_verification', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(307, 'theme', 'default', 0, 0, 'default', 'default', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(311, 'theme', 'mobile_default', 0, 0, 'mobile_default', 'mobile_default', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(22, 'module', 'inform', 1, 0, 'inform', 'inform', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', ''),
+(22, 'module', 'myapi', 1, 0, 'myapi', 'myapi', '" . $global_config['version'] . " " . $global_config['version_time'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC <contact@vinades.vn>', '')";
 
 // FIXME số 999 dùng để develop, sau sẽ xóa
 $sql_create_table[] = 'INSERT INTO ' . $db_config['prefix'] . "_plugins (pid, plugin_file, plugin_area, plugin_module_name, plugin_module_file, weight) VALUES

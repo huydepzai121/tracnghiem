@@ -20,7 +20,7 @@ $db_config['dbname'] = '';
 $db_config['dbuname'] = '';
 $db_config['dbpass'] = '';
 $db_config['dbdetete'] = 0;
-$db_config['prefix'] = 'nv4';
+$db_config['prefix'] = 'nv5';
 $db_config['persistent'] = false;
 $db_config['collation'] = ''; //utf8_general_ci, utf8mb4_unicode_ci, utf8mb4_vietnamese_ci
 
@@ -38,6 +38,7 @@ $array_data['dev_mode'] = 0;
 
 $global_config['unofficial_mode'] = 1; // Cảnh báo bản thử nghiệm
 $global_config['version'] = '5.0.00'; // NukeViet 5.0 Develop
+$global_config['version_time'] = 1736144674;
 $global_config['core_cdn_url'] = 'https://cdn.jsdelivr.net/gh/nukeviet/nukeviet@nukeviet5.0/src/';
 $global_config['site_email'] = '';
 $global_config['site_phone'] = '';

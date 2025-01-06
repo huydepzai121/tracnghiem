@@ -1371,7 +1371,7 @@ function nv_save_file_config()
             $content .= "\$global_config['ftp_check_login'] = '" . $global_config['ftp_check_login'] . "';\n";
         }
 
-        file_put_contents(NV_ROOTDIR . '/' . $file_config_temp, trim($content), LOCK_EX);
+        file_put_contents(NV_ROOTDIR . '/' . $file_config_temp, trim($content). "\n", LOCK_EX);
         //Resets the contents of the opcode cache
         if (function_exists('opcache_reset')) {
             opcache_reset();
