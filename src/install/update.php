@@ -2,9 +2,9 @@
 
 /**
  * NukeViet Content Management System
- * @version 4.x
+ * @version 5.x
  * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2023 VINADES.,JSC. All rights reserved
+ * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
  * @license GNU/GPL version 2 or any later version
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
@@ -81,9 +81,9 @@ unset($nv_update_config['lang']);
  * NvUpdate
  *
  * @package NukeViet
- * @author VINADES.,JSC
- * @copyright VINADES.,JSC
- * @version 2012
+ * @author VINADES.,JSC <contact@vinades.vn>
+ * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
+ * @version 5.x
  * @access public
  */
 class NvUpdate

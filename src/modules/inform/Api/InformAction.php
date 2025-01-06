@@ -2,9 +2,9 @@
 
 /**
  * NukeViet Content Management System
- * @version 4.x
+ * @version 5.x
  * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2023 VINADES.,JSC. All rights reserved
+ * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
  * @license GNU/GPL version 2 or any later version
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
@@ -26,8 +26,8 @@ if (!defined('NV_ADMIN') or !defined('NV_MAINFILE')) {
  *
  * @package NukeViet\Module\inform\Api
  * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2022 VINADES.,JSC. All rights reserved
- * @version 4.6.00
+ * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
+ * @version 5.x
  * @access public
  */
 class InformAction implements IApi

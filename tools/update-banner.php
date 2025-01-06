@@ -2,9 +2,9 @@
 
 /**
  * NukeViet Content Management System
- * @version 4.x
+ * @version 5.x
  * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2023 VINADES.,JSC. All rights reserved
+ * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
  * @license GNU/GPL version 2 or any later version
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
@@ -21,7 +21,7 @@ function updateFile($file)
  * NukeViet Content Management System
  * @version 5.x
  * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-" . date('Y') . " VINADES.,JSC. All rights reserved
+ * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
  * @license GNU/GPL version 2 or any later version
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */";
@@ -127,6 +127,7 @@ function updateFile($file)
         return '/**' . "\n" . implode("\n", $newLines) . "\n" . ' */';
     }, $content);
     if ($newContent != $content) {
+        file_put_contents($file, $newContent, LOCK_EX);
         echo 'Update file: ' . $relativePath . "\n";
     }
 }
