@@ -172,6 +172,6 @@ class ApiResult
             throw new Exception('Missing function nv_htmlOutput!!!', self::CODE_MISSING_FUNCTION);
         }
 
-        return nv_htmlOutput(json_encode($this->result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), 'json');
+        nv_htmlOutput(json_encode($this->result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), 'json');
     }
 }
