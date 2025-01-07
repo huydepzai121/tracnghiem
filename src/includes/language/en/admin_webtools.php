@@ -126,4 +126,5 @@ $lang_module['errorcode_4096'] = 'E_RECOVERABLE_ERROR: Catchable fatal error. It
 $lang_module['errorcode_8192'] = 'E_DEPRECATED: Run-time notices. Enable this to receive warnings about code that will not work in future versions.';
 $lang_module['errorcode_16384'] = 'E_USER_DEPRECATED: User-generated warning message. This is like an E_DEPRECATED, except it is generated in PHP code by using the PHP function trigger_error().';
 $lang_module['display_mode_tabular'] = 'Tabular format';
+$lang_module['display_mode_plaintext'] = 'Plain text format';
 $lang_module['stat_excl_bot'] = 'Exclude statistics from BOT';

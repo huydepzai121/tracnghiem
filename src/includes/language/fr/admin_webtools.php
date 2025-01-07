@@ -126,4 +126,5 @@ $lang_module['errorcode_4096'] = 'E_RECOVERABLE_ERROR: Erreur fatale qui peut ê
 $lang_module['errorcode_8192'] = 'E_DEPRECATED: Alertes d\'exécution. Activer cette option pour recevoir des alertes sur les portions de votre code qui pourraient ne pas fonctionner avec les futures versions.';
 $lang_module['errorcode_16384'] = 'E_USER_DEPRECATED: Message d\'alerte généré par l\'utilisateur. Fonctionne de la même façon que E_DEPRECATED, mis à part que le message est généré par votre code PHP en utilisant la fonction trigger_error().';
 $lang_module['display_mode_tabular'] = 'Format tabulaire';
+$lang_module['display_mode_plaintext'] = 'Format texte brut';
 $lang_module['stat_excl_bot'] = 'Exclure les statistiques des BOT';

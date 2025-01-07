@@ -102,7 +102,12 @@ We offer different groups of needs as follows:
 
 - `install` serving system installation tasks.
 - `install-only` only test the installation.
+
+The groups below require the website to be installed:
+
 - `users` functional groups for logged-in users.
+- `stat` testing the access statistics feature.
+- `sendmail` testing the email sending function.
 - `all` test everything.
 
 **Next step:**
