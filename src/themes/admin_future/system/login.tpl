@@ -26,7 +26,7 @@
                                         <div class="d-flex gap-2">
                                             <label for="nv_password" class="form-label text-dark fw-medium">{$LANG->getGlobal('password')}</label>
                                             <div class="ms-auto">
-                                                <a title="{$LANG->getGlobal('lostpass')}" href="{$smarty.const.NV_BASE_SITEURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$GCONFIG.site_lang}&amp;{$smarty.const.NV_NAME_VARIABLE}=users&amp;{$smarty.const.NV_OP_VARIABLE}=lostpass">{$LANG->getGlobal('lostpass')}?</a>
+                                                <a title="{$LANG->getGlobal('lostpass')}" href="{$smarty.const.NV_BASE_SITEURL}index.php?{$smarty.const.NV_LANG_VARIABLE}={$GCONFIG.site_lang}&amp;{$smarty.const.NV_NAME_VARIABLE}=users&amp;{$smarty.const.NV_OP_VARIABLE}=lostpass" tabindex="-1">{$LANG->getGlobal('lostpass')}?</a>
                                             </div>
                                         </div>
                                         <input class="form-control" name="nv_password" type="password" id="nv_password" value="{$V_PASSWORD}" data-error-mess="{$LANG->getGlobal('password_empty')}" autocomplete="off">
