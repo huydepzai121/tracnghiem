@@ -23,7 +23,6 @@ function pr($a)
     exit('<pre><code>' . htmlspecialchars(print_r($a, true)) . '</code></pre>');
 }
 
-
 /**
  * nv_object2array()
  *
@@ -3959,22 +3958,40 @@ function nv_sendmail_from_template($emailid, $data = [], $lang = '', $attachment
     foreach ($data as $row) {
         try {
             !isset($row['data']) && $row['data'] = [];
-            $_args = array_merge($args, $row['data']);
-            $merge_fields = nv_apply_hook('', 'get_email_merge_fields', $_args, [], 1);
+
+            $simple_value = false;
+            if (!empty($row['data_as_fields'])) {
+                // Dùng luôn data làm trường dữ liệu
+                $merge_fields = $row['data'];
+                $simple_value = true;
+            } else {
+                $_args = array_merge($args, $row['data']);
+                $merge_fields = nv_apply_hook('', 'get_email_merge_fields', $_args, [], 1);
+
+                // Dùng data làm trường dữ liệu nếu không chọn hoặc trình xử lý dữ liệu trả rỗng
+                if (empty($merge_fields) and !empty($row['data_def_fields'])) {
+                    $merge_fields = $row['data'];
+                    $simple_value = true;
+                }
+            }
 
             // Thêm một số biến global nếu chúng chưa chỉ ra trong $merge_fields
             foreach ($gconfigs as $key => $value) {
                 if (!isset($merge_fields[$key])) {
-                    $merge_fields[$key] = [
-                        'name' => $nv_Lang->getGlobal($key),
-                        'data' => $value
-                    ];
+                    if ($simple_value) {
+                        $merge_fields[$key] = $value;
+                    } else {
+                        $merge_fields[$key] = [
+                            'name' => $nv_Lang->getGlobal($key),
+                            'data' => $value
+                        ];
+                    }
                 }
             }
 
             $tpl = new \NukeViet\Template\NVSmarty();
             foreach ($merge_fields as $field_key => $field_value) {
-                $tpl->assign($field_key, $field_value['data']);
+                $tpl->assign($field_key, $simple_value ? $field_value : $field_value['data']);
             }
 
             // Dùng để xử lý cả biến $email_data trước khi gọi Smarty thực hiện
