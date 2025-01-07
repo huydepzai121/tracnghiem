@@ -422,6 +422,7 @@ $(function() {
                             var item = $(this).closest('.item');
                             $('[name=act]', item).val('1');
                         });
+                        nvToast(nv_is_change_act_confirm[1], 'success');
                     },
                     error: function(xhr, text, err) {
                         btn.prop('disabled', false);
@@ -443,6 +444,7 @@ $(function() {
                             var item = $(this).closest('.item');
                             $('[name=act]', item).val('0');
                         });
+                        nvToast(nv_is_change_act_confirm[1], 'success');
                     },
                     error: function(xhr, text, err) {
                         btn.prop('disabled', false);
