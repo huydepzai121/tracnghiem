@@ -32,6 +32,14 @@
             <div class="row mb-3">
                 <div class="col-sm-8 col-lg-6 col-xxl-5 offset-sm-3">
                     <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="stat_excl_bot" value="1"{if not empty($GCONFIG.stat_excl_bot)} checked{/if} role="switch" id="element_stat_excl_bot">
+                        <label class="form-check-label" for="element_stat_excl_bot">{$LANG->getModule('stat_excl_bot')}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-8 col-lg-6 col-xxl-5 offset-sm-3">
+                    <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" name="referer_blocker" value="1"{if not empty($GCONFIG.referer_blocker)} checked{/if} role="switch" id="element_referer_blocker">
                         <label class="form-check-label" for="element_referer_blocker">{$LANG->getModule('referer_blocker')}</label>
                     </div>

@@ -29,6 +29,7 @@ function nv_stat_update()
     [$current_year, $current_month, $current_day, $current_hour, $current_week] = explode('|', date('Y|M|d|H|l', NV_CURRENTTIME));
     NV_SITE_TIMEZONE_NAME != $global_config['statistics_timezone'] && date_default_timezone_set(NV_SITE_TIMEZONE_NAME);
 
+    // Bắt đầu vào giai đoạn thống kê mới thì reset lại số liệu
     if ($last_year != $current_year) {
         $year_exists = $db->query('SELECT COUNT(*) FROM ' . NV_COUNTER_GLOBALTABLE . " WHERE c_type='year' AND c_val='" . $current_year . "'")->fetchColumn();
         if (!$year_exists) {
@@ -52,23 +53,30 @@ function nv_stat_update()
         }
     }
 
-    $sth = $db->prepare(
-        'UPDATE ' . NV_COUNTER_GLOBALTABLE . ' SET last_update=' . NV_CURRENTTIME . ', c_count=c_count + 1, ' . NV_LANG_DATA . '_count= ' . NV_LANG_DATA . "_count + 1 WHERE
-        (c_type='total' AND c_val='hits') OR
-        (c_type='year' AND c_val='" . $current_year . "') OR
-        (c_type='month' AND c_val='" . $current_month . "') OR
-        (c_type='day' AND c_val='" . $current_day . "') OR
-        (c_type='dayofweek' AND c_val='" . $current_week . "') OR
-        (c_type='hour' AND c_val='" . $current_hour . "') OR
-        (c_type='bot' AND c_val= :bot_name) OR
-        (c_type='browser' AND c_val= :browser) OR
-        (c_type='os' AND c_val= :client_os) OR
-        (c_type='country' AND c_val= :country)"
-    );
+    $where = ["(c_type='bot' AND c_val= :bot_name)"];
+    $stat_bot = false;
+    // Ngoại trừ thống kê các BOT, các số liệu khác thống kê nếu là người dùng thực hoặc bật tính cả bot
+    if (empty($client_info['is_bot']) or empty($global_config['stat_excl_bot'])) {
+        $stat_bot = true;
+
+        $where[] = "(c_type='total' AND c_val='hits')";
+        $where[] = "(c_type='year' AND c_val='" . $current_year . "')";
+        $where[] = "(c_type='month' AND c_val='" . $current_month . "')";
+        $where[] = "(c_type='day' AND c_val='" . $current_day . "')";
+        $where[] = "(c_type='dayofweek' AND c_val='" . $current_week . "')";
+        $where[] = "(c_type='hour' AND c_val='" . $current_hour . "')";
+        $where[] = "(c_type='browser' AND c_val= :browser)";
+        $where[] = "(c_type='os' AND c_val= :client_os)";
+        $where[] = "(c_type='country' AND c_val= :country)";
+    }
+
+    $sth = $db->prepare('UPDATE ' . NV_COUNTER_GLOBALTABLE . ' SET last_update=' . NV_CURRENTTIME . ', c_count=c_count + 1, ' . NV_LANG_DATA . '_count= ' . NV_LANG_DATA . '_count + 1 WHERE ' . implode(' OR ', $where));
     $sth->bindParam(':bot_name', $bot_name, PDO::PARAM_STR);
-    $sth->bindParam(':browser', $br, PDO::PARAM_STR);
-    $sth->bindParam(':client_os', $client_info['client_os']['key'], PDO::PARAM_STR);
-    $sth->bindParam(':country', $client_info['country'], PDO::PARAM_STR);
+    if ($stat_bot) {
+        $sth->bindParam(':browser', $br, PDO::PARAM_STR);
+        $sth->bindParam(':client_os', $client_info['client_os']['key'], PDO::PARAM_STR);
+        $sth->bindParam(':country', $client_info['country'], PDO::PARAM_STR);
+    }
     $sth->execute();
 
     $db->query('UPDATE ' . NV_COUNTER_GLOBALTABLE . ' SET c_count= ' . NV_CURRENTTIME . " WHERE c_type='c_time' AND c_val= 'last'");

@@ -127,3 +127,4 @@ $lang_module['errorcode_8192'] = 'E_DEPRECATED: Lỗi nhắc nhở xảy ra tron
 $lang_module['errorcode_16384'] = 'E_USER_DEPRECATED: Lỗi nhắc nhở do người dùng tạo. Điều này giống như lỗi E_DEPRECATED, ngoại trừ nó được tạo trong mã PHP bằng cách sử dụng hàm trigger_error() của PHP.';
 $lang_module['display_mode_tabular'] = 'Dạng bảng';
 $lang_module['display_mode_plaintext'] = 'Dạng văn bản thuần';
+$lang_module['stat_excl_bot'] = 'Loại trừ thống kê truy cập từ BOT';

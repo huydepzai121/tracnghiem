@@ -20,6 +20,7 @@ $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_
 if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     $array_config_global['online_upd'] = $nv_Request->get_int('online_upd', 'post');
     $array_config_global['statistic'] = $nv_Request->get_int('statistic', 'post');
+    $array_config_global['stat_excl_bot'] = (int) $nv_Request->get_bool('stat_excl_bot', 'post', false);
     $array_config_global['referer_blocker'] = $nv_Request->get_int('referer_blocker', 'post', 0);
 
     $statistics_timezone = nv_substr($nv_Request->get_title('statistics_timezone', 'post', '', 0), 0, 255);
@@ -58,13 +59,6 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
 }
 
 $page_title = $nv_Lang->getModule('global_statistics');
-
-$array_config_global['online_upd'] = ($global_config['online_upd']) ? ' checked="checked"' : '';
-$array_config_global['statistic'] = ($global_config['statistic']) ? ' checked="checked"' : '';
-$array_config_global['referer_blocker'] = ($global_config['referer_blocker']) ? ' checked="checked"' : '';
-$array_config_global['googleAnalyticsID'] = $global_config['googleAnalyticsID'];
-$array_config_global['googleAnalytics4ID'] = $global_config['googleAnalytics4ID'];
-$array_config_global['google_tag_manager'] = !empty($global_config['google_tag_manager']) ? $global_config['google_tag_manager'] : '';
 
 $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/statistics.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
