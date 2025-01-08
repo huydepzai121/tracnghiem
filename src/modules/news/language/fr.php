@@ -640,3 +640,6 @@ $lang_module['draft_list'] = 'Liste des brouillons en cours';
 $lang_module['draft_del_confirm'] = 'Voulez-vous annuler ce brouillon/modification?';
 $lang_module['draft_empty'] = 'Aucun brouillon en cours';
 $lang_module['draft_menu'] = 'Articles brouillons';
+$lang_module['queue_draft'] = 'Vous avez <strong>%s</strong> articles en brouillon';
+$lang_module['queue_approval'] = 'Vous avez <strong>%s</strong> articles en attente d\'approbation';
+$lang_module['queue_public'] = 'Vous avez <strong>%s</strong> articles en attente de publication';

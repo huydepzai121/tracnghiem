@@ -640,3 +640,6 @@ $lang_module['draft_list'] = 'List of drafts in progress';
 $lang_module['draft_del_confirm'] = 'Do you want to cancel this draft/edit?';
 $lang_module['draft_empty'] = 'No drafts in progress';
 $lang_module['draft_menu'] = 'Draft articles';
+$lang_module['queue_draft'] = 'You have <strong>%s</strong> draft articles';
+$lang_module['queue_approval'] = 'You have <strong>%s</strong> articles pending approval';
+$lang_module['queue_public'] = 'You have <strong>%s</strong> articles awaiting publication';

@@ -640,3 +640,6 @@ $lang_module['draft_list'] = 'Danh sách bài viết đang soạn thảo, chỉn
 $lang_module['draft_del_confirm'] = 'Bạn có muốn hủy bản soạn thảo/chỉnh sửa này không?';
 $lang_module['draft_empty'] = 'Không có bài viết đang soạn thảo, chỉnh sửa dở dang';
 $lang_module['draft_menu'] = 'Bài viết dở';
+$lang_module['queue_draft'] = 'Bạn có <strong>%s</strong> bài viết đang lưu nháp';
+$lang_module['queue_approval'] = 'Bạn có <strong>%s</strong> bài viết đang chờ duyệt';
+$lang_module['queue_public'] = 'Bạn có <strong>%s</strong> bài viết đang chờ đăng';

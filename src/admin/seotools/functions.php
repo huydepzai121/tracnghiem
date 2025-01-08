@@ -21,8 +21,8 @@ if (defined('NV_IS_GODADMIN')) {
     $allow_func[] = 'metatags';
     $allow_func[] = 'linktags';
     $allow_func[] = 'sitemapPing';
-    $allow_func[] = 'robots';
     if (empty($global_config['idsite'])) {
+        $allow_func[] = 'robots';
         $allow_func[] = 'rpc';
     }
     $allow_func[] = 'others';

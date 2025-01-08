@@ -29,6 +29,7 @@ class ErrorLogsTest extends \Codeception\Test\Unit
      * Error log không sinh ra trong quá trình test
      *
      * @group install
+     * @group install-only
      * @group sendmail
      * @group all
      */

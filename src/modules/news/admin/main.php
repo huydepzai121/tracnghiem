@@ -186,35 +186,56 @@ $val_cat_content[] = [
     'title' => $nv_Lang->getModule('search_cat_all')
 ];
 
-$array_cat_view = $array_cat_edit = [];
+$array_cat_view = $array_cat_app = $array_cat_pub = $array_cat_edit = [];
 $check_declined = false;
 foreach ($global_array_cat as $catid_i => $array_value) {
     $lev_i = $array_value['lev'];
-    $check_cat = $check_cat_edit = false;
+    $check_cat = $check_cat_edit = $check_cat_app = $check_cat_pub = false;
     if (defined('NV_IS_ADMIN_MODULE')) {
         $check_cat = true;
         $check_cat_edit = true;
+        $check_cat_app = true;
+        $check_cat_pub = true;
     } elseif (isset($array_cat_admin[$admin_id][$catid_i])) {
         $_cat_admin_i = $array_cat_admin[$admin_id][$catid_i];
         if ($_cat_admin_i['admin'] == 1) {
             $check_cat = true;
             $check_declined = true;
             $check_cat_edit = true;
-        } elseif ($_cat_admin_i['add_content'] == 1) {
-            $check_cat = true;
-        } elseif ($_cat_admin_i['pub_content'] == 1 or $_cat_admin_i['app_content'] == 1) {
-            $check_cat = true;
-            $check_declined = true;
-        } elseif ($_cat_admin_i['edit_content'] == 1) {
-            $check_cat = true;
-            $check_cat_edit = true;
-        } elseif ($_cat_admin_i['del_content'] == 1) {
-            $check_cat = true;
+            $check_cat_app = true;
+            $check_cat_pub = true;
+        } else {
+            if ($_cat_admin_i['add_content'] == 1) {
+                $check_cat = true;
+            }
+            if ($_cat_admin_i['pub_content'] == 1) {
+                $check_cat = true;
+                $check_declined = true;
+                $check_cat_pub = true;
+            }
+            if ($_cat_admin_i['app_content'] == 1) {
+                $check_cat = true;
+                $check_declined = true;
+                $check_cat_app = true;
+            }
+            if ($_cat_admin_i['edit_content'] == 1) {
+                $check_cat = true;
+                $check_cat_edit = true;
+            }
+            if ($_cat_admin_i['del_content'] == 1) {
+                $check_cat = true;
+            }
         }
     }
 
     if ($check_cat_edit) {
         $array_cat_edit[] = $catid_i;
+    }
+    if ($check_cat_app) {
+        $array_cat_app[] = $catid_i;
+    }
+    if ($check_cat_pub) {
+        $array_cat_pub[] = $catid_i;
     }
     if ($check_cat) {
         $xtitle_i = '';
@@ -1255,6 +1276,8 @@ $array_drafts = [
     'count' => 0,
     'list' => []
 ];
+$array_others = [];
+$array_others_count = 0;
 if (!$is_search) {
     $db->sqlreset()->select('COUNT(id)')->from(NV_PREFIXLANG . '_' . $module_data . '_tmp')
         ->where('admin_id=' . $admin_info['admin_id'] . ' AND type=1');
@@ -1304,8 +1327,100 @@ if (!$is_search) {
             }
         }
     }
+
+    // Cache các số đếm, sẽ theo admin
+    if (!defined('NV_IS_ADMIN_MODULE')) {
+        $cache_file = NV_LANG_DATA . '_admmainothers_' . $admin_info['admin_id'] . '_' . NV_CACHE_PREFIX . '.cache';
+    } else {
+        $cache_file = NV_LANG_DATA . '_admmainothers_' . NV_CACHE_PREFIX . '.cache';
+    }
+    $cacheTTL = 86400 * 7;
+
+    if (($cache = $nv_Cache->getItem($module_name, $cache_file, $cacheTTL)) != false) {
+        [$array_others, $array_others_count] = json_decode($cache, true);
+    } else {
+        // Đếm số bài lưu nháp do tôi đăng và còn quyền xem
+        $where = [];
+        $where[] = "status=" . Posts::STATUS_DRAFT;
+        $where[] = "admin_id=" . $admin_info['admin_id'];
+        if (!defined('NV_IS_ADMIN_MODULE')) {
+            $from_catid = [];
+            foreach ($array_cat_edit as $catid_i) {
+                $from_catid[] = 'FIND_IN_SET(' . $catid_i . ', listcatid)';
+            }
+            if (!empty($from_catid)) {
+                $where[] = '(' . implode(' OR ', $from_catid) . ')';
+            } else {
+                // Không còn edit bài trong chuyên mục nào nữa thì khỏi xem
+                $where[] = 'id=0';
+            }
+        }
+        $sql = "SELECT COUNT(id) FROM " . NV_PREFIXLANG . "_" . $module_data . "_rows WHERE " . implode(' AND ', $where);
+        $number = $db->query($sql)->fetchColumn();
+        if ($number > 0) {
+            $array_others[] = [
+                'title' => $nv_Lang->getModule('queue_draft', nv_number_format($number)),
+                'link' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;sstatus=' . Posts::STATUS_DRAFT,
+                'count' => $number
+            ];
+            $array_others_count += $number;
+        }
+
+        // Đếm số bài chờ duyệt trong các chuyên mục tôi quản lý
+        $where = [];
+        $where[] = "status=" . Posts::STATUS_REVIEW_TRANSFER;
+        if (!defined('NV_IS_ADMIN_MODULE')) {
+            $from_catid = [];
+            foreach ($array_cat_app as $catid_i) {
+                $from_catid[] = 'FIND_IN_SET(' . $catid_i . ', listcatid)';
+            }
+            if (!empty($from_catid)) {
+                $where[] = '(' . implode(' OR ', $from_catid) . ')';
+            } else {
+                $where[] = 'id=0';
+            }
+        }
+        $sql = "SELECT COUNT(id) FROM " . NV_PREFIXLANG . "_" . $module_data . "_rows WHERE " . implode(' AND ', $where);
+        $number = $db->query($sql)->fetchColumn();
+        if ($number > 0) {
+            $array_others[] = [
+                'title' => $nv_Lang->getModule('queue_approval', nv_number_format($number)),
+                'link' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;sstatus=' . Posts::STATUS_REVIEW_TRANSFER,
+                'count' => $number
+            ];
+            $array_others_count += $number;
+        }
+
+        // Đếm số bài chờ đăng trong các chuyên mục tôi quản lý
+        $where = [];
+        $where[] = "status=" . Posts::STATUS_PUBLISH_TRANSFER;
+        if (!defined('NV_IS_ADMIN_MODULE')) {
+            $from_catid = [];
+            foreach ($array_cat_pub as $catid_i) {
+                $from_catid[] = 'FIND_IN_SET(' . $catid_i . ', listcatid)';
+            }
+            if (!empty($from_catid)) {
+                $where[] = '(' . implode(' OR ', $from_catid) . ')';
+            } else {
+                $where[] = 'id=0';
+            }
+        }
+        $sql = "SELECT COUNT(id) FROM " . NV_PREFIXLANG . "_" . $module_data . "_rows WHERE " . implode(' AND ', $where);
+        $number = $db->query($sql)->fetchColumn();
+        if ($number > 0) {
+            $array_others[] = [
+                'title' => $nv_Lang->getModule('queue_public', nv_number_format($number)),
+                'link' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;sstatus=' . Posts::STATUS_PUBLISH_TRANSFER,
+                'count' => $number
+            ];
+            $array_others_count += $number;
+        }
+        $nv_Cache->setItem($module_name, $cache_file, json_encode([$array_others, $array_others_count]), $cacheTTL);
+    }
 }
 $tpl->assign('DRAFTS', $array_drafts);
+$tpl->assign('ARRAY_OTHERS', $array_others);
+$tpl->assign('ARRAY_OTHERS_COUNT', $array_others_count);
 
 $contents = $tpl->fetch('main.tpl');
 

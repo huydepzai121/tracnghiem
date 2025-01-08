@@ -21,6 +21,9 @@ class InstallCest
         if (is_file(NV_ROOTDIR . '/config.php')) {
             unlink(NV_ROOTDIR . '/config.php');
         }
+        if (is_file(NV_ROOTDIR . '/data/config/robots.php')) {
+            unlink(NV_ROOTDIR . '/data/config/robots.php');
+        }
 
         // Xóa error log
         $files = scandir(NV_ROOTDIR . '/data/logs/error_logs');
@@ -124,7 +127,11 @@ class InstallCest
         $I->fillField(['name' => 're_password'], $_ENV['NV_PASSWORD']);
         $I->fillField(['name' => 'question'], $_ENV['NV_QUESTION']);
         $I->fillField(['name' => 'answer_question'], $_ENV['NV_ANSWER']);
-        $I->checkOption('[name="lang_multi"]');
+
+        if (!empty($_ENV['LANG_MULTI'])) {
+            $I->checkOption('[name="lang_multi"]');
+        }
+
         $I->checkOption('[name="dev_mode"]');
 
         $I->click('[type="submit"]');

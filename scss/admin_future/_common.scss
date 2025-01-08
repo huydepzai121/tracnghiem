@@ -233,3 +233,14 @@ $sm-breakpoint: map-get($grid-breakpoints, sm) - 0.02px;
 .grecaptcha-badge {
     display: none;
 }
+
+// Table counter
+.table-counter {
+    counter-reset: table-counter;
+
+    .counter-cell::before {
+        counter-increment: table-counter;
+        content: counter(table-counter);
+        display: inline-block;
+    }
+}

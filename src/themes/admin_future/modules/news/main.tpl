@@ -49,7 +49,20 @@
     </div>
 </div>
 {/if}
-
+{if $ARRAY_OTHERS_COUNT gt 0}
+<div class="card mb-3 py-1">
+    <ul class="list-group list-group-flush">
+        {foreach from=$ARRAY_OTHERS item=other}
+        <li class="list-group-item hstack gap-2 justify-content-between">
+            <div>
+                {$other.title}
+            </div>
+            <a href="{$other.link}" class="btn btn-primary btn-sm fw-medium">{$LANG->getGlobal('view')}</a>
+        </li>
+        {/foreach}
+    </ul>
+</div>
+{/if}
 <div class="card">
     {if $DRAFTS.count gt 0}
     <div class="card-header text-bg-primary rounded-top-2">
