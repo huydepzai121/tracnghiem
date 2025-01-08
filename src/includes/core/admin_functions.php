@@ -890,3 +890,100 @@ function mod_admin_list($module_name, $suspend_inc = false)
 
     return $adms;
 }
+
+/**
+ * Hàm tạo file cache robots mặc định và ghi thêm các rule tùy chỉnh
+ * @param mixed $robots_config đặt là false thì sẽ tạo ra rule mặc định, truyền array[$robots_data, $robots_other] để set rule tuỳ chỉnh
+ * @param bool $save true thì sẽ lưu file cache, false thì chỉ trả về dữ liệu
+ * @param array $config các config cần thiết trong trường hợp thiếu $global_config
+ * @param bool $force_gconfig true thì sẽ cập nhật $global_config theo $config và trong CSDL
+ * @return array
+ */
+function nv_update_robots($robots_config, bool $save = false, array $config = [], bool $force_gconfig = false)
+{
+    global $db, $db_config, $global_config;
+
+    $real_config = $global_config;
+
+    // Lấy các config trong CSDL đảm bảo luôn luôn mới nhất
+    $sql = "SELECT config_name, config_value FROM " . $db_config['prefix'] . "_config
+    WHERE lang='sys' AND module='global' AND config_name IN ('allow_sitelangs', 'rewrite_enable', 'rewrite_optional')";
+    $result = $db->query($sql);
+    while ($row = $result->fetch()) {
+        $real_config[$row['config_name']] = $row['config_value'];
+    }
+    $result->closeCursor();
+
+    $real_config['allow_sitelangs'] = !empty($real_config['allow_sitelangs']) ? explode(',', $real_config['allow_sitelangs']) : [];
+    $real_config['allow_sitelangs'] = array_filter(array_unique(array_map('trim', $real_config['allow_sitelangs'])));
+
+    // Config init hoặc tùy chỉnh
+    if (!empty($config)) {
+        $real_config = array_merge($real_config, $config);
+    }
+    // Kiểm tra các config cần thiết
+    if (!isset($real_config['allow_sitelangs'], $real_config['rewrite_enable'], $real_config['check_rewrite_file'])) {
+        trigger_error('Error: Missing config for updating robots', E_USER_ERROR);
+    }
+    if ($force_gconfig) {
+        $global_config = $real_config;
+    }
+
+    if ($robots_config === false) {
+        // Đọc các rule đã có đồng thời kết hợp với rule mặc định của NukeViet
+        $robots_data = [];
+        $robots_other = [];
+        $cache_file = NV_ROOTDIR . '/' . NV_DATADIR . '/robots.php';
+        if (file_exists($cache_file)) {
+            include $cache_file;
+            $robots_data = unserialize($cache);
+            $robots_other = unserialize($cache_other);
+        } else {
+            $robots_data['/data/'] = 0;
+            $robots_data['/includes/'] = 0;
+            $robots_data['/install/'] = 0;
+            $robots_data['/modules/'] = 0;
+            $robots_data['/robots.php'] = 0;
+            $robots_data['/web.config'] = 0;
+        }
+
+        // Bổ sung các đường link chặn cố định
+        if ($real_config['rewrite_enable']) {
+            foreach ($real_config['allow_sitelangs'] as $lang) {
+                $sql = "SELECT * FROM " . $db_config['prefix'] . "_" . $lang . "_modules";
+                $result = $db->query($sql);
+                while ($row = $result->fetch()) {
+                    $url = '';
+                    if ($row['module_file'] == 'users' or $row['module_file'] == 'statistics') {
+                        $url = nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . $lang . '&' . NV_NAME_VARIABLE . '=' . $row['title'], true);
+                    } elseif ($row['module_file'] == 'banners') {
+                        $url = nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . $lang . '&' . NV_NAME_VARIABLE . '=' . $row['title'] . '&' . NV_OP_VARIABLE . '=click', true);
+                    }
+                    if (!empty($url)) {
+                        if (!isset($robots_other[$url])) {
+                            $robots_other[$url] = 0;
+                        }
+                    }
+                }
+                $result->closeCursor();
+            }
+        }
+    } else {
+        // Các rule tùy chỉnh
+        [$robots_data, $robots_other] = $robots_config;
+    }
+
+    if ($save) {
+        $cache_file = NV_ROOTDIR . '/' . NV_DATADIR . '/robots.php';
+        $content_config = "<?php\n\n";
+        $content_config .= NV_FILEHEAD . "\n\n";
+        $content_config .= "if (!defined('NV_MAINFILE')) {\n    exit('Stop!!!');\n}\n\n";
+        $content_config .= "\$cache = '" . serialize($robots_data) . "';\n";
+        $content_config .= "\$cache_other = '" . serialize($robots_other) . "';\n";
+        $check = file_put_contents($cache_file, $content_config, LOCK_EX);
+
+        return [$check, $content_config];
+    }
+
+    return [$robots_data, $robots_other];
+}

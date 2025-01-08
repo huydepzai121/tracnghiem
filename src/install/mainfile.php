@@ -9,9 +9,8 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-if (!defined('NV_SYSTEM') and !defined('NV_ADMIN') and !defined('NV_WYSIWYG')) {
-    header('Location: index.php');
-    exit();
+if (!defined('NV_IS_INSTALL')) {
+    exit('Stop!!!');
 }
 
 error_reporting(0);
@@ -22,9 +21,6 @@ define('NV_MAINFILE', true);
 $db_config = $global_config = $module_config = $client_info = $user_info = $admin_info = $sys_info = $lang_global = $lang_module = $rss = $nv_vertical_menu = $array_mod_title = $content_type = $select_options = $error_info = $countries = [];
 $page_title = $key_words = $canonicalUrl = $my_head = $my_footer = $description = $contents = '';
 $editor = false;
-
-// Xac dinh thu muc goc cua site
-define('NV_ROOTDIR', str_replace('\\', '/', realpath(pathinfo(__FILE__, PATHINFO_DIRNAME) . '/../')));
 
 $sys_info['disable_classes'] = (($disable_classes = ini_get('disable_classes')) != '' and $disable_classes != false) ? array_map('trim', preg_split("/[\s,]+/", $disable_classes)) : [];
 $sys_info['disable_functions'] = (($disable_functions = ini_get('disable_functions')) != '' and $disable_functions != false) ? array_map('trim', preg_split("/[\s,]+/", $disable_functions)) : [];
@@ -178,3 +174,39 @@ $nv_Cache = new NukeViet\Cache\Files(NV_ROOTDIR . '/' . NV_CACHEDIR, NV_LANG_DAT
 
 // Quản lý thẻ meta, header các máy chủ tìm kiếm
 $nv_BotManager = new NukeViet\Seo\BotManager(1);
+
+// Đọc các tệp cấu hình
+if (is_file(NV_ROOTDIR . '/install/default.php')) {
+    require_once NV_ROOTDIR . '/install/default.php';
+}
+$file_config_temp = NV_TEMP_DIR . '/config_' . NV_CHECK_SESSION . '.php';
+if (is_file(NV_ROOTDIR . '/' . $file_config_temp)) {
+    require_once NV_ROOTDIR . '/' . $file_config_temp;
+}
+
+$step = $nv_Request->get_int('step', 'post,get', 1);
+$maxstep = $nv_Request->get_int('maxstep', 'session', 1);
+
+if ($step <= 0 or $step > 8) {
+    nv_redirect_location(NV_BASE_SITEURL . 'install/index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&step=1');
+}
+
+if ($step > $maxstep and $step > 2) {
+    $step = $maxstep;
+    nv_redirect_location(NV_BASE_SITEURL . 'install/index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&step=' . $step);
+}
+
+if (file_exists(NV_ROOTDIR . '/' . NV_CONFIG_FILENAME) and $step < 8) {
+    nv_redirect_location(NV_BASE_SITEURL . 'index.php');
+}
+
+// Bắt đầu từ step 6 trở đi bắt buộc kết nối CSDL nếu không quay về từ đầu
+if ($step >= 6) {
+    $db = $db_slave = new NukeViet\Core\Database($db_config);
+    if (empty($db->connect)) {
+        $url = NV_BASE_SITEURL . 'install/index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;step=1';
+        echo 'Sorry! Could not connect to data server. Please try the installation again.';
+        echo '<meta http-equiv="refresh" content="5;url=' . $url . '">';
+        exit(1);
+    }
+}

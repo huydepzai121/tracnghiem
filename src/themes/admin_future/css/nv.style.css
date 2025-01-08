@@ -1,9 +1,9 @@
 @charset "UTF-8";
 /**
  * NukeViet Content Management System
- * @version 4.x
+ * @version 5.x
  * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2021 VINADES.,JSC. All rights reserved
+ * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
  * @license GNU/GPL version 2 or any later version
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
@@ -25764,6 +25764,15 @@ readers do not read off random characters that represent icons */
 
 .grecaptcha-badge {
   display: none;
+}
+
+.table-counter {
+  counter-reset: table-counter;
+}
+.table-counter .counter-cell::before {
+  counter-increment: table-counter;
+  content: counter(table-counter);
+  display: inline-block;
 }
 
 .header-outer {

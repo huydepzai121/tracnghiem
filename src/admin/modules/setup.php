@@ -174,6 +174,9 @@ if (!empty($setmodule) and preg_match($global_config['check_module'], $setmodule
                     }
                 }
 
+                // Tự động thêm rule chặn vào file robots.txt
+                nv_update_robots(false, true);
+
                 nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('modules') . ' ' . $setmodule, '', $admin_info['userid']);
                 nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=edit&mod=' . $setmodule);
             }

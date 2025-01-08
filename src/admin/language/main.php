@@ -147,6 +147,7 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
 
             nv_update_config_allow_sitelangs(array_unique($allow_sitelangs));
             nv_save_file_config_global();
+            nv_update_robots(false, true);
 
             nv_jsonOutput([
                 'success' => 1
@@ -222,7 +223,6 @@ if (defined('NV_IS_GODADMIN') or ($global_config['idsite'] > 0 and defined('NV_I
                 $result = $db->query('SELECT * FROM ' . $db_config['prefix'] . '_' . $keylang . '_modules ORDER BY weight ASC');
                 while ($row = $result->fetch()) {
                     $setmodule = $row['title'];
-                    $row['module_file'] = $row['module_file'];
 
                     if (in_array($row['module_file'], $modules_exit, true) and in_array($setmodule, $array_module_setup, true)) {
                         if (!defined('NV_LANGUAGE_ADD')) {

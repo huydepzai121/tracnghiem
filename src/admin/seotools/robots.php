@@ -26,24 +26,50 @@ $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('OP', $op);
 
-if ($checkss == $nv_Request->get_string('checkss', 'post')) {
-    $robots_data = $nv_Request->get_array('filename', 'post');
-    $fileother = $nv_Request->get_array('fileother', 'post');
-    $optionother = $nv_Request->get_array('optionother', 'post');
-    $robots_other = [];
-    foreach ($fileother as $key => $value) {
-        if (!empty($value)) {
-            $robots_other[$value] = (int) ($optionother[$key]);
+// Các tệp cố định
+$files = scandir(NV_ROOTDIR, true);
+sort($files);
+$static_files = [];
+foreach ($files as $file) {
+    if (!preg_match('/^\.(.*)$/', $file)) {
+        if (is_dir(NV_ROOTDIR . '/' . $file)) {
+            $file = '/' . $file . '/';
+        } else {
+            $file = '/' . $file;
+        }
+        $static_files[] = $file;
+    }
+}
+
+if ($checkss == $nv_Request->get_string('checkss', 'post', '')) {
+    $_robots_data = $nv_Request->get_array('filename', 'post');
+    $_fileother = $nv_Request->get_array('fileother', 'post');
+    $_optionother = $nv_Request->get_array('optionother', 'post');
+
+    // Xử lý dữ liệu
+    $robots_other = $robots_data = [];
+    foreach ($_robots_data as $key => $value) {
+        if (in_array($key, $static_files, true)) {
+            $value = intval($value);
+            if (!in_array($value, [0, 1, 2],  true)) {
+                $value = 1;
+            }
+            $robots_data[$key] = $value;
         }
     }
 
-    $content_config = "<?php\n\n";
-    $content_config .= NV_FILEHEAD . "\n\n";
-    $content_config .= "if (!defined('NV_MAINFILE')) {\n    exit('Stop!!!');\n}\n\n";
-    $content_config .= "\$cache = '" . serialize($robots_data) . "';\n\n";
-    $content_config .= "\$cache_other = '" . serialize($robots_other) . "';\n";
+    foreach ($_fileother as $key => $value) {
+        $value = nv_substr(trim(strip_tags($value)), 0, 255);
+        if (strpos($value, '/') === 0 and !in_array($value, $static_files, true)) {
+            $cfg_value = intval($_optionother[$key] ?? 1);
+            if (!in_array($cfg_value, [0, 1, 2],  true)) {
+                $cfg_value = 1;
+            }
+            $robots_other[$value] = $cfg_value;
+        }
+    }
 
-    file_put_contents($cache_file, $content_config, LOCK_EX);
+    nv_update_robots([$robots_data, $robots_other], true);
 
     // Không hỗ trợ rewrite thì ghi trực tiếp vào file txt. Không thì dùng rewrite để đọc trong php
     if (!$global_config['check_rewrite_file'] or !$global_config['rewrite_enable']) {
@@ -51,6 +77,13 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
         $rbcontents[] = 'User-agent: *';
 
         foreach ($robots_data as $key => $value) {
+            if ($value == 0) {
+                $rbcontents[] = 'Disallow: ' . $key;
+            } elseif ($value == 2) {
+                $rbcontents[] = 'Allow: ' . $key;
+            }
+        }
+        foreach ($robots_other as $key => $value) {
             if ($value == 0) {
                 $rbcontents[] = 'Disallow: ' . $key;
             } elseif ($value == 2) {
@@ -76,50 +109,11 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&rand=' . nv_genpass());
 }
 
+[$robots_data, $robots_other] = nv_update_robots(false);
+
 $tpl->assign('CHECKSS', $checkss);
-
-$robots_data = [];
-$robots_other = [];
-
-if (file_exists($cache_file)) {
-    include $cache_file;
-    $robots_data = unserialize($cache);
-    $robots_other = unserialize($cache_other);
-} else {
-    $robots_data['/' . NV_DATADIR . '/'] = 0;
-    $robots_data['/includes/'] = 0;
-    $robots_data['/install/'] = 0;
-    $robots_data['/modules/'] = 0;
-    $robots_data['/robots.php'] = 0;
-    $robots_data['/web.config'] = 0;
-}
-if ($global_config['rewrite_enable']) {
-    foreach ($site_mods as $key => $value) {
-        if ($value['module_file'] == 'users' or $value['module_file'] == 'statistics') {
-            $_url = nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $key, true);
-            if (!isset($robots_other[$_url])) {
-                $robots_other[$_url] = 0;
-            }
-        }
-    }
-}
-$files = scandir(NV_ROOTDIR, true);
-sort($files);
-$array_files = [];
-foreach ($files as $file) {
-    if (!preg_match('/^\.(.*)$/', $file)) {
-        if (is_dir(NV_ROOTDIR . '/' . $file)) {
-            $file = '/' . $file . '/';
-        } else {
-            $file = '/' . $file;
-        }
-        $array_files[] = [
-            'filename' => $file,
-            'type' => $robots_data[$file] ?? 1
-        ];
-    }
-}
-$tpl->assign('FILES', $array_files);
+$tpl->assign('ROBOTS_DATA', $robots_data);
+$tpl->assign('STATIC_FILES', $static_files);
 $tpl->assign('ROBOTS_OTHER', $robots_other);
 
 $contents = $tpl->fetch('robots.tpl');

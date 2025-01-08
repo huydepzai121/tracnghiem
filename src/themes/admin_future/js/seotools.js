@@ -301,4 +301,25 @@ $(function() {
             id = (metaGroupsName == 'name') ? 'meta-name-list' : (metaGroupsName == 'property' ? 'meta-property-list' : 'meta-http-equiv-list');
         $('.metaGroupsValue-opt', this).html($('#' + id).html());
     });
+
+    // Thêm dòng robots
+    $('#robots-manage').on('click', '[data-toggle="robot_line_add"]', function() {
+        var item = $(this).closest('.item'),
+            newitem = item.clone();
+        $('[name^=optionother] option:selected', newitem).prop('selected', false);
+        $('[name^=fileother]', newitem).val('');
+        item.after(newitem);
+    });
+
+    // Xóa dòng robots
+    $('#robots-manage').on('click', '[data-toggle="robot_line_delete"]', function() {
+        var items = $(this).closest('.items'),
+            item = $(this).closest('.item');
+        if ($('.item', items).length > 1) {
+            item.remove();
+        } else {
+            $('[name^=optionother] option:selected', item).prop('selected', false);
+            $('[name^=fileother]', item).val('');
+        }
+    });
 });
