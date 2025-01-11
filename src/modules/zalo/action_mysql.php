@@ -150,12 +150,14 @@ $sql_create_module[] = 'CREATE TABLE ' . $db_config['prefix'] . "_zalo_video (
 ) ENGINE=MyISAM";
 
 $sql_create_module[] = 'DELETE FROM ' . NV_CONFIG_GLOBALTABLE . " WHERE  config_name IN ('zaloOfficialAccountID', 'zaloAppID', 'zaloAppSecretKey', 'zaloOAAccessToken', 'zaloOARefreshToken', 'zaloOAAccessTokenTime', 'zaloOASecretKey', 'zaloWebhookIPs', 'check_zaloip_expired')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (`lang`, `module`, `config_name`, `config_value`) VALUES ('sys', 'site', 'zaloOfficialAccountID', '')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (`lang`, `module`, `config_name`, `config_value`) VALUES ('sys', 'site', 'zaloAppID', '')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (`lang`, `module`, `config_name`, `config_value`) VALUES ('sys', 'site', 'zaloAppSecretKey', '')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (`lang`, `module`, `config_name`, `config_value`) VALUES ('sys', 'site', 'zaloOAAccessToken', '')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (`lang`, `module`, `config_name`, `config_value`) VALUES ('sys', 'site', 'zaloOARefreshToken', '')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (`lang`, `module`, `config_name`, `config_value`) VALUES ('sys', 'site', 'zaloOAAccessTokenTime', '0')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (`lang`, `module`, `config_name`, `config_value`) VALUES ('sys', 'site', 'zaloOASecretKey', '')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (`lang`, `module`, `config_name`, `config_value`) VALUES ('sys', 'global', 'zaloWebhookIPs', '')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (`lang`, `module`, `config_name`, `config_value`) VALUES ('sys', 'global', 'check_zaloip_expired', '0')";
+
+$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (`lang`, `module`, `config_name`, `config_value`) VALUES
+('sys', 'site', 'zaloOfficialAccountID', ''),
+('sys', 'site', 'zaloAppID', ''),
+('sys', 'site', 'zaloAppSecretKey', ''),
+('sys', 'site', 'zaloOAAccessToken', ''),
+('sys', 'site', 'zaloOARefreshToken', ''),
+('sys', 'site', 'zaloOAAccessTokenTime', '0'),
+('sys', 'site', 'zaloOASecretKey', ''),
+('sys', 'global', 'zaloWebhookIPs', ''),
+('sys', 'global', 'check_zaloip_expired', '0')";

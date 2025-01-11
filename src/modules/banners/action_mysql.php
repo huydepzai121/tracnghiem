@@ -112,12 +112,14 @@ $sql_create_module[] = 'CREATE TABLE IF NOT EXISTS ' . $db_config['prefix'] . "_
 ) ENGINE=MyISAM";
 
 if (defined('NV_IS_INSTALL') or defined('NV_MODULE_RECREATE') or defined('NV_MODULE_ADD')) {
-    $sql_create_module[] = 'INSERT IGNORE INTO ' . $db_config['prefix'] . "_banners_plans (id, blang, title, description, form, width, height, act, require_image, uploadtype) VALUES (1, '', 'Mid-page ad block', '', 'sequential', 575, 72, 1, 1, 'images')";
-    $sql_create_module[] = 'INSERT IGNORE INTO ' . $db_config['prefix'] . "_banners_plans (id, blang, title, description, form, width, height, act, require_image, uploadtype) VALUES (2, '', 'Left-column ad block', '', 'sequential', 212, 800, 1, 1, 'images')";
-    $sql_create_module[] = 'INSERT IGNORE INTO ' . $db_config['prefix'] . "_banners_plans (id, blang, title, description, form, width, height, act, require_image, uploadtype) VALUES (3, '', 'Right-column ad block', '', 'random', 250, 500, 1, 1, 'images')";
+    $sql_create_module[] = 'INSERT IGNORE INTO ' . $db_config['prefix'] . "_banners_plans (id, blang, title, description, form, width, height, act, require_image, uploadtype) VALUES
+    (1, '', 'Mid-page ad block', '', 'sequential', 575, 72, 1, 1, 'images'),
+    (2, '', 'Left-column ad block', '', 'sequential', 212, 800, 1, 1, 'images'),
+    (3, '', 'Right-column ad block', '', 'random', 250, 500, 1, 1, 'images')";
 
-    $sql_create_module[] = 'INSERT IGNORE INTO ' . $db_config['prefix'] . "_banners_rows (id, title, pid, clid, file_name, file_ext, file_mime, width, height, file_alt, imageforswf, click_url, target, bannerhtml, add_time, publ_time, exp_time, hits_total, act, weight) VALUES (1, 'Mid-page advertisement', 1, 1, 'webnhanh.jpg', 'png', 'image/jpeg', 575, 72, '', '', 'http://webnhanh.vn', '_blank', '', " . NV_CURRENTTIME . ', ' . NV_CURRENTTIME . ', 0, 0, 1, 1)';
-    $sql_create_module[] = 'INSERT IGNORE INTO ' . $db_config['prefix'] . "_banners_rows (id, title, pid, clid, file_name, file_ext, file_mime, width, height, file_alt, imageforswf, click_url, target, bannerhtml, add_time, publ_time, exp_time, hits_total, act, weight) VALUES (2, 'Left-column advertisement', 2, 1, 'vinades.jpg', 'jpg', 'image/jpeg', 212, 400, '', '', 'https://vinades.vn', '_blank', '', " . NV_CURRENTTIME . ', ' . NV_CURRENTTIME . ', 0, 0, 1, 2)';
+    $sql_create_module[] = 'INSERT IGNORE INTO ' . $db_config['prefix'] . "_banners_rows (id, title, pid, clid, file_name, file_ext, file_mime, width, height, file_alt, imageforswf, click_url, target, bannerhtml, add_time, publ_time, exp_time, hits_total, act, weight) VALUES
+    (1, 'Mid-page advertisement', 1, 1, 'webnhanh.jpg', 'png', 'image/jpeg', 575, 72, '', '', 'http://webnhanh.vn', '_blank', '', " . NV_CURRENTTIME . ", " . NV_CURRENTTIME . ", 0, 0, 1, 1),
+    (2, 'Left-column advertisement', 2, 1, 'vinades.jpg', 'jpg', 'image/jpeg', 212, 400, '', '', 'https://vinades.vn', '_blank', '', " . NV_CURRENTTIME . ", " . NV_CURRENTTIME . ", 0, 0, 1, 2)";
 
     $sql_create_module[] = 'INSERT IGNORE INTO ' . NV_CONFIG_GLOBALTABLE . " (`lang`, `module`, `config_name`, `config_value`) VALUES ('sys', 'banners', 'captcha_type', 'captcha')";
 }

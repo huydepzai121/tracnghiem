@@ -93,9 +93,10 @@ $sql_create_module[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . '_
 ) ENGINE=MyISAM";
 
 // Cấu hình mặc định của module
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'bodytext', '')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'sendcopymode', '0')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'silent_mode', '1')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'feedback_phone', '0')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'feedback_address', '0')";
-$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'captcha_type', 'captcha')";
+$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES
+('" . $lang . "', '" . $module_name . "', 'bodytext', ''),
+('" . $lang . "', '" . $module_name . "', 'sendcopymode', '0'),
+('" . $lang . "', '" . $module_name . "', 'silent_mode', '1'),
+('" . $lang . "', '" . $module_name . "', 'feedback_phone', '0'),
+('" . $lang . "', '" . $module_name . "', 'feedback_address', '0'),
+('" . $lang . "', '" . $module_name . "', 'captcha_type', 'captcha')";
