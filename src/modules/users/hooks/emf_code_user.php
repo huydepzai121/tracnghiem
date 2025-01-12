@@ -67,6 +67,10 @@ $callback = function ($vars, $from_data, $receive_data) {
             'name' => $nv_Lang->getModule('pass_reset_request'),
             'data' => 0
         ];
+        $merge_fields['email_reset'] = [
+            'name' => $nv_Lang->getModule('email_reset_request'),
+            'data' => 0
+        ];
         $merge_fields['password'] = [
             'name' => $nv_Lang->getModule('password'),
             'data' => ''

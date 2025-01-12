@@ -102,6 +102,7 @@ if ($nv_Request->isset_request('userid', 'get')) {
             'password' => $nv_Request->get_title('password', 'post', ''),
             're_password' => $nv_Request->get_title('re_password', 'post', ''),
             'pass_reset_request' => $nv_Request->get_int('pass_reset_request', 'post', 0),
+            'email_reset_request' => $nv_Request->get_int('email_reset_request', 'post', 0),
             'first_name' => nv_substr($nv_Request->get_title('first_name', 'post', '', 1), 0, 255),
             'last_name' => nv_substr($nv_Request->get_title('last_name', 'post', '', 1), 0, 255),
             'gender' => nv_substr($nv_Request->get_title('gender', 'post', '', 1), 0, 1),
@@ -271,6 +272,9 @@ if ($nv_Request->isset_request('userid', 'get')) {
         if ($post['pass_reset_request'] > 2 or $post['pass_reset_request'] < 0) {
             $post['pass_reset_request'] = 0;
         }
+        if ($post['email_reset_request'] > 2 or $post['email_reset_request'] < 0) {
+            $post['email_reset_request'] = 0;
+        }
 
         $post['email_verification_time'] = $post['is_email_verified'] ? -1 : 0;
 
@@ -342,13 +346,13 @@ if ($nv_Request->isset_request('userid', 'get')) {
         $sql = 'INSERT INTO ' . NV_MOD_TABLE . ' (
             group_id, username, md5username, password, email, first_name, last_name, gender, photo, birthday, sig,
             regdate, question, answer, view_mail, remember, in_groups, active,
-            idsite, pass_creation_time, pass_reset_request,
+            idsite, pass_creation_time, pass_reset_request, email_creation_time, email_reset_request,
             email_verification_time, active_obj
         ) VALUES (
             :group_id, :username, :md5username, :password, :email, :first_name, :last_name, :gender, :photo, :birthday, :sig,
             ' . $userdata['regdate'] . ', :question, :answer, ' . $post['view_mail'] . ', 1, :in_groups, 1,
             ' . $userdata['idsite'] . ', ' . $post['pass_creation_time'] . ', ' . $post['pass_reset_request'] . ',
-            ' . $post['email_verification_time'] . ', :active_obj
+            ' . $userdata['regdate'] . ', ' . $post['email_reset_request'] . ', ' . $post['email_verification_time'] . ', :active_obj
         )';
 
         $data_insert = [];
@@ -453,7 +457,8 @@ if ($nv_Request->isset_request('userid', 'get')) {
                     'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN),
                     'oauth_name' => !empty($userdata['openid_info']) ? ucfirst($reg_attribs['server']) : '',
                     'password' => $password,
-                    'pass_reset' => $post['pass_reset_request']
+                    'pass_reset' => $post['pass_reset_request'],
+                    'email_reset' => $post['email_reset_request']
                 ]
             ]];
             nv_sendmail_template_async([$module_name, Emails::ACTIVE_BY_ADMIN], $send_data, $maillang);
@@ -491,6 +496,14 @@ if ($nv_Request->isset_request('userid', 'get')) {
             'title' => $nv_Lang->getModule('pass_reset_request' . $i)
         ]);
         $xtpl->parse('user_details.pass_reset_request');
+    }
+
+    for ($i = 0; $i <= 2; ++$i) {
+        $xtpl->assign('EMAILRESET', [
+            'num' => $i,
+            'title' => $nv_Lang->getModule('email_reset_request' . $i)
+        ]);
+        $xtpl->parse('user_details.email_reset_request');
     }
 
     $group_exists = false;

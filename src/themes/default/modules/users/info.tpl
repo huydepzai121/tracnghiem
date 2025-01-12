@@ -7,6 +7,11 @@
     {CHANGEPASS_INFO}
 </div>
 <!-- END: changepass_request2 -->
+<!-- BEGIN: changeemail_request2 -->
+<div class="alert alert-danger">
+    {CHANGEEMAIL_INFO}
+</div>
+<!-- END: changeemail_request2 -->
 <div class="page">
     <h2 class="margin-bottom-lg margin-top-lg">{LANG.editinfo_pagetitle}</h2>
     <ul class="users-menu nav nav-tabs margin-bottom">
@@ -218,6 +223,11 @@
                 <button type="button" class="btn btn-primary btn-xs" data-toggle="addpass">{LANG.add_pass}</button>
             </div>
             <!-- END: email_empty_pass -->
+            <!-- BEGIN: change_required -->
+            <div class="alert alert-danger">
+                <em class="fa fa-exclamation-triangle "></em> {LANG.email_reset1_info}
+            </div>
+            <!-- END: change_required -->
             <form action="{EDITINFO_FORM}/email" method="post" role="form" class="form-horizontal{FORM_HIDDEN}" data-toggle="changemail_validForm" autocomplete="off" novalidate>
                 <div class="nv-info" style="margin-bottom:30px">{LANG.edit_email_warning}</div>
                 <div class="nv-info-default hidden">{LANG.edit_email_warning}</div>

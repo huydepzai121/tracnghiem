@@ -563,6 +563,25 @@ function passResetRequest(id) {
     });
 }
 
+function emailResetRequest(id) {
+    $.ajax({
+        type: 'POST',
+        cache: !1,
+        url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=edit&userid=' + id + '&nocache=' + new Date().getTime(),
+        data: 'esr=1',
+        dataType: "json",
+        success: function(e) {
+            $('#email-reset-modal .userid').val(e.userid);
+            $('#email-reset-modal .username').text(e.username);
+            $('#email-reset-modal .currentemail-created-time').text(e.email_creation_time);
+            $('#email-reset-modal .currentemail-request-status').text(e.email_reset_request);
+            $('#email-reset-modal .btn').removeClass('disabled');
+            $('#email-reset-modal .fa-spin').hide();
+            $('#email-reset-modal').modal('show')
+        }
+    });
+}
+
 function forcedReLogin(id) {
     $.ajax({
         type: 'POST',
@@ -590,6 +609,24 @@ function passResetRequestSubmit(event, obj, type) {
         success: function(e) {
             alert(e);
             $('#pass-reset-modal').modal('hide')
+        }
+    });
+}
+
+function emailResetRequestSubmit(event, obj, type) {
+    event.preventDefault();
+    var userid = $('#email-reset-modal .userid').val();
+    $('#email-reset-modal .btn').addClass('disabled');
+    $(obj).next().show();
+    $.ajax({
+        type: 'POST',
+        cache: !1,
+        url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=edit&userid=' + userid + '&nocache=' + new Date().getTime(),
+        data: 'esr=1&type=' + type,
+        dataType: "html",
+        success: function(e) {
+            alert(e);
+            $('#email-reset-modal').modal('hide')
         }
     });
 }

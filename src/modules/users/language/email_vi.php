@@ -89,7 +89,7 @@ $module_emails[Emails::ADDED_BY_ADMIN] = [
     'catid' => $catid,
     't' => 'Thông báo tài khoản được quản trị khởi tạo',
     's' => 'Tài khoản của bạn đã được tạo',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được khởi tạo. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />Mật khẩu: {$password}<br />{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.<br />{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.<br />{/if}<br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được khởi tạo. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />Mật khẩu: {$password}<br />{if $pass_reset gt 0 or $email_reset gt 0}<br />Chú ý:<br />{if $pass_reset eq 2}- Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.<br />{elseif $pass_reset eq 1}- Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.<br />{/if}{if $email_reset eq 2}- Chúng tôi khuyến cáo bạn nên thay đổi email trước khi sử dụng tài khoản.<br />{elseif $email_reset eq 1}- Bạn cần đổi email trước khi sử dụng tài khoản.<br />{/if}{/if}<br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::SAFE_KEY] = [
     'is_system' => $is_system,
@@ -116,7 +116,7 @@ $module_emails[Emails::EDIT_BY_ADMIN] = [
     'catid' => $catid,
     't' => 'Thông báo các thay đổi về tài khoản vừa được quản trị thực hiện',
     's' => 'Tài khoản của bạn đã được cập nhật',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được cập nhật. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}{if not empty($password)}<br />Mật khẩu: {$password}{/if}<br />{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.<br />{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.<br />{/if}<br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được cập nhật. Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />Email: {$email}{if not empty($password)}<br />Mật khẩu: {$password}{/if}<br />{if $pass_reset gt 0 or $email_reset gt 0}<br />Chú ý:<br />{if $pass_reset eq 2}- Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.<br />{elseif $pass_reset eq 1}- Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.<br />{/if}{if $email_reset eq 2}- Chúng tôi khuyến cáo bạn nên thay đổi email trước khi sử dụng tài khoản.<br />{elseif $email_reset eq 1}- Bạn cần đổi email trước khi sử dụng tài khoản.<br />{/if}{/if}<br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::VERIFY_EMAIL] = [
     'is_system' => $is_system,
@@ -224,7 +224,7 @@ $module_emails[Emails::ACTIVE_BY_ADMIN] = [
     'catid' => $catid,
     't' => 'Email thông báo cho người dùng khi quản trị kích hoạt tài khoản',
     's' => 'Tài khoản của bạn đã được tạo',
-    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. {if empty($oauth_name)}Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />{if not empty($password)}Mật khẩu: {$password}{/if}{else}Để đăng nhập vui lòng truy cập vào trang: <a href="{$link}">{$link}</a> và click vào nút: <strong>Đăng nhập bằng {$oauth_name}</strong>.{if not empty($password)}<br /><br />Bạn cũng có thể đăng nhập theo cách thông thường với thông tin:<br />Bí danh: {$username}<br />Mật khẩu: {$password}{/if}{/if}{if $pass_reset eq 2}<br />Chú ý: Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.{elseif $pass_reset eq 1}<br />Lưu ý: Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.{/if}<br /><br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
+    'c' => '{$greeting_user}<br /><br />Tài khoản của bạn tại website {$site_name} đã được kích hoạt. {if empty($oauth_name)}Dưới đây là thông tin đăng nhập:<br /><br />URL: <a href="{$link}">{$link}</a><br />Bí danh: {$username}<br />{if not empty($password)}Mật khẩu: {$password}{/if}{else}Để đăng nhập vui lòng truy cập vào trang: <a href="{$link}">{$link}</a> và click vào nút: <strong>Đăng nhập bằng {$oauth_name}</strong>.{if not empty($password)}<br /><br />Bạn cũng có thể đăng nhập theo cách thông thường với thông tin:<br />Bí danh: {$username}<br />Mật khẩu: {$password}{/if}{/if}{if $pass_reset gt 0 or $email_reset gt 0}<br />Chú ý:<br />{if $pass_reset eq 2}- Chúng tôi khuyến cáo bạn nên thay đổi mật khẩu trước khi sử dụng tài khoản.<br />{elseif $pass_reset eq 1}- Bạn cần đổi mật khẩu trước khi sử dụng tài khoản.<br />{/if}{if $email_reset eq 2}- Chúng tôi khuyến cáo bạn nên thay đổi email trước khi sử dụng tài khoản.<br />{elseif $email_reset eq 1}- Bạn cần đổi email trước khi sử dụng tài khoản.<br />{/if}{/if}<br />Đây là thư tự động được gửi đến hòm thư điện tử của bạn từ website {$site_name}. Nếu bạn không hiểu gì về nội dung bức thư này, đơn giản hãy xóa nó đi.'
 ];
 $module_emails[Emails::REQUEST_RESET_PASS] = [
     'is_system' => $is_system,
@@ -261,4 +261,13 @@ $module_emails[Emails::OAUTH_TRUNCATE] = [
     't' => 'Thông báo đến người dùng khi quản trị xóa tất cả Oauth của họ',
     's' => 'Thông báo bảo mật',
     'c' => '{$greeting_user}<br /><br />Chúng tôi thông tin đến bạn là tất cả các tài khoản bên thứ ba vừa được ngắt kết nối khỏi tài khoản của bạn bởi quản trị viên.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Quản lý tài khoản bên thứ ba</a>'
+];
+$module_emails[Emails::REQUEST_RESET_EMAIL] = [
+    'is_system' => $is_system,
+    'pids' => $pids,
+    'pfile' => $pfile,
+    'catid' => $catid,
+    't' => 'Email yêu cầu người dùng thay đổi email',
+    's' => '{if $email_reset eq 2}Khuyến cáo thay đổi email{else}Cần thay đổi email{/if}',
+    'c' => '{$greeting_user}<br /><br />Ban quản trị website {$site_name} xin thông báo: Vì lý do bảo mật chúng tôi {if $email_reset eq 2}khuyến cáo bạn nên{else}đề nghị bạn nhanh chóng{/if} thay đổi email tài khoản của mình. Để thay đổi email, trước hết bạn cần truy cập vào trang <a href="{$link}">Quản lý tài khoản cá nhân</a>, chọn nút Thiết lập tài khoản, sau đó chọn nút Email và làm theo hướng dẫn.'
 ];

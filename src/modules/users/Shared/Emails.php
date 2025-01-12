@@ -149,4 +149,9 @@ class Emails
      * @var integer Thông báo đến người dùng xác thực hai bước đã được quản trị tắt
      */
     public const OFF2S_BY_ADMIN = 26;
+
+    /**
+     * @var integer Email yêu cầu người dùng thay đổi email
+     */
+    public const REQUEST_RESET_EMAIL = 27;
 }

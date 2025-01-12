@@ -265,6 +265,17 @@
                         </td>
                     </tr>
                     <tr>
+                        <td><strong>{LANG.email_reset_request}</strong></td>
+                        <td></td>
+                        <td>
+                            <select class="form-control" name="email_reset_request" style="width: fit-content;">
+                                <!-- BEGIN: email_reset_request -->
+                                <option value="{EMAILRESET.num}" {EMAILRESET.sel}>{EMAILRESET.title}</option>
+                                <!-- END: email_reset_request -->
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
                         <td><strong>{LANG.adduser_email1}</strong></td>
                         <td></td>
                         <td><label><input type="checkbox" name="adduser_email" value="1" {DATA.adduser_email} /> <small>{LANG.adduser_email1_note1}</small></label></td>

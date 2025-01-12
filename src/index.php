@@ -41,12 +41,19 @@ if (defined('NV_IS_USER')) {
 }
 require NV_ROOTDIR . '/includes/core/is_user.php';
 
-// Nếu buộc phải thay đổi mật khẩu hoặc thay đổi mật khẩu định kỳ
-// Thì chuyển hướng đến trang thay đổi mật khẩu
 if (defined('NV_IS_USER')) {
     if (((int) $user_info['pass_reset_request'] == 1) or (!empty($global_config['pass_timeout']) && (((int) $user_info['pass_creation_time'] + (int) $global_config['pass_timeout']) < NV_CURRENTTIME))) {
+        /*
+        * Nếu buộc phải thay đổi mật khẩu hoặc thay đổi mật khẩu định kỳ
+        * Thì chuyển hướng đến trang thay đổi mật khẩu
+        */
         if (getPageUrl(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=users&amp;' . NV_OP_VARIABLE . '=editinfo/password', true, false) === false and getPageUrl(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=users&amp;' . NV_OP_VARIABLE . '=logout', true, false) === false) {
             nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=users&amp;' . NV_OP_VARIABLE . '=editinfo/password');
+        }
+    } elseif ($user_info['email_reset_request'] == 1) {
+        // Nếu bắt buộc thay đổi email thì chuyển hướng đến trang thay đổi email
+        if (getPageUrl(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=users&amp;' . NV_OP_VARIABLE . '=editinfo/email', true, false) === false and getPageUrl(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=users&amp;' . NV_OP_VARIABLE . '=logout', true, false) === false) {
+            nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=users&amp;' . NV_OP_VARIABLE . '=editinfo/email');
         }
     }
 }

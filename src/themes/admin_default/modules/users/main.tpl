@@ -147,6 +147,7 @@
                                     <li><a href="{EDIT_OAUTH_URL}">{LANG.user_openid_mamager}</a></li>
                                     <li><a href="{EDIT_2STEP_URL}">{LANG.user_2step_mamager}</a></li>
                                     <li><a href="javascript:void(0);" onclick="passResetRequest({CONTENT_TD.userid});">{LANG.pass_reset_request}</a></li>
+                                    <li><a href="javascript:void(0);" onclick="emailResetRequest({CONTENT_TD.userid});">{LANG.email_reset_request}</a></li>
                                     <li><a href="javascript:void(0);" onclick="forcedReLogin({CONTENT_TD.userid});">{LANG.forcedrelogin}</a></li>
                                 </ul>
                                 <!-- END: edit2 -->
@@ -190,7 +191,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{GLANG.close}"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">{LANG.pass_reset_request}</h4>
             </div>
             <div class="modal-body">
@@ -202,11 +203,32 @@
                 <p><a class="btn btn-primary btn-xs" href="javascript:void(0);" onclick="passResetRequestSubmit(event, this, 2);">{LANG.pass_reset_request2_send}</a><span class="fa fa-spinner fa-spin m-left" style="display:none"></span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">{GLANG.close}</button>
             </div>
         </div>
     </div>
-</div><!-- /.modal -->
+</div>
+<div id="email-reset-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="{GLANG.close}"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{LANG.email_reset_request}</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" class="userid" value="0" />
+                <p>{GLANG.username}: <span class="username"></span></p>
+                <p>{LANG.currentemail_created_time}: <span class="currentemail-created-time"></span></p>
+                <p>{LANG.currentemail_request_status}: <span class="currentemail-request-status"></span></p>
+                <p><a class="btn btn-primary btn-xs" href="javascript:void(0);" onclick="emailResetRequestSubmit(event, this, 1);">{LANG.email_reset_request1_send}</a><span class="fa fa-spinner fa-spin m-left" style="display:none"></span></p>
+                <p><a class="btn btn-primary btn-xs" href="javascript:void(0);" onclick="emailResetRequestSubmit(event, this, 2);">{LANG.email_reset_request2_send}</a><span class="fa fa-spinner fa-spin m-left" style="display:none"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{GLANG.close}</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     var export_note = '{LANG.export_note}';
     var export_complete = '{LANG.export_complete}';

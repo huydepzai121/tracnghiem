@@ -122,6 +122,49 @@ if ($nv_Request->isset_request('psr', 'post')) {
     ]);
 }
 
+// Yêu cầu thay đổi email
+if ($nv_Request->isset_request('esr', 'post')) {
+    if ($nv_Request->isset_request('type', 'post')) {
+        $type = $nv_Request->get_int('type', 'post', 0);
+        if ($type == 1 or $type == 2) {
+            $db->query('UPDATE ' . NV_MOD_TABLE . ' SET email_reset_request = ' . $type . ', last_update = ' . NV_CURRENTTIME . ' WHERE userid=' . $userid);
+
+            nv_insert_logs(NV_LANG_DATA, $module_name, 'Change email request', 'userid ' . $userid, $admin_info['userid']);
+
+            $maillang = NV_LANG_INTERFACE;
+            if (!empty($row['language']) and in_array($row['language'], $global_config['setup_langs'], true)) {
+                if ($row['language'] != NV_LANG_INTERFACE) {
+                    $maillang = $row['language'];
+                }
+            } elseif (NV_LANG_DATA != NV_LANG_INTERFACE) {
+                $maillang = NV_LANG_DATA;
+            }
+
+            $send_data = [[
+                'to' => $row['email'],
+                'data' => [
+                    'first_name' => $row['first_name'],
+                    'last_name' => $row['last_name'],
+                    'username' => $row['username'],
+                    'email' => $row['email'],
+                    'gender' => $row['gender'],
+                    'lang' => $maillang,
+                    'email_reset' => $type,
+                    'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN)
+                ]
+            ]];
+            nv_sendmail_template_async([$module_name, Emails::REQUEST_RESET_EMAIL], $send_data, $maillang);
+        }
+        exit($nv_Lang->getModule('email_reset_request_sent'));
+    }
+    nv_jsonOutput([
+        'userid' => $userid,
+        'username' => $row['username'],
+        'email_creation_time' => nv_datetime_format($row['email_creation_time']),
+        'email_reset_request' => $nv_Lang->getModule('email_reset_request' . $row['email_reset_request'])
+    ]);
+}
+
 $groups_list = nv_groups_list($module_data);
 $array_field_config = nv_get_users_field_config();
 
@@ -161,6 +204,7 @@ if ($nv_Request->isset_request('confirm', 'post')) {
         $_user['password1'] = $_user['password2'] = '';
     }
     $_user['pass_reset_request'] = $nv_Request->get_int('pass_reset_request', 'post', 0);
+    $_user['email_reset_request'] = $nv_Request->get_int('email_reset_request', 'post', 0);
     $_user['question'] = nv_substr($nv_Request->get_title('question', 'post', '', 1), 0, 255);
     $_user['answer'] = nv_substr($nv_Request->get_title('answer', 'post', '', 1), 0, 255);
     $_user['first_name'] = nv_substr($nv_Request->get_title('first_name', 'post', '', 1), 0, 255);
@@ -404,6 +448,9 @@ if ($nv_Request->isset_request('confirm', 'post')) {
     if ($_user['pass_reset_request'] > 2 or $_user['pass_reset_request'] < 0) {
         $_user['pass_reset_request'] = 0;
     }
+    if ($_user['email_reset_request'] > 2 or $_user['email_reset_request'] < 0) {
+        $_user['email_reset_request'] = 0;
+    }
 
     $db->query('UPDATE ' . NV_MOD_TABLE . ' SET
         group_id=' . $_user['in_groups_default'] . ',
@@ -423,6 +470,7 @@ if ($nv_Request->isset_request('confirm', 'post')) {
         in_groups='" . implode(',', $in_groups) . "',
         pass_creation_time=" . $pass_creation_time . ',
         pass_reset_request=' . $_user['pass_reset_request'] . ',
+        email_reset_request=' . $_user['email_reset_request'] . ',
         email_verification_time=' . $email_verification_time . ',
         last_update=' . NV_CURRENTTIME . '
     WHERE userid=' . $userid);
@@ -453,6 +501,7 @@ if ($nv_Request->isset_request('confirm', 'post')) {
                 'lang' => $maillang,
                 'link' => urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN),
                 'pass_reset' => $_user['pass_reset_request'],
+                'email_reset' => $_user['email_reset_request'],
                 'password' => $_user['password1']
             ]
         ]];
@@ -555,6 +604,15 @@ if (defined('NV_IS_USER_FORUM')) {
             'title' => $nv_Lang->getModule('pass_reset_request' . $i)
         ]);
         $xtpl->parse('main.edit_user.pass_reset_request');
+    }
+
+    for ($i = 0; $i <= 2; ++$i) {
+        $xtpl->assign('EMAILRESET', [
+            'num' => $i,
+            'sel' => $i == $_user['email_reset_request'] ? ' selected="selected"' : '',
+            'title' => $nv_Lang->getModule('email_reset_request' . $i)
+        ]);
+        $xtpl->parse('main.edit_user.email_reset_request');
     }
 
     if ($access_passus) {

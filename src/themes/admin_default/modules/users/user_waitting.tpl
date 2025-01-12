@@ -118,6 +118,16 @@
                                 </select>
                             </td>
                         </tr>
+                        <tr>
+                            <td> {LANG.email_reset_request} </td>
+                            <td>
+                                <select class="form-control" name="email_reset_request">
+                                    <!-- BEGIN: email_reset_request -->
+                                    <option value="{EMAILRESET.num}">{EMAILRESET.title}</option>
+                                    <!-- END: email_reset_request -->
+                                </select>
+                            </td>
+                        </tr>
                         <!-- BEGIN: name_show_0 -->
                         <!-- BEGIN: show_last_name-->
                         <tr>

@@ -70,7 +70,7 @@ function nv_parse_ini_file($filename, $process_sections = false)
  * nv_scandir()
  *
  * @param string $directory
- * @param string $pattern
+ * @param string|array $pattern
  * @param int    $sorting_order
  * @return array
  */

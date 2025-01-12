@@ -806,6 +806,11 @@ function user_info($data, $array_field_config, $custom_fields, $types, $data_que
         $xtpl->parse('main.changepass_request2');
     }
 
+    if ((int) $user_info['email_reset_request'] == 2 and $data['type'] != 'email') {
+        $xtpl->assign('CHANGEEMAIL_INFO', $nv_Lang->getModule('email_reset2_info', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=editinfo/email'));
+        $xtpl->parse('main.changeemail_request2');
+    }
+
     // Thông tin cơ bản
     $array_basic_key = [
         'first_name',
@@ -974,6 +979,12 @@ function user_info($data, $array_field_config, $custom_fields, $types, $data_que
         if (!empty($global_config['allowuserloginmulti'])) {
             $xtpl->parse('main.tab_edit_email.forcedrelogin');
         }
+
+        // Thông báo lí do vì sao bị đưa đến trang đổi email
+        if ($user_info['email_reset_request'] == 1) {
+            $xtpl->parse('main.tab_edit_email.change_required');
+        }
+
         $xtpl->parse('main.edit_email');
         $xtpl->parse('main.tab_edit_email');
     }
@@ -1395,6 +1406,11 @@ function user_welcome($array_field_config, $custom_fields)
     if ((int) $user_info['pass_reset_request'] == 2) {
         $xtpl->assign('CHANGEPASS_INFO', $nv_Lang->getModule('pass_reset2_info', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=editinfo/password'));
         $xtpl->parse('main.changepass_request2');
+    }
+
+    if ((int) $user_info['email_reset_request'] == 2) {
+        $xtpl->assign('CHANGEEMAIL_INFO', $nv_Lang->getModule('email_reset2_info', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=editinfo/email'));
+        $xtpl->parse('main.changeemail_request2');
     }
 
     if (!empty($user_info['avata'])) {

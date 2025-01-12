@@ -31,14 +31,11 @@ class AdminLoginCest
     }
 
     /**
-     * @param AcceptanceTester $I
-     *
-     * @group sendmail
-     * @group all
+     * @param \Tests\Support\AcceptanceTester $I
+     * @return void
      */
-    public function sendEmailSmtp(AcceptanceTester $I)
+    private function setSMTPConfig(AcceptanceTester $I)
     {
-        $I->wantTo('Test send email with SMTP');
         $I->login();
 
         $I->amOnUrl($I->getDomain() . '/admin/vi/settings/smtp/');
@@ -69,11 +66,41 @@ class AdminLoginCest
         $I->click('label[for="verify_peer_name_ssl_0"]');
         $I->fillField('input[name="smtp_username"]', $_ENV['SMTP_USER']);
         $I->fillField('input[name="smtp_password"]', $_ENV['SMTP_PASS']);
+    }
+
+    /**
+     * @param AcceptanceTester $I
+     *
+     * @group sendmail
+     * @group all
+     */
+    public function sendEmailSmtp(AcceptanceTester $I)
+    {
+        $I->wantTo('Test send email with SMTP');
+        $this->setSMTPConfig($I);
 
         // Gửi thử nghiệm
         $I->click('[data-toggle="smtp_test"]');
         $I->waitForElementVisible('#site-toasts', 60);
         $I->wait(1);
         $I->see('Gửi email thành công');
+    }
+
+    /**
+     * @param \Tests\Support\AcceptanceTester $I
+     * @return void
+     *
+     * @group smtp
+     */
+    public function saveConfigSmtp(AcceptanceTester $I)
+    {
+        $I->wantTo('Save config SMTP');
+        $this->setSMTPConfig($I);
+
+        // Lưu cấu hình
+        $I->submitForm('#sendmail-settings', []);
+        $I->waitForElementVisible('#site-toasts', 60);
+        $I->wait(1);
+        $I->see('Các thay đổi đã được ghi nhận');
     }
 }

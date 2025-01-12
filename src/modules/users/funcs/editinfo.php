@@ -879,7 +879,13 @@ if ($checkss == $array_data['checkss'] and $array_data['type'] == 'basic') {
 
         nv_insert_logs(NV_LANG_DATA, $module_name, 'Change email', $client_info['ip'] . ' | ' . $nv_email . ' | ' . $edit_userid, $user_info['userid']);
 
-        $stmt = $db->prepare('UPDATE ' . NV_MOD_TABLE . ' SET email=:email, email_verification_time=' . NV_CURRENTTIME . ', last_update=' . NV_CURRENTTIME . ' WHERE userid=' . $edit_userid);
+        $stmt = $db->prepare('UPDATE ' . NV_MOD_TABLE . ' SET
+            email=:email,
+            email_creation_time=' . NV_CURRENTTIME . ',
+            email_reset_request=0,
+            email_verification_time=' . NV_CURRENTTIME . ',
+            last_update=' . NV_CURRENTTIME . '
+        WHERE userid=' . $edit_userid);
         $stmt->bindParam(':email', $nv_email, PDO::PARAM_STR);
         $stmt->execute();
 

@@ -38,7 +38,7 @@ if (defined('NV_IS_ADMIN')) {
                 if ($user_cookie['checkhash'] === md5($user_cookie['userid'] . $user_cookie['checknum'] . $global_config['sitekey'] . $client_info['clid'])) {
                     $_sql = 'SELECT a.userid, a.group_id, a.username, a.email, a.first_name, a.last_name, a.gender, a.photo, a.birthday, a.regdate,
                         a.view_mail, a.remember, a.in_groups, a.active2step, a.checknum, a.password, a.question, a.answer, a.safemode, a.pass_creation_time,
-                        a.pass_reset_request, a.email_verification_time, a.last_agent, a.last_ip, a.last_login, a.last_openid, a.language,
+                        a.pass_reset_request, a.email_creation_time, a.email_reset_request, a.email_verification_time, a.last_agent, a.last_ip, a.last_login, a.last_openid, a.language,
                         b.agent AS current_agent, b.ip AS current_ip, b.logtime AS current_login, b.openid AS current_openid
                         FROM ' . NV_USERS_GLOBALTABLE . ' AS a INNER JOIN ' . NV_USERS_GLOBALTABLE . '_login AS b ON a.userid=b.userid
                         WHERE a.userid = ' . $user_cookie['userid'] . ' AND b.clid=' . $db->quote($client_info['clid']) . ' AND a.active=1';

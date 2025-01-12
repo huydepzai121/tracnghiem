@@ -89,7 +89,7 @@ $module_emails[Emails::ADDED_BY_ADMIN] = [
     'catid' => $catid,
     't' => 'Notification de compte créé par l\'administrateur',
     's' => 'Votre compte a été créé',
-    'c' => '{$greeting_user}<br /><br />Votre compte sur le site {$site_name} a été créé. Voici vos informations de connexion:<br /><br />URL: <a href="{$link}">{$link}</a><br />Nom: {$username}<br />Mot de passe: {$password}<br />{if $pass_reset eq 2}<br />Remarque: Nous vous recommandons de changer votre mot de passe avant d\'utiliser votre compte.<br />{elseif $pass_reset eq 1}<br />Remarque: Vous devez changer votre mot de passe avant d\'utiliser votre compte.<br />{/if}<br />Ceci est un message automatique envoyé. votre boîte de réception e-mail à partir du site web {$site_name}. Si vous ne comprenez rien au sujet du contenu de cette lettre, supprimer tout simplement.'
+    'c' => '{$greeting_user}<br /><br />Votre compte sur le site {$site_name} a été créé. Voici vos informations de connexion:<br /><br />URL: <a href="{$link}">{$link}</a><br />Nom: {$username}<br />Mot de passe: {$password}<br />{if $pass_reset gt 0 or $email_reset gt 0}<br />Remarque:<br />{if $pass_reset eq 2}- Nous vous recommandons de changer votre mot de passe avant d\'utiliser le compte.<br />{elseif $pass_reset eq 1}- Vous devez changer votre mot de passe avant d\'utiliser le compte.<br />{/if}{if $email_reset eq 2}- Nous vous recommandons de changer votre email avant d\'utiliser le compte.<br />{elseif $email_reset eq 1}- Vous devez changer votre email avant d\'utiliser le compte.<br />{/if}{/if}<br />Ceci est un message automatique envoyé. votre boîte de réception e-mail à partir du site web {$site_name}. Si vous ne comprenez rien au sujet du contenu de cette lettre, supprimer tout simplement.'
 ];
 $module_emails[Emails::SAFE_KEY] = [
     'is_system' => $is_system,
@@ -116,7 +116,7 @@ $module_emails[Emails::EDIT_BY_ADMIN] = [
     'catid' => $catid,
     't' => 'Notifier les modifications de compte qui viennent d\'être apportées par l\'administrateur',
     's' => 'Votre compte a été mis à jour',
-    'c' => '{$greeting_user}<br /><br />Votre compte sur le site {$site_name} a été mis à jour. Voici les informations de connexion:<br /><br />URL: <a href="{$link}">{$link}</a><br />Nom: {$username}{if not empty($password)}<br />Mot de passe: {$password}{/if}<br />{if $pass_reset eq 2}<br />Remarque: Nous vous recommandons de changer votre mot de passe avant d\'utiliser votre compte.<br />{elseif $pass_reset eq 1}<br />Remarque: Vous devez changer votre mot de passe avant d\'utiliser votre compte.<br />{/if}<br />Ceci est un message automatique envoyé à votre boîte de réception e-mail à partir du site {$site_name}. Si vous ne comprenez rien au sujet du contenu de cette lettre, supprimer tout simplement.'
+    'c' => '{$greeting_user}<br /><br />Votre compte sur le site {$site_name} a été mis à jour. Voici vos informations de connexion :<br /><br />URL : <a href="{$link}">{$link}</a><br />Alias : {$username}<br />Email : {$email}{if not empty($password)}<br />Mot de passe : {$password}{/if}<br />{if $pass_reset gt 0 or $email_reset gt 0}<br />Remarque :<br />{if $pass_reset eq 2}- Nous vous recommandons de changer votre mot de passe avant d\'utiliser le compte.<br />{elseif $pass_reset eq 1}- Vous devez changer votre mot de passe avant d\'utiliser le compte.<br />{/if}{if $email_reset eq 2}- Nous vous recommandons de changer votre email avant d\'utiliser le compte.<br />{elseif $email_reset eq 1}- Vous devez changer votre email avant d\'utiliser le compte.<br />{/if}{/if}<br />Ceci est un email automatique envoyé à votre boîte de réception depuis le site {$site_name}. Si vous ne comprenez pas le contenu de cet email, supprimez-le simplement.'
 ];
 $module_emails[Emails::VERIFY_EMAIL] = [
     'is_system' => $is_system,
@@ -224,7 +224,7 @@ $module_emails[Emails::ACTIVE_BY_ADMIN] = [
     'catid' => $catid,
     't' => 'Un e-mail avertit les utilisateurs lorsque l\'administrateur active le compte',
     's' => 'Votre compte a été créé',
-    'c' => '{$greeting_user}<br /><br />Votre compte sur le site Web {$site_name} est activé. {if empty($oauth_name)}Les informations de connexion est au dessous:<br /><br />URL: <a href="{$link}">{$link}</a><br />Nom de compte: {$username}<br />{if not empty($password)}Mot de passe: {$password}{/if}{else}Pour vous connecter à votre compte, veuillez visiter la page: <a href="{$link}">{$link}</a> et appuyez sur le bouton: <strong>Connectez-vous avec {$oauth_name}</strong>.{if not empty($password)}<br /><br />Vous pouvez également vous connecter en utilisant la méthode habituelle avec les informations suivantes:<br />Nom de compte: {$username}<br />Mot de passe: {$password}{/if}{/if}{if $pass_reset eq 2}<br />Remarque: Nous vous recommandons de changer votre mot de passe avant d\'utiliser votre compte.{elseif $pass_reset eq 1}<br />Remarque: Vous devez changer votre mot de passe avant d\'utiliser votre compte.{/if}<br /><br />Cela est un message automatique qui était envoyé à votre boîte mail à partir du site {$site_name}. Si vous ne comprenez pas le contenu de ce mail, vous pouvez simplement le supprimer.'
+    'c' => '{$greeting_user}<br /><br />Votre compte sur le site Web {$site_name} est activé. {if empty($oauth_name)}Les informations de connexion est au dessous:<br /><br />URL: <a href="{$link}">{$link}</a><br />Nom de compte: {$username}<br />{if not empty($password)}Mot de passe: {$password}{/if}{else}Pour vous connecter à votre compte, veuillez visiter la page: <a href="{$link}">{$link}</a> et appuyez sur le bouton: <strong>Connectez-vous avec {$oauth_name}</strong>.{if not empty($password)}<br /><br />Vous pouvez également vous connecter en utilisant la méthode habituelle avec les informations suivantes:<br />Nom de compte: {$username}<br />Mot de passe: {$password}{/if}{/if}{if $pass_reset gt 0 or $email_reset gt 0}<br />Remarque:<br />{if $pass_reset eq 2}- Nous vous recommandons de changer votre mot de passe avant d\'utiliser le compte.<br />{elseif $pass_reset eq 1}- Vous devez changer votre mot de passe avant d\'utiliser le compte.<br />{/if}{if $email_reset eq 2}- Nous vous recommandons de changer votre email avant d\'utiliser le compte.<br />{elseif $email_reset eq 1}- Vous devez changer votre email avant d\'utiliser le compte.<br />{/if}{/if}<br />Cela est un message automatique qui était envoyé à votre boîte mail à partir du site {$site_name}. Si vous ne comprenez pas le contenu de ce mail, vous pouvez simplement le supprimer.'
 ];
 $module_emails[Emails::REQUEST_RESET_PASS] = [
     'is_system' => $is_system,
@@ -261,4 +261,13 @@ $module_emails[Emails::OAUTH_TRUNCATE] = [
     't' => 'Avertir les utilisateurs lorsque les administrateurs suppriment tous leurs comptes tiers',
     's' => 'Avis de confidentialité',
     'c' => '{$greeting_user}<br /><br />Nous vous informons que tous les comptes tiers ont été déconnectés de votre compte par un administrateur.<br /><br /><a href="{$link}" style="font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif;line-height:16px;color:#ffffff;font-weight:400;text-decoration:none;font-size:14px;display:inline-block;padding:10px 24px;background-color:#4184f3;border-radius:5px;min-width:90px">Gérer les comptes tiers</a>'
+];
+$module_emails[Emails::REQUEST_RESET_EMAIL] = [
+    'is_system' => $is_system,
+    'pids' => $pids,
+    'pfile' => $pfile,
+    'catid' => $catid,
+    't' => 'E-mail demandant à l\'utilisateur de modifier son e-mail',
+    's' => '{if $email_reset eq 2}Changement d\'e-mail de compte recommandé{else}Besoin de changer l\'e-mail du compte{/if}',
+    'c' => '{$greeting_user}<br /><br />L\'administration du site {$site_name} informe: Pour des raisons de sécurité, {if $email_reset eq 2}nous vous recommandons de modifier{else}vous devez changer{/if} l\'e-mail de votre compte dès que possible. Pour modifier votre e-mail, vous devez d\'abord vous rendre sur la page <a href="{$link}">Gestion du compte personnel</a>, sélectionner le bouton Paramètres du compte, puis le bouton E-mail, et suivre les instructions.'
 ];

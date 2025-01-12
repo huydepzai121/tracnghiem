@@ -4,6 +4,11 @@
     {CHANGEPASS_INFO}
 </div>
 <!-- END: changepass_request2 -->
+<!-- BEGIN: changeemail_request2 -->
+<div class="alert alert-danger">
+    {CHANGEEMAIL_INFO}
+</div>
+<!-- END: changeemail_request2 -->
 
 <div class="page panel panel-default">
     <div class="panel-body">

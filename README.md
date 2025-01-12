@@ -108,6 +108,7 @@ The groups below require the website to be installed:
 - `users` functional groups for logged-in users.
 - `stat` testing the access statistics feature.
 - `sendmail` testing the email sending function.
+- `smtp` enable and configure the SMTP email sending function.
 - `all` test everything.
 
 **Next step:**

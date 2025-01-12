@@ -31,6 +31,7 @@ class ErrorLogsTest extends \Codeception\Test\Unit
      * @group install
      * @group install-only
      * @group sendmail
+     * @group users
      * @group all
      */
     public function testFileErrorLogNotExists()
