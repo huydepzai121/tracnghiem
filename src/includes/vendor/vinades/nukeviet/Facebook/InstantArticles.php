@@ -70,7 +70,7 @@ class InstantArticles
 
         if (!empty($this->lang[$this->langPrefix . $errorNO])) {
             $errorMGS = $this->lang[$this->langPrefix . $errorNO];
-            if (sizeof($args) > 1) {
+            if (count($args) > 1) {
                 $args[0] = $errorMGS;
 
                 return call_user_func_array('sprintf', $args);
@@ -92,7 +92,7 @@ class InstantArticles
     {
         $newSet = [];
 
-        for ($i = 0, $count = sizeof($attrSet); $i < $count; ++$i) {
+        for ($i = 0, $count = count($attrSet); $i < $count; ++$i) {
             if (!$attrSet[$i]) {
                 continue;
             }

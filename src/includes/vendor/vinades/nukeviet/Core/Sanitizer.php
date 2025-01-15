@@ -303,7 +303,7 @@ class Sanitizer
         }
 
         $newSet = [];
-        $count = sizeof($attrSet);
+        $count = count($attrSet);
 
         for ($i = 0; $i < $count; ++$i) {
             if (!$attrSet[$i]) {

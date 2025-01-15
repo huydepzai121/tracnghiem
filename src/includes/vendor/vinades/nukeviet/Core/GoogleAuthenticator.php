@@ -103,7 +103,7 @@ class GoogleAuthenticator
         $hashpart = substr($hm, $offset, 4);
         $value = unpack('N', $hashpart);
         $value = $value[1];
-        $value = $value & 0x7FFFFFFF;
+        $value &= 0x7FFFFFFF;
         $modulo = pow(10, $this->optLength);
 
         return str_pad($value % $modulo, $this->optLength, '0', STR_PAD_LEFT);
@@ -185,7 +185,7 @@ class GoogleAuthenticator
         $secret = str_split($secret);
 
         $binaryString = '';
-        for ($i = 0; $i < count($secret); $i = $i + 8) {
+        for ($i = 0; $i < count($secret); $i += 8) {
             $x = '';
             if (!in_array($secret[$i], $validChars, true)) {
                 return false;

@@ -329,7 +329,7 @@ class Error
         if (NV_DEBUG) {
             $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             if (isset($backtrace[3])) {
-                $trace_total = sizeof($backtrace);
+                $trace_total = count($backtrace);
                 $stt = 0;
                 for ($i = $trace_total - 1; $i >= 3; --$i) {
                     if (!empty($backtrace[$i]['file'])) {

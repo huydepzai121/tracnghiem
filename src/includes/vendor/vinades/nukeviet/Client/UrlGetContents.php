@@ -161,9 +161,9 @@ class UrlGetContents
                 $path = !empty($url_info['path']) ? $url_info['path'] : '/';
                 $path .= !empty($url_info['query']) ? '?' . $url_info['query'] : '';
 
-                fputs($fp, 'HEAD ' . $path . " HTTP/1.0\r\n");
-                fputs($fp, 'Host: ' . $url_info['host'] . ':' . $port . "\r\n");
-                fputs($fp, "Connection: close\r\n\r\n");
+                fwrite($fp, 'HEAD ' . $path . " HTTP/1.0\r\n");
+                fwrite($fp, 'Host: ' . $url_info['host'] . ':' . $port . "\r\n");
+                fwrite($fp, "Connection: close\r\n\r\n");
 
                 while (!feof($fp)) {
                     if ($header = trim(fgets($fp, 1024))) {

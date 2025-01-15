@@ -110,14 +110,14 @@ function updateFile($file)
         $classStructre = ['package', 'author', 'copyright', 'version', 'since', 'access'];
 
         if (!empty($arrayAnnotations)) {
-            if (sizeof(array_diff($arrayAnnotations, $oldStructre)) == 0 and sizeof(array_diff($oldStructre, $arrayAnnotations)) == 0) {
+            if (count(array_diff($arrayAnnotations, $oldStructre)) == 0 and count(array_diff($oldStructre, $arrayAnnotations)) == 0) {
                 // Cấu trúc cũ, trả nguyên về format mới
                 return $defaultBanner;
-            } elseif ($classDoc and sizeof(array_diff($arrayAnnotations, $classStructre)) > 0) {
+            } elseif ($classDoc and count(array_diff($arrayAnnotations, $classStructre)) > 0) {
                 // Cấu trúc class
                 print_r($arrayAnnotations);
                 die("Cấu trúc banner không đúng (tệp class) tại tệp: $relativePath\n");
-            } elseif (!$classDoc and sizeof(array_diff($arrayAnnotations, $basicStructre)) > 0) {
+            } elseif (!$classDoc and count(array_diff($arrayAnnotations, $basicStructre)) > 0) {
                 // Cấu trúc tệp thường
                 print_r($arrayAnnotations);
                 die("Cấu trúc banner không đúng (tệp thường) tại tệp: $relativePath\n");

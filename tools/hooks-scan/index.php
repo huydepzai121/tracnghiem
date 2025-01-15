@@ -64,7 +64,7 @@ if (isset($_GET['template']) and isset($_GET['f']) and isset($_GET['l'])) {
     $filecontents = str_replace("\r", "\n", $filecontents); // Mac OS,
     $filecontents = explode("\n", $filecontents);
     $linecontents = $filecontents[$line];
-    $numberLines = sizeof($filecontents);
+    $numberLines = count($filecontents);
 
     if ($debug) {
         echo "<strong>Line ban đầu:</strong>\n";
@@ -288,7 +288,7 @@ if (isset($_GET['f']) and isset($_GET['c'])) {
     $code = str_replace("\r", "\n", $code); // Mac OS,
 
     $code = explode("\n", $code);
-    $checkNumber = sizeof($code);
+    $checkNumber = count($code);
 
     $handle = @fopen(NV_ROOTDIR . '/' . $file, 'r');
     if ($handle) {

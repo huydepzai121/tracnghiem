@@ -37,6 +37,6 @@ class ErrorLogsTest extends \Codeception\Test\Unit
     public function testFileErrorLogNotExists()
     {
         $files = nv_scandir(NV_ROOTDIR . '/data/logs/error_logs', '/^.*\.log$/');
-        $this->assertEquals(0, sizeof($files));
+        $this->assertEquals(0, count($files));
     }
 }

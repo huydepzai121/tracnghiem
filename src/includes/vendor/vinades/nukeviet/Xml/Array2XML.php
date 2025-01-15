@@ -59,7 +59,7 @@ class Array2XML
             $rootname = $this->rootname_default;
         }
 
-        if (sizeof($array) > 1) {
+        if (count($array) > 1) {
             return $rootname;
         }
         $key = key($array);
@@ -120,7 +120,7 @@ class Array2XML
         $root = $this->xml->createElement($rootname);
         $root = $this->xml->appendchild($root);
 
-        if (sizeof($array) > 1) {
+        if (count($array) > 1) {
             $this->addArray($array, $root, $rootname);
         } else {
             $key = key($array);

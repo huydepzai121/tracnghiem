@@ -216,7 +216,7 @@ class Ftp
         }
 
         // Chi lay ten thu muc
-        for ($i = 0, $n = sizeof($list_folder); $i < $n; ++$i) {
+        for ($i = 0, $n = count($list_folder); $i < $n; ++$i) {
             $list_folder[$i] = $list_folder[$i]['name'];
         }
 
@@ -229,7 +229,7 @@ class Ftp
         $paths = [];
 
         // Neu cac file kiem tra dat ngay thu muc dang tro den
-        if (sizeof(array_diff($list_valid, $list_folder)) == 0) {
+        if (count(array_diff($list_valid, $list_folder)) == 0) {
             $paths[] = $cwd . '/';
         }
 
@@ -237,7 +237,7 @@ class Ftp
         $parts = explode('/', $path_root);
         $tmp = '';
 
-        for ($i = sizeof($parts) - 1; $i >= 0; --$i) {
+        for ($i = count($parts) - 1; $i >= 0; --$i) {
             $tmp = '/' . $parts[$i] . $tmp;
 
             if (in_array($parts[$i], $list_folder, true)) {

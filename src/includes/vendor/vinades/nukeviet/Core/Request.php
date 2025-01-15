@@ -329,7 +329,7 @@ class Request
      */
     private function Initialize()
     {
-        if (sizeof($_GET)) {
+        if (count($_GET)) {
             $array_keys = array_keys($_GET);
             foreach ($array_keys as $k) {
                 if (!preg_match('/^[a-zA-Z0-9\_]+$/', $k) or is_numeric($k)) {
@@ -337,7 +337,7 @@ class Request
                 }
             }
         }
-        if (sizeof($_POST)) {
+        if (count($_POST)) {
             $array_keys = array_keys($_POST);
             foreach ($array_keys as $k) {
                 if ((!preg_match('/^[a-zA-Z0-9\_]+$/', $k) and $k != 'g-recaptcha-response') or is_numeric($k)) {
@@ -345,7 +345,7 @@ class Request
                 }
             }
         }
-        if (sizeof($_COOKIE)) {
+        if (count($_COOKIE)) {
             $array_keys = array_keys($_COOKIE);
             foreach ($array_keys as $k) {
                 if (!preg_match('/^[a-zA-Z0-9\_]+$/', $k) or is_numeric($k)) {
@@ -357,7 +357,7 @@ class Request
                 }
             }
         }
-        if (sizeof($_FILES) and strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+        if (count($_FILES) and strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
             $array_keys = array_keys($_FILES);
             foreach ($array_keys as $k) {
                 if (!preg_match('/^[a-zA-Z0-9\_]+$/', $k) or is_numeric($k)) {
@@ -455,7 +455,7 @@ class Request
         $_SERVER['HTTP_USER_AGENT'] = $user_agent;
 
         // Cross-Site handle
-        if (sizeof($_POST) or $this->method == 'POST') {
+        if (count($_POST) or $this->method == 'POST') {
             if ($this->origin_key == 0 or $this->referer_key !== 1) {
                 // Post cross hoặc không same referer
                 if (!$this->restrictCrossDomain or in_array($this->remote_ip, $this->validCrossIPs, true)) {
@@ -649,7 +649,7 @@ class Request
         $session_id = session_id();
 
         $_SESSION = (isset($_SESSION) and is_array($_SESSION)) ? $_SESSION : [];
-        if (sizeof($_SESSION)) {
+        if (count($_SESSION)) {
             $array_keys = array_keys($_SESSION);
             foreach ($array_keys as $k) {
                 if (!preg_match('/^[a-zA-Z0-9\_]+$/', $k) or is_numeric($k)) {
@@ -679,7 +679,7 @@ class Request
     {
         $newSet = [];
 
-        for ($i = 0, $count = sizeof($attrSet); $i < $count; ++$i) {
+        for ($i = 0, $count = count($attrSet); $i < $count; ++$i) {
             if (!$attrSet[$i]) {
                 continue;
             }
@@ -766,7 +766,7 @@ class Request
                         if ($l != 3 and $l != 6) {
                             return $hex[0];
                         }
-                        $l = $l / 3;
+                        $l /= 3;
 
                         return 'rgb(' . (hexdec(substr($color, 0, 1 * $l))) . ', ' . (hexdec(substr($color, 1 * $l, 1 * $l))) . ', ' . (hexdec(substr($color, 2 * $l, 1 * $l))) . ');';
                     }, $attrSubSet[1]);

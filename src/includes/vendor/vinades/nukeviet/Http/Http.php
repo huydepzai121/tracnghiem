@@ -774,7 +774,7 @@ class Http extends Server
 
         // If a redirection has taken place, The headers for each page request may have been passed.
         // In this case, determine the final HTTP header and parse from there.
-        for ($i = sizeof($header_text) - 1; $i >= 0; --$i) {
+        for ($i = count($header_text) - 1; $i >= 0; --$i) {
             if (!empty($header_text[$i]) and !str_contains($header_text[$i], ':')) {
                 $header_text = array_splice($header_text, $i);
                 break;

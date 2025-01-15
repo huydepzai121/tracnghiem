@@ -618,7 +618,7 @@ class Database extends PDO
      */
     public function getNumQueries()
     {
-        return sizeof($this->sqls);
+        return count($this->sqls);
     }
 
     /**

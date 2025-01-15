@@ -96,7 +96,7 @@ class Encoding
                 }
 
                 if ($flg & 2) {
-                    $i = $i + 2;
+                    $i += 2;
                 }
             }
 

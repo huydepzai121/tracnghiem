@@ -66,7 +66,7 @@ while (($row = fgetcsv($f)) !== false) {
     ];
 
     $range = explode(':', $range);
-    if (sizeof($range) < 3) {
+    if (count($range) < 3) {
         echo "Lack range at line: " . $stt  . "\n";
         exit(1);
     }

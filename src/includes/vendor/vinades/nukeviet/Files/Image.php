@@ -357,15 +357,15 @@ class Image
                 } elseif ($BMP['bits_per_pixel'] == 4) {
                     $COLOR = unpack('n', $VIDE . substr($IMG, floor($P), 1));
                     if (($P * 2) % 2 == 0) {
-                        $COLOR[1] = ($COLOR[1] >> 4);
+                        $COLOR[1] >>= 4;
                     } else {
-                        $COLOR[1] = ($COLOR[1] & 0x0F);
+                        $COLOR[1] &= 0x0F;
                     }
                     $COLOR[1] = $PALETTE[$COLOR[1] + 1];
                 } elseif ($BMP['bits_per_pixel'] == 1) {
                     $COLOR = unpack('n', $VIDE . substr($IMG, floor($P), 1));
                     if (($P * 8) % 8 == 0) {
-                        $COLOR[1] = $COLOR[1] >> 7;
+                        $COLOR[1] >>= 7;
                     } elseif (($P * 8) % 8 == 1) {
                         $COLOR[1] = ($COLOR[1] & 0x40) >> 6;
                     } elseif (($P * 8) % 8 == 2) {
@@ -379,7 +379,7 @@ class Image
                     } elseif (($P * 8) % 8 == 6) {
                         $COLOR[1] = ($COLOR[1] & 0x2) >> 1;
                     } elseif (($P * 8) % 8 == 7) {
-                        $COLOR[1] = ($COLOR[1] & 0x1);
+                        $COLOR[1] &= 0x1;
                     }
                     $COLOR[1] = $PALETTE[$COLOR[1] + 1];
                 } else {
@@ -466,7 +466,7 @@ class Image
         // Purpose: BMP SUPPORT (SAVING)
         $intstring = '';
         while ($number > 0) {
-            $intstring = $intstring . chr($number & 255);
+            $intstring .= chr($number & 255);
             $number >>= 8;
         }
 
@@ -1129,7 +1129,7 @@ class Image
                 $this->get_createImage();
             }
 
-            if (is_dir($path) and is_writeable($path)) {
+            if (is_dir($path) and is_writable($path)) {
                 if (empty($newname)) {
                     $newname = $this->create_Image_info['width'] . '_' . $this->create_Image_info['height'];
                     if (defined('PATHINFO_FILENAME')) {

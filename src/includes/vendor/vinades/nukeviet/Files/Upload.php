@@ -922,7 +922,7 @@ class Upload
         $fn = $this->string_to_filename($f[1]);
         $filename = $fn . '.' . $this->file_extension;
         if (!preg_match('/\/$/', $savepath)) {
-            $savepath = $savepath . '/';
+            $savepath .= '/';
         }
 
         if (empty($replace_if_exists)) {
@@ -939,7 +939,7 @@ class Upload
             // Upload từng phần
             $chunkComplete = false;
             if (!preg_match('/\/$/', $this->chunk_tmpdir)) {
-                $this->chunk_tmpdir = $this->chunk_tmpdir . '/';
+                $this->chunk_tmpdir .= '/';
             }
 
             $file_tmp = $this->chunk_tmpdir . $this->chunk_prefix . md5($userfile['name'] . $this->chunk_total);
@@ -1207,9 +1207,9 @@ class Upload
                 $path = !empty($url_info['path']) ? $url_info['path'] : '/';
                 $path .= !empty($url_info['query']) ? '?' . $url_info['query'] : '';
 
-                fputs($fp, 'HEAD ' . $path . " HTTP/1.0\r\n");
-                fputs($fp, 'Host: ' . $url_info['host'] . ':' . $port . "\r\n");
-                fputs($fp, "Connection: close\r\n\r\n");
+                fwrite($fp, 'HEAD ' . $path . " HTTP/1.0\r\n");
+                fwrite($fp, 'Host: ' . $url_info['host'] . ':' . $port . "\r\n");
+                fwrite($fp, "Connection: close\r\n\r\n");
 
                 while (!feof($fp)) {
                     if ($header = trim(fgets($fp, 1024))) {
@@ -1228,7 +1228,7 @@ class Upload
         }
         if (preg_match('/(200)/', $res[0])) {
             $ContentType = '';
-            foreach ($res as $k => $v) {
+            foreach ($res as $v) {
                 if (preg_match("/content-type:\s(.*?)$/is", $v, $matches)) {
                     $ContentType = trim($matches[1]);
                 }
@@ -1254,7 +1254,7 @@ class Upload
             return false;
         }
         if (preg_match('/(301)|(302)|(303)/', $res[0])) {
-            foreach ($res as $k => $v) {
+            foreach ($res as $v) {
                 if (preg_match("/location:\s(.*?)$/is", $v, $matches)) {
                     ++$is_200;
                     $location = trim($matches[1]);
@@ -1627,7 +1627,7 @@ class Upload
         }
 
         if (!preg_match('/\/$/', $savepath)) {
-            $savepath = $savepath . '/';
+            $savepath .= '/';
         }
         if (empty($replace_if_exists)) {
             $filename2 = $filename;
