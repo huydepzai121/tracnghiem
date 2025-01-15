@@ -23,7 +23,7 @@ $theme_list = nv_scandir(NV_ROOTDIR . '/themes/', $global_config['check_theme'])
 $theme_mobile_list = nv_scandir(NV_ROOTDIR . '/themes/', $global_config['check_theme_mobile']);
 $theme_list = array_merge($theme_list, $theme_mobile_list);
 
-$number_theme = sizeof($theme_list);
+$number_theme = count($theme_list);
 
 $errorconfig = [];
 $array_site_theme = [];
@@ -96,7 +96,7 @@ foreach ($theme_list as $value) {
     $positions = $position[0]->position;
     $pos = [];
 
-    for ($j = 0, $count = sizeof($positions); $j < $count; ++$j) {
+    for ($j = 0, $count = count($positions); $j < $count; ++$j) {
         $pos[] = $positions[$j]->name;
     }
 

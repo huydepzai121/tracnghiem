@@ -81,7 +81,7 @@ if ($nv_Request->get_string('checksess', 'get') == md5('deleteallfile' . NV_CHEC
                 trigger_error($e->getMessage());
             }
 
-            if (sizeof($array_lang_exit) == 1) {
+            if (count($array_lang_exit) == 1) {
                 $db->query('TRUNCATE ' . NV_LANGUAGE_GLOBALTABLE . '_file');
                 $db->query('TRUNCATE ' . NV_LANGUAGE_GLOBALTABLE);
             }

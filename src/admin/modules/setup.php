@@ -60,7 +60,7 @@ if (!empty($setmodule) and preg_match($global_config['check_module'], $setmodule
                 if (!empty($hooks)) {
                     foreach ($hooks as $hook) {
                         $plugin_area = nv_get_plugin_area(NV_ROOTDIR . '/modules/' . $modrow['basename'] . '/hooks/' . $hook);
-                        if (sizeof($plugin_area) == 1) {
+                        if (count($plugin_area) == 1) {
                             $require_module = nv_get_hook_require(NV_ROOTDIR . '/modules/' . $modrow['basename'] . '/hooks/' . $hook);
                             if (!isset($hook_data[$hook]) or (!empty($require_module) and (!isset($sys_mods[$hook_data[$hook]]) or $sys_mods[$hook_data[$hook]]['module_file'] != $require_module))) {
                                 nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op);

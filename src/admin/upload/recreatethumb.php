@@ -59,7 +59,7 @@ if ($idf < 0) {
             }
         }
     }
-    $number_file = sizeof($_array_filename);
+    $number_file = count($_array_filename);
     if ($number_file > 0) {
         $content_config = '<?php' . "\n\n";
         $content_config .= NV_FILEHEAD . "\n\n";
@@ -88,7 +88,7 @@ if (file_exists(NV_ROOTDIR . '/' . NV_TEMP_DIR . '/recreatethumb_' . md5($path .
     }
 
     include_once NV_ROOTDIR . '/' . NV_TEMP_DIR . '/recreatethumb_' . md5($path . '_' . NV_CHECK_SESSION) . '.php';
-    $number_file = sizeof($_array_filename);
+    $number_file = count($_array_filename);
 
     // Duyệt mỗi lần 20 file để tránh : số lượng file quá nhiều bị time out
     $idf_next = $idf + 20;

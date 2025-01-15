@@ -224,12 +224,12 @@ function nv_setup_data_module($lang, $module_name, $sample = 0)
         $layout = $xml->xpath('setlayout/layout');
 
         $array_layout_func_default = [];
-        for ($i = 0, $count = sizeof($layout); $i < $count; ++$i) {
+        for ($i = 0, $count = count($layout); $i < $count; ++$i) {
             $layout_name = (string) $layout[$i]->name;
 
             if (in_array($layout_name, $layout_array, true)) {
                 $layout_funcs = $layout[$i]->xpath('funcs');
-                for ($j = 0, $count2 = sizeof($layout_funcs); $j < $count2; ++$j) {
+                for ($j = 0, $count2 = count($layout_funcs); $j < $count2; ++$j) {
                     $mo_funcs = (string) $layout_funcs[$j];
                     $mo_funcs = explode(':', $mo_funcs);
                     $m = $mo_funcs[0];

@@ -128,7 +128,7 @@ if ($nv_Request->isset_request('extract', 'get')) {
             // Xóa các file .htaccess đã giải nén được để đảm bảo bảo mật
             $array_name_i = explode('/', $extract_i['stored_filename']);
 
-            if ($array_name_i[sizeof($array_name_i) - 1] == '.htaccess') {
+            if ($array_name_i[count($array_name_i) - 1] == '.htaccess') {
                 nv_deletefile($extract_i['filename']);
             }
         }
@@ -190,7 +190,7 @@ if ($nv_Request->isset_request('extract', 'get')) {
                 }
 
                 $ini = [];
-                foreach ($all_ini as $section => $line) {
+                foreach ($all_ini as $line) {
                     $ini = array_merge($ini, $line);
                 }
 
@@ -198,7 +198,7 @@ if ($nv_Request->isset_request('extract', 'get')) {
                 foreach ($ziplistContent as $array_file) {
                     $array_name_i = explode('/', $array_file['stored_filename']);
 
-                    if (!preg_match("/\.(tpl|php)$/i", $array_file['stored_filename']) and $array_file['size'] > 0 and $array_name_i[sizeof($array_name_i) - 1] != '.htaccess' and $array_file['stored_filename'] != 'config.ini') {
+                    if (!preg_match("/\.(tpl|php)$/i", $array_file['stored_filename']) and $array_file['size'] > 0 and $array_name_i[count($array_name_i) - 1] != '.htaccess' and $array_file['stored_filename'] != 'config.ini') {
                         $mime_real = $mime_check = nv_get_mime_type(NV_ROOTDIR . '/' . $temp_extract_dir . '/' . $array_file['filename']);
                         $file_ext = nv_getextension($array_file['filename']);
 
@@ -260,7 +260,7 @@ if ($nv_Request->isset_request('extract', 'get')) {
                     foreach ($ziplistContent as $array_file) {
                         $array_name_i = explode('/', $extract_i['stored_filename']);
 
-                        if (empty($array_file['folder']) and $array_file['filename'] != 'config.ini' and $array_name_i[sizeof($array_name_i) - 1] != '.htaccess') {
+                        if (empty($array_file['folder']) and $array_file['filename'] != 'config.ini' and $array_name_i[count($array_name_i) - 1] != '.htaccess') {
                             // Xoa file neu ton tai
                             if (file_exists(NV_ROOTDIR . '/' . $array_file['filename'])) {
                                 if (!($ftp_check_login == 1 and ftp_delete($conn_id, $array_file['filename']))) {
@@ -445,7 +445,7 @@ if (empty($error)) {
 
     if ($status and $status['status'] == 'ok') {
         $listFiles = $zip->listContent();
-        $sizeLists = sizeof($listFiles);
+        $sizeLists = count($listFiles);
         $iniIndex = -1;
 
         // Tìm vị trí file config.ini

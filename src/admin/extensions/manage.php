@@ -52,7 +52,7 @@ if (md5('package_' . $request['type'] . '_' . $request['title'] . '_' . NV_CHECK
         $row = $sth->fetchAll();
     }
 
-    if (sizeof($row) == 1) {
+    if (count($row) == 1) {
         $row = $row[0];
 
         if (preg_match("/^(.*?)[\s](\(|\<)(.*?)(\)|\>)$/iu", $row['author'], $m)) {
@@ -165,7 +165,7 @@ if (md5('package_' . $request['type'] . '_' . $request['title'] . '_' . NV_CHECK
 
                     $position = $xml->xpath('positions');
                     $positions = $position[0]->position;
-                    for ($j = 0, $count = sizeof($positions); $j < $count; ++$j) {
+                    for ($j = 0, $count = count($positions); $j < $count; ++$j) {
                         $config_ini .= "\n\t\t<position>\n\t\t\t<name>" . $positions[$j]->name . "</name>\n\t\t\t<tag>" . $positions[$j]->tag . "</tag>\n\t\t</position>\n";
                     }
 
@@ -321,7 +321,7 @@ if (md5('delete_' . $request['type'] . '_' . $request['title'] . '_' . NV_CHECK_
     $sth->execute();
     $row = $sth->fetchAll();
 
-    if (sizeof($row) == 1) {
+    if (count($row) == 1) {
         $row = $row[0];
 
         // Lay danh sach file
@@ -653,7 +653,7 @@ while ($row = $result->fetch()) {
     $row['type'] = $nv_Lang->existsModule('extType_' . $row['type']) ? $nv_Lang->getModule('extType_' . $row['type']) : $nv_Lang->getModule('extType_other');
     $row['version'] = array_filter(explode(' ', $row['version']));
 
-    if (sizeof($row['version']) == 2) {
+    if (count($row['version']) == 2) {
         $row['version'] = $row['version'][0] . '-' . nv_date_format(1, $row['version'][1]);
     } else {
         $row['version'] = 'N/A';

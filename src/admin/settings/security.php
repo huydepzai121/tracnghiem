@@ -158,7 +158,7 @@ if (defined('NV_IS_GODADMIN') and $nv_Request->isset_request('basicsave', 'post'
         if (!empty($domain)) {
             $domain = parse_url($domain);
             if (is_array($domain)) {
-                if (sizeof($domain) == 1 and !empty($domain['path'])) {
+                if (count($domain) == 1 and !empty($domain['path'])) {
                     $domain['host'] = $domain['path'];
                 }
                 if (!isset($domain['scheme'])) {
@@ -614,7 +614,7 @@ if (defined('NV_IS_GODADMIN') and $nv_Request->isset_request('corssave', 'post')
             if (!empty($domain)) {
                 $domain = parse_url($domain);
                 if (is_array($domain)) {
-                    if (sizeof($domain) == 1 and !empty($domain['path'])) {
+                    if (count($domain) == 1 and !empty($domain['path'])) {
                         $domain['host'] = $domain['path'];
                     }
                     !isset($domain['scheme']) && $domain['scheme'] = 'http';

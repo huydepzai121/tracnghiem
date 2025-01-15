@@ -46,12 +46,12 @@ if (preg_match($global_config['check_theme'], $selectthemes) and $sth->fetchColu
         $layoutdefault = (string) $xml->layoutdefault;
         $layout = $xml->xpath('setlayout/layout');
 
-        for ($i = 0, $count = sizeof($layout); $i < $count; ++$i) {
+        for ($i = 0, $count = count($layout); $i < $count; ++$i) {
             $layout_name = (string) $layout[$i]->name;
 
             $layout_funcs = $layout[$i]->xpath('funcs');
 
-            for ($j = 0, $sizeof = sizeof($layout_funcs); $j < $sizeof; ++$j) {
+            for ($j = 0, $sizeof = count($layout_funcs); $j < $sizeof; ++$j) {
                 $mo_funcs = (string) $layout_funcs[$j];
                 $mo_funcs = explode(':', $mo_funcs);
                 $m = $mo_funcs[0];
@@ -86,7 +86,7 @@ if (preg_match($global_config['check_theme'], $selectthemes) and $sth->fetchColu
         }
 
         $blocks = $xml->xpath('setblocks/block');
-        for ($i = 0, $count = sizeof($blocks); $i < $count; ++$i) {
+        for ($i = 0, $count = count($blocks); $i < $count; ++$i) {
             $row = (array) $blocks[$i];
 
             if (!isset($row['link'])) {

@@ -23,7 +23,7 @@ if ($nv_Request->isset_request('id', 'get')) {
     t2.username as username, t2.email as email, t2.first_name as first_name, t2.last_name as last_name, t2.view_mail as view_mail, t2.regdate as regdate, t2.active as active
     FROM ' . NV_AUTHORS_GLOBALTABLE . ' t1 INNER JOIN ' . NV_USERS_GLOBALTABLE . ' t2 ON t1.admin_id = t2.userid WHERE admin_id=' . $admin_id;
     $adminrows = $db->query($sql)->fetchAll();
-    $numrows = sizeof($adminrows);
+    $numrows = count($adminrows);
 
     if ($numrows != 1) {
         nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
@@ -35,7 +35,7 @@ if ($nv_Request->isset_request('id', 'get')) {
     FROM ' . NV_AUTHORS_GLOBALTABLE . ' t1 INNER JOIN ' . NV_USERS_GLOBALTABLE . ' t2 ON t1.admin_id = t2.userid ORDER BY t1.lev ASC';
 
     $adminrows = $db->query($sql)->fetchAll();
-    $numrows = sizeof($adminrows);
+    $numrows = count($adminrows);
 }
 
 if ($numrows) {
@@ -125,7 +125,7 @@ if ($numrows) {
             $funcs['chg_is_suspend'] = 0;
             $funcs['del'] = 0;
         }
-        $funcs['num'] = sizeof(array_filter($funcs));
+        $funcs['num'] = count(array_filter($funcs));
 
         if (empty($row['files_level'])) {
             $allow_files_type = [];

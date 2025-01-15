@@ -31,7 +31,7 @@ foreach ($columns_array as $row) {
     }
 }
 
-if (!(sizeof($array_lang_exit) > 1 and (in_array('en', $array_lang_exit, true) or in_array('vi', $array_lang_exit, true)))) {
+if (!(count($array_lang_exit) > 1 and (in_array('en', $array_lang_exit, true) or in_array('vi', $array_lang_exit, true)))) {
     $tpl->assign('LANG_EMPTY', $nv_Lang->getModule('nv_lang_error_exit', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=setting'));
     $contents = $tpl->fetch('check.tpl');
     include NV_ROOTDIR . '/includes/header.php';

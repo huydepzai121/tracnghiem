@@ -82,7 +82,7 @@ $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module
 $tpl->assign('LANG', $nv_Lang);
 
 $rows = $db->query('SELECT * FROM ' . NV_AUTHORS_GLOBALTABLE . '_module ORDER BY weight ASC')->fetchAll();
-$numrows = sizeof($rows);
+$numrows = count($rows);
 
 $tpl->assign('ARRAY', $rows);
 $tpl->assign('NUMROWS', $numrows);

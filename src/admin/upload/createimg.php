@@ -48,7 +48,7 @@ if (isset($array_thumb_config[$path])) {
 } else {
     $thumb_config = $array_thumb_config[''];
     $_arr_path = explode('/', $path);
-    while (sizeof($_arr_path) > 1) {
+    while (count($_arr_path) > 1) {
         array_pop($_arr_path);
         $_path = implode('/', $_arr_path);
         if (isset($array_thumb_config[$_path])) {

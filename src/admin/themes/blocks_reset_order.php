@@ -28,7 +28,7 @@ $xml = simplexml_load_file(NV_ROOTDIR . '/themes/' . $theme . '/config.ini');
 $position = $xml->xpath('positions');
 $positions = $position[0]->position;
 $array_pos = [];
-for ($j = 0, $count = sizeof($positions); $j < $count; ++$j) {
+for ($j = 0, $count = count($positions); $j < $count; ++$j) {
     $array_pos[] = trim($positions[$j]->tag);
 }
 

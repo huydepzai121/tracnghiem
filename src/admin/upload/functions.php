@@ -302,7 +302,7 @@ function nv_get_viewImage($fileName, $refresh = 0)
         } else {
             $thumb_config = $array_thumb_config[''];
             $_arr_path = explode('/', NV_UPLOADS_DIR . '/' . $m[2]);
-            while (sizeof($_arr_path) > 1) {
+            while (count($_arr_path) > 1) {
                 array_pop($_arr_path);
                 $_path = implode('/', $_arr_path);
                 if (isset($array_thumb_config[$_path])) {

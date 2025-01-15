@@ -219,7 +219,7 @@ function check_structure($fileinfo, $arraySysOption, $info)
 {
     $file_path = trim($fileinfo['filename']);
     $folder = explode('/', $file_path);
-    $lev_folder = sizeof($folder) - 1;
+    $lev_folder = count($folder) - 1;
     $is_folder = $fileinfo['folder'];
 
     // File tại thư mục gốc chỉ chấp nhận config.ini

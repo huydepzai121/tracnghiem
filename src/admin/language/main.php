@@ -484,7 +484,7 @@ $tpl->assign('OP', $op);
 
 $tpl->assign('EXISTS_LANGS', $lang_array_exit);
 $tpl->assign('LIST_LANGS', $array_lang_setup);
-$tpl->assign('NUM_LANGS', sizeof($array_lang_setup));
+$tpl->assign('NUM_LANGS', count($array_lang_setup));
 $tpl->assign('LANGUAGE_ARRAY', $language_array);
 $tpl->assign('GCONFIG', $global_config);
 $tpl->assign('OTHER_LANGS', $lang_can_install);

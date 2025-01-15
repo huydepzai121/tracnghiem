@@ -236,7 +236,7 @@ if ($nv_Request->isset_request('startwrite', 'get')) {
                                             ++$check_ignore;
                                         }
                                     }
-                                    if ($check_ignore >= sizeof($ignore_row)) {
+                                    if ($check_ignore >= count($ignore_row)) {
                                         $is_ignore = true;
                                         break;
                                     }

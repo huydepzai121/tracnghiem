@@ -48,7 +48,7 @@ if ($nv_Request->get_title('addparent', 'post', '') === NV_CHECK_SESSION) {
     if ($placement == 'top') {
         $theme_config['grid_widgets'] = $widget + $theme_config['grid_widgets'];
     } else {
-        $theme_config['grid_widgets'] = $theme_config['grid_widgets'] + $widget;
+        $theme_config['grid_widgets'] += $widget;
     }
     save_theme_config('grid_widgets', $theme_config['grid_widgets']);
     $respon['error'] = 0;
@@ -121,7 +121,7 @@ if ($nv_Request->get_title('addchild', 'post', '') === NV_CHECK_SESSION) {
         if ($placement == 'top') {
             $theme_config['grid_widgets'][$widget_id]['subs'] = $widget + $theme_config['grid_widgets'][$widget_id]['subs'];
         } else {
-            $theme_config['grid_widgets'][$widget_id]['subs'] = $theme_config['grid_widgets'][$widget_id]['subs'] + $widget;
+            $theme_config['grid_widgets'][$widget_id]['subs'] += $widget;
         }
     }
     save_theme_config('grid_widgets', $theme_config['grid_widgets']);

@@ -17,7 +17,7 @@ $submenu['region'] = $nv_Lang->getModule('region_settings');
 $submenu['main'] = $nv_Lang->getModule('nv_lang_data');
 
 if (empty($global_config['idsite'])) {
-    if ($global_config['lang_multi'] and sizeof($global_config['allow_sitelangs']) > 1) {
+    if ($global_config['lang_multi'] and count($global_config['allow_sitelangs']) > 1) {
         $submenu['countries'] = $nv_Lang->getModule('countries');
     }
     $submenu['interface'] = $nv_Lang->getModule('nv_lang_interface');

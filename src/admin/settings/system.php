@@ -131,7 +131,7 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
         $my_domains = $nv_Request->get_title('my_domains', 'post', '');
         if (!empty($my_domains)) {
             $my_domains = array_map('trim', explode(',', $my_domains));
-            $sizeof = sizeof($my_domains);
+            $sizeof = count($my_domains);
             for ($i = 0; $i < $sizeof; ++$i) {
                 $dm = preg_replace('/^(http|https)\:\/\//', '', $my_domains[$i]);
                 $dm = preg_replace('/^([^\/]+)\/*(.*)$/', '\\1', $dm);

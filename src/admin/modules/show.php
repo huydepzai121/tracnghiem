@@ -115,7 +115,7 @@ $new_funcs = array_diff_key($local_funcs, $data_funcs);
 
 $is_refresh = false;
 if (!empty($old_funcs)) {
-    foreach ($old_funcs as $func => $values) {
+    foreach ($old_funcs as $values) {
         $db->query('DELETE FROM ' . NV_BLOCKS_TABLE . '_weight WHERE func_id = ' . $values['func_id']);
         $db->query('DELETE FROM ' . NV_MODFUNCS_TABLE . ' WHERE func_id = ' . $values['func_id']);
         $db->query('DELETE FROM ' . NV_PREFIXLANG . '_modthemes WHERE func_id = ' . $values['func_id']);

@@ -37,7 +37,7 @@ function nv_sitemapPing($module, $link)
         $myUrl = NV_MY_DOMAIN . NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module . '&amp;' . NV_OP_VARIABLE . '=sitemap';
     }
 
-    $link = $link . urlencode($myUrl);
+    $link .= urlencode($myUrl);
 
     $result = false;
     $c = curl_init();

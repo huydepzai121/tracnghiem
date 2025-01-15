@@ -400,7 +400,7 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
 
     $array_funcid_module = [];
     foreach ($site_mods as $mod => $_arr_mod) {
-        foreach ($_arr_mod['funcs'] as $_func => $_row) {
+        foreach ($_arr_mod['funcs'] as $_row) {
             if ($_row['show_func']) {
                 $array_funcid_module[$_row['func_id']] = $mod;
             }
@@ -640,7 +640,7 @@ $result = $db->query($sql);
 
 $mod_funcs = [];
 while ([$m_title, $m_custom_title] = $result->fetch(3)) {
-    if (isset($aray_mod_func[$m_title]) and sizeof($aray_mod_func[$m_title]) > 0) {
+    if (isset($aray_mod_func[$m_title]) and count($aray_mod_func[$m_title]) > 0) {
         if (!isset($mod_funcs[$m_title])) {
             $mod_funcs[$m_title] = [
                 'key' => $m_title,

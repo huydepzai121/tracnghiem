@@ -122,7 +122,7 @@ while ([$theme] = $result->fetch(3)) {
 
 $groups_list = nv_groups_list();
 $feature_rss = file_exists(NV_ROOTDIR . '/modules/' . $row['module_file'] . '/funcs/rss.php');
-$feature_sitemap = sizeof(nv_scandir(NV_ROOTDIR . '/modules/' . $row['module_file'] . '/funcs', '/^sitemap(.*?)\.php$/')) > 0;
+$feature_sitemap = count(nv_scandir(NV_ROOTDIR . '/modules/' . $row['module_file'] . '/funcs', '/^sitemap(.*?)\.php$/')) > 0;
 
 if (empty($row['custom_title'])) {
     $row['custom_title'] = $row['title'];

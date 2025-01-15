@@ -212,7 +212,7 @@ $tpl->assign('BASE_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=
 $tpl->assign('DATA', $data);
 $tpl->assign('CAPTION', $caption);
 $tpl->assign('LIST', $global_array_cat);
-$tpl->assign('LISTCOUNT', sizeof($global_array_cat));
+$tpl->assign('LISTCOUNT', count($global_array_cat));
 $tpl->assign('ERROR', $error);
 
 $contents = $tpl->fetch('categories.tpl');

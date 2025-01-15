@@ -163,7 +163,7 @@ $tpl->assign('FUNCLIST', $funclist);
 $tpl->assign('BLOCKLIST', $blocklist);
 
 $array_theme_pos = [];
-$count = sizeof($theme_positionlist);
+$count = count($theme_positionlist);
 for ($i = 0; $i < $count; ++$i) {
     $array_theme_pos[(string) $theme_positionlist[$i]->tag] = (string) $theme_positionlist[$i]->name;
 }

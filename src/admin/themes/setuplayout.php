@@ -67,13 +67,13 @@ $xml = simplexml_load_file(NV_ROOTDIR . '/themes/' . $selectthemes . '/config.in
 $layoutdefault = (string) $xml->layoutdefault;
 $layout = $xml->xpath('setlayout/layout');
 
-for ($i = 0, $count = sizeof($layout); $i < $count; ++$i) {
+for ($i = 0, $count = count($layout); $i < $count; ++$i) {
     $layout_name = (string) $layout[$i]->name;
 
     if (in_array($layout_name, $layout_array, true)) {
         $layout_funcs = $layout[$i]->xpath('funcs');
 
-        for ($j = 0, $sizeof = sizeof($layout_funcs); $j < $sizeof; ++$j) {
+        for ($j = 0, $sizeof = count($layout_funcs); $j < $sizeof; ++$j) {
             $mo_funcs = (string) $layout_funcs[$j];
             $mo_funcs = explode(':', $mo_funcs);
             $m = $mo_funcs[0];
@@ -229,7 +229,7 @@ $tpl->assign('CHECKSS', $checkss);
 $tpl->assign('LAYOUT_ARRAY', $layout_array);
 
 $rows = $db->query('SELECT title, custom_title FROM ' . NV_MODULES_TABLE . ' ORDER BY weight ASC')->fetchAll();
-$number_func = sizeof($rows);
+$number_func = count($rows);
 $array_modules = [];
 foreach ($rows as $row) {
     if (isset($array_layout_func[$row['title']])) {

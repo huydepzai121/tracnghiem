@@ -127,7 +127,7 @@ if ($nv_Request->isset_request('ftp_server', 'post') and $checkss == $nv_Request
         }
     }
 
-    if ($a !== sizeof($check_files)) {
+    if ($a !== count($check_files)) {
         nv_jsonOutput([
             'status' => 'error',
             'mess' => $nv_Lang->getGlobal('ftp_error_path')

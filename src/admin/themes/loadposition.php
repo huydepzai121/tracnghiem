@@ -31,7 +31,7 @@ if (preg_match($global_config['check_theme'], $theme1) and preg_match($global_co
     $content = $xml->xpath('positions');
     $positions = $content[0]->position;
 
-    for ($i = 0, $count = sizeof($positions); $i < $count; ++$i) {
+    for ($i = 0, $count = count($positions); $i < $count; ++$i) {
         $position1[] = $positions[$i]->tag;
     }
 
@@ -39,7 +39,7 @@ if (preg_match($global_config['check_theme'], $theme1) and preg_match($global_co
     $content = $xml->xpath('positions');
     $positions = $content[0]->position;
 
-    for ($i = 0, $count = sizeof($positions); $i < $count; ++$i) {
+    for ($i = 0, $count = count($positions); $i < $count; ++$i) {
         $position2[] = $positions[$i]->tag;
     }
 
@@ -47,7 +47,7 @@ if (preg_match($global_config['check_theme'], $theme1) and preg_match($global_co
     $diffarray = array_diff($position1, $diffarray);
 
     $array = [];
-    for ($i = 0, $count = sizeof($diffarray); $i < $count; ++$i) {
+    for ($i = 0, $count = count($diffarray); $i < $count; ++$i) {
         $array[] = [
             'tag' => (string) $positions[$i]->tag,
             'name' => (string) $positions[$i]->name

@@ -39,7 +39,7 @@ if ($email_data === false) {
     $error[] = $nv_Lang->getModule('test_error_template');
 }
 
-if (sizeof($array['pids']) == 1 and $array['pids'][0] == Emf::P_ALL and !empty($email_data)) {
+if (count($array['pids']) == 1 and $array['pids'][0] == Emf::P_ALL and !empty($email_data)) {
     /*
      * Các mẫu email chỉ sử dụng plugin all field thì lấy các biến trong nội dung email để làm $merge_fields
      * Chỉ hỗ trợ các biến đơn dạng string, number. Muốn soạn thảo một mẫu email phức tạp hãy dùng plugin riêng để xử lý.
@@ -48,7 +48,7 @@ if (sizeof($array['pids']) == 1 and $array['pids'][0] == Emf::P_ALL and !empty($
     unset($matches);
     preg_match_all($pattern, $email_data['subject'] . ' ' . $email_data['content'], $matches);
     if (!empty($matches[1])) {
-        foreach ($matches[1] as $key => $value) {
+        foreach ($matches[1] as $value) {
             $merge_fields[$value] = [
                 'name' => $nv_Lang->getGlobal($value),
                 'data' => '',
