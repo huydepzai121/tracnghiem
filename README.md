@@ -17,7 +17,7 @@ Detailed information about Nukeviet at Wikipedia Encyclopedia: http://vi.wikiped
 
 **Requirements:**  
 - OS: Unix (Linux, Ubuntu, Fedora ...) or Windows
-- PHP: From PHP 7.4 to PHP 8.3
+- PHP: From PHP 8.2 to PHP 8.4
 - MySQL: MySQL 5.5 or newer
 
 **Installation:**
@@ -42,7 +42,7 @@ If you only need to develop modules, themes, blocks, plugins. You just need to r
 - Node.JS v18.17+
 - NPM v10.5+
 - Git
-- Webserver is similar to the requirements for the user. However, PHP version 8.0 or higher is required.
+- Webserver is similar to the requirements for the user.
 - Composer v2.6+
 
 **Installation:**

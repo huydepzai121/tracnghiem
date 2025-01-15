@@ -155,7 +155,6 @@ require NV_ROOTDIR . '/includes/utf8/' . $sys_info['string_handler'] . '_string_
 require NV_ROOTDIR . '/includes/utf8/utf8_functions.php';
 require NV_ROOTDIR . '/includes/core/filesystem_functions.php';
 require NV_ROOTDIR . '/includes/functions.php';
-require NV_ROOTDIR . '/includes/new_functions.php';
 require NV_ROOTDIR . '/includes/core/theme_functions.php';
 
 // IP Ban
