@@ -106,7 +106,7 @@ if (empty($api_request['action'])) {
 }
 
 // Nếu site đa ngôn ngữ bắt buộc phải truyền tham số language
-if (sizeof($global_config['allow_sitelangs']) > 1 and empty($api_request['language'])) {
+if (count($global_config['allow_sitelangs']) > 1 and empty($api_request['language'])) {
     $apiresults->setCode(ApiResult::CODE_MISSING_LANG)
         ->setMessage('Lang Data is required for multi-language website!!!')
         ->returnResult();
