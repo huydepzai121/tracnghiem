@@ -994,7 +994,7 @@ function nv_groups_list_pub($mod_data = 'users')
 
     $groups = [];
     $reload = [];
-    for ($i = 0, $count = sizeof($list); $i < $count; ++$i) {
+    for ($i = 0, $count = count($list); $i < $count; ++$i) {
         if ($list[$i]['exp_time'] != 0 and $list[$i]['exp_time'] <= NV_CURRENTTIME) {
             $reload[] = $list[$i]['group_id'];
         } elseif ($list[$i]['group_type'] == 2) {

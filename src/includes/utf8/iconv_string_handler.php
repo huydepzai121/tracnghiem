@@ -78,7 +78,7 @@ function nv_substr_count($haystack, $needle)
     $needle = preg_quote($needle, '/');
     preg_match_all('/' . $needle . '/u', $haystack, $dummy);
 
-    return sizeof($dummy[0]);
+    return count($dummy[0]);
 }
 
 /**

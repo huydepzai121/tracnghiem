@@ -789,7 +789,7 @@ function nv_get_plugin_area($file_path)
     require $file_path;
 
     $plugin_area = [];
-    foreach ($nv_hooks as $event_module => $data) {
+    foreach ($nv_hooks as $data) {
         $plugin_area = array_merge_recursive($plugin_area, array_keys($data));
     }
     $nv_hooks = $nv_hooks_backup;

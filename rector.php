@@ -12,6 +12,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\Foreach_\RemoveUnusedForeachKeyRector;
 
 $config = RectorConfig::configure();
 
@@ -22,8 +23,11 @@ $config->withPaths([
 ]);
 
 $config->withSkip([
-    __DIR__ . '/src/vendor/*',
-    '!' . __DIR__ . '/src/vendor/vinades/*',
+    __DIR__ . '/src/includes/vendor/*',
+    '!' . __DIR__ . '/src/includes/vendor/vinades/*',
+    RemoveUnusedForeachKeyRector::class => [
+        __DIR__ . '/src/includes/mainfile.php',
+    ]
 ]);
 
 // $config->withPhpSets(php56: true);

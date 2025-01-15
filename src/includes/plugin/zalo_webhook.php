@@ -13,7 +13,7 @@ if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }
 
-nv_add_hook($module_name, 'zalo_webhook', $priority, function () {
+nv_add_hook($module_name, 'zalo_webhook', $priority, function (): void {
     global $global_config, $nv_Request;
 
     if ($nv_Request->isset_request('zalo', 'get')) {

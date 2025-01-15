@@ -75,7 +75,7 @@ function getNewMoonDay($k, $timeZone)
     $T3 = $T2 * $T;
     $dr = M_PI / 180;
     $Jd1 = 2415020.75933 + 29.53058868 * $k + 0.0001178 * $T2 - 0.000000155 * $T3;
-    $Jd1 = $Jd1 + 0.00033 * sin((166.56 + 132.87 * $T - 0.009173 * $T2) * $dr);
+    $Jd1 += 0.00033 * sin((166.56 + 132.87 * $T - 0.009173 * $T2) * $dr);
 
     $M = 359.2242 + 29.10535608 * $k - 0.0000333 * $T2 - 0.00000347 * $T3;
 
@@ -85,7 +85,7 @@ function getNewMoonDay($k, $timeZone)
 
     $C1 = (0.1734 - 0.000393 * $T) * sin($M * $dr) + 0.0021 * sin(2 * $dr * $M);
     $C1 = $C1 - 0.4068 * sin($Mpr * $dr) + 0.0161 * sin($dr * 2 * $Mpr);
-    $C1 = $C1 - 0.0004 * sin($dr * 3 * $Mpr);
+    $C1 -= 0.0004 * sin($dr * 3 * $Mpr);
     $C1 = $C1 + 0.0104 * sin($dr * 2 * $F) - 0.0051 * sin($dr * ($M + $Mpr));
     $C1 = $C1 - 0.0074 * sin($dr * ($M - $Mpr)) + 0.0004 * sin($dr * (2 * $F + $M));
     $C1 = $C1 - 0.0004 * sin($dr * (2 * $F - $M)) - 0.0006 * sin($dr * (2 * $F + $Mpr));
@@ -122,8 +122,8 @@ function getSunLongitude($jdn, $timeZone)
     $DL = $DL + (0.019993 - 0.000101 * $T) * sin($dr * 2 * $M) + 0.000290 * sin($dr * 3 * $M);
     $L = $L0 + $DL;
 
-    $L = $L * $dr;
-    $L = $L - M_PI * 2 * (floor($L / (M_PI * 2)));
+    $L *= $dr;
+    $L -= M_PI * 2 * (floor($L / (M_PI * 2)));
 
     return floor($L / M_PI * 6);
 }
@@ -165,7 +165,7 @@ function getLeapMonthOffset($a11, $timeZone)
     $arc = getSunLongitude(getNewMoonDay($k + $i, $timeZone), $timeZone);
     do {
         $last = $arc;
-        $i = $i + 1;
+        $i += 1;
         $arc = getSunLongitude(getNewMoonDay($k + $i, $timeZone), $timeZone);
     } while ($arc != $last and $i < 14);
 
@@ -212,7 +212,7 @@ function convertSolar2Lunar($dd, $mm, $yy, $timeZone)
         }
     }
     if ($lunarMonth > 12) {
-        $lunarMonth = $lunarMonth - 12;
+        $lunarMonth -= 12;
     }
     if ($lunarMonth >= 11 and $diff < 4) {
         --$lunarYear;

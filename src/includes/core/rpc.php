@@ -63,8 +63,8 @@ function nv_getRPC($url, $data)
                 }
                 $http_request .= "\r\n";
                 $response = '';
-                fputs($fp, $http_request);
-                fputs($fp, $data);
+                fwrite($fp, $http_request);
+                fwrite($fp, $data);
                 while (!feof($fp)) {
                     $response .= fgets($fp, 64000);
                 }
@@ -101,8 +101,8 @@ function nv_getRPC($url, $data)
         $http_request .= 'Content-Length: ' . strlen($data) . "\r\n";
         $http_request .= 'User-Agent: ' . $agent . "\r\n\r\n";
         $response = '';
-        fputs($fp, $http_request);
-        fputs($fp, $data);
+        fwrite($fp, $http_request);
+        fwrite($fp, $data);
         while (!feof($fp)) {
             $response .= fgets($fp, 64000);
         }

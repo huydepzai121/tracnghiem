@@ -114,13 +114,13 @@ if (!empty($admin_pre_data)) {
      * - Khi chưa có phương thức nào thì cho phép kích hoạt một trong số các phương thức đó
      * - Khi đã có rồi thì chỉ được sử dụng phương thức đó để xác thực (có thể 1 hoặc nhiều tùy cấu hình)
      */
-    $cfg_2step['count_active'] = sizeof(array_filter([
+    $cfg_2step['count_active'] = count(array_filter([
         $cfg_2step['active_code'],
         $cfg_2step['active_facebook'],
         $cfg_2step['active_google'],
         $cfg_2step['active_zalo']
     ]));
-    $cfg_2step['count_opts'] = sizeof($cfg_2step['opts']);
+    $cfg_2step['count_opts'] = count($cfg_2step['opts']);
 }
 
 /*

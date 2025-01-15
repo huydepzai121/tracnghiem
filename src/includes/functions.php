@@ -216,7 +216,7 @@ function nv_convertfromBytes($size)
     ];
 
     while (($size / 1024) > 1) {
-        $size = $size / 1024;
+        $size /= 1024;
         ++$i;
     }
 
@@ -603,7 +603,7 @@ function nv_genpass($length = 8, $type = 0)
     $_arr_m[] = ($type == 2 or $type == 4) ? 3 : random_int(0, 2); // 2. Đặc biệt
     $_arr_m[] = ($type == 3 or $type == 4) ? 1 : random_int(0, 2); // 3. HOA
 
-    $length = $length - 4;
+    $length -= 4;
     for ($k = 0; $k < $length; ++$k) {
         $_arr_m[] = ($type == 2 or $type == 4) ? random_int(0, 3) : random_int(0, 2);
     }
@@ -671,7 +671,7 @@ function nv_user_groups($in_groups, $res_2step = false, $manual_groups = [])
             if (!empty($manual_groups)) {
                 $in_groups = array_unique(array_merge_recursive($in_groups, $manual_groups));
             }
-            for ($i = 0, $count = sizeof($list); $i < $count; ++$i) {
+            for ($i = 0, $count = count($list); $i < $count; ++$i) {
                 if ($list[$i]['exp_time'] != 0 and $list[$i]['exp_time'] <= NV_CURRENTTIME) {
                     $reload[] = $list[$i]['group_id'];
                 } elseif (in_array((int) $list[$i]['group_id'], $in_groups, true)) {
@@ -1268,7 +1268,7 @@ function nv_get_keywords($content, $keyword_limit = 20, $isArr = false)
         require NV_ROOTDIR . '/includes/keywords/' . NV_LANG_DATA . '.php';
 
         $content_array = explode(' ', $content);
-        $b = sizeof($content_array);
+        $b = count($content_array);
 
         for ($i = 0; $i < $b - 3; ++$i) {
             $key3 = $content_array[$i] . ' ' . $content_array[$i + 1] . ' ' . $content_array[$i + 2];
@@ -1276,14 +1276,14 @@ function nv_get_keywords($content, $keyword_limit = 20, $isArr = false)
 
             if (array_search($key3, $array_keywords_3, true)) {
                 $keywords_return[] = $key3;
-                $i = $i + 2;
+                $i += 2;
             } elseif (array_search($key2, $array_keywords_2, true)) {
                 $keywords_return[] = $key2;
-                $i = $i + 1;
+                $i += 1;
             }
 
             $keywords_return = array_unique($keywords_return);
-            if (sizeof($keywords_return) > $keyword_limit) {
+            if (count($keywords_return) > $keyword_limit) {
                 break;
             }
         }
@@ -4086,7 +4086,7 @@ function nv_currency_format(float $num, string $lang = '')
         case 3: $num = $region['currency_symbol'] . ' ' . $num; break;
         case 2: $num = $region['currency_symbol'] . $num; break;
         case 1: $num = $num . ' ' . $region['currency_symbol']; break;
-        default: $num = $num . $region['currency_symbol'];
+        default: $num .= $region['currency_symbol'];
     }
 
     return $num;

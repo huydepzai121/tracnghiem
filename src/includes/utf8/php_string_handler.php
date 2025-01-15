@@ -71,7 +71,7 @@ function nv_substr_count($haystack, $needle)
     $needle = preg_quote($needle, '/');
     preg_match_all('/' . $needle . '/u', $haystack, $dummy);
 
-    return sizeof($dummy[0]);
+    return count($dummy[0]);
 }
 
 /**
@@ -99,10 +99,10 @@ function nv_strpos($haystack, $needle, $offset = 0)
 
     while ($i < $p) {
         if (ord($haystack[$i]) < 128) {
-            $i = $i + 1;
+            $i += 1;
         } else {
             $bvalue = decbin(ord($haystack[$i]));
-            $i = $i + strlen(preg_replace('/^(1+)(.+)$/', '\1', $bvalue));
+            $i += strlen(preg_replace('/^(1+)(.+)$/', '\1', $bvalue));
         }
         ++$r;
     }
@@ -123,9 +123,9 @@ function nv_strrpos($haystack, $needle, $offset = null)
     if ($offset === null) {
         $ar = explode($needle, $haystack);
 
-        if (sizeof($ar) > 1) {
+        if (count($ar) > 1) {
             array_pop($ar);
-            $haystack = join($needle, $ar);
+            $haystack = implode($needle, $ar);
 
             return nv_strlen($haystack);
         }

@@ -395,7 +395,7 @@ function nv_mkdir($path, $dir_name)
     }
     $path = @realpath($path);
     if (!preg_match('/\/$/', $path)) {
-        $path = $path . '/';
+        $path .= '/';
     }
 
     if (file_exists($path . $dir_name)) {
@@ -518,11 +518,11 @@ function nv_deletefile($file, $delsub = false)
 
         $files = scandir($realpath);
         $files2 = array_diff($files, ['.', '..', '.htaccess', 'index.html']);
-        if (sizeof($files2) and !$delsub) {
+        if (count($files2) and !$delsub) {
             return [0, $nv_Lang->getGlobal('error_delete_subdirectories_not_empty', $path[2])];
         }
         $files = array_diff($files, ['.', '..']);
-        if (sizeof($files)) {
+        if (count($files)) {
             foreach ($files as $f) {
                 $unlink = nv_deletefile($realpath . '/' . $f, true);
                 if (empty($unlink[0])) {
@@ -572,7 +572,7 @@ function nv_ftp_del_dir($ftp, $dst_dir, $delsub)
 
     if (is_array($ar_files)) {
         // Makes sure there are files
-        $sizeof = sizeof($ar_files);
+        $sizeof = count($ar_files);
 
         for ($i = 0; $i < $sizeof; ++$i) {
             $st_file = $ar_files[$i]['name'];
@@ -803,7 +803,7 @@ function nv_ImageInfo($original_name, $width = 0, $is_create_thumb = false, $thu
     }
 
     if ($is_create_thumb and $width and $imageinfo['orig_width'] > $width) {
-        if (empty($thumb_path) or !is_dir($thumb_path) or !is_writeable($thumb_path)) {
+        if (empty($thumb_path) or !is_dir($thumb_path) or !is_writable($thumb_path)) {
             $thumb_path = $matches[2];
         } else {
             $thumb_path = realpath($thumb_path);
@@ -822,7 +822,7 @@ function nv_ImageInfo($original_name, $width = 0, $is_create_thumb = false, $thu
         }
 
         if (!empty($thumb_path) and !preg_match('/\/$/', $thumb_path)) {
-            $thumb_path = $thumb_path . '/';
+            $thumb_path .= '/';
         }
 
         $new_src = $thumb_path . $matches[3] . '_' . md5($original_name . $width) . $matches[4];

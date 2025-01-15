@@ -121,7 +121,7 @@ if (isset($global_config['check_zaloip_expired'])) {
 }
 
 if (isset($global_config['zaloWebhookIPs'])) {
-    $global_config['crosssite_valid_ips'] = $global_config['crosssite_valid_ips'] + $global_config['zaloWebhookIPs'];
+    $global_config['crosssite_valid_ips'] += $global_config['zaloWebhookIPs'];
 }
 
 // Xac dinh Quoc gia

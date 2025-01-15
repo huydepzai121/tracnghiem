@@ -13,7 +13,7 @@ if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }
 
-nv_add_hook($module_name, 'sendmail_others_actions', $priority, function ($args) {
+nv_add_hook($module_name, 'sendmail_others_actions', $priority, function ($args): void {
     $global_config = $args[0];
     $mail = $args[1];
     if (!empty($global_config['custom_configs']['custom_mail_references'])) {

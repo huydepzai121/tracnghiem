@@ -657,7 +657,7 @@ class XTemplate
 
         $var_array = $var_array[1];
 
-        foreach ($var_array as $k => $v) {
+        foreach ($var_array as $v) {
             // Use in regexes later
             $orig_v = $v;
 
@@ -879,7 +879,7 @@ class XTemplate
         if ($this->_autoreset and (!empty($this->sub_blocks[$bname]))) {
             reset($this->sub_blocks[$bname]);
 
-            foreach ($this->sub_blocks[$bname] as $k => $v) {
+            foreach ($this->sub_blocks[$bname] as $v) {
                 $this->reset($v);
             }
         }
@@ -896,7 +896,7 @@ class XTemplate
         if (!empty($this->sub_blocks[$bname])) {
             reset($this->sub_blocks[$bname]);
 
-            foreach ($this->sub_blocks[$bname] as $k => $v) {
+            foreach ($this->sub_blocks[$bname] as $v) {
                 if (!empty($v)) {
                     $this->rparse($v);
                 }
@@ -979,7 +979,7 @@ class XTemplate
      */
     public function out_file($bname, $fname)
     {
-        if (!empty($bname) and !empty($fname) and is_writeable($fname)) {
+        if (!empty($bname) and !empty($fname) and is_writable($fname)) {
             $fp = fopen($fname, 'w');
             fwrite($fp, $this->text($bname));
             fclose($fp);
@@ -1129,7 +1129,7 @@ class XTemplate
 
         if (!empty($parentblock)) {
             $block_names = explode('.', $parentblock);
-            $level = sizeof($block_names);
+            $level = count($block_names);
         } else {
             $block_names = [];
             $level = 0;
@@ -1259,7 +1259,7 @@ class XTemplate
 
             preg_match_all($this->filevar_delim, $con, $res);
 
-            foreach ($res[1] as $k => $v) {
+            foreach ($res[1] as $v) {
                 $parents[$v][] = $bname;
             }
         }

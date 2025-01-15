@@ -13,7 +13,7 @@ if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }
 
-nv_add_hook($module_name, 'check_server', $priority, function () {
+nv_add_hook($module_name, 'check_server', $priority, function (): void {
     global $nv_Server;
 
     $original_host = $nv_Server->getOriginalHost();
