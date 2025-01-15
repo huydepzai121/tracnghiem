@@ -183,7 +183,7 @@ if ($step == 1) {
                     }
                 }
 
-                if ($a == sizeof($check_files)) {
+                if ($a == count($check_files)) {
                     $ftp_check_login = 1;
                     nv_chmod_dir($conn_id, NV_DATADIR, true);
                     nv_chmod_dir($conn_id, NV_TEMP_DIR, true);
@@ -506,7 +506,7 @@ if ($step == 1) {
 
             require_once NV_ROOTDIR . '/install/action_' . $db_config['dbtype'] . '.php';
 
-            $num_table = sizeof($sql_drop_table);
+            $num_table = count($sql_drop_table);
 
             if ($num_table > 0) {
                 if ($db_config['db_detete'] == 1) {

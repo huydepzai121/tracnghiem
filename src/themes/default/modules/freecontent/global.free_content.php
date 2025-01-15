@@ -58,7 +58,7 @@ if (!nv_function_exists('nv_block_freecontent')) {
         }
 
         shuffle($list);
-        if ($block_config['numrows'] <= sizeof($list)) {
+        if ($block_config['numrows'] <= count($list)) {
             $list = array_slice($list, 0, $block_config['numrows']);
         }
 

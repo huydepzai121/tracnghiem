@@ -1178,7 +1178,7 @@ if (!empty($menu_rows_lev0)) {
     if (!empty($is_yes_sub)) {
         foreach ($is_yes_sub as $mys) {
             $menu_y_sub[$mys] = [];
-            $menu_y_sub[$mys]['subsize'] = sizeof($menu_rows_lev1[$mys]);
+            $menu_y_sub[$mys]['subsize'] = count($menu_rows_lev1[$mys]);
         }
     }
 
@@ -1186,7 +1186,7 @@ if (!empty($menu_rows_lev0)) {
 
     $a = 1;
     $b = 1;
-    $d = sizeof($menu_rows_lev0);
+    $d = count($menu_rows_lev0);
     $executes = [];
     $subitem = [];
     foreach ($menu_rows_lev0 as $m => $item) {

@@ -24,7 +24,7 @@ if (!nv_function_exists('nv_block_theme_switch')) {
     {
         global $global_config, $nv_Lang;
 
-        if (empty($global_config['array_user_allowed_theme']) or sizeof($global_config['array_user_allowed_theme']) < 2) {
+        if (empty($global_config['array_user_allowed_theme']) or count($global_config['array_user_allowed_theme']) < 2) {
             return '';
         }
 

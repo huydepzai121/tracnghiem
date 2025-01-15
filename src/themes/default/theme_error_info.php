@@ -88,7 +88,7 @@ $xtpl = new XTemplate('error_info.tpl', NV_ROOTDIR . '/themes/' . $tpl_dir . '/s
 $xtpl->assign('TPL_E_CAPTION', $nv_Lang->getGlobal('error_info_caption'));
 
 $a = 0;
-foreach ($error_info as $key => $value) {
+foreach ($error_info as $value) {
     $xtpl->assign('TPL_E_CLASS', ($a % 2) ? ' class="second"' : '');
     $xtpl->assign('TPL_E_ALT', $errortype[$value['errno']][0]);
     $xtpl->assign('TPL_E_SRC', $image_path . $errortype[$value['errno']][1]);

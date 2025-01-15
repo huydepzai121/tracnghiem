@@ -30,7 +30,7 @@ if (!nv_function_exists('nv_block_language')) {
         $xtpl->assign('SELECT_LANGUAGE', $nv_Lang->getGlobal('langsite'));
 
         // Multiple languages
-        if ($global_config['lang_multi'] and sizeof($global_config['allow_sitelangs']) > 1) {
+        if ($global_config['lang_multi'] and count($global_config['allow_sitelangs']) > 1) {
             foreach ($global_config['allow_sitelangs'] as $lang_i) {
                 $xtpl->assign('LANGSITENAME', $language_array[$lang_i]['name']);
                 $xtpl->assign('LANGSITEURL', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . $lang_i);

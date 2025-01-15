@@ -196,7 +196,7 @@ function viewcat_page_new($array_catpage, $array_cat_other, $generate_page)
         $array_row_i['publtime'] = nv_date_format(1, $array_row_i['publtime']);
         $array_row_i['listcatid'] = explode(',', $array_row_i['listcatid']);
         $array_row_i['hometext'] = nv_clean60(strip_tags($array_row_i['hometext']), 120);
-        $num_cat = sizeof($array_row_i['listcatid']);
+        $num_cat = count($array_row_i['listcatid']);
 
         $n = 1;
         foreach ($array_row_i['listcatid'] as $listcatid) {
@@ -312,7 +312,7 @@ function viewcat_top($array_catcontent, $generate_page)
     // Cac bai viet phan dau
     if (!empty($array_catcontent)) {
         $a = 0;
-        foreach ($array_catcontent as $key => $array_catcontent_i) {
+        foreach ($array_catcontent as $array_catcontent_i) {
             $newday = $array_catcontent_i['publtime'] + (86400 * $array_catcontent_i['newday']);
             $array_catcontent_i['publtime'] = nv_date_format(1, $array_catcontent_i['publtime']);
             $xtpl->assign('CONTENT', $array_catcontent_i);
@@ -508,7 +508,7 @@ function viewcat_two_column($array_content, $array_catpage)
     $a = 0;
 
     foreach ($array_catpage as $key => $array_catpage_i) {
-        $number_content = isset($array_catpage[$key]['content']) ? sizeof($array_catpage[$key]['content']) : 0;
+        $number_content = isset($array_catpage[$key]['content']) ? count($array_catpage[$key]['content']) : 0;
 
         if ($number_content > 0) {
             $array_catpage_i['rss'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['rss'] . '/' . $array_catpage_i['alias'];
@@ -763,7 +763,7 @@ function detail_theme($news_contents, $array_keyword, $related_new_array, $relat
     }
 
     if (!empty($array_keyword)) {
-        $t = sizeof($array_keyword) - 1;
+        $t = count($array_keyword) - 1;
         foreach ($array_keyword as $i => $value) {
             $xtpl->assign('KEYWORD', $value['keyword']);
             $xtpl->assign('LINK_KEYWORDS', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=tag/' . urlencode($value['alias']));
@@ -830,7 +830,7 @@ function detail_theme($news_contents, $array_keyword, $related_new_array, $relat
     }
 
     if (!empty($topic_array)) {
-        foreach ($topic_array as $key => $topic_array_i) {
+        foreach ($topic_array as $topic_array_i) {
             $newday = $topic_array_i['time'] + (86400 * $topic_array_i['newday']);
             if ($newday >= NV_CURRENTTIME) {
                 $xtpl->parse('main.topic.loop.newday');

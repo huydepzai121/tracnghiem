@@ -691,13 +691,13 @@ class NvUpdate
                 }
             }
 
-            $xtpl->assign('OK_MESSAGE', sprintf($this->lang->getModule('update_move_complete'), sizeof($nv_update_config['updatelog']['file_list'])));
+            $xtpl->assign('OK_MESSAGE', sprintf($this->lang->getModule('update_move_complete'), count($nv_update_config['updatelog']['file_list'])));
 
             if (empty($array['file_list'])) {
                 $xtpl->parse('main.step4.complete');
                 $xtpl->parse('main.step4.next_step');
             } else {
-                $xtpl->assign('PROCESS_MESSAGE', sprintf($this->lang->getModule('update_move_num'), sizeof($array['file_list']), sizeof($nv_update_config['updatelog']['file_list'])));
+                $xtpl->assign('PROCESS_MESSAGE', sprintf($this->lang->getModule('update_move_num'), count($array['file_list']), count($nv_update_config['updatelog']['file_list'])));
                 $xtpl->parse('main.step4.process');
             }
 
@@ -1482,7 +1482,7 @@ if ($nv_update_config['step'] == 1) {
                 // Tinh toan ham tiep theo se thuc hien, them vao danh dach cac cong viec da thuc hien (du thanh cong hay that bai)
                 if ($passed > 0) {
                     $get_next_func = true;
-                    $num_passed = $num_passed + 1;
+                    $num_passed += 1;
                 }
 
                 // Dung tien trinh
@@ -1502,7 +1502,7 @@ if ($nv_update_config['step'] == 1) {
             }
 
             // Kiem tra hoan tat
-            if ($num_passed == sizeof($array['task'])) {
+            if ($num_passed == count($array['task'])) {
                 $array['AllPassed'] = true;
 
                 // Danh dau hoan tat de tiep tuc buoc di chuyen file (neu KHONG xay ra loi)
@@ -1809,7 +1809,7 @@ if ($nv_update_config['step'] == 1) {
 
             $exts = [];
             $i = 0;
-            foreach ($XML_exts as $extname => $values) {
+            foreach ($XML_exts as $values) {
                 $exts[$i] = [
                     'id' => (int) $values->id,
                     'type' => (string) $values->type,
@@ -1856,7 +1856,7 @@ if ($nv_update_config['step'] == 1) {
             $XML_exts = $XML_exts->xpath('extension');
 
             $onlineModules = [];
-            foreach ($XML_exts as $extname => $values) {
+            foreach ($XML_exts as $values) {
                 $exts_type = trim((string) $values->type);
                 $exts_name = trim((string) $values->name);
                 if ($exts_type == 'module') {

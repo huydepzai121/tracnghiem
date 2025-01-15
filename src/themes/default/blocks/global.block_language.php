@@ -26,7 +26,7 @@ if (!nv_function_exists('nv_block_language')) {
 
         // Multiple languages
         $langs = [];
-        if ($global_config['lang_multi'] and sizeof($global_config['allow_sitelangs']) > 1) {
+        if ($global_config['lang_multi'] and count($global_config['allow_sitelangs']) > 1) {
             foreach ($global_config['allow_sitelangs'] as $lang_i) {
                 $langs[] = [
                     'name' => $language_array[$lang_i]['name'],

@@ -169,7 +169,7 @@ function nv_admin_theme($contents, $head_site = 1)
 
         // Top_menu
         $top_menu = $admin_mods;
-        if (sizeof($top_menu) > 8) {
+        if (count($top_menu) > 8) {
             if ($module_name != 'authors') {
                 unset($top_menu['authors']);
             }
