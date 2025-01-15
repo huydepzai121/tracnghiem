@@ -245,7 +245,7 @@ if ($nv_Request->isset_request('save', 'post')) {
     $array_config = $global_config;
 }
 
-$array_config['pass_timeout'] = $array_config['pass_timeout'] / 86400;
+$array_config['pass_timeout'] /= 86400;
 $array_config['openid_processing'] = !empty($array_config['openid_processing']) ? array_map('trim', explode(',', $array_config['openid_processing'])) : [];
 
 $sql = 'SELECT config, content FROM ' . NV_MOD_TABLE . "_config WHERE
@@ -266,7 +266,7 @@ $array_config['active_editinfo_censor'] = !empty($array_config['active_editinfo_
 $array_config['active_user_logs'] = !empty($array_config['active_user_logs']) ? ' checked="checked"' : '';
 $array_config['auto_assign_oauthuser'] = !empty($array_config['auto_assign_oauthuser']) ? ' checked="checked"' : '';
 $array_config['admin_email'] = !empty($array_config['admin_email']) ? ' checked="checked"' : '';
-$array_config['register_active_time'] = $array_config['register_active_time'] / 3600;
+$array_config['register_active_time'] /= 3600;
 
 $array_name_show = [
     0 => $nv_Lang->getModule('lastname_firstname'),

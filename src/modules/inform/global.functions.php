@@ -27,7 +27,7 @@ function groups_list($mod_data = 'users')
     }
 
     $groups = [];
-    for ($i = 0, $count = sizeof($list); $i < $count; ++$i) {
+    for ($i = 0, $count = count($list); $i < $count; ++$i) {
         if (!($list[$i]['exp_time'] != 0 and $list[$i]['exp_time'] <= NV_CURRENTTIME) and $list[$i]['group_type']) {
             $groups[$list[$i]['group_id']] = $list[$i]['title'];
         }

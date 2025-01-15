@@ -711,7 +711,7 @@ $array_mod_title[] = [
 krsort($array_mod_title, SORT_NUMERIC);
 
 // Active last item
-$s = sizeof($array_mod_title) - 1;
+$s = count($array_mod_title) - 1;
 $array_mod_title[$s]['active'] = true;
 
 $xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
@@ -742,14 +742,14 @@ foreach ($menulist as $menu_id => $row) {
 if (!empty($parentid_menulist)) {
     ksort($parentid_menulist);
     $parentid_menulist = array_values($parentid_menulist);
-    $num = sizeof($parentid_menulist);
+    $num = count($parentid_menulist);
 
     foreach ($parentid_menulist as $menu_id) {
         $row = $menulist[$menu_id];
         $sql = 'SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE parentid=' . $row['id'];
         $row['nu'] = $db->query($sql)->fetchColumn();
 
-        $row['sub'] = sizeof(array_filter(explode(',', $row['subitem'])));
+        $row['sub'] = count(array_filter(explode(',', $row['subitem'])));
 
         $array_groups_view = array_map('intval', explode(',', $row['groups_view']));
         $row['groups_view'] = [];

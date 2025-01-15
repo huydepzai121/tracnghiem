@@ -71,7 +71,7 @@ if ($ext == 'country') {
                 if (!isset($bd[$row['click_country']])) {
                     $bd[$row['click_country']] = 0;
                 }
-                $bd[$row['click_country']] = $bd[$row['click_country']] + 1;
+                $bd[$row['click_country']] += 1;
             }
         }
         foreach ($bd as $shortname => $click_count) {
@@ -104,7 +104,7 @@ if ($ext == 'country') {
             if (!isset($bd[$row['click_browse_name']])) {
                 $bd[$row['click_browse_name']] = 0;
             }
-            $bd[$row['click_browse_name']] = $bd[$row['click_browse_name']] + 1;
+            $bd[$row['click_browse_name']] += 1;
         }
     }
     $unknown = 0;
@@ -136,7 +136,7 @@ if ($ext == 'country') {
             if (!isset($bd[$row['click_os_name']])) {
                 $bd[$row['click_os_name']] = 0;
             }
-            $bd[$row['click_os_name']] = $bd[$row['click_os_name']] + 1;
+            $bd[$row['click_os_name']] += 1;
         }
     }
 
@@ -181,7 +181,7 @@ if ($ext == 'country') {
             if (!isset($bd[date('d', $row['click_time'])])) {
                 $bd[date('d', $row['click_time'])] = 0;
             }
-            $bd[date('d', $row['click_time'])] = $bd[date('d', $row['click_time'])] + 1;
+            $bd[date('d', $row['click_time'])] += 1;
         }
     }
 

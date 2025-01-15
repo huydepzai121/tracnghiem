@@ -207,7 +207,7 @@ $xtpl->assign('DATA', $array);
 
 $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_voices ORDER BY weight ASC';
 $array_voices = $db->query($sql)->fetchAll();
-$num = sizeof($array_voices);
+$num = count($array_voices);
 
 foreach ($array_voices as $row) {
     $row['url_edit'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;id=' . $row['id'];

@@ -140,7 +140,7 @@ if (!empty($new_ids)) {
             if (empty($row['title'])) {
                 $array[$id]['title'] = $new_titles[$row['new_id']]['title'];
             }
-            $array[$id]['allowed_edit'] = sizeof(array_intersect($new_titles[$row['new_id']]['catids'], $array_cat_edit)) > 0;
+            $array[$id]['allowed_edit'] = count(array_intersect($new_titles[$row['new_id']]['catids'], $array_cat_edit)) > 0;
         }
     }
 }

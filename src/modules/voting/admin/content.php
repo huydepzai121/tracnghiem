@@ -195,7 +195,7 @@ if ($nv_Request->isset_request('save', 'post')) {
             ++$maxoption;
         }
         if ($maxoption > 1) {
-            $maxoption = $maxoption - 1;
+            $maxoption -= 1;
         }
 
         $active_captcha = $rowvote['active_captcha'];

@@ -139,7 +139,7 @@ if ($nv_Request->isset_request('id', 'post') and $nv_Request->isset_request('che
 if ($nv_Request->isset_request('getKeywordsFromContent', 'post') and $nv_Request->get_title('checkss', 'post') === NV_CHECK_SESSION) {
     $content = $nv_Request->get_title('content', 'post', '');
     $keywords = nv_get_mod_tags($content);
-    $size = sizeof($keywords);
+    $size = count($keywords);
     if ($size < 20) {
         $keywords = array_merge($keywords, nv_get_keywords($content, 20 - $size, true));
     }
@@ -356,7 +356,7 @@ if ($rowcontent['id'] == 0) {
                     }
                 }
             }
-            if ($check_edit == sizeof($arr_catid)) {
+            if ($check_edit == count($arr_catid)) {
                 $check_permission = true;
             }
         }
@@ -1021,7 +1021,7 @@ if ($is_submit_form) {
 
             if (empty($rowcontent['keywords'])) {
                 $keywords = $tags;
-                if (($size = sizeof($keywords)) < 20) {
+                if (($size = count($keywords)) < 20) {
                     $keywords = array_merge($keywords, nv_get_keywords($ct, 20 - $size, true));
                 }
                 !empty($keywords) && $keywords = array_unique($keywords);
@@ -1150,7 +1150,7 @@ if ($is_submit_form) {
                     $ct_query[] = (int) $db->exec('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_' . $catid . ' SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE id=' . $rowcontent['id']);
                 }
 
-                if (array_sum($ct_query) != sizeof($ct_query)) {
+                if (array_sum($ct_query) != count($ct_query)) {
                     $error[] = $nv_Lang->getModule('errorsave');
                 }
                 unset($ct_query);
@@ -1299,7 +1299,7 @@ if ($is_submit_form) {
                     }
                 }
 
-                if (array_sum($ct_query) != sizeof($ct_query)) {
+                if (array_sum($ct_query) != count($ct_query)) {
                     $error[] = $nv_Lang->getModule('errorsave');
                 }
 
@@ -1621,7 +1621,7 @@ foreach ($global_array_cat as $catid_i => $array_value) {
      * - Bài viết chưa nằm trong chuyên mục thì disable
      */
     if (!empty($check_show) and ($rowcontent['id'] > 0 or in_array((int) $array_value['status'], array_map('intval', $global_code_defined['cat_visible_status']), true))) {
-        $catiddisplay = (sizeof($array_catid_in_row) > 1 and (in_array((int) $catid_i, array_map('intval', $array_catid_in_row), true))) ? true : false;
+        $catiddisplay = (count($array_catid_in_row) > 1 and (in_array((int) $catid_i, array_map('intval', $array_catid_in_row), true))) ? true : false;
         $temp = [
             'catid' => $catid_i,
             'space' => (int) $array_value['lev'],

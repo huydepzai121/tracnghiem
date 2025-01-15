@@ -121,7 +121,7 @@ if (!nv_function_exists('nv_block_freecontent')) {
             $xtpl = new XTemplate('block.free_content.tpl', NV_ROOTDIR . '/themes/' . $block_theme . '/modules/' . $site_mods[$module]['module_file']);
 
             shuffle($list);
-            if ($block_config['numrows'] <= sizeof($list)) {
+            if ($block_config['numrows'] <= count($list)) {
                 $list = array_slice($list, 0, $block_config['numrows']);
             }
 

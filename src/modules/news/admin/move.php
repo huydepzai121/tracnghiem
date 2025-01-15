@@ -100,7 +100,7 @@ while ([$id, $title] = $result->fetch(3)) {
 foreach ($global_array_cat as $catid_i => $array_value) {
     if (in_array((int) $array_value['status'], array_map('intval', $global_code_defined['cat_visible_status']), true)) {
         $space = (int) ($array_value['lev']) * 30;
-        $catiddisplay = (sizeof($catids) > 1 and (in_array((int) $catid_i, array_map('intval', $catids), true))) ? '' : ' display: none;';
+        $catiddisplay = (count($catids) > 1 and (in_array((int) $catid_i, array_map('intval', $catids), true))) ? '' : ' display: none;';
         $temp = [
             'catid' => $catid_i,
             'space' => $space,

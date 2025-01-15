@@ -92,7 +92,7 @@ if ($nv_Request->isset_request('conversation_refresh,user_id', 'post')) {
             save_last_conversation($contents, $user_id);
         }
 
-        $offset = $offset + $count;
+        $offset += $count;
     }
 
     $contents = get_conversation($user_id);

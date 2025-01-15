@@ -103,7 +103,7 @@ function nv_check_email_change(&$email, $edit_userid)
             $pattern = implode('.?', $pattern);
         }
         if (!empty($global_config['email_plus_equivalent'])) {
-            $pattern = $pattern . '(\\+.+)*';
+            $pattern .= '(\\+.+)*';
         }
         $pattern = '^' . $pattern . '@' . $right . '$';
 

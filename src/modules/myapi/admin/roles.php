@@ -321,7 +321,7 @@ if ($action == 'role') {
             }
         }
         $data['flood_rules'] = json_encode($data['flood_rules']);
-        $data['log_period'] = $data['log_period'] * 3600;
+        $data['log_period'] *= 3600;
 
         $data['role_data']['sys'] = [];
         $data['role_data'][$lg] = [];
@@ -353,7 +353,7 @@ if ($action == 'role') {
             ]);
         }
 
-        if ($save == '2' and sizeof($global_config['setup_langs']) > 1) {
+        if ($save == '2' and count($global_config['setup_langs']) > 1) {
             foreach ($global_config['setup_langs'] as $_lg) {
                 if ($_lg != $lg) {
                     $data['role_data'][$_lg] = $data['role_data'][$lg];
@@ -440,7 +440,7 @@ if ($action == 'role') {
         '1' => $nv_Lang->getModule('saveopt1', $language_array[$lg]['name']),
         '2' => $nv_Lang->getModule('saveopt2')
     ];
-    if (sizeof($global_config['setup_langs']) > 1) {
+    if (count($global_config['setup_langs']) > 1) {
         foreach ($global_config['setup_langs'] as $_lg) {
             if ($_lg != $lg) {
                 $saveopts[$_lg] = $nv_Lang->getModule('saveopt3', $language_array[$lg]['name'], $language_array[$_lg]['name']);
@@ -519,7 +519,7 @@ if (empty($rolelist)) {
 
         // List API hệ thống
         if (!empty($role['apis'][''])) {
-            foreach ($role['apis'][''] as $cat_key => $cat_data) {
+            foreach ($role['apis'][''] as $cat_data) {
                 $xtpl->assign('CAT_DATA', $cat_data);
 
                 foreach ($cat_data['apis'] as $api_data) {

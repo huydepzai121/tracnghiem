@@ -45,7 +45,7 @@ $xtpl->assign('BID', $bid);
 
 $sql = 'SELECT id, title, description, link, image, start_time, end_time, status FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE bid=' . $bid . ' ORDER BY bid DESC';
 $array = $db->query($sql)->fetchAll();
-$num_rows = sizeof($array);
+$num_rows = count($array);
 
 if ($num_rows < 1) {
     $xtpl->parse('main.empty');

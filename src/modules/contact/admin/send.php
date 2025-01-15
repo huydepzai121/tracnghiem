@@ -74,7 +74,7 @@ if ($nv_Request->isset_request('save', 'post')) {
         $maillang = NV_LANG_DATA;
     }
 
-    foreach ($post['email'] as $part => $emails) {
+    foreach ($post['email'] as $emails) {
         if ($s) {
             sleep(2);
         }
@@ -112,7 +112,7 @@ $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op);
 $xtpl->assign('MESS_CONTENT', $mess_content);
 
-if (sizeof($global_config['setup_langs']) > 1) {
+if (count($global_config['setup_langs']) > 1) {
     foreach ($global_config['setup_langs'] as $langkey) {
         $xtpl->assign('MAIL_LANG', [
             'key' => $langkey,

@@ -152,7 +152,7 @@ $page = 1;
 $per_page = $module_config[$module_name]['per_page'];
 $st_links = $module_config[$module_name]['st_links'];
 
-$count_op = sizeof($array_op);
+$count_op = count($array_op);
 if (!empty($array_op) and $op == 'main') {
     if ($count_op == 1 or substr($array_op[1], 0, 5) == 'page-') {
         if ($catid == 0) {

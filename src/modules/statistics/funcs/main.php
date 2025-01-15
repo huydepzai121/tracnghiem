@@ -32,7 +32,7 @@ $year_list = [];
 $result = $db->query('SELECT c_val,c_count FROM ' . NV_COUNTER_GLOBALTABLE . " WHERE c_type='year' ORDER BY c_val");
 while ([$year, $count] = $result->fetch(3)) {
     $year_list[$year] = $count;
-    $total = $total + $count;
+    $total += $count;
 }
 
 $ctsy = [];
@@ -65,7 +65,7 @@ $sql = 'SELECT c_val,c_count FROM ' . NV_COUNTER_GLOBALTABLE . " WHERE c_type='m
 $result = $db->query($sql);
 while ([$month, $count] = $result->fetch(3)) {
     $month_list[$month]['count'] = $count;
-    $total = $total + $count;
+    $total += $count;
 }
 
 $data_label = [];
@@ -88,7 +88,7 @@ $sql = 'SELECT c_val,c_count FROM ' . NV_COUNTER_GLOBALTABLE . " WHERE c_type='d
 $result = $db->query($sql);
 while ([$day, $count] = $result->fetch(3)) {
     $day_list[$day] = $count;
-    $total = $total + $count;
+    $total += $count;
 }
 
 $ctsdm = [];
@@ -113,7 +113,7 @@ $result = $db->query($sql);
 $total = 0;
 while ([$dayofweek, $count] = $result->fetch(3)) {
     $dayofweek_list[$dayofweek]['count'] = $count;
-    $total = $total + $count;
+    $total += $count;
 }
 
 $data_label = [];
@@ -137,7 +137,7 @@ $sql = 'SELECT c_val,c_count FROM ' . NV_COUNTER_GLOBALTABLE . " WHERE c_type='h
 $result = $db->query($sql);
 while ([$hour, $count] = $result->fetch(3)) {
     $hour_list[$hour] = $count;
-    $total = $total + $count;
+    $total += $count;
 }
 
 $ctsh = [];
@@ -161,7 +161,7 @@ while ([$country, $count, $last_visit] = $result->fetch(3)) {
         'last_visit' => !empty($last_visit) ? nv_datetime_format($last_visit, 0, 0) : ''
     ];
 
-    $total = $total + $count;
+    $total += $count;
 }
 
 $result = $db->query('SELECT SUM(c_count), MAX(c_count) FROM ' . NV_COUNTER_GLOBALTABLE . " WHERE c_type='country'");
@@ -190,7 +190,7 @@ while ([$br, $count, $last_visit] = $result->fetch(3)) {
         'last_visit' => !empty($last_visit) ? nv_datetime_format($last_visit, 0, 0) : ''
     ];
 
-    $total = $total + $count;
+    $total += $count;
 }
 
 $result = $db->query('SELECT SUM(c_count), MAX(c_count) FROM ' . NV_COUNTER_GLOBALTABLE . " WHERE c_type='browser'");
@@ -221,7 +221,7 @@ while ([$os, $count, $last_visit] = $result->fetch(3)) {
         'last_visit' => !empty($last_visit) ? nv_datetime_format($last_visit, 0, 0) : ''
     ];
 
-    $total = $total + $count;
+    $total += $count;
 }
 
 $result = $db->query('SELECT SUM(c_count), MAX(c_count) FROM ' . NV_COUNTER_GLOBALTABLE . " WHERE c_type='os'");

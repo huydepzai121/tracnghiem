@@ -162,7 +162,7 @@ if (empty($vid)) {
         0
     ]);
 
-    $count = sizeof($array_id);
+    $count = count($array_id);
     $note = '';
     $is_error = false;
 

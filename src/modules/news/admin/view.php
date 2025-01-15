@@ -35,7 +35,7 @@ if ($rowcontent['id'] > 0) {
                     }
                 }
             }
-            if ($check_comments == sizeof($arr_catid)) {
+            if ($check_comments == count($arr_catid)) {
                 $check_permission = true;
             }
         }

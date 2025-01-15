@@ -189,7 +189,7 @@ function delete_userfile($file_save_info)
     @unlink(NV_UPLOADS_REAL_DIR . '/' . $module_upload . '/userfiles/' . $file_save_info['dir'] . '/' . $file_save_info['basename']);
     $files = scandir(NV_UPLOADS_REAL_DIR . '/' . $module_upload . '/userfiles/' . $file_save_info['dir'] . '/');
     $files = array_diff($files, ['.', '..', '.htaccess', 'index.html']);
-    if (!sizeof($files)) {
+    if (!count($files)) {
         nv_deletefile(NV_UPLOADS_REAL_DIR . '/' . $module_upload . '/userfiles/' . $file_save_info['dir'] . '/');
     }
 }

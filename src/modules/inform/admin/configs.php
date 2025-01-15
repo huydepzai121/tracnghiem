@@ -34,8 +34,8 @@ if ($nv_Request->isset_request('save', 'post')) {
         }
     }
 
-    $postdata['inform_default_exp'] = $postdata['inform_default_exp'] * 86400;
-    $postdata['inform_exp_del'] = $postdata['inform_exp_del'] * 86400;
+    $postdata['inform_default_exp'] *= 86400;
+    $postdata['inform_exp_del'] *= 86400;
     $sth = $db->prepare('UPDATE ' . NV_CONFIG_GLOBALTABLE . " SET config_value = :config_value WHERE lang = 'sys' AND module = 'site' AND config_name = :config_name");
     $sth2 = $db->prepare('INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('sys', 'site', :config_name, :config_value)");
     foreach ($postdata as $config_name => $config_value) {

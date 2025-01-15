@@ -55,7 +55,7 @@ while ([$keywords] = $sth->fetch(3)) {
     }
 }
 
-if (sizeof($array_data) < $per_page and $page == 1) {
+if (count($array_data) < $per_page and $page == 1) {
     if (file_exists(NV_ROOTDIR . '/includes/keywords/' . NV_LANG_DATA . '.php')) {
         $contents = file_get_contents(NV_ROOTDIR . '/includes/keywords/' . NV_LANG_DATA . '.php');
         preg_match_all('/\'([^\']*' . nv_preg_quote($q) . '[^\']*)\'/', $contents, $matches);

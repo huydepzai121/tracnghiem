@@ -56,7 +56,7 @@ if (!empty($listcid)) {
         nv_delete_notification(NV_LANG_DATA, $module_name, 'comment_queue', $row['cid']);
     }
 
-    foreach ($array_row_id as $module => $rows) {
+    foreach ($array_row_id as $rows) {
         foreach ($rows as $row) {
             if (isset($site_mod_comm[$row['module']])) {
                 $mod_info = $site_mod_comm[$row['module']];

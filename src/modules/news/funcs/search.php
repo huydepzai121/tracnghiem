@@ -381,7 +381,7 @@ if (empty($key) and ($catid == 0) and empty($from_date) and empty($to_date)) {
         // Không cho tùy ý đánh số page + xác định trang trước, trang sau
         betweenURLs($page, ceil($numRecord / $per_page), $base_url, '&page-', $prevPage, $nextPage);
 
-        foreach ($response['hits']['hits'] as $key => $value) {
+        foreach ($response['hits']['hits'] as $value) {
             $homeimgthumb = $value['_source']['homeimgthumb'];
             if ($homeimgthumb == 1) {
                 // image thumb

@@ -46,7 +46,7 @@ while ($item = $result->fetch()) {
 
 $result = $db->query("SHOW TABLE STATUS LIKE '" . $db_config['prefix'] . "\_" . $lang . "\_comment'");
 $rows = $result->fetchAll();
-if (sizeof($rows)) {
+if (count($rows)) {
     $sql_drop_module[] = 'DELETE FROM ' . $db_config['prefix'] . '_' . $lang . "_comment WHERE module='" . $module_name . "'";
 }
 $sql_create_module = $sql_drop_module;

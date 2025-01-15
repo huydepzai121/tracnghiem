@@ -118,7 +118,7 @@ if (empty($row['active2step'])) {
         $db->query('DELETE FROM ' . NV_MOD_TABLE . '_backupcodes WHERE userid=' . $row['userid']);
 
         $new_code = [];
-        while (sizeof($new_code) < 10) {
+        while (count($new_code) < 10) {
             $code = nv_strtolower(nv_genpass(8, 0));
             if (!in_array($code, $new_code, true)) {
                 $new_code[] = $code;

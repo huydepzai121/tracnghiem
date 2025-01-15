@@ -35,7 +35,7 @@ if (!nv_function_exists('nv_message_page')) {
 
         $cache_files = nv_scandir(NV_ROOTDIR . '/' . NV_CACHEDIR . '/' . $module, $pattern);
 
-        if (($count = sizeof($cache_files)) >= 1) {
+        if (($count = count($cache_files)) >= 1) {
             $num = random_int(1, $count);
             --$num;
             $cache_file = $cache_files[$num];

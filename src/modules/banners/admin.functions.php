@@ -184,7 +184,7 @@ function nv_CreateXML_bannerPlan()
                 'exp_time' => $row2['exp_time']
             ];
         }
-        if (sizeof($plan['banners'])) {
+        if (count($plan['banners'])) {
             $array2XML = new NukeViet\Xml\Array2XML();
             $array2XML->saveXML($plan, 'plan', $xmlfile, $encoding = $global_config['site_charset']);
         }
@@ -425,13 +425,13 @@ function nv_plist_theme($contents)
     global $global_config, $module_file;
     $xtpl = new XTemplate('plist.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
     $xtpl->assign('CONTENTS', $contents);
-    foreach ($contents['thead'] as $key => $thead) {
+    foreach ($contents['thead'] as $thead) {
         $xtpl->assign('THEAD', $thead);
         $xtpl->parse('main.thead');
     }
     $a = 0;
     if (!empty($contents['rows'])) {
-        foreach ($contents['rows'] as $pl_id => $values) {
+        foreach ($contents['rows'] as $values) {
             $values['checked'] = $values['act'][1] ? ' checked="checked"' : '';
             $xtpl->assign('ROW', $values);
             $xtpl->parse('main.loop');
@@ -649,7 +649,7 @@ function nv_b_list_theme($contents, $array_users = [])
         $xtpl->parse('main.searchform');
     }
 
-    foreach ($contents['thead'] as $key => $thead) {
+    foreach ($contents['thead'] as $thead) {
         $xtpl->assign('THEAD', $thead);
         $xtpl->parse('main.thead');
     }
@@ -774,7 +774,7 @@ function nv_show_list_stat_theme($contents)
     $xtpl->assign('CONTENTS', $contents);
     $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('MODULE_NAME', $module_name);
-    foreach ($contents['thead'] as $key => $thead) {
+    foreach ($contents['thead'] as $thead) {
         $xtpl->assign('THEAD', $thead);
         $xtpl->parse('main.thead');
     }

@@ -573,7 +573,7 @@ if (!empty($module_config[$module_name]['elas_use'])) {
 
     // Xử lý dữ liệu
     $data = $array_ids = $array_userid = [];
-    foreach ($response['hits']['hits'] as $key => $value) {
+    foreach ($response['hits']['hits'] as $value) {
         $array_list_elastic_search = [
             $value['_source']['id'],
             $value['_source']['catid'],
@@ -640,11 +640,11 @@ if (!empty($module_config[$module_name]['elas_use'])) {
                 }
             }
 
-            if ($check_edit == sizeof($array_temp)) {
+            if ($check_edit == count($array_temp)) {
                 $check_permission_edit = true;
             }
 
-            if ($check_del == sizeof($array_temp)) {
+            if ($check_del == count($array_temp)) {
                 $check_permission_delete = true;
             }
         }
@@ -863,11 +863,11 @@ if (!empty($module_config[$module_name]['elas_use'])) {
                 }
             }
 
-            if ($check_edit == sizeof($array_temp)) {
+            if ($check_edit == count($array_temp)) {
                 $check_permission_edit = true;
             }
 
-            if ($check_del == sizeof($array_temp)) {
+            if ($check_del == count($array_temp)) {
                 $check_permission_delete = true;
             }
         }
@@ -1323,7 +1323,7 @@ if (!$is_search) {
                 if (empty($row['title'])) {
                     $array_drafts['list'][$id]['title'] = $new_titles[$row['new_id']]['title'];
                 }
-                $array_drafts['list'][$id]['allowed_edit'] = sizeof(array_intersect($new_titles[$row['new_id']]['catids'], $array_cat_edit)) > 0;
+                $array_drafts['list'][$id]['allowed_edit'] = count(array_intersect($new_titles[$row['new_id']]['catids'], $array_cat_edit)) > 0;
             }
         }
     }

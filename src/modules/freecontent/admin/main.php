@@ -132,7 +132,7 @@ $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_blocks ORDER BY bid DESC';
 $array = $db->query($sql)->fetchAll();
 
-if (sizeof($array) < 1) {
+if (count($array) < 1) {
     $xtpl->parse('main.empty');
 } else {
     foreach ($array as $row) {

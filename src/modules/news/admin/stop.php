@@ -48,7 +48,7 @@ if ($nv_Request->isset_request('checkss', 'get') and $nv_Request->get_string('ch
                         }
                     }
                 }
-                if ($check_edit == sizeof($arr_catid)) {
+                if ($check_edit == count($arr_catid)) {
                     $check_permission = true;
                 }
             }

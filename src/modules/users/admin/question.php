@@ -140,7 +140,7 @@ if ($nv_Request->isset_request('qlist', 'post')) {
 
     $sql = 'SELECT * FROM ' . NV_MOD_TABLE . "_question WHERE lang='" . NV_LANG_DATA . "' ORDER BY weight ASC";
     $_rows = $db->query($sql)->fetchAll();
-    $num = sizeof($_rows);
+    $num = count($_rows);
     if ($num) {
         foreach ($_rows as $row) {
             $xtpl->assign('ROW', [

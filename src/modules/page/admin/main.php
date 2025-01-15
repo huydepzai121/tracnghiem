@@ -18,7 +18,7 @@ $array = [];
 
 $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . ' ORDER BY weight ASC';
 $_rows = $db->query($sql)->fetchAll();
-$num = sizeof($_rows);
+$num = count($_rows);
 
 if ($num < 1) {
     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=content');

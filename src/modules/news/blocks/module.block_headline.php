@@ -177,7 +177,7 @@ if (!nv_function_exists('nv_block_headline')) {
         }
 
         $a = 0;
-        foreach ($array_bid_content as $i => $array_bid) {
+        foreach ($array_bid_content as $array_bid) {
             $array_bid['selected'] = $a == 0 ? 'true' : 'false'; // bootstrap 4/5
             $array_bid['active'] = $a == 0 ? 'active' : ''; // bootstrap 4/5
             $array_bid['show_active'] = $a == 0 ? 'show active' : ''; // bootstrap 4/5

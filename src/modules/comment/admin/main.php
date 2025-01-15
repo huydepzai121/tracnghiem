@@ -89,7 +89,7 @@ foreach ($site_mod_comm as $module_i => $row) {
 
 $i = 15;
 while ($i < 100) {
-    $i = $i + 5;
+    $i += 5;
     $xtpl->assign('OPTION', ['page' => $i, 'selected' => ($i == $per_page) ? ' selected="selected"' : '']);
     $xtpl->parse('main.per_page');
 }

@@ -89,7 +89,7 @@ if ($nv_Request->isset_request('choicesql', 'post')) {
             exit();
         }
         $_items = $db->query("SHOW TABLE STATUS LIKE '%\_" . $module . "%'")->fetchAll();
-        $num_table = sizeof($_items);
+        $num_table = count($_items);
 
         $array_table_module = [];
         $xtpl->assign('choicesql_name', 'choicesql_' . $choice);
@@ -115,7 +115,7 @@ if ($nv_Request->isset_request('choicesql', 'post')) {
         }
 
         $_items = $db->columns_array($table);
-        $num_table = sizeof($_items);
+        $num_table = count($_items);
 
         $array_table_module = [];
         $xtpl->assign('choicesql_name', 'choicesql_' . $choice);
@@ -401,7 +401,7 @@ if ($nv_Request->isset_request('save', 'post')) {
                 $old_field_choices = !empty($dataform_old['field_choices']) ? unserialize($dataform_old['field_choices']) : [];
                 $field_choice_value = $nv_Request->get_typed_array('field_choice', 'post', 'title', []);
                 $field_choice_text = $nv_Request->get_typed_array('field_choice_text', 'post', 'title', []);
-                if (!sizeof($field_choice_value)) {
+                if (!count($field_choice_value)) {
                     $error = $nv_Lang->getModule('field_choices_empty');
                 } else {
                     $field_choices = [];
@@ -619,7 +619,7 @@ if ($nv_Request->isset_request('qlist', 'get')) {
     }
     $sql = 'SELECT * FROM ' . NV_MOD_TABLE . '_field ORDER BY weight ASC';
     $_rows = $db->query($sql)->fetchAll();
-    $num = sizeof($_rows);
+    $num = count($_rows);
 
     // Các trường hệ thống luôn ở trên đầu, do đó bắt đầu weight từ khi có trường tùy chỉnh
     $fieldsys_offset = 0;

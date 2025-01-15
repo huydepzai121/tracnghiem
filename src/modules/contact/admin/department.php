@@ -523,7 +523,7 @@ $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('OP_URL', $page_url);
 
-$count = sizeof($departments);
+$count = count($departments);
 if (defined('NV_IS_SPADMIN')) {
     $xtpl->parse('main.is_spadmin');
 }

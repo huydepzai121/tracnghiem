@@ -329,7 +329,7 @@ if ($nv_Request->isset_request('gid,del', 'post')) {
     }
 
     // Báo lỗi nếu thành viên còn tham gia nhóm khác
-    if (sizeof($array_groups_user) > 1) {
+    if (count($array_groups_user) > 1) {
         exit($nv_Lang->getModule('not_del_user'));
     }
 
@@ -503,7 +503,7 @@ if ($nv_Request->isset_request('gid,denied', 'post')) {
 }
 
 // Chinh sua noi dung cua group
-if (sizeof($array_op) == 3 and $array_op[0] == 'groups' and $array_op[1] and $array_op[2] == 'edit') {
+if (count($array_op) == 3 and $array_op[0] == 'groups' and $array_op[1] and $array_op[2] == 'edit') {
     $group_id = (int) $array_op[1];
     if (!isset($groupsList[$group_id]) or !($group_id < 4 or $group_id > 9)) {
         nv_redirect_location($page_url);
@@ -589,7 +589,7 @@ if (sizeof($array_op) == 3 and $array_op[0] == 'groups' and $array_op[1] and $ar
 }
 
 // Quản lý thông báo
-if (!empty($global_config['inform_active']) and sizeof($array_op) == 3 and $array_op[0] == 'groups' and $array_op[1] and $array_op[2] == 'inform') {
+if (!empty($global_config['inform_active']) and count($array_op) == 3 and $array_op[0] == 'groups' and $array_op[1] and $array_op[2] == 'inform') {
     $group_id = (int) $array_op[1];
     if (!isset($groupsList[$group_id]) or !($group_id < 4 or $group_id > 9)) {
         nv_redirect_location($page_url);
@@ -629,7 +629,7 @@ $xtpl->assign('MODULE_URL', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . 
 $xtpl->assign('OP', $op);
 
 // Danh sach thanh vien
-if (sizeof($array_op) == 2 and $array_op[0] == 'groups' and $array_op[1]) {
+if (count($array_op) == 2 and $array_op[0] == 'groups' and $array_op[1]) {
     $group_id = (int) $array_op[1];
     if (!isset($groupsList[$group_id]) or !($group_id < 4 or $group_id > 9)) {
         nv_redirect_location($page_url);

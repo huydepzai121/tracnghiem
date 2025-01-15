@@ -18,7 +18,7 @@ $array_op = explode('/', $alias);
 $alias = $array_op[0];
 
 if (isset($array_op[1])) {
-    if (sizeof($array_op) == 2 and preg_match('/^page\-([0-9]+)$/', $array_op[1], $m)) {
+    if (count($array_op) == 2 and preg_match('/^page\-([0-9]+)$/', $array_op[1], $m)) {
         $page = (int) ($m[1]);
     } else {
         $alias = '';

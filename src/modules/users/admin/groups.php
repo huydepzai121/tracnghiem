@@ -108,9 +108,9 @@ if ($nv_Request->isset_request('cWeight, id', 'post') and $request_tokend === NV
         nv_htmlOutput('ERROR');
     }
 
-    $cWeight = min($cWeight, sizeof($groupsList));
+    $cWeight = min($cWeight, count($groupsList));
     if ($global_config['idsite'] > 0) {
-        $cWeight = $cWeight - $weight_siteus;
+        $cWeight -= $weight_siteus;
     }
     if ($cWeight < 1) {
         $cWeight = 1;
@@ -888,7 +888,7 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
 
 // Danh sách nhóm
 $weight_op = 1;
-$allGroupCount = sizeof($groupsList);
+$allGroupCount = count($groupsList);
 
 $xtpl->assign('TOKEND', NV_CHECK_SESSION);
 $xtpl->assign('MAX_WEIGHT', $allGroupCount);

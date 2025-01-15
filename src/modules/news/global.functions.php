@@ -180,7 +180,7 @@ function nv_fix_weight_content($weight_min)
 {
     global $db, $module_data;
     if ($weight_min > 0) {
-        $weight_min = $weight_min - 1;
+        $weight_min -= 1;
         $sql = 'SELECT id, listcatid FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE weight >= ' . $weight_min . ' ORDER BY weight ASC, publtime ASC';
         $result = $db->query($sql);
         $weight = $weight_min;
@@ -236,7 +236,7 @@ function nv_link_edit_page(array $info)
         $listcatid = is_array($info['listcatid']) ? $info['listcatid'] : array_filter(array_map('intval', explode(',', $info['listcatid'])));
 
         // Kiểm tra quyền sửa bài
-        if (sizeof(array_intersect($listcatid, $admin_permissions['edit_content'] ?? [])) == 0) {
+        if (count(array_intersect($listcatid, $admin_permissions['edit_content'] ?? [])) == 0) {
             return '';
         }
     }
@@ -265,7 +265,7 @@ function nv_link_delete_page(array $info, int $detail = 0)
         $listcatid = is_array($info['listcatid']) ? $info['listcatid'] : array_filter(array_map('intval', explode(',', $info['listcatid'])));
 
         // Kiểm tra quyền sửa bài
-        if (sizeof(array_intersect($listcatid, $admin_permissions['del_content'] ?? [])) == 0) {
+        if (count(array_intersect($listcatid, $admin_permissions['del_content'] ?? [])) == 0) {
             return '';
         }
     }

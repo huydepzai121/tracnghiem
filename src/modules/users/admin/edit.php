@@ -576,7 +576,7 @@ if (defined('NV_IS_USER_FORUM')) {
         $xtpl->parse('main.edit_user.add_photo');
     }
 
-    $xtpl->assign('SHOW_BTN_CLEAR', (sizeof($array_old_groups) > 0 and !in_array(7, $array_old_groups_all, true)) ? '' : ' style="display: none;"');
+    $xtpl->assign('SHOW_BTN_CLEAR', (count($array_old_groups) > 0 and !in_array(7, $array_old_groups_all, true)) ? '' : ' style="display: none;"');
 
     $a = 0;
     foreach ($groups as $group) {

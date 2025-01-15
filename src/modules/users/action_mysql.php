@@ -60,7 +60,7 @@ if ($lang != $global_config['site_lang'] and in_array($global_config['site_lang'
 }
 
 // Tính toán số module đã cài (Bao gồm cả ngôn ngữ đang thao tác)
-$num_module_exists = sizeof($array_lang_module_setup);
+$num_module_exists = count($array_lang_module_setup);
 
 // Xóa các langkey của trường dữ liệu khi xóa module ở ngôn ngữ đã cài (có từ 2 module đã cài trở lên)
 if (in_array($lang, $array_lang_module_setup, true) and $num_module_exists > 1) {

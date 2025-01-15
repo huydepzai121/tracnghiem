@@ -274,7 +274,7 @@ function nv_show_cat_list($parentid = 0)
 
     $sql = 'SELECT catid, parentid, title, alias, weight, viewcat, numsubcat, numlinks, newday, status FROM ' . NV_PREFIXLANG . '_' . $module_data . '_cat WHERE parentid = ' . $parentid . ' ORDER BY weight ASC';
     $rowall = $db->query($sql)->fetchAll(3);
-    $num = sizeof($rowall);
+    $num = count($rowall);
     $a = 1;
     $array_status = [
         $nv_Lang->getModule('cat_status_0'),
@@ -428,7 +428,7 @@ function nv_show_topics_list($page = 1)
         ->limit($per_page)
         ->offset(($page - 1) * $per_page);
     $_array_topic = $db_slave->query($db_slave->sql())->fetchAll();
-    $num = sizeof($_array_topic);
+    $num = count($_array_topic);
 
     if ($num > 0) {
         $xtpl = new XTemplate('topics_list.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
@@ -471,7 +471,7 @@ function nv_show_block_cat_list()
 
     $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_block_cat ORDER BY weight ASC';
     $_array_block_cat = $db_slave->query($sql)->fetchAll();
-    $num = sizeof($_array_block_cat);
+    $num = count($_array_block_cat);
 
     if ($num > 0) {
         $array_adddefault = [
@@ -604,7 +604,7 @@ function nv_show_block_list($bid)
 
     $sql = 'SELECT t1.id, t1.catid, t1.title, t1.alias, t1.publtime, t1.status, t1.hitstotal, t1.hitscm, t2.weight FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows t1 INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_block t2 ON t1.id = t2.id WHERE t2.bid= ' . $bid . ' AND t1.status=1 ORDER BY t2.weight ASC';
     $array_block = $db_slave->query($sql)->fetchAll();
-    $num = sizeof($array_block);
+    $num = count($array_block);
     if ($num > 0) {
         foreach ($array_block as $row) {
             $xtpl->assign('ROW', [

@@ -25,7 +25,7 @@ if ($topicid > 0) {
 
     $query = $db->query('SELECT id, listcatid FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE topicid = ' . $topicid);
     $_rows = $query->fetchAll();
-    $check_rows = sizeof($_rows);
+    $check_rows = count($_rows);
 
     if ($check_rows > 0 and $checkss == md5($topicid . NV_CHECK_SESSION)) {
         foreach ($_rows as $row) {

@@ -216,7 +216,7 @@ while ($row = $query2->fetch()) {
         'id' => $row['id'],
         'title' => $row['title'],
         'menu_item' => implode('&nbsp;&nbsp; ', $arr_items),
-        'num' => sizeof($arr_items),
+        'num' => count($arr_items),
         'link_view' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;mid=' . $row['id'],
         'edit_url' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=blocks&amp;action=block&amp;id=' . $row['id']
     ];

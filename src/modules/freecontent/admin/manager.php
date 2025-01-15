@@ -93,7 +93,7 @@ if ($nv_Request->isset_request('changestatus', 'post')) {
         $sth->execute();
         $row = $sth->fetchAll();
 
-        if (sizeof($row) == 1) {
+        if (count($row) == 1) {
             $row = $row[0];
 
             if ($row['status'] == 1) {

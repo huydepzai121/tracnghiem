@@ -71,7 +71,7 @@ function nv_creat_backupcodes()
     $db->query('DELETE FROM ' . $module_data . '_backupcodes WHERE userid=' . $user_info['userid']);
 
     $new_code = [];
-    while (sizeof($new_code) < 10) {
+    while (count($new_code) < 10) {
         $code = nv_strtolower(nv_genpass(8, 0));
         if (!in_array($code, $new_code, true)) {
             $new_code[] = $code;

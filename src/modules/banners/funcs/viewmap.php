@@ -63,7 +63,7 @@ if (defined('NV_IS_BANNER_CLIENT')) {
         $data[] = $row[$onetype];
         $title = $row['title'];
     }
-    if (sizeof($data) > 0) {
+    if (count($data) > 0) {
         $statics = array_count_values($data);
         $total = array_sum($statics);
 
