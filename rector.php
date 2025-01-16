@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Foreach_\RemoveUnusedForeachKeyRector;
+use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 
 $config = RectorConfig::configure();
 
@@ -27,10 +28,11 @@ $config->withSkip([
     '!' . __DIR__ . '/src/includes/vendor/vinades/*',
     RemoveUnusedForeachKeyRector::class => [
         __DIR__ . '/src/includes/mainfile.php',
-    ]
+    ],
+    NullToStrictStringFuncCallArgRector::class
 ]);
 
-// $config->withPhpSets(php56: true);
+$config->withPhpSets(php82: true);
 
 $config->withTypeCoverageLevel(0);
 $config->withDeadCodeLevel(0);

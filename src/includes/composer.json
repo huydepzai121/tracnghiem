@@ -1,19 +1,12 @@
 {
     "require": {
-        "php": ">=7.4.0",
-        "ext-mbstring": "*",
-        "ext-gd": "*",
-        "ext-json": "*",
-        "ext-xml": "*",
-        "ext-session": "*",
-        "ext-bcmath": "*",
-        "tecnickcom/tc-lib-barcode": "^1.17",
-        "phpmailer/phpmailer": "^6.8",
-        "symfony/deprecation-contracts": "v2.5.2",
-        "league/oauth2-client": "^2.7",
-        "symfony/polyfill-intl-idn": "^1.28",
-        "zaloplatform/zalo-php-sdk": "*",
-        "smarty/smarty": "^5.3"
+        "tecnickcom/tc-lib-barcode": "^2.4",
+        "phpmailer/phpmailer": "^6.9",
+        "league/oauth2-client": "^2.8",
+        "symfony/polyfill-intl-idn": "^1.31",
+        "zaloplatform/zalo-php-sdk": "^4.0",
+        "smarty/smarty": "^5.4",
+        "web-auth/webauthn-lib": "^5.0"
     },
     "autoload" : {
         "psr-4" : {
