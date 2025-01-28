@@ -22,6 +22,9 @@
     --nv-font-size-md: 14px;
     --nv-font-size-lg: 16px;
     --nv-font-size-xxl: 22px;
+    --nv-primary: #337ab7;
+    --nv-success: #5cb85c;
+    --nv-white: #fff;
 }
 
 @font-face {
@@ -1148,8 +1151,12 @@ span.keyword {
     background-color: #fff;
 }
 
-a.btn {
+a.btn:not(.btn-default) {
     color: #fff;
+}
+
+a.btn-default {
+    color: #666;
 }
 
 .section-header-bar {
@@ -2229,6 +2236,11 @@ a.btn {
 .page .nv-list-item li em {
     position: relative;
     top: 2px;
+}
+
+ul.list-default {
+    list-style: disc!important;
+    padding-left: 24px!important;
 }
 
 /* sub-list-icon */

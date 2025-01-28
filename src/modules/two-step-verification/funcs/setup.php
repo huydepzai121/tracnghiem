@@ -13,13 +13,16 @@ if (!defined('NV_MOD_2STEP_VERIFICATION')) {
     exit('Stop!!!');
 }
 
-if (!empty($user_info['active2step'])) {
-    nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
-}
-
 $page_title = $module_info['site_title'];
 $key_words = $module_info['keywords'];
 $page_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op;
+if (!empty($array_op[1]) and $array_op[1] == 'complete') {
+    $page_url .= '/' . $array_op[1];
+
+    if (!empty($array_op[2]) and $array_op[2] == 'review') {
+        $page_url .= '/' . $array_op[2];
+    }
+}
 
 $nv_redirect = '';
 if ($nv_Request->isset_request('nv_redirect', 'post,get')) {
@@ -37,6 +40,7 @@ if ($nv_Request->isset_request('nv_redirect', 'post,get')) {
 if (defined('SSO_CLIENT_DOMAIN')) {
     $sso_client = $nv_Request->get_title('client', 'get', '');
     if (!empty($sso_client)) {
+        /** @disregard P1011 */
         $allowed_client_origin = explode(',', SSO_CLIENT_DOMAIN);
         if (!in_array($sso_client, $allowed_client_origin, true)) {
             // 406 Not Acceptable
@@ -46,76 +50,113 @@ if (defined('SSO_CLIENT_DOMAIN')) {
     }
 }
 
-/**
- * @param mixed $array
- */
-function nv_json_result($array)
-{
-    global $nv_redirect, $nv_Request, $module_data;
+// Xem lại toàn bộ các xác thực 2 bước
+if (!empty($array_op[2]) and $array_op[2] == 'review' and $array_op[1] == 'complete') {
+    $csrf = $nv_Request->get_title($module_data . '_setreview', 'session', '');
+    if (empty($user_info['active2step']) or empty($csrf) or !csrf_check($csrf, $module_data . '_setreview')) {
+        nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
+    }
+    $nv_Request->unset_request($module_data . '_setreview', 'session');
+
+    $array_data = [];
+    $array_data['redirect'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
+    $array_data['link_passkey'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . NV_BRIDGE_USER_MODULE . '&amp;' . NV_OP_VARIABLE . '=editinfo/passkey';
+    $array_data['link_seckey'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
+    $array_data['publicKeys'] = [];
+    $array_data['login_keys'] = 0;
+    $array_data['security_keys'] = 0;
+
+    // Lấy danh sách khóa đăng nhập, khóa bảo mật
+    $sql = 'SELECT id, keyid, created_at, last_used_at, clid, enable_login, nickname
+    FROM ' . $db_config['prefix'] . '_' . $site_mods[NV_BRIDGE_USER_MODULE]['module_data'] . '_passkey WHERE userid=' . $user_info['userid'];
+    $result = $db->query($sql);
+    while ($_row = $result->fetch()) {
+        $array_data['publicKeys'][$_row['keyid']] = $_row;
+        if (!empty($_row['enable_login'])) {
+            $array_data['login_keys']++;
+        } else {
+            $array_data['security_keys']++;
+        }
+    }
+    $result->closeCursor();
 
     if (!empty($nv_redirect)) {
-        $array['redirect'] = nv_redirect_decrypt($nv_redirect);
+        $array_data['redirect'] = nv_redirect_decrypt($nv_redirect);
     }
 
     if (defined('SSO_REGISTER_SECRET')) {
         $sso_client = $nv_Request->get_title('sso_client_' . $module_data, 'session', '');
         $sso_redirect = $nv_Request->get_title('sso_redirect_' . $module_data, 'session', '');
+        /** @disregard P1011 */
         $iv = substr(SSO_REGISTER_SECRET, 0, 16);
         $sso_redirect = strtr($sso_redirect, '-_,', '+/=');
+        /** @disregard P1011 */
         $sso_redirect = openssl_decrypt($sso_redirect, 'aes-256-cbc', SSO_REGISTER_SECRET, 0, $iv);
 
         if (!empty($sso_redirect) and !empty($sso_client) and str_starts_with($sso_redirect, $sso_client)) {
-            $array['redirect'] = $sso_redirect;
-            $array['client'] = $sso_client;
+            $array_data['redirect'] = $sso_redirect;
+            $array_data['client'] = $sso_client;
         }
 
         $nv_Request->unset_request('sso_client_' . $module_data, 'session');
         $nv_Request->unset_request('sso_redirect_' . $module_data, 'session');
     }
 
-    nv_jsonOutput($array);
+    $canonicalUrl = getCanonicalUrl($page_url, true, true);
+    $contents = nv_theme_review_2step($array_data);
+
+    include NV_ROOTDIR . '/includes/header.php';
+    echo nv_site_theme($contents);
+    include NV_ROOTDIR . '/includes/footer.php';
 }
 
-// Show QR-Image
-if (isset($array_op[1]) and $array_op[1] == 'qr-image') {
-    $url = 'otpauth://totp/' . $user_info['email'] . '?secret=' . $secretkey . '&issuer=' . urlencode(NV_SERVER_NAME . ' | ' . $user_info['username']);
-
-    // instantiate the barcode class
-    $barcode = new Com\Tecnick\Barcode\Barcode();
-    // generate a barcode
-    $bobj = $barcode->getBarcodeObj(
-        'QRCODE,H',  // barcode type and additional comma-separated parameters
-        $url,        // data string to encode
-        -4,         // bar width (use absolute or negative value as multiplication factor)
-        -4,         // bar height (use absolute or negative value as multiplication factor)
-        'black',     // foreground color
-        [-2, -2, -2, -2] // padding (use absolute or negative values as multiplication factors)
-    )->setBackgroundColor('white'); // background color
-    $data = $bobj->getSvgCode();
-    header('Content-Type: image/svg+xml');
-    header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
-    header('Pragma: public');
-    header('Expires: ' . gmdate('D, d M Y H:i:s', time() - 3600) . ' GMT'); // Date in the past
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-    header('Content-Disposition: inline; filename="' . md5($url) . '.svg";');
-    header('access-control-allow-origin: *');
-    header('Vary: Accept-Encoding');
-    if (empty($_SERVER['HTTP_ACCEPT_ENCODING'])) {
-        // the content length may vary if the server is using compression
-        header('Content-Length: ' . strlen($data));
+// Trang thông báo kết quả
+if (!empty($array_op[1]) and $array_op[1] == 'complete') {
+    $csrf = $nv_Request->get_title($module_data . '_setsuccess', 'session', '');
+    if (empty($user_info['active2step']) or empty($csrf) or !csrf_check($csrf, $module_data . '_setsuccess')) {
+        nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
     }
-    echo $data;
-    exit();
+    $nv_Request->unset_request($module_data . '_setsuccess', 'session');
+    $nv_Request->set_Session($module_data . '_setreview', csrf_create($module_data . '_setreview'));
+
+    $sql = 'SELECT * FROM ' . $db_config['prefix'] . '_' . $site_mods[NV_BRIDGE_USER_MODULE]['module_data'] . '_backupcodes WHERE userid=' . $user_info['userid'];
+    $backupcodes = $db->query($sql)->fetchAll();
+
+    $array_data = [];
+    $array_data['print_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=print';
+    $array_data['download_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;downloadcode=' . md5('downloadcode' . NV_CHECK_SESSION);
+    $array_data['text_codes'] = [];
+    foreach ($backupcodes as $code) {
+        $array_data['text_codes'][] = $code['code'];
+    }
+    $array_data['text_codes'] = implode("\n", $array_data['text_codes']);
+    $array_data['redirect'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '/complete/review';
+    if (!empty($nv_redirect)) {
+        $array_data['redirect'] .= '&amp;nv_redirect=' . $nv_redirect;
+    }
+
+    $canonicalUrl = getCanonicalUrl($page_url, true, true);
+    $contents = nv_theme_complete_2step($backupcodes, $array_data);
+
+    include NV_ROOTDIR . '/includes/header.php';
+    echo nv_site_theme($contents);
+    include NV_ROOTDIR . '/includes/footer.php';
+}
+
+// Thiết lập
+if (!empty($user_info['active2step'])) {
+    nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
 }
 
 // Verify code
 $checkss = $nv_Request->get_title('checkss', 'post', '');
+$secretkey = nv_get_secretkey();
 
 if ($checkss == NV_CHECK_SESSION) {
-    $opt = $nv_Request->get_title('opt', 'post', 6);
+    $opt = $nv_Request->get_title('opt', 'post', '');
 
     if (!$GoogleAuthenticator->verifyOpt($secretkey, $opt)) {
-        nv_json_result([
+        nv_jsonOutput([
             'status' => 'error',
             'input' => 'opt',
             'mess' => $nv_Lang->getModule('wrong_confirm')
@@ -124,9 +165,11 @@ if ($checkss == NV_CHECK_SESSION) {
 
     try {
         $sql = 'UPDATE ' . $db_config['prefix'] . '_' . $site_mods[NV_BRIDGE_USER_MODULE]['module_data'] . ' SET
-            active2step=1, last_update=' . NV_CURRENTTIME . '
+            active2step=1, secretkey=' . $db->quote($secretkey) . ', last_update=' . NV_CURRENTTIME . '
         WHERE userid=' . $user_info['userid'];
         $db->query($sql);
+
+        $nv_Request->unset_request($module_data . '_secretkey', 'session');
 
         // Gửi email thông báo bảo mật
         $send_data = [[
@@ -146,25 +189,15 @@ if ($checkss == NV_CHECK_SESSION) {
     }
 
     nv_creat_backupcodes();
-
-    if (!empty($global_config['allowuserloginmulti']) and $nv_Request->get_bool('forcedrelogin', 'post', false)) {
-        $checknum = md5(nv_genpass(10));
-        $stmt = $db->prepare('UPDATE ' . $db_config['prefix'] . '_' . $site_mods[NV_BRIDGE_USER_MODULE]['module_data'] . ' SET checknum=:checknum WHERE userid=' . $user_info['userid']);
-        $stmt->bindParam(':checknum', $checknum, PDO::PARAM_STR);
-        $stmt->execute();
-
-        $redirect = nv_redirect_encrypt(urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, NV_MY_DOMAIN));
-        $redirect = nv_url_rewrite(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=users&' . NV_OP_VARIABLE . '=login&nv_redirect=' . $redirect, true);
-
-        nv_json_result([
-            'status' => 'ok',
-            'mess' => $nv_Lang->getModule('forcedrelogin_note'),
-            'redirect' => $redirect
-        ]);
+    $nv_Request->set_Session($module_data . '_setsuccess', csrf_create($module_data . '_setsuccess'));
+    $redirect = $page_url . '/complete';
+    if (!empty($nv_redirect)) {
+        $redirect .= '&amp;nv_redirect=' . $nv_redirect;
     }
 
-    nv_json_result([
-        'status' => 'ok'
+    nv_jsonOutput([
+        'status' => 'ok',
+        'redirect' => str_replace('&amp;', '&', nv_url_rewrite($redirect, true))
     ]);
 }
 

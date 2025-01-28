@@ -1098,8 +1098,12 @@ span.keyword {
     padding-bottom: 10px;
 }
 
-a.btn {
+a.btn:not(.btn-default) {
     color: #fff;
+}
+
+a.btn-default {
+    color: #666;
 }
 
 .container-simple {
@@ -1723,6 +1727,11 @@ header.header-up {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+ul.list-default {
+    list-style: disc!important;
+    padding-left: 24px!important;
 }
 
 /* sub-list-icon */

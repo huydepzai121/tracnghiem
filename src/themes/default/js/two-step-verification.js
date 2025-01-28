@@ -148,21 +148,39 @@ $(function() {
         e.preventDefault();
         modalShowByObj($(this).attr('href'));
     });
+
     // Tắt xác thực 2 bước
-    $('[data-toggle="turnoff2step"]').click(function() {
-        $(this).prop('disabled', true);
-        var tokend = $(this).data('tokend');
-        $.post(
-            nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&nocache=' + new Date().getTime(),
-            'turnoff2step=1&tokend=' + tokend,
-            function(res) {
-                if (res == 'OK') {
-                    window.location.reload(true);
-                } else {
-                    alert(res);
+    $('[data-toggle="turnoff2step"]').click(function(e) {
+        e.preventDefault();
+
+        const btn = $(this);
+        const icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return false;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-pulse');
+        $.ajax({
+            url: nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&nocache=' + new Date().getTime(),
+            type: 'post',
+            data: {
+                tokend: btn.data('tokend'),
+                turnoff2step: 1
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status != 'ok') {
+                    icon.removeClass('fa-spinner fa-pulse').addClass(icon.data('icon'));
+                    alert(response.mess);
+                    return;
                 }
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr, status, error);
+                icon.removeClass('fa-spinner fa-pulse').addClass(icon.data('icon'));
+                alert(error);
             }
-        );
+        });
     });
 
     $('[data-toggle=opt_validForm]').on('submit', function() {
@@ -178,19 +196,114 @@ $(function() {
     });
 
     // Đổi mã
-    $('[data-toggle="changecode2step"]').click(function() {
-        $(this).prop('disabled', true);
-        var tokend = $(this).data('tokend');
-        $.post(
-            nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&nocache=' + new Date().getTime(),
-            'changecode2step=1&tokend=' + tokend,
-            function(res) {
-                if (res == 'OK') {
-                    window.location.reload(true);
-                } else {
-                    alert(res);
+    $('[data-toggle="changecode2step"]').on('click', function(e) {
+        e.preventDefault();
+
+        const btn = $(this);
+        const icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return false;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-pulse');
+        $.ajax({
+            url: nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&nocache=' + new Date().getTime(),
+            type: 'post',
+            data: {
+                tokend: btn.data('tokend'),
+                changecode2step: 1
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status != 'ok') {
+                    icon.removeClass('fa-spinner fa-pulse').addClass(icon.data('icon'));
+                    alert(response.mess);
+                    return;
                 }
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr, status, error);
+                icon.removeClass('fa-spinner fa-pulse').addClass(icon.data('icon'));
+                alert(error);
             }
-        );
+        });
     });
+
+    // In code
+    $('[data-toggle="print-codes"]').on('click', function(e) {
+        e.preventDefault();
+        nv_open_browse($(this).attr('href'), 'printcodes', 800, 600);
+    });
+
+    // Copy code
+    const cBtn = $('[data-toggle="copy-codes"]');
+    if (cBtn.length) {
+        var clipboard = new ClipboardJS(cBtn[0]);
+        clipboard.on('success', function () {
+            $('span', cBtn).text(cBtn.data('copied'));
+        });
+    }
+
+    // Xác nhận đã chép mã
+    $('.confirmed-codes').on('click', function() {
+        $('[data-toggle="confirm-complete"]').prop('disabled', false);
+    });
+    $('[data-toggle="confirm-complete"]').on('click', function() {
+        window.location.href = $(this).data('link');
+    });
+
+    // Đóng mở danh sách khóa bảo mật
+    $('#security-keys').on('hide.bs.collapse', function (e) {
+        locationReplace($(e.currentTarget).data('page-url'));
+    });
+    $('#security-keys').on('show.bs.collapse', function (e) {
+        locationReplace($(e.currentTarget).data('show-keys-url'));
+    });
+
+    // Đóng mở danh sách mã dự phòng
+    $('#recovery-codes').on('hide.bs.collapse', function (e) {
+        locationReplace($(e.currentTarget).data('page-url'));
+    });
+    $('#recovery-codes').on('show.bs.collapse', function (e) {
+        locationReplace($(e.currentTarget).data('show-codes-url'));
+    });
+
+    // Thay đổi phương án xác thực 2 bước ưu thích
+    $('[data-toggle="preferred_2fa_method"]').on('change', function() {
+        const btn = $(this);
+        const value = btn.val();
+        btn.prop('disabled', true);
+        $.ajax({
+            url: nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&nocache=' + new Date().getTime(),
+            type: 'post',
+            data: {
+                change_preferred_2fa: btn.data('checkss'),
+                pref_2fa: value
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status != 'ok') {
+                    alert(response.mess);
+                }
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr, status, error);
+                btn.prop('disabled', false);
+                alert(error);
+                location.reload();
+            }
+        });
+    });
+});
+
+$(window).on('load', function() {
+    const pkForm = $('#container-edit-app');
+    if (pkForm.length) {
+        if (pkForm.data('autoscroll')) {
+            $('html, body').animate({
+                scrollTop: pkForm.offset().top - 60
+            }, 100);
+        }
+    }
 });

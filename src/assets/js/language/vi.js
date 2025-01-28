@@ -81,3 +81,35 @@ NVJL.error406 = "Không được chấp nhận. Trình duyệt không chấp nh�
 NVJL.error500 = "Lỗi từ phía máy chủ nội bộ.";
 NVJL.error502 = "Web server nhận được phản hồi không hợp lệ trong khi hoạt động như một gateway hoặc proxy. Bạn nhận được thông báo lỗi khi cố gắng chạy một kịch bản CGI.";
 NVJL.error503 = "Dịch vụ không khả dụng.";
+
+var nukeviet = nukeviet || {};
+nukeviet.i18n = nukeviet.i18n || {};
+nukeviet.i18n.WebAuthnErrors = {
+    creat: {
+        NotAllowedError: 'Bạn đã từ chối yêu cầu',
+        ConstraintError: 'Một ràng buộc nào đó trong cấu hình của yêu cầu không được đáp ứng',
+        InvalidStateError: 'Khóa này đã được đăng ký trước đó, xin vui lòng tạo khóa khác',
+        TypeError: 'Một tham số trong yêu cầu không hợp lệ, xin vui lòng tải lại trang và thử lại',
+        SecurityError: 'Một vấn đề bảo mật xảy ra trong quá trình đăng ký, xin vui lòng tải lại trang và thử lại',
+        AbortError: 'Bạn đã hủy bỏ yêu cầu',
+        NotSupportedError: 'Trình duyệt hoặc thiết bị không hỗ trợ WebAuthn hoặc không hỗ trợ tham số cụ thể được yêu cầu',
+        NotReadableError: 'Không thể đọc dữ liệu từ thiết bị xác thực',
+        NotFoundError: 'Không tìm thấy thiết bị xác thực phù hợp hoặc không có thiết bị nào sẵn sàng cho yêu cầu',
+        DataError: 'Có lỗi xảy ra trong dữ liệu cung cấp',
+        OperationError: 'Lỗi nội bộ trong quá trình xác thực, kiểm tra lại trình duyệt hoặc thiết bị',
+        TimeoutError: 'Quá trình xác thực quá lâu, xin vui lòng tải lại trang và thử lại',
+        InvalidAccessError: 'Truy cập không hợp pháp và bị chặn'
+    },
+    get: {
+        NotAllowedError: 'Bạn đã từ chối yêu cầu xác thực',
+        SecurityError: 'Yêu cầu không an toàn nên không thể thực hiện, xin vui lòng tải lại trang và thử lại',
+        TimeoutError: 'Quá trình xác thực hoặc đăng ký đã hết thời gian chờ',
+        AbortError: 'Bạn đã hủy bỏ yêu cầu',
+        NotSupportedError: 'Trình duyệt hoặc thiết bị không hỗ trợ WebAuthn',
+        ConstraintError: 'Các ràng buộc (constraints) không được đáp ứng (ví dụ: userVerification), xin vui lòng tải lại trang và thử lại',
+        InvalidStateError: 'Trạng thái không hợp lệ (ví dụ: PublicKeyCredential đã bị hủy), xin vui lòng tải lại trang và thử lại',
+        EncodingError: 'Lỗi liên quan đến mã hóa dữ liệu (ví dụ: Base64 URL-encoded không hợp lệ), xin vui lòng tải lại trang và thử lại'
+    },
+    unknow: 'Lỗi không xác định, xin vui lòng tải lại trang và thử lại'
+};
+nukeviet.i18n.errorSessExp = 'Phiên đã hết hạn hoặc có lỗi khác, vui lòng tải lại trang và thử lại';

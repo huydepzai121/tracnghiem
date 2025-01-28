@@ -94,6 +94,7 @@ if (in_array($lang, $array_lang_module_setup, true) and $num_module_exists > 1) 
     $sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_info';
     $sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_oldpass';
     $sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_openid';
+    $sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_passkey';
     $sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_question';
     $sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_reg';
     $sql_drop_module[] = 'DROP TABLE IF EXISTS ' . $db_config['prefix'] . '_' . $module_data . '_edit';
@@ -125,11 +126,14 @@ $sql_create_module[] = 'CREATE TABLE IF NOT EXISTS ' . $db_config['prefix'] . '_
     active tinyint(1) unsigned NOT NULL DEFAULT '0',
     active2step tinyint(1) unsigned NOT NULL DEFAULT '0',
     secretkey varchar(20) DEFAULT '',
+    pref_2fa tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Xác thực 2 bước ưu tiên: 0 chưa chọn để hệ thống tự xác định, 1 mã ứng dụng, 2 khóa truy cập',
+    sec_keys smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT 'Số khóa bảo mật hoặc passkey',
     checknum varchar(40) DEFAULT '',
     last_login int(11) unsigned NOT NULL DEFAULT '0',
     last_ip varchar(45) DEFAULT '',
     last_agent varchar(255) DEFAULT '',
     last_openid varchar(255) DEFAULT '',
+    last_passkey varchar(100) NOT NULL DEFAULT '' COMMENT 'Nickname của passkey cuối cùng',
     last_update int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Thời điểm cập nhật thông tin lần cuối',
     idsite int(11) NOT NULL DEFAULT '0',
     safemode tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -260,6 +264,25 @@ $sql_create_module[] = 'CREATE TABLE IF NOT EXISTS ' . $db_config['prefix'] . '_
     KEY email (email)
 ) ENGINE=MyISAM";
 
+$sql_create_module[] = 'CREATE TABLE IF NOT EXISTS ' . $db_config['prefix'] . '_' . $module_data . "_passkey (
+    id int(11) unsigned NOT NULL AUTO_INCREMENT,
+    userid mediumint(8) unsigned NOT NULL DEFAULT '0',
+    keyid varchar(180) NOT NULL DEFAULT '' COMMENT 'Key ID',
+    publickey text NOT NULL COMMENT 'Public key',
+    userhandle varchar(100) NOT NULL DEFAULT '' COMMENT 'User handle',
+    counter int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Bộ đếm phát hiện thiết bị fake',
+    aaguid varchar(50) NOT NULL DEFAULT '' COMMENT 'GUID thiết bị',
+    type varchar(50) NOT NULL DEFAULT '' COMMENT 'Loại, thường chỉ là public-key',
+    created_at int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Tạo',
+    last_used_at int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Lần cuối sử dụng',
+    clid varchar(32) NOT NULL DEFAULT '' COMMENT 'ID trình duyệt tạo ra nó',
+    enable_login tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Cho phép đăng nhập hay không',
+    nickname varchar(100) NOT NULL DEFAULT '' COMMENT 'Đặt tên gợi nhớ',
+    PRIMARY KEY (id),
+    UNIQUE KEY uid (userid, keyid),
+    UNIQUE KEY userhandle (userhandle)
+) ENGINE=MyISAM COMMENT 'Passkey của thành viên để đăng nhập/xác thực 2 bước'";
+
 $sql_create_module[] = 'CREATE TABLE IF NOT EXISTS ' . $db_config['prefix'] . '_' . $module_data . "_field (
     fid mediumint(8) NOT NULL AUTO_INCREMENT,
     field varchar(25) NOT NULL,
@@ -307,7 +330,7 @@ $sql_create_module[] = 'CREATE TABLE IF NOT EXISTS ' . $db_config['prefix'] . '_
     mode TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
     agent VARCHAR(255) NOT NULL,
     ip CHAR(50) NOT NULL,
-    openid VARCHAR(255) NOT NULL DEFAULT '',
+    mode_extra VARCHAR(255) NOT NULL DEFAULT '',
     UNIQUE KEY userid (userid, clid)
 ) ENGINE=MyISAM";
 
