@@ -11,11 +11,11 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon"><em class="fa fa-key fa-lg"></em></span>
-                                    <input type="password" autocomplete="off" class="required form-control" placeholder="{GLANG.password}" value="" name="password" maxlength="100" data-pattern="/^(.){1,}$/" data-toggle="validErrorHidden" data-mess="">
+                                    <input type="password" autocomplete="off" class="required form-control" placeholder="{GLANG.password}" value="" name="password" maxlength="100" data-pattern="/^(.){1,}$/" data-toggle="valid2faErrorHidden" data-mess="">
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="text-center margin-bottom-lg">
                              <input type="hidden" name="checkss" value="{NV_CHECK_SESSION}" />
                             <button class="bsubmit btn btn-primary" type="submit">{LANG.confirm}</button>

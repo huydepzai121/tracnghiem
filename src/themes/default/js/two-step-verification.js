@@ -7,7 +7,7 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-function validErrorShow(a) {
+function valid2faErrorShow(a) {
     $(a).parent().parent().addClass("has-error");
     $("[data-mess]", $(a).parent().parent().parent()).not(".tooltip-current").tooltip("destroy");
     $(a).tooltip({
@@ -21,7 +21,7 @@ function validErrorShow(a) {
     "DIV" == $(a).prop("tagName") && $("input", a)[0].focus()
 }
 
-function validCheck(a) {
+function valid2faCheck(a) {
     if ($(a).is(':visible')) {
         var c = $(a).attr("data-pattern"),
             d = $(a).val(),
@@ -43,7 +43,7 @@ function validCheck(a) {
     return !0
 }
 
-function validErrorHidden(a, b) {
+function valid2faErrorHidden(a, b) {
     if (!b) b = 2;
     b = parseInt(b);
     var c = $(a),
@@ -56,16 +56,16 @@ function validErrorHidden(a, b) {
     c.removeClass("has-error")
 }
 
-function formErrorHidden(a) {
+function form2faErrorHidden(a) {
     $(".has-error", a).removeClass("has-error");
     $("[data-mess]", a).tooltip("destroy")
 }
 
-function validReset(a) {
+function valid2faReset(a) {
     var d = $(".nv-info", a).attr("data-default");
     if (!d) d = $(".nv-info-default", a).html();
     $(".nv-info", a).removeClass("error success").html(d);
-    formErrorHidden(a);
+    form2faErrorHidden(a);
     $("input,button,select,textarea", a).prop("disabled", !1);
     $(a)[0].reset()
 }
@@ -76,9 +76,9 @@ function confirmpass_validForm(a) {
         b = [];
     $(a).find(".required").each(function() {
         "password" == $(a).prop("type") && $(this).val(trim(strip_tags($(this).val())));
-        if (!validCheck(this)) return c++, $(".tooltip-current", a).removeClass("tooltip-current"), $(this).addClass("tooltip-current").attr("data-current-mess", $(this).attr("data-mess")), validErrorShow(this), !1
+        if (!valid2faCheck(this)) return c++, $(".tooltip-current", a).removeClass("tooltip-current"), $(this).addClass("tooltip-current").attr("data-current-mess", $(this).attr("data-mess")), valid2faErrorShow(this), !1
     });
-    c || (b.type = $(a).prop("method"), b.url = $(a).prop("action"), b.data = $(a).serialize(), formErrorHidden(a), $(a).find("input,button,select,textarea").prop("disabled", !0), $.ajax({
+    c || (b.type = $(a).prop("method"), b.url = $(a).prop("action"), b.data = $(a).serialize(), form2faErrorHidden(a), $(a).find("input,button,select,textarea").prop("disabled", !0), $.ajax({
         type: b.type,
         cache: !1,
         url: b.url,
@@ -90,7 +90,7 @@ function confirmpass_validForm(a) {
                     $(".tooltip-current", a).removeClass("tooltip-current"),
                     "" != d.input ? $(a).find("[name=\"" + d.input + "\"]").each(function() {
                         $(this).addClass("tooltip-current").attr("data-current-mess", d.mess);
-                        validErrorShow(this)
+                        valid2faErrorShow(this)
                     }) : $(".nv-info", a).html(d.mess).addClass("error").show(), setTimeout(function() {
                         $("[type=submit]", a).prop("disabled", !1)
                     }, 1E3)
@@ -108,9 +108,9 @@ function opt_validForm(a) {
         b = [];
     $(a).find(".required").each(function() {
         "password" == $(a).prop("type") && $(this).val(trim(strip_tags($(this).val())));
-        if (!validCheck(this)) return c++, $(".tooltip-current", a).removeClass("tooltip-current"), $(this).addClass("tooltip-current").attr("data-current-mess", $(this).attr("data-mess")), validErrorShow(this), !1
+        if (!valid2faCheck(this)) return c++, $(".tooltip-current", a).removeClass("tooltip-current"), $(this).addClass("tooltip-current").attr("data-current-mess", $(this).attr("data-mess")), valid2faErrorShow(this), !1
     });
-    c || (b.type = $(a).prop("method"), b.url = $(a).prop("action"), b.data = $(a).serialize(), formErrorHidden(a), $(a).find("input,button,select,textarea").prop("disabled", !0), $.ajax({
+    c || (b.type = $(a).prop("method"), b.url = $(a).prop("action"), b.data = $(a).serialize(), form2faErrorHidden(a), $(a).find("input,button,select,textarea").prop("disabled", !0), $.ajax({
         type: b.type,
         cache: !1,
         url: b.url,
@@ -122,7 +122,7 @@ function opt_validForm(a) {
                     $(".tooltip-current", a).removeClass("tooltip-current"),
                     "" != d.input ? $(a).find("[name=\"" + d.input + "\"]").each(function() {
                         $(this).addClass("tooltip-current").attr("data-current-mess", d.mess);
-                        validErrorShow(this)
+                        valid2faErrorShow(this)
                     }) : $(".nv-info", a).html(d.mess).addClass("error").show(), setTimeout(function() {
                         $("[type=submit]", a).prop("disabled", !1)
                     }, 1E3)
@@ -191,8 +191,8 @@ $(function() {
         return confirmpass_validForm(this)
     });
 
-    $('[data-toggle=validErrorHidden]').on('keypress', function() {
-        $(this).data('parents') ? validErrorHidden(this, $(this).data('parents')) : validErrorHidden(this)
+    $('[data-toggle=valid2faErrorHidden]').on('keypress', function() {
+        $(this).data('parents') ? valid2faErrorHidden(this, $(this).data('parents')) : valid2faErrorHidden(this)
     });
 
     // Đổi mã

@@ -13,7 +13,7 @@
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-addon"><em class="fa fa-key fa-lg"></em></span>
-                    <input type="text" class="required form-control" placeholder="123456" value="" name="opt" maxlength="6" data-pattern="/^(.){6,}$/" data-toggle="validErrorHidden" data-mess="">
+                    <input type="text" class="required form-control" placeholder="123456" value="" name="opt" maxlength="6" data-pattern="/^(.){6,}$/" data-toggle="valid2faErrorHidden" data-mess="">
                 </div>
             </div>
         </div>
