@@ -39,7 +39,7 @@ $serializer = SerializerFactory::create();
 
 // Đăng nhập passkey
 if ($nv_Request->isset_request('auth_assertion', 'post')) {
-    $challenge = json_decode($nv_Request->get_string($module_data . '_login_challenge', 'session', ''), true);
+    $challenge = json_decode($nv_Request->get_string($module_data . '_login_challenge', 'session', '', false, false), true);
     $nv_Request->unset_request($module_data . '_login_challenge', 'session');
     if (!is_array($challenge)) {
         $challenge = [];

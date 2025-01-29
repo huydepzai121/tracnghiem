@@ -125,7 +125,7 @@ if ($passkey_allowed and $nv_Request->isset_request('create_auth_challenge', 'po
 
 // Đăng nhập bằng passkey
 if ($passkey_allowed and $nv_Request->isset_request('login_assertion', 'post')) {
-    $challenge = json_decode($nv_Request->get_string('admin_login_challenge', 'session', ''), true);
+    $challenge = json_decode($nv_Request->get_string('admin_login_challenge', 'session', '', false, false), true);
     $nv_Request->unset_request('admin_login_challenge', 'session');
     if (!is_array($challenge)) {
         $challenge = [];
@@ -498,7 +498,7 @@ if (!empty($admin_pre_data) and $nv_Request->isset_request('submit2scode', 'post
 if (!empty($admin_pre_data) and $nv_Request->isset_request('submit2spasskey', 'post') and $nv_Request->get_title('checkss', 'post') == NV_CHECK_SESSION and $cfg_2step['active_key'] and in_array('key', $cfg_2step['opts'], true)) {
     $serializer = SerializerFactory::create();
 
-    $challenge = json_decode($nv_Request->get_string('admin_auth_challenge', 'session', ''), true);
+    $challenge = json_decode($nv_Request->get_string('admin_auth_challenge', 'session', '', false, false), true);
     $nv_Request->unset_request('admin_auth_challenge', 'session');
     if (!is_array($challenge)) {
         $challenge = [];

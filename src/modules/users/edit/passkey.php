@@ -160,7 +160,7 @@ if ($nv_Request->isset_request('create_challenge', 'post')) {
 
 // Lưu khóa truy cập
 if ($nv_Request->isset_request('save_credential', 'post')) {
-    $challenge = json_decode($nv_Request->get_string($module_data . '_creat_challenge', 'session', ''), true);
+    $challenge = json_decode($nv_Request->get_string($module_data . '_creat_challenge', 'session', '', false, false), true);
     if (!is_array($challenge)) {
         $challenge = [];
     }

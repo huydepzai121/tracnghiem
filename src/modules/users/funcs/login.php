@@ -1033,7 +1033,7 @@ if ($nv_Request->isset_request('_csrf, nv_login', 'post')) {
         if (!empty($auth_assertion)) {
             $serializer = SerializerFactory::create();
 
-            $challenge = json_decode($nv_Request->get_string($module_data . '_auth_challenge', 'session', ''), true);
+            $challenge = json_decode($nv_Request->get_string($module_data . '_auth_challenge', 'session', '', false, false), true);
             $nv_Request->unset_request($module_data . '_auth_challenge', 'session');
             if (!is_array($challenge)) {
                 $challenge = [];
