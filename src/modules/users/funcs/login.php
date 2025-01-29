@@ -104,7 +104,7 @@ function signin_result($array)
 }
 
 // Xử lý đăng nhập qua passkey
-if (defined('NV_MOD_LOAD')) {
+if ($nv_Request->isset_request('login_with_passkey', 'post')) {
     require NV_ROOTDIR . '/modules/' . $module_file . '/login/passkey.php';
 }
 

@@ -964,10 +964,12 @@ $(function() {
             err.text('').addClass('hidden');
             icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-pulse');
             $.ajax({
-                url: ctn.data('auth-url'),
+                url: form.attr('action'),
                 type: 'post',
                 data: {
-                    create_challenge: 1
+                    login_with_passkey: 1,
+                    checkss: $('[name="_csrf"]', form).val(),
+                    create_challenge: 1,
                 },
                 dataType: 'json',
                 success: function(response) {
@@ -985,6 +987,8 @@ $(function() {
                             publicKey: requestOptions
                         }).then(assertion => {
                             const data = {
+                                login_with_passkey: 1,
+                                checkss: $('[name="_csrf"]', form).val(),
                                 auth_assertion: 1,
                                 nv_redirect: $('[name="nv_redirect"]', form).val(),
                                 assertion: JSON.stringify({
@@ -1000,7 +1004,7 @@ $(function() {
                                 }),
                             };
                             $.ajax({
-                                url: ctn.data('auth-url'),
+                                url: form.attr('action'),
                                 type: 'POST',
                                 data: data,
                                 dataType: 'json',

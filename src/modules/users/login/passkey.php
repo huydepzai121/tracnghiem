@@ -9,7 +9,7 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-if (!defined('NV_IS_MOD_USER') or !defined('NV_MOD_LOAD')) {
+if (!defined('NV_IS_MOD_USER')) {
     exit('Stop!!!');
 }
 
@@ -21,6 +21,15 @@ use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\AuthenticatorAssertionResponse;
 use Webauthn\AuthenticatorAssertionResponseValidator;
+
+$checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op);
+$csrf = $nv_Request->get_title('checkss', 'post', '');
+if (!hash_equals($checkss, $csrf)) {
+    signin_result([
+        'status' => 'error',
+        'mess' => 'Session error, please reload page and try again!',
+    ]);
+}
 
 // Tạo thử thách đăng nhập passkey
 if ($nv_Request->isset_request('create_challenge', 'post')) {
@@ -185,4 +194,4 @@ if ($nv_Request->isset_request('auth_assertion', 'post')) {
     ]);
 }
 
-nv_htmlOutput('Not found');
+nv_error404();
