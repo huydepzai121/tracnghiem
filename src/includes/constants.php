@@ -145,6 +145,16 @@ define('NV_MAX_SEARCH_LENGTH', 60);
 define('NV_TITLEBAR_DEFIS', ' - ');
 // end
 
+// Giao diện mặc định của hệ thống ngoài site
+// begin: NV_DEFAULT_SITE_THEME
+define('NV_DEFAULT_SITE_THEME', 'default');
+// end
+
+// Giao diện mặc định của hệ thống trong quản trị
+// begin: NV_DEFAULT_ADMIN_THEME
+define('NV_DEFAULT_ADMIN_THEME', 'admin_default');
+// end
+
 /*
  * Các thiết lập bên dưới vui lòng không chỉnh sửa
  */

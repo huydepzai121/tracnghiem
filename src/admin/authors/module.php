@@ -76,9 +76,8 @@ if (defined('NV_IS_AJAX') and $checkss == $nv_Request->get_string('checkss', 'po
     }
 }
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/module.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('module.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 
 $rows = $db->query('SELECT * FROM ' . NV_AUTHORS_GLOBALTABLE . '_module ORDER BY weight ASC')->fetchAll();

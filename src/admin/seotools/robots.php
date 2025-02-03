@@ -18,10 +18,9 @@ $page_title = $nv_Lang->getModule('robots');
 $checkss = md5(NV_CHECK_SESSION . '_' . $module_name . '_' . $op . '_' . $admin_info['userid']);
 $cache_file = NV_ROOTDIR . '/' . NV_DATADIR . '/robots.php';
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/robots.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
 $tpl->registerPlugin('modifier', 'array_merge', 'array_merge');
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('robots.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('OP', $op);

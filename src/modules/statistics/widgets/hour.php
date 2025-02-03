@@ -20,12 +20,11 @@ $widget_info = [
     'func' => function () {
         global $global_config, $module_file, $nv_Lang, $db;
 
-        $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/widget_hour.tpl');
         $tpl = new \NukeViet\Template\NVSmarty();
-        $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+        $tpl->setTemplateDir(get_module_tpl_dir('widget_hour.tpl'));
         $tpl->assign('LANG', $nv_Lang);
         $tpl->assign('MODULE_FILE', $module_file);
-        $tpl->assign('JS_DIR', get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/js/' . $module_file . '.js'));
+        $tpl->assign('JS_DIR', get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], NV_DEFAULT_ADMIN_THEME, '/js/' . $module_file . '.js'));
 
         $sql = 'SELECT c_val, c_count FROM ' . NV_COUNTER_GLOBALTABLE . " WHERE c_type='hour' ORDER BY c_val";
         $result = $db->query($sql);

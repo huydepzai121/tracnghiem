@@ -273,7 +273,7 @@ function nv_blocks_content($sitecontent)
 
                 if (!empty($content) or defined('NV_IS_DRAG_BLOCK')) {
                     $_row['template'] = empty($_row['template']) ? 'default' : $_row['template'];
-                    $_template = get_tpl_dir([(!empty($module_info['theme']) ? $module_info['theme'] : ''), (!empty($global_config['module_theme']) ? $global_config['module_theme'] : ''), $global_config['site_theme'], 'default'], '', '/layout/block.' . $_row['template'] . '.tpl');
+                    $_template = get_tpl_dir([(!empty($module_info['theme']) ? $module_info['theme'] : ''), (!empty($global_config['module_theme']) ? $global_config['module_theme'] : ''), $global_config['site_theme'], NV_DEFAULT_SITE_THEME], '', '/layout/block.' . $_row['template'] . '.tpl');
                     if (!empty($_template) and function_exists('nv_block_theme')) {
                         $content = nv_block_theme($content, $_row, $_template);
                     } else {
@@ -952,7 +952,7 @@ function nv_admin_menu()
     if ($module_info['theme'] == $module_info['template']) {
         array_unshift($dir_basenames, $module_info['template']);
     }
-    $php_dir = get_tpl_dir($dir_basenames, 'default', '/theme_toolbar.php');
+    $php_dir = get_tpl_dir($dir_basenames, NV_DEFAULT_SITE_THEME, '/theme_toolbar.php');
 
     $enable_drag = false;
     if (defined('NV_IS_SPADMIN')) {

@@ -323,11 +323,10 @@ while ($row = $result->fetch()) {
     $contents[$row['id']]['detail'][$nv_Lang->getModule('next_time')] = $next_time;
 }
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/cronjobs.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
 $tpl->registerPlugin('modifier', 'plural', 'plural');
 $tpl->registerPlugin('modifier', 'ddatetime', 'nv_datetime_format');
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('cronjobs.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('OP', $op);

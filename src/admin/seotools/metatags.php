@@ -135,9 +135,8 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
 
 $page_title = $nv_Lang->getModule('metaTagsConfig');
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/metatags.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('metatags.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('OP', $op);

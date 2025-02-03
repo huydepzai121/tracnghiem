@@ -751,7 +751,7 @@ function user_info($data, $array_field_config, $custom_fields, $types, $data_que
     global $module_info, $global_config, $nv_Lang, $module_name, $op, $global_array_genders, $is_custom_field, $user_info, $global_users_config, $group_lists, $group_id, $language_array, $client_info;
 
     [$template, $dir] = get_module_tpl_dir('info.tpl', true);
-    $template_js = get_tpl_dir([$global_config['module_theme'], $global_config['site_theme']], 'default', 'js/users.passkey.js');
+    $template_js = get_tpl_dir([$global_config['module_theme'], $global_config['site_theme']], NV_DEFAULT_SITE_THEME, 'js/users.passkey.js');
 
     $xtpl = new XTemplate('info.tpl', $dir);
 

@@ -849,7 +849,7 @@ if ($nv_Lang->existsGlobal('login_name_type_' . $method)) {
     $nv_Lang->setGlobal('login_name', $nv_Lang->getGlobal($method));
 }
 
-$dir_php = get_tpl_dir($global_config['admin_theme'], 'admin_default', 'theme_login.php');
+$dir_php = get_tpl_dir($global_config['admin_theme'], NV_DEFAULT_ADMIN_THEME, 'theme_login.php');
 $contents = require NV_ROOTDIR . '/themes/' . $dir_php . '/theme_login.php';
 
 include NV_ROOTDIR . '/includes/header.php';

@@ -96,7 +96,7 @@ $errortype = [
     ]
 ];
 
-$tpl_dir = get_tpl_dir($php_dir, 'default', '/system/error_info.tpl');
+$tpl_dir = get_tpl_dir($php_dir, NV_DEFAULT_SITE_THEME, '/system/error_info.tpl');
 
 $tpl = new \NukeViet\Template\NVSmarty();
 $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $tpl_dir . '/system');

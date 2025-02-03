@@ -129,9 +129,8 @@ if (empty($author_lang)) {
 
 $modules_exit = nv_scandir(NV_ROOTDIR . '/modules', $global_config['check_module']);
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/edit.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('edit.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('OP', $op);

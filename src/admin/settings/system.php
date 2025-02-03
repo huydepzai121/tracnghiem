@@ -284,11 +284,10 @@ if (!empty($global_config['site_phone']) and !empty($global_config['site_int_pho
     $global_config['site_phone'] .= '[' . $global_config['site_int_phone'] . ']';
 }
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/system.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
 $tpl->registerPlugin('modifier', 'ddatetime', 'nv_datetime_format');
 $tpl->registerPlugin('modifier', 'str_pad', 'str_pad');
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('system.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('OP', $op);

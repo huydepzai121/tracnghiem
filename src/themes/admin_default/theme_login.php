@@ -13,7 +13,7 @@ if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }
 
-$dir_tpl = get_tpl_dir($global_config['admin_theme'], 'admin_default', '/system/login.tpl');
+$dir_tpl = get_tpl_dir($global_config['admin_theme'], NV_DEFAULT_ADMIN_THEME, '/system/login.tpl');
 
 $xtpl = new XTemplate('login.tpl', NV_ROOTDIR . '/themes/' . $dir_tpl . '/system');
 $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);

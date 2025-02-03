@@ -22,7 +22,7 @@ $widget_info = [
     'name' => $nv_Lang->getModule('version'),
     'note' => '',
     'func' => function () {
-        global $nv_Lang, $global_config, $module_file;
+        global $nv_Lang, $global_config;
 
         $field = [];
         $field[] = ['key' => $nv_Lang->getModule('version_user'), 'value' => $global_config['version']];
@@ -44,9 +44,8 @@ $widget_info = [
             }
         }
 
-        $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/widget_version.tpl');
         $tpl = new \NukeViet\Template\NVSmarty();
-        $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+        $tpl->setTemplateDir(get_module_tpl_dir('widget_version.tpl'));
         $tpl->assign('LANG', $nv_Lang);
         $tpl->assign('FIELDS', $field);
         $tpl->assign('INFO', $info);

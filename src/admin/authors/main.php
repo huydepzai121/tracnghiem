@@ -153,9 +153,9 @@ if ($numrows) {
 }
 
 $template_file = ($global_config['authors_detail_main'] or $numrows == 1) ? 'main.tpl' : 'list.tpl';
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/' . $template_file);
+[$template, $dir] = get_module_tpl_dir($template_file, true);
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir($dir);
 $tpl->registerPlugin('modifier', 'datetime_format', 'nv_datetime_format');
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('TEMPLATE', $template);

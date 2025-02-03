@@ -18,11 +18,10 @@ $widget_info = [
     'name' => $nv_Lang->getModule('siteinfo_total_comments'),
     'note' => '',
     'func' => function () {
-        global $global_config, $module_file, $module_name, $module_data, $nv_Lang, $db, $nv_Cache;
+        global $module_name, $module_data, $nv_Lang, $db, $nv_Cache;
 
-        $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/widget_cmttotal.tpl');
         $tpl = new \NukeViet\Template\NVSmarty();
-        $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+        $tpl->setTemplateDir(get_module_tpl_dir('widget_cmttotal.tpl'));
         $tpl->assign('LANG', $nv_Lang);
 
         $_arr_siteinfo = [];

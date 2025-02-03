@@ -4117,7 +4117,7 @@ function nv_region_config(string $key, string $lang = '')
  * @param int $ss
  * @param string $lang
  * @param string $method
- * @return number
+ * @return int
  */
 function nv_d2u_get(string $str, ?int $hh = null, ?int $mm = null, ?int $ss = null, string $lang = '', string $method = 'get')
 {

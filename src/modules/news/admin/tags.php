@@ -279,9 +279,8 @@ if ($nv_Request->isset_request('tagLinks', 'post')) {
         $array[] = $row;
     }
 
-    $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/tags-link.tpl');
     $tpl = new \NukeViet\Template\NVSmarty();
-    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+    $tpl->setTemplateDir(get_module_tpl_dir('tags-link.tpl'));
     $tpl->registerPlugin('modifier', 'nv_number_format', 'nv_number_format');
     $tpl->assign('LANG', $nv_Lang);
     $tpl->assign('MODULE_NAME', $module_name);
@@ -394,9 +393,8 @@ $generate_page = nv_generate_page($base_url, $num_items, $per_page, $page);
 $nv_Lang->setGlobal('title_suggest_max', $nv_Lang->getGlobal('length_suggest_max', 65));
 $nv_Lang->setGlobal('description_suggest_max', $nv_Lang->getGlobal('length_suggest_max', 160));
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/tags.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('tags.tpl'));
 $tpl->registerPlugin('modifier', 'nv_number_format', 'nv_number_format');
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);

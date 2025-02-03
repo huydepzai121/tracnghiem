@@ -20,9 +20,8 @@ require_once NV_ROOTDIR . '/includes/core/phpinfo.php';
 $array = phpinfo_array(32, 1);
 
 if (!empty($array['PHP Variables'])) {
-    $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/variables_php.tpl');
     $tpl = new \NukeViet\Template\NVSmarty();
-    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+    $tpl->setTemplateDir(get_module_tpl_dir('variables_php.tpl'));
     $tpl->assign('LANG', $nv_Lang);
 
     $ignore_keys = [];

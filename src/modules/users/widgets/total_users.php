@@ -20,9 +20,8 @@ $widget_info = [
     'func' => function () {
         global $global_config, $module_file, $module_name, $module_data, $nv_Lang, $db, $nv_Cache, $db_config;
 
-        $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/widget_usrtotal.tpl');
         $tpl = new \NukeViet\Template\NVSmarty();
-        $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+        $tpl->setTemplateDir(get_module_tpl_dir('widget_usrtotal.tpl'));
         $tpl->assign('LANG', $nv_Lang);
 
         $_mod_table = ($module_data == 'users') ? NV_USERS_GLOBALTABLE : $db_config['prefix'] . '_' . $module_data;

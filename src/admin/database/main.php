@@ -68,9 +68,8 @@ if ($nv_Request->get_bool('show_tabs', 'post')) {
     $db_size = !empty($db_size) ? nv_convertfromBytes($db_size) : 0;
     $db_totalfree = !empty($db_totalfree) ? nv_convertfromBytes($db_totalfree) : 0;
 
-    $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/tables.tpl');
     $tpl = new \NukeViet\Template\NVSmarty();
-    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+    $tpl->setTemplateDir(get_module_tpl_dir('tables.tpl'));
     $tpl->assign('LANG', $nv_Lang);
     $tpl->assign('MODULE_NAME', $module_name);
 
@@ -127,9 +126,8 @@ if ($nv_Request->isset_request('tab', 'get') and preg_match('/^(' . $db_config['
         $columns[] = $row;
     }
 
-    $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/tabs.tpl');
     $tpl = new \NukeViet\Template\NVSmarty();
-    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+    $tpl->setTemplateDir(get_module_tpl_dir('tabs.tpl'));
     $tpl->registerPlugin('modifier', 'displaySize', 'nv_convertfromBytes');
     $tpl->registerPlugin('modifier', 'displayDate', 'nv_datetime_format');
     $tpl->registerPlugin('modifier', 'strtotime', 'strtotime');
@@ -166,9 +164,8 @@ if ($db->dbtype == 'mysql') {
     $database['db_time_zone'] = $row['db_time_zone'];
 }
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/main.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('main.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 

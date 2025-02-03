@@ -170,9 +170,8 @@ if (!empty($susp_reason)) {
 
 $page_title = $nv_Lang->getModule('nv_admin_chg_suspend', $row_user['username']);
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/suspend.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('suspend.tpl'));
 $tpl->registerPlugin('modifier', 'datetime_format', 'nv_datetime_format');
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('OP', $op);

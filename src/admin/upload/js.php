@@ -13,9 +13,9 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/upload.js');
+[$template, $dir] = get_module_tpl_dir('upload.js', true);
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir($dir);
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('TEMPLATE', $template);
 $tpl->assign('MODULE_NAME', $module_name);

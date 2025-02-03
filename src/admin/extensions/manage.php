@@ -559,10 +559,9 @@ if ($selecttype_old != $selecttype and !empty($selecttype)) {
     $nv_Request->set_Cookie('selecttype', $selecttype, NV_LIVE_COOKIE_TIME);
 }
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/manage.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
 $tpl->registerPlugin('modifier', 'encodehtml', 'nv_htmlspecialchars');
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('manage.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('OP', $op);

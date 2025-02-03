@@ -44,9 +44,9 @@ function get_dtime_details($dtime_type, $dtime_details)
         return '';
     }
 
-    $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/block-dtime.tpl');
+    [$template, $dir] = get_module_tpl_dir('block-dtime.tpl', true);
     $tpl = new \NukeViet\Template\NVSmarty();
-    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+    $tpl->setTemplateDir($dir);
     $tpl->registerPlugin('modifier', 'str_pad', 'str_pad');
     $tpl->assign('LANG', $nv_Lang);
     $tpl->assign('MODULE_NAME', $module_name);

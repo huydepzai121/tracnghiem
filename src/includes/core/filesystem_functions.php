@@ -1128,21 +1128,58 @@ function module_file_exists($file)
 }
 
 /**
- * get_module_tpl_dir()
+ * Lấy thư mục chứa tệp tpl $filename của module hiện tại đang xem. Thứ tự ưu tiên như sau
+ * - Thư mục module_theme của giao diện module
+ * - Thư mục module_theme của giao diện site
+ * - Thư mục module_theme của giao diện mặc định
+ * - Thư mục module_file của giao diện module
+ * - Thư mục module_file của giao diện site
+ * - Thư mục module_file của giao diện mặc định
  *
  * @param string $filename
  * @param bool   $array
- * @return array|string
+ * @return array|string|void
  */
 function get_module_tpl_dir($filename, $array = false)
 {
-    global $global_config, $module_info;
+    global $global_config, $module_info, $module_file;
 
-    $template = get_tpl_dir([$global_config['module_theme'], $global_config['site_theme']], 'default', 'modules/' . $module_info['module_theme'] . '/' . $filename);
-
-    if ($array) {
-        return [$template, NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_info['module_theme']];
+    $themes_check = [];
+    $themes_check[$global_config['module_theme']] = $global_config['module_theme'];
+    if (defined('NV_ADMIN')) {
+        if (!isset($themes_check[$global_config['admin_theme']])) {
+            $themes_check[$global_config['admin_theme']] = $global_config['admin_theme'];
+        }
+        if (!isset($themes_check[NV_DEFAULT_ADMIN_THEME])) {
+            $themes_check[NV_DEFAULT_ADMIN_THEME] = NV_DEFAULT_ADMIN_THEME;
+        }
+    } else {
+        if (!isset($themes_check[$global_config['site_theme']])) {
+            $themes_check[$global_config['site_theme']] = $global_config['site_theme'];
+        }
+        if (!isset($themes_check[NV_DEFAULT_SITE_THEME])) {
+            $themes_check[NV_DEFAULT_SITE_THEME] = NV_DEFAULT_SITE_THEME;
+        }
     }
 
-    return NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_info['module_theme'];
+    $dirs_check = [];
+    $module_theme = $module_info['module_theme'] ?? $module_file;
+    $dirs_check[$module_theme] = $module_theme;
+    if ($module_theme != $module_file) {
+        $dirs_check[$module_file] = $module_file;
+    }
+
+    foreach ($dirs_check as $dir) {
+        foreach ($themes_check as $theme) {
+            if (theme_file_exists($theme . '/modules/' . $dir . '/' . $filename)) {
+                if ($array) {
+                    return [$theme, NV_ROOTDIR . '/themes/' . $theme . '/modules/' . $dir];
+                }
+                return NV_ROOTDIR . '/themes/' . $theme . '/modules/' . $dir;
+            }
+        }
+    }
+
+    trigger_error('Template file not found: ' . $filename . ', module: ' . $module_theme);
+    trigger_error('Template file not found!', E_USER_ERROR);
 }

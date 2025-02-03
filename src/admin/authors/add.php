@@ -38,9 +38,8 @@ if ($nv_Request->get_int('result', 'get', 0)) {
     $nv_Request->unset_request('nv_admin_profile', 'session');
     $page_title = $nv_Lang->getModule('nv_admin_add_result');
 
-    $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/add-result.tpl');
     $tpl = new \NukeViet\Template\NVSmarty();
-    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+    $tpl->setTemplateDir(get_module_tpl_dir('add-result.tpl'));
     $tpl->assign('LANG', $nv_Lang);
 
     $lev = ($session_files['lev'] == 2) ? $nv_Lang->getGlobal('level2') : $nv_Lang->getGlobal('level3');
@@ -324,9 +323,8 @@ $userid = $nv_Request->get_title('userid', 'get');
 //filtersql
 $filtersql = ' userid NOT IN (SELECT admin_id FROM ' . NV_AUTHORS_GLOBALTABLE . ')';
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/add.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('add.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('OP', $op);
 $tpl->assign('MODULE_NAME', $module_name);

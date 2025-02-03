@@ -223,9 +223,8 @@ if ($nv_Request->get_title('checkss', 'post') == $checkss) {
     nv_jsonOutput($respon);
 }
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/del.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('del.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('CHECKSS', $checkss);
 $tpl->assign('OP', $op);

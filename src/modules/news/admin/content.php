@@ -540,12 +540,11 @@ foreach ($global_array_cat as $catid_i => $array_value) {
     }
 }
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/content.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
 $tpl->registerPlugin('modifier', 'dnumber', 'nv_number_format');
 $tpl->registerPlugin('modifier', 'text_split', 'text_split');
 $tpl->registerPlugin('modifier', 'ddatetime', 'nv_datetime_format');
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('content.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('MODULE_DATA', $module_data);

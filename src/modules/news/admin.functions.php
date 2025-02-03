@@ -683,11 +683,10 @@ function GetCatidInParent($catid)
  */
 function redriect($msg1, $msg2, $nv_redirect, $autoSaveKey = '', $go_back = '')
 {
-    global $global_config, $module_file, $module_name, $nv_Lang, $op;
+    global $module_name, $nv_Lang, $op;
 
-    $template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/redriect.tpl');
     $tpl = new \NukeViet\Template\NVSmarty();
-    $tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+    $tpl->setTemplateDir(get_module_tpl_dir('redriect.tpl'));
     $tpl->assign('LANG', $nv_Lang);
     $tpl->assign('MODULE_NAME', $module_name);
     $tpl->assign('OP', $op);

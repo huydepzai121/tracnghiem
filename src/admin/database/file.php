@@ -119,9 +119,8 @@ foreach ($array_content as $filetime => $files) {
     $array_content[$filetime] = $files;
 }
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/files.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('files.tpl'));
 $tpl->registerPlugin('modifier', 'displaySize', 'nv_convertfromBytes');
 $tpl->registerPlugin('modifier', 'displayTime', 'nv_datetime_format');
 $tpl->assign('LANG', $nv_Lang);

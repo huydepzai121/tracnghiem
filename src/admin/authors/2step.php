@@ -63,9 +63,8 @@ if (
 
 $page_title = $nv_Lang->getModule('2step_manager') . ': ' . $row_user['username'];
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/2step.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('2step.tpl'));
 $tpl->registerPlugin('modifier', 'datetime_format', 'nv_datetime_format');
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('OP', $op);

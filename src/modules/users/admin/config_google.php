@@ -49,9 +49,8 @@ $array_config['oauth_client_id'] = $global_config['google_client_id'];
 $array_config['oauth_client_secret'] = $global_config['google_client_secret'];
 $array_config['checkss'] = $checkss;
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/config_oauth.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('config_oauth.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('OP', $op);

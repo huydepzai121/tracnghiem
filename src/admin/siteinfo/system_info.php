@@ -15,9 +15,8 @@ if (!defined('NV_IS_FILE_SITEINFO')) {
 
 $page_title = $nv_Lang->getModule('site_configs_info');
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/system_info.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('system_info.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('GCONFIG', $global_config);
 $tpl->assign('NVRQ', $nv_Request);

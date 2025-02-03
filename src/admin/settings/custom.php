@@ -56,9 +56,8 @@ $custom_configs = $db->query('SELECT config_value FROM ' . NV_CONFIG_GLOBALTABLE
 $custom_configs = !empty($custom_configs) ? json_decode($custom_configs, true) : ['' => ['', '']];
 $page_title = $nv_Lang->getModule('custom_configs', $language_array[NV_LANG_DATA]['name']);
 
-$template = get_tpl_dir([$global_config['module_theme'], $global_config['admin_theme']], 'admin_default', '/modules/' . $module_file . '/custom.tpl');
 $tpl = new \NukeViet\Template\NVSmarty();
-$tpl->setTemplateDir(NV_ROOTDIR . '/themes/' . $template . '/modules/' . $module_file);
+$tpl->setTemplateDir(get_module_tpl_dir('custom.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 $tpl->assign('OP', $op);

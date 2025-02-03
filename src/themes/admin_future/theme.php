@@ -63,7 +63,7 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     global $admin_info, $nv_Lang, $global_config, $module_info, $page_title, $module_file, $module_name, $op, $browser, $client_info, $site_mods, $admin_mods, $db, $array_lang_admin, $select_options, $admin_menu_mods, $submenu, $set_active_op, $array_url_instruction, $array_mod_title;
 
     $file_name_tpl = $head_site == 1 ? 'main.tpl' : 'content.tpl';
-    $tpl_dir = get_tpl_dir($admin_info['admin_theme'], 'admin_default', '/system/' . $file_name_tpl);
+    $tpl_dir = get_tpl_dir($admin_info['admin_theme'], NV_DEFAULT_ADMIN_THEME, '/system/' . $file_name_tpl);
 
     $sql = "SELECT config_name, config_value FROM " . NV_AUTHORS_GLOBALTABLE . "_vars WHERE admin_id=" . $admin_info['admin_id'] . "
     AND theme=" . $db->quote($admin_info['admin_theme']) . " AND (lang='all' OR lang=" . $db->quote(NV_LANG_DATA) . ")";
@@ -161,7 +161,7 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $tpl->assign('FAVICON', $site_favicon);
 
     // CSS riêng của module
-    $theme_tpl = get_tpl_dir([$admin_info['admin_theme'], 'admin_default'], '', '/css/' . $module_file . '.css');
+    $theme_tpl = get_tpl_dir([$admin_info['admin_theme'], NV_DEFAULT_ADMIN_THEME], '', '/css/' . $module_file . '.css');
     $css_module = '';
     if (!empty($theme_tpl)) {
         $css_module = $theme_tpl . '/css/' . $module_file . ($theme_config['dir'] == 'rtl' ? '.rtl' : '') . '.css';
@@ -172,7 +172,7 @@ function nv_admin_theme(?string $contents, $head_site = 1)
     $tpl->assign('CSS_MODULE', NV_STATIC_URL . 'themes/' . $css_module);
 
     // JS riêng của module
-    $theme_tpl = get_tpl_dir([$admin_info['admin_theme'], 'admin_default'], '', '/js/' . $module_file . '.js');
+    $theme_tpl = get_tpl_dir([$admin_info['admin_theme'], NV_DEFAULT_ADMIN_THEME], '', '/js/' . $module_file . '.js');
     $js_module = '';
     if (!empty($theme_tpl)) {
         $js_module = NV_STATIC_URL . 'themes/' . $theme_tpl . '/js/' . $module_file . '.js';
