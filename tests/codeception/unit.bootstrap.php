@@ -29,9 +29,15 @@ global $db, $db_slave, $global_config, $meta_property, $nv_parse_ini_timezone, $
 global $nv_default_regions, $nv_Lang;
 
 $global_config = [];
+$db_config = [
+    'prefix' => 'nv5',
+];
 
 require NV_ROOTDIR . '/includes/constants.php';
-require realpath(NV_ROOTDIR . '/' . NV_CONFIG_FILENAME);
+$path_config = realpath(NV_ROOTDIR . '/' . NV_CONFIG_FILENAME);
+if ($path_config) {
+    require $path_config;
+}
 require NV_ROOTDIR . '/' . NV_DATADIR . '/config_global.php';
 
 define('NV_AUTHORS_GLOBALTABLE', $db_config['prefix'] . '_authors');
@@ -55,7 +61,11 @@ define('NV_LANG_INTERFACE', $global_config['allow_sitelangs'][0]);
 
 define('NV_CURRENTTIME', time());
 
-$db = $db_slave = new NukeViet\Core\Database($db_config);
+if ($path_config) {
+    $db = $db_slave = new NukeViet\Core\Database($db_config);
+} else {
+    $db = $db_slave = null;
+}
 
 $nv_Lang = new NukeViet\Core\Language();
 $nv_Lang->loadGlobal();
