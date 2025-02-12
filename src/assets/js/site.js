@@ -185,9 +185,13 @@ function loginForm(redirect) {
         url: url,
         cache: !1,
         data: '&nv_ajax=1',
-        dataType: "html"
-    }).done(function(a) {
-        modalShow('', a, 'recaptchareset')
+        dataType: "json"
+    }).done(function(res) {
+        if (res.sso) {
+            window.location.href = res.sso;
+            return !1;
+        }
+        modalShow('', res.html, 'recaptchareset');
     });
     return !1
 }

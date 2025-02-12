@@ -57,7 +57,9 @@ if ($nv_Request->isset_request('nv_redirect', 'post,get')) {
     $nv_redirect = nv_get_redirect();
 
     if ($nv_Request->isset_request('nv_redirect', 'get') and !empty($nv_redirect)) {
-        $page_url .= '&nv_redirect=' . $nv_redirect;
+        if (!$nv_Request->isset_request('sso_reset', 'get')) {
+            $page_url .= '&nv_redirect=' . $nv_redirect;
+        }
         $nv_Request->set_Session('nv_redirect_' . $module_data, $nv_redirect);
     }
 } elseif ($nv_Request->isset_request('sso_redirect', 'get')) {
@@ -65,6 +67,28 @@ if ($nv_Request->isset_request('nv_redirect', 'post,get')) {
     if (!empty($sso_redirect)) {
         $nv_Request->set_Session('sso_redirect_' . $module_data, $sso_redirect);
     }
+}
+
+if (defined('NV_IS_USER_FORUM') and defined('SSO_SERVER')) {
+    // SSO token refresh
+    $sso_rcount = $nv_Request->get_absint('sso_rcount', 'get', 0);
+    if (isset($_GET['sso_reset'], $_GET['sso_rcount'], $_GET['sso_rtoken']) and hash_equals(md5(NV_CHECK_SESSION . '_sso_reset'), $_GET['sso_rtoken'])) {
+        $sso_rcount++;
+        if ($sso_rcount > 1) {
+            nv_info_die($nv_Lang->getGlobal('error_login_title'), $nv_Lang->getGlobal('error_login_title'), $nv_Lang->getGlobal('error_login_content'), 503);
+        }
+        require NV_ROOTDIR . '/' . $global_config['dir_forum'] . '/nukeviet/refresh_token.php';
+    }
+
+    // SSO login
+    $redirect = nv_redirect_decrypt($nv_redirect) ?: (NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
+    $url = NukeViet\Client\Sso::getLoginUrl($redirect, $sso_rcount);
+    if ($nv_Request->get_int('nv_ajax', 'post', 0) == 1) {
+        nv_jsonOutput([
+            'sso' => $url
+        ]);
+    }
+    nv_redirect_location($url);
 }
 
 if (defined('SSO_CLIENT_DOMAIN')) {
@@ -91,15 +115,30 @@ $array_gfx_chk = !empty($global_config['captcha_area']) ? explode(',', $global_c
 $gfx_chk = (!empty($array_gfx_chk) and in_array('l', $array_gfx_chk, true)) ? 1 : 0;
 
 /**
- * login_result()
- *
  * @param mixed $array
+ * @return never
  */
 function signin_result($array)
 {
-    global $nv_redirect;
+    global $nv_redirect, $module_data, $nv_Request;
 
-    $array['redirect'] = nv_redirect_decrypt($nv_redirect);
+    $redirect = nv_redirect_decrypt($nv_redirect);
+    if (defined('SSO_REGISTER_SECRET')) {
+        $sso_client = $nv_Request->get_title('sso_client_' . $module_data, 'session', '');
+        $sso_redirect = $nv_Request->get_title('sso_redirect_' . $module_data, 'session', '');
+        $sso_redirect = NukeViet\Client\Sso::decrypt($sso_redirect);
+
+        if (!empty($sso_redirect) and !empty($sso_client) and str_starts_with($sso_redirect, $sso_client)) {
+            $redirect = $sso_redirect;
+        }
+
+        if (in_array(($array['status'] ?? ''), ['success', 'ok']) and !isset($array['requestOptions'])) {
+            $nv_Request->unset_request('sso_client_' . $module_data, 'session');
+            $nv_Request->unset_request('sso_redirect_' . $module_data, 'session');
+        }
+    }
+
+    $array['redirect'] = $redirect;
     nv_jsonOutput($array);
 }
 
@@ -896,8 +935,8 @@ if ($nv_Request->isset_request('_csrf, nv_login', 'post')) {
         ]);
     }
 
-    // Nếu đăng nhập bằng forum hoặc sso
-    if (defined('NV_IS_USER_FORUM') or defined('SSO_SERVER')) {
+    // Nếu đăng nhập bằng tài khoản kết nối
+    if (defined('NV_IS_USER_FORUM')) {
         $error = '';
         require_once NV_ROOTDIR . '/' . $global_config['dir_forum'] . '/nukeviet/login.php';
         if (!empty($error)) {
@@ -1136,10 +1175,23 @@ if ($nv_Request->isset_request('_csrf, nv_login', 'post')) {
         }
     }
 
-    // Xác nhận đăng nhập thành công
-    validUserLog($row, 1);
-    $nv_Request->unset_request('users_dismiss_captcha', 'session');
     $blocker->reset_trackLogin($nv_username);
+
+    // Xác nhận đăng nhập thành công
+    if (defined('SSO_SERVER')) {
+        define('NV_SET_LOGIN_MODE', 'NORMALLY');
+        require NV_ROOTDIR . '/' . $global_config['dir_forum'] . '/nukeviet/set_user_login.php';
+        if (!empty($error)) {
+            signin_result([
+                'status' => 'error',
+                'mess' => $error
+            ]);
+        }
+    } else {
+        validUserLog($row, 1);
+    }
+
+    $nv_Request->unset_request('users_dismiss_captcha', 'session');
 
     // Nếu tài khoản không xác thực 2 bước, nhưng hệ thống hoặc nhóm bắt buộc phải xác thực 2 bước
     if (empty($row['active2step'])) {
@@ -1169,10 +1221,11 @@ if ($nv_Request->isset_request('_csrf, nv_login', 'post')) {
 
 $nv_Request->unset_request('users_dismiss_captcha', 'session');
 
+// Login popup
 if ($nv_Request->get_int('nv_ajax', 'post', 0) == 1) {
-    include NV_ROOTDIR . '/includes/header.php';
-    echo user_login(true);
-    include NV_ROOTDIR . '/includes/footer.php';
+    nv_jsonOutput([
+        'html' => nv_change_buffer(nv_url_rewrite(user_login(true)))
+    ]);
 }
 
 $page_title = $nv_Lang->getModule('login');

@@ -1,8 +1,13 @@
 <!-- BEGIN: main -->
 <div id="nv-block-login" class="text-center">
+    <!-- BEGIN: login_form -->
     <button type="button" class="btn btn-primary btn-sm" data-toggle="loginForm">
         {GLANG.signin}
     </button>
+    <!-- END: login_form -->
+    <!-- BEGIN: login_sso -->
+    <a href="{LINK_LOGIN}" class="btn btn-primary btn-sm">{GLANG.signin}</a>
+    <!-- END: login_sso -->
     <!-- BEGIN: allowuserreg -->
     <a href="{USER_REGISTER}" class="btn btn-primary btn-sm">{GLANG.register}</a>
     <!-- END: allowuserreg -->

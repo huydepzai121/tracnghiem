@@ -89,6 +89,11 @@ if ($global_config['allowuserlogin']) {
 
         $xtpl->parse('signed');
         $content = $xtpl->text('signed');
+    } elseif (defined('NV_IS_USER_FORUM') and defined('SSO_SERVER')) {
+        $url = NukeViet\Client\Sso::getLoginUrl(empty($page_url) ? urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA, NV_MY_DOMAIN) : urlRewriteWithDomain($page_url, NV_MY_DOMAIN));
+        $xtpl->assign('LINK_LOGIN', $url);
+        $xtpl->parse('sso');
+        $content = $xtpl->text('sso');
     } else {
         $xtpl->assign('LOAD_FORM_URL', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=users&amp;' . NV_OP_VARIABLE . '=login');
         $xtpl->assign('NV_REDIRECT', nv_redirect_encrypt(empty($page_url) ? urlRewriteWithDomain(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA, NV_MY_DOMAIN) : urlRewriteWithDomain($page_url, NV_MY_DOMAIN)));

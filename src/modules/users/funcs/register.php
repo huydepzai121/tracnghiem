@@ -380,11 +380,7 @@ if ($checkss == $array_register['checkss']) {
             ];
             if (defined('SSO_REGISTER_SECRET')) {
                 $sso_redirect_users = $nv_Request->get_title('sso_redirect_' . $module_data, 'session', '');
-                /** @disregard P1011 */
-                $iv = substr(SSO_REGISTER_SECRET, 0, 16); // phpcs:ignore
-                $sso_redirect_users = strtr($sso_redirect_users, '-_,', '+/=');
-                /** @disregard P1011 */
-                $sso_redirect_users = openssl_decrypt($sso_redirect_users, 'aes-256-cbc', SSO_REGISTER_SECRET, 0, $iv); // phpcs:ignore
+                $sso_redirect_users = NukeViet\Client\Sso::decrypt($sso_redirect_users);
                 if (!empty($sso_redirect_users)) {
                     $array['input'] = $sso_redirect_users;
                 }

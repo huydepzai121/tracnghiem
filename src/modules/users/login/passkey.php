@@ -182,11 +182,18 @@ if ($nv_Request->isset_request('auth_assertion', 'post')) {
     $stmt->execute();
     unset($credential);
 
+    $blocker->reset_trackLogin($row['username']);
+    $blocker->reset_trackLogin($row['email']);
+
+    // Nếu đăng nhập bằng forum hoặc sso
+    if (defined('NV_IS_USER_FORUM') or defined('SSO_SERVER')) {
+        define('NV_SET_LOGIN_MODE', 'PASSKEY');
+        require NV_ROOTDIR . '/' . $global_config['dir_forum'] . '/nukeviet/set_user_login.php';
+    }
+
     validUserLog($row, 1, [
         'nickname' => $row['passkey_name'],
     ], 6);
-    $blocker->reset_trackLogin($row['username']);
-    $blocker->reset_trackLogin($row['email']);
 
     signin_result([
         'status' => 'ok',

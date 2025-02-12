@@ -78,3 +78,7 @@ function loginFormLoad() {
 <!-- END FORFOOTER -->
 <script src="{NV_STATIC_URL}themes/{BLOCK_JS}/js/users.js"></script>
 <!-- END: signed -->
+
+<!-- BEGIN: sso -->
+<span><a title="{GLANG.signin} - {GLANG.register}" class="pa pointer button" href="{LINK_LOGIN}" rel="nofollow"><em class="fa fa-user fa-lg"></em><span class="hidden">{GLANG.signin}</span></a></span>
+<!-- END: sso -->

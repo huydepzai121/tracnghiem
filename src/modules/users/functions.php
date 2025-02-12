@@ -399,11 +399,7 @@ function opidr_login($openid_info)
     if (defined('SSO_REGISTER_SECRET')) {
         $sso_client = $nv_Request->get_title('sso_client_' . $module_data, 'session', '');
         $sso_redirect = $nv_Request->get_title('sso_redirect_' . $module_data, 'session', '');
-        /** @disregard P1011 */
-        $iv = substr(SSO_REGISTER_SECRET, 0, 16);
-        $sso_redirect = strtr($sso_redirect, '-_,', '+/=');
-        /** @disregard P1011 */
-        $sso_redirect = openssl_decrypt($sso_redirect, 'aes-256-cbc', SSO_REGISTER_SECRET, 0, $iv);
+        $sso_redirect = NukeViet\Client\Sso::decrypt($sso_redirect);
 
         if (!empty($sso_redirect) and !empty($sso_client) and str_starts_with($sso_redirect, $sso_client)) {
             $openid_info['redirect'] = $sso_redirect;
@@ -449,6 +445,29 @@ function checkLoginName($type, $name)
     }
 
     return $row;
+}
+
+// Reset SSO client token
+if (
+    defined('SSO_CLIENT_DOMAIN') and $op == 'main' and ($array_op[0] ?? '') == 'login' and
+    defined('NV_IS_USER') and isset($_GET['sso_reset'], $_GET['client'])
+) {
+    /** @disregard P1011 */
+    $allowed_client_origin = explode(',', SSO_CLIENT_DOMAIN);
+    $sso_client = $nv_Request->get_title('client', 'get', '');
+    $sso_reset = $nv_Request->get_title('sso_reset', 'get', '');
+    if (empty($sso_client) or empty($sso_reset) or !in_array($sso_client, $allowed_client_origin, true)) {
+        // 406 Not Acceptable
+        nv_info_die($nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_content'), 406);
+    }
+
+    $sso_reset = NukeViet\Client\Sso::decrypt($sso_reset);
+    if (empty($sso_reset) or !str_starts_with($sso_reset, $sso_client)) {
+        // 406 Not Acceptable
+        nv_info_die($nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_content'), 406);
+    }
+
+    nv_redirect_location($sso_reset, 307);
 }
 
 $group_id = 0;

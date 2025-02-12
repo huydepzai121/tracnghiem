@@ -87,11 +87,7 @@ if (!empty($array_op[2]) and $array_op[2] == 'review' and $array_op[1] == 'compl
     if (defined('SSO_REGISTER_SECRET')) {
         $sso_client = $nv_Request->get_title('sso_client_' . $module_data, 'session', '');
         $sso_redirect = $nv_Request->get_title('sso_redirect_' . $module_data, 'session', '');
-        /** @disregard P1011 */
-        $iv = substr(SSO_REGISTER_SECRET, 0, 16);
-        $sso_redirect = strtr($sso_redirect, '-_,', '+/=');
-        /** @disregard P1011 */
-        $sso_redirect = openssl_decrypt($sso_redirect, 'aes-256-cbc', SSO_REGISTER_SECRET, 0, $iv);
+        $sso_redirect = NukeViet\Client\Sso::decrypt($sso_redirect);
 
         if (!empty($sso_redirect) and !empty($sso_client) and str_starts_with($sso_redirect, $sso_client)) {
             $array_data['redirect'] = $sso_redirect;
