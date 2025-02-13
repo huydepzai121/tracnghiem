@@ -14,14 +14,18 @@ function loginFormLoad() {
             nv_ajax: 1,
             nv_redirect: '{NV_REDIRECT}'
         },
-        dataType: "html"
-    }).done(function(a) {
-        if ('reload' == a) {
-            location.reload()
-        } else {
-            $("#tip .log-area").html(a);
-            change_captcha()
+        dataType: "json"
+    }).done(function(res) {
+        if (res.sso) {
+            window.location.href = res.sso;
+            return !1;
         }
+        if (res.reload) {
+            location.reload();
+            return !1;
+        }
+        $("#tip .log-area").html(res.html);
+        change_captcha();
     });
 }
 </script>
