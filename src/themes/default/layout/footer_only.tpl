@@ -35,16 +35,7 @@
             if (event.origin !== '{SSO_REGISTER_ORIGIN}') {
                 return false;
             }
-            if (
-                event.data !== null && typeof event.data == 'object' && event.data.code == 'oauthback' &&
-                typeof event.data.redirect != 'undefined' && typeof event.data.status != 'undefined' && typeof event.data.mess != 'undefined'
-            ) {
-                $('#openidResult').data('redirect', event.data.redirect);
-                $('#openidResult').data('result', event.data.status);
-                $('#openidResult').html(event.data.mess + (event.data.status == 'success' ? ' <span class="load-bar"></span>' : ''));
-                $('#openidResult').addClass('nv-info ' + event.data.status);
-                $('#openidBt').trigger('click');
-            } else if (event.data == 'nv.reload') {
+            if (event.data == 'nv.reload') {
                 location.reload();
             }
         }

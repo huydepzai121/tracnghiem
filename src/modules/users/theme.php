@@ -1379,30 +1379,19 @@ function user_info($data, $array_field_config, $custom_fields, $types, $data_que
 }
 
 /**
- * openid_callback()
- *
  * @param array $openid_info
  * @return string
  */
 function openid_callback($openid_info)
 {
-    global $module_info;
-
     $xtpl = new XTemplate('openid_callback.tpl', get_module_tpl_dir('openid_callback.tpl'));
     $xtpl->assign('OPIDRESULT', $openid_info);
 
-    if (!empty($openid_info['client'])) {
-        $xtpl->parse('main.client');
-    } else {
-        if ($openid_info['status'] == 'success') {
-            $xtpl->parse('main.regular.success');
-        }
-
-        $xtpl->parse('main.regular');
+    if ($openid_info['status'] == 'success') {
+        $xtpl->parse('main.success');
     }
 
     $xtpl->parse('main');
-
     return $xtpl->text('main');
 }
 
