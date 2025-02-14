@@ -38,9 +38,13 @@ if (md5(NV_CHECK_SESSION . '_' . $module_name . '_xcopyblock_' . $admin_info['us
         $sth->bindParam(':position', $pos, PDO::PARAM_STR);
         $sth->execute();
         while ($row = $sth->fetch()) {
-            $_sql = 'INSERT INTO ' . NV_BLOCKS_TABLE . '_groups
-                (theme, module, file_name, title, link, template, position, dtime_type, dtime_details, active, groups_view, all_func, weight, config) VALUES
-                (:theme, :module, :file_name, :title, :link, :template, :position, :dtime_type, :dtime_details, :active, :groups_view, :all_func, :weight, :config )';
+            $_sql = 'INSERT INTO ' . NV_BLOCKS_TABLE . '_groups (
+                theme, module, file_name, title, link, template, heading, position,
+                dtime_type, dtime_details, active, groups_view, all_func, weight, config
+            ) VALUES (
+                :theme, :module, :file_name, :title, :link, :template, :heading, :position,
+                :dtime_type, :dtime_details, :active, :groups_view, :all_func, :weight, :config
+            )';
 
             $data = [];
             $data['theme'] = $theme2;
@@ -49,6 +53,7 @@ if (md5(NV_CHECK_SESSION . '_' . $module_name . '_xcopyblock_' . $admin_info['us
             $data['title'] = $row['title'];
             $data['link'] = $row['link'];
             $data['template'] = $row['template'];
+            $data['heading'] = $row['heading'];
             $data['position'] = $row['position'];
             $data['dtime_type'] = $row['dtime_type'];
             $data['dtime_details'] = $row['dtime_details'];

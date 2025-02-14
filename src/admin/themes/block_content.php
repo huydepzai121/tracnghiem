@@ -55,6 +55,7 @@ $row = [
     'title' => '',
     'link' => '',
     'template' => '',
+    'heading' => 0,
     'position' => $nv_Request->get_title('tag', 'get', ''),
     'dtime_type' => 'regular',
     'dtime_details' => [],
@@ -153,6 +154,7 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
 
     $row['link'] = $nv_Request->get_title('link', 'post', '');
     $row['template'] = nv_substr($nv_Request->get_title('template', 'post', '', 0), 0, 55);
+    $row['heading'] = $nv_Request->get_int('heading', 'post', 0);
     $row['position'] = $nv_Request->get_title('position', 'post', '', 0);
     $row['position'] = nv_substr(nv_unhtmlspecialchars($row['position']), 0, 55);
     $row['act'] = (int) $nv_Request->get_bool('act', 'post', false);
@@ -276,6 +278,9 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
         }
     }
 
+    if ($row['heading'] < 0 or $row['heading'] > 6) {
+        $row['heading'] = 0;
+    }
     if ($row['dtime_type'] != 'regular' and empty($row['dtime_details'])) {
         nv_jsonOutput([
             'status' => 'error',
@@ -469,7 +474,14 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
             $sth->execute();
             $row['weight'] = (int) ($sth->fetchColumn()) + 1;
 
-            $_sql = 'INSERT INTO ' . NV_BLOCKS_TABLE . '_groups (theme, module, file_name, title, link, template, position, dtime_type, dtime_details, active, act, groups_view, all_func, weight, config) VALUES ( :selectthemes, :module, :file_name, :title, :link, :template, :position, :dtime_type, :dtime_details, :active, ' . $row['act'] . ', :groups_view, ' . $row['all_func'] . ', ' . $row['weight'] . ', :config )';
+            $_sql = 'INSERT INTO ' . NV_BLOCKS_TABLE . '_groups (
+                theme, module, file_name, title, link, template, heading, position, dtime_type,
+                dtime_details, active, act, groups_view, all_func, weight, config
+            ) VALUES (
+                :selectthemes, :module, :file_name, :title, :link, :template, :heading, :position,
+                :dtime_type, :dtime_details, :active, ' . $row['act'] . ', :groups_view,
+                ' . $row['all_func'] . ', ' . $row['weight'] . ', :config
+            )';
             $data = [];
             $data['selectthemes'] = $selectthemes;
             $data['module'] = $row['module'];
@@ -477,6 +489,7 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
             $data['title'] = $row['title'];
             $data['link'] = $row['link'];
             $data['template'] = $row['template'];
+            $data['heading'] = $row['heading'];
             $data['position'] = $row['position'];
             $data['dtime_type'] = $row['dtime_type'];
             $data['dtime_details'] = $row['dtime_details'];
@@ -493,6 +506,7 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
                     title=:title,
                     link=:link,
                     template=:template,
+                    heading=:heading,
                     position=:position,
                     dtime_type=:dtime_type,
                     dtime_details=:dtime_details,
@@ -508,6 +522,7 @@ if ($checkss == $nv_Request->get_string('checkss', 'post')) {
             $sth->bindParam(':title', $row['title'], PDO::PARAM_STR);
             $sth->bindParam(':link', $row['link'], PDO::PARAM_STR);
             $sth->bindParam(':template', $row['template'], PDO::PARAM_STR);
+            $sth->bindParam(':heading', $row['heading'], PDO::PARAM_INT);
             $sth->bindParam(':position', $row['position'], PDO::PARAM_STR);
             $sth->bindParam(':dtime_type', $row['dtime_type'], PDO::PARAM_STR);
             $sth->bindParam(':dtime_details', $row['dtime_details'], PDO::PARAM_STR);

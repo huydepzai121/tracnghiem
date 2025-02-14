@@ -54,7 +54,7 @@ function is_current_url($url, $cmptype = 0)
 }
 
 /**
- * nv_blocks_content()
+ * Đưa các block vào giao diện hiển thị
  *
  * @param string $sitecontent
  * @return string
@@ -116,15 +116,19 @@ function nv_blocks_content($sitecontent)
             $block_config['module'] = $_row['module'];
             $block_config['title'] = $_row['title'];
             $block_config['block_name'] = substr($_row['file_name'], 0, -4);
+            $block_config['heading'] = $_row['heading'];
 
             !isset($mod_blocklist[$_row['func_id']]) && $mod_blocklist[$_row['func_id']] = [];
             $mod_blocklist[$_row['func_id']][] = [
                 'bid' => $_row['bid'],
                 'position' => $_row['position'],
                 'module' => $_row['module'],
+                'title' => $_row['title'],
+                'link' => $_row['link'],
                 'blockTitle' => (!empty($_row['title']) and !empty($_row['link'])) ? '<a href="' . $_row['link'] . '">' . $_row['title'] . '</a>' : $_row['title'],
                 'file_name' => $_row['file_name'],
                 'template' => $_row['template'],
+                'heading' => $_row['heading'],
                 'dtime_type' => $_row['dtime_type'],
                 'dtime_details' => json_decode($_row['dtime_details'], true),
                 'show_device' => !empty($_row['active']) ? array_map('intval', explode(',', $_row['active'])) : [],

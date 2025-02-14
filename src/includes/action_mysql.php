@@ -106,6 +106,7 @@ function nv_create_table_sys($lang, $init = [])
          title varchar(255) DEFAULT NULL,
          link varchar(255) DEFAULT NULL,
          template varchar(55) DEFAULT NULL,
+         heading tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Thẻ heading mong muốn',
          position varchar(55) DEFAULT NULL,
          dtime_type CHAR(50) NOT NULL DEFAULT 'regular',
          dtime_details TEXT NULL DEFAULT NULL,

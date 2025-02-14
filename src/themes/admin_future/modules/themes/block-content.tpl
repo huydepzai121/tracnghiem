@@ -186,6 +186,17 @@
                     </div>
                 </div>
             </div>
+            <div class="row mb-3">
+                <label for="element_heading" class="col-sm-3 col-form-label text-sm-end text-truncate fw-medium" title="{$LANG->getModule('block_heading')}">{$LANG->getModule('block_heading')}:</label>
+                <div class="col-sm-9">
+                    <select class="form-select w-auto mw-100" name="heading" id="element_heading">
+                        {for $i=0 to 6}
+                        <option value="{$i}"{if $ROW.heading eq $i} selected{/if}>{$LANG->getModule("block_heading_`$i`")}</option>
+                        {/for}
+                    </select>
+                    <div class="form-text">{$LANG->getModule('block_heading_note')}.</div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="card">

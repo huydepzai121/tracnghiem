@@ -27,9 +27,13 @@ if ($func_id > 0 and isset($row['bid']) and md5(NV_CHECK_SESSION . '_' . $bid) =
     $row['weight'] = (int) $maxweight + 1;
 
     try {
-        $_sql = 'INSERT INTO ' . NV_BLOCKS_TABLE . '_groups
-			(theme, module, file_name, title, link, template, position, dtime_type, dtime_details, active, groups_view, all_func, weight, config) VALUES
-			( :theme, :module, :file_name, :title, :link, :template, :position, :dtime_type, :dtime_details, :active, :groups_view, 0, ' . $row['weight'] . ', :config )';
+        $_sql = 'INSERT INTO ' . NV_BLOCKS_TABLE . '_groups (
+            theme, module, file_name, title, link, template, heading, position,
+            dtime_type, dtime_details, active, groups_view, all_func, weight, config
+        ) VALUES (
+            :theme, :module, :file_name, :title, :link, :template, :heading, :position,
+            :dtime_type, :dtime_details, :active, :groups_view, 0, ' . $row['weight'] . ', :config
+        )';
 
         $data = [];
         $data['theme'] = $row['theme'];
@@ -38,6 +42,7 @@ if ($func_id > 0 and isset($row['bid']) and md5(NV_CHECK_SESSION . '_' . $bid) =
         $data['title'] = $row['title'];
         $data['link'] = $row['link'];
         $data['template'] = $row['template'];
+        $data['heading'] = $row['heading'];
         $data['position'] = $row['position'];
         $data['dtime_type'] = $row['dtime_type'];
         $data['dtime_details'] = $row['dtime_details'];

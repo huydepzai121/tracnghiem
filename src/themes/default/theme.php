@@ -446,6 +446,16 @@ function nv_error_theme($title, $content, $code)
  */
 function nv_block_theme($content, $row, $template)
 {
+    $row['blockTitle'] = $row['title'];
+    if (!empty($row['blockTitle'])) {
+        if (!empty($row['link'])) {
+            $row['blockTitle'] = '<a href="' . $row['link'] . '">' . $row['blockTitle'] . '</a>';
+        }
+        if (!empty($row['heading'])) {
+            $row['blockTitle'] = '<h' . $row['heading'] . '>' . $row['blockTitle'] . '</h' . $row['heading'] . '>';
+        }
+    }
+
     $xtpl = new XTemplate('block.' . $row['template'] . '.tpl', NV_ROOTDIR . '/themes/' . $template . '/layout');
     $xtpl->assign('BLOCK_ID', $row['bid']);
     $xtpl->assign('BLOCK_TITLE', $row['blockTitle']);

@@ -95,6 +95,9 @@ if (preg_match($global_config['check_theme'], $selectthemes) and $sth->fetchColu
             if (!isset($row['module'])) {
                 $row['module'] = 'theme';
             }
+            if (!isset($row['heading'])) {
+                $row['heading'] = 0;
+            }
 
             $file_name = $row['file_name'];
 
@@ -125,8 +128,14 @@ if (preg_match($global_config['check_theme'], $selectthemes) and $sth->fetchColu
 
             $all_func = ($row['all_func'] == 1 and preg_match('/^global\.([a-zA-Z0-9\-\_\.]+)\.php$/', $file_name)) ? 1 : 0;
 
-            $_sql = 'INSERT INTO ' . NV_BLOCKS_TABLE . "_groups (theme, module, file_name, title, link, template, position, dtime_type, dtime_details, active, groups_view, all_func, weight, config) VALUES
-			( :selectthemes, :module, :file_name, :title, :link, :template, :position, :dtime_type, :dtime_details, '" . $row['active'] . "', :groups_view, '" . $all_func . "', '" . $row['weight'] . "', :config )";
+            $_sql = 'INSERT INTO ' . NV_BLOCKS_TABLE . "_groups (
+                theme, module, file_name, title, link, template, heading, position,
+                dtime_type, dtime_details, active, groups_view, all_func, weight, config
+            ) VALUES (
+                :selectthemes, :module, :file_name, :title, :link, :template, :heading, :position,
+                :dtime_type, :dtime_details, '" . $row['active'] . "', :groups_view,
+                '" . $all_func . "', '" . $row['weight'] . "', :config
+            )";
             $data = [];
             $data['selectthemes'] = $selectthemes;
             $data['module'] = $row['module'];
@@ -134,6 +143,7 @@ if (preg_match($global_config['check_theme'], $selectthemes) and $sth->fetchColu
             $data['title'] = $row['title'];
             $data['link'] = $row['link'];
             $data['template'] = (string) $row['template'];
+            $data['heading'] = (int) $row['heading'];
             $data['position'] = $row['position'];
             $data['dtime_type'] = $row['dtime_type'];
             $data['dtime_details'] = $row['dtime_details'];
