@@ -13,37 +13,41 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     exit('Stop!!!');
 }
 
+$page_title = $nv_Lang->getModule('voting_list');
+
 $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . ' ORDER BY vid ASC';
 $result = $db->query($sql);
 
-$xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
+$tpl = new \NukeViet\Template\NVSmarty();
+$tpl->setTemplateDir(get_module_tpl_dir('main.tpl'));
+$tpl->assign('LANG', $nv_Lang);
+$tpl->assign('MODULE_NAME', $module_name);
+
+$array_row = [];
 $i = 0;
+
 while ($row = $result->fetch()) {
-    $sql1 = 'SELECT SUM(hitstotal) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE vid=' . $row['vid'];
-    $totalvote = $db->query($sql1)->fetchColumn();
+    $sql_sum = 'SELECT SUM(hitstotal) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE vid=' . $row['vid'];
+    $totalvote = $db->query($sql_sum)->fetchColumn();
     ++$i;
-    $xtpl->assign('ROW', [
+    $array_row[] = [
         'status' => $row['act'] == 1 ? $nv_Lang->getModule('voting_yes') : $nv_Lang->getModule('voting_no'),
         'vid' => $row['vid'],
         'question' => $row['question'],
         'totalvote' => $totalvote,
         'url_edit' => NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=content&amp;vid=' . $row['vid'],
         'checksess' => md5($row['vid'] . NV_CHECK_SESSION)
-    ]);
-
-    $xtpl->parse('main.loop');
+    ];
 }
 if (empty($i)) {
     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=content');
 }
 
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
+$tpl->assign('ROW', $array_row);
 
-$page_title = $nv_Lang->getModule('voting_list');
+$contents = $tpl->fetch('main.tpl');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
 include NV_ROOTDIR . '/includes/footer.php';
+
