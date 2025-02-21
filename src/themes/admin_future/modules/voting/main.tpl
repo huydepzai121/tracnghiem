@@ -20,6 +20,9 @@
                     <td>
                         <div class="hstack gap-1">
                             <div class="text-nowrap">
+                                <a href="#" class="btn btn-secondary btn-sm"><i class="fa fa-fw fa-bar-chart"></i>{$LANG->getModule('voting_result')}</a>
+                            </div>
+                            <div class="text-nowrap">
                                 <a href="{$row.url_edit}" class="btn btn-secondary btn-sm"><i class="fa fa-fw fa-edit"></i>{$LANG->getGlobal('edit')}</a>
                             </div>
                             <div class="text-nowrap">
