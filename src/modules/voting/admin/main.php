@@ -19,19 +19,18 @@ $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . ' ORDER BY vid AS
 $result = $db->query($sql);
 
 $tpl = new \NukeViet\Template\NVSmarty();
+$tpl->registerPlugin('modifier', 'dnumber', 'nv_number_format');
 $tpl->setTemplateDir(get_module_tpl_dir('main.tpl'));
 $tpl->assign('LANG', $nv_Lang);
 $tpl->assign('MODULE_NAME', $module_name);
 
 $array_row = [];
-$i = 0;
 
 while ($row = $result->fetch()) {
     $sql_sum = 'SELECT SUM(hitstotal) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE vid=' . $row['vid'];
     $totalvote = $db->query($sql_sum)->fetchColumn();
-    ++$i;
     $array_row[] = [
-        'status' => $row['act'] == 1 ? $nv_Lang->getModule('voting_yes') : $nv_Lang->getModule('voting_no'),
+        'status' => $row['act'],
         'vid' => $row['vid'],
         'question' => $row['question'],
         'totalvote' => $totalvote,
@@ -39,11 +38,11 @@ while ($row = $result->fetch()) {
         'checksess' => md5($row['vid'] . NV_CHECK_SESSION)
     ];
 }
-if (empty($i)) {
+if (empty($array_row)) {
     nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=content');
 }
 
-$tpl->assign('ROW', $array_row);
+$tpl->assign('DATA', $array_row);
 
 $contents = $tpl->fetch('main.tpl');
 
