@@ -13,6 +13,23 @@ var load_notification = 1;
 // Hàm lấy số thông báo chưa đọc
 function nv_get_notification() {
     if (load_notification) {
+        let antf = nv_getCookie(nv_cookie_prefix + '_antf');
+        if (antf) {
+            antf = JSON.parse(antf);
+            if ((new Date().getTime() - antf.t) < 30000) {
+                if (antf.cn > 0) {
+                    $('#notification').show().html(antf.cf);
+                } else {
+                    $('#notification').hide().html(0);
+                }
+                // Load mỗi 30s một lần
+                setTimeout(function() {
+                    nv_get_notification();
+                }, 30000);
+                return;
+            }
+        }
+
         $.ajax({
             type: 'POST',
             url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&nocache=' + new Date().getTime(),
@@ -26,6 +43,11 @@ function nv_get_notification() {
                 } else {
                     $('#notification').hide().html(0);
                 }
+                nv_setCookie(nv_cookie_prefix + '_antf', JSON.stringify({
+                    'cn': data.count,
+                    'cf': data.count_formatted,
+                    't': new Date().getTime()
+                }), 365);
                 // Load mỗi 30s một lần
                 setTimeout(function() {
                     nv_get_notification();
@@ -34,10 +56,6 @@ function nv_get_notification() {
             cache: false,
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR, textStatus, errorThrown);
-                // Load mỗi 30s một lần
-                setTimeout(function() {
-                    nv_get_notification();
-                }, 30000);
             }
         });
     }

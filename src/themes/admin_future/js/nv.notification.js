@@ -21,6 +21,20 @@ $(function() {
         if (!ctn.data('enable')) {
             return;
         }
+        let antf = nv_getCookie(nv_cookie_prefix + '_antf');
+        if (antf) {
+            antf = JSON.parse(antf);
+            if ((new Date().getTime() - antf.t) < 30000) {
+                if (antf.cn > 0) {
+                    $('.indicator', ctn).addClass('show');
+                    $('.badge', ctn).text(antf.cf).data('count', antf.cn);
+                } else {
+                    $('.indicator', ctn).removeClass('show');
+                    $('.badge', ctn).text('0').data('count', 0);
+                }
+                return;
+            }
+        }
         $.ajax({
             type: 'POST',
             url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=siteinfo&' + nv_fc_variable + '=notification&nocache=' + new Date().getTime(),
@@ -36,9 +50,16 @@ $(function() {
                     $('.indicator', ctn).removeClass('show');
                     $('.badge', ctn).text('0').data('count', 0);
                 }
+                nv_setCookie(nv_cookie_prefix + '_antf', JSON.stringify({
+                    'cn': data.count,
+                    'cf': data.count_formatted,
+                    't': new Date().getTime()
+                }), 365);
             },
             error: function(xhr, text, err) {
                 console.log(xhr, text, err);
+                // Dừng khi lỗi
+                ctn.data('enable', false);
             }
         });
     }
