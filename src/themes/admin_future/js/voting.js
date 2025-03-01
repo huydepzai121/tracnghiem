@@ -43,5 +43,55 @@ $(function () {
             });
         });
     });
+
+    // Hiển thị kết quả voting
+    $('[data-toggle=viewresult]').on('click', function (e) {
+        e.preventDefault();
+        var poptitle = $(this).data('title');
+        $.ajax({
+            type: "POST",
+            cache: !1,
+            url: nv_base_siteurl + "index.php?" + nv_lang_variable + "=" + nv_lang_data + "&" + nv_name_variable + "=voting&" + nv_fc_variable + "=main&vid=" + $(this).data('vid') + "&checkss=" + $(this).data('checkss') + "&lid=0",
+            data: "nv_ajax_voting=1",
+            dataType: "html",
+            success: function(res) {
+                if (res.match(/^ERROR\|/g)) {
+                    alert(res.substring(6));
+                } else {
+                    modalShow(poptitle, res);
+                }
+            }
+        });
+    });
+
+    // Kích hoạt/đình chỉ 1 voting
+    $('[data-toggle="changeActive"]').on('change', function() {
+        let btn = $(this);
+        let act = btn.is(':checked');
+        btn.prop('disabled', true);
+        $.ajax({
+            type: 'POST',
+            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=change_act&nocache=' + new Date().getTime(),
+            data: {
+                vid: btn.data('vid')
+            },
+            dataType: 'json',
+            cache: false,
+            success: function(respon) {
+                btn.prop('disabled', false);
+                if (!respon.success) {
+                    btn.prop('checked', !act);
+                    nvToast(respon.text, 'error');
+                    return;
+                }
+            },
+            error: function(xhr, text, err) {
+                btn.prop('checked', !act);
+                btn.prop('disabled', false);
+                nvToast(err, 'error');
+                console.log(xhr, text, err);
+            }
+        });
+    });
 });
 

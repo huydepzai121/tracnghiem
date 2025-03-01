@@ -16,11 +16,13 @@
                     <td>{$row.vid}</td>
                     <td>{$row.question}</td>
                     <td class="text-center">{$row.totalvote|dnumber}</td>
-                    <td class="text-center">{$LANG->getModule($row.act == 1 ? 'voting_no' : 'voting_yes')}</td>
+                    <td class="text-center form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" aria-label="{$LANG->getModule('voting_active')}" data-toggle="changeActive" data-vid="{$row.vid}" name="change_act_{$row.vid}" id="change_act_{$row.vid}" {if $row.status==1} checked{/if}/>
+                    </td>
                     <td>
                         <div class="hstack gap-1">
                             <div class="text-nowrap">
-                                <a href="#" class="btn btn-secondary btn-sm"><i class="fa fa-fw fa-bar-chart"></i>{$LANG->getModule('voting_result')}</a>
+                                <a href="#" class="btn btn-secondary btn-sm" data-toggle="viewresult" data-vid="{$row.vid}" data-checkss="{$row.checksess}"><i class="fa fa-fw fa-bar-chart"></i>{$LANG->getModule('voting_result')}</a>
                             </div>
                             <div class="text-nowrap">
                                 <a href="{$row.url_edit}" class="btn btn-secondary btn-sm"><i class="fa fa-fw fa-edit"></i>{$LANG->getGlobal('edit')}</a>
