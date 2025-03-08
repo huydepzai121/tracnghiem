@@ -946,6 +946,7 @@ p + .image-style-side {
 html {
     margin: 0;
     padding: 0;
+    font-size: 16px;
 }
 
 body {
@@ -1676,22 +1677,6 @@ header.header-up {
     vertical-align: middle;
 }
 
-.nv-recaptcha-default {
-    margin: 0 auto;
-    width: 304px;
-    height: 78px;
-}
-
-.nv-recaptcha-compact {
-    margin: 0 auto;
-    width: 164px;
-    height: 144px;
-}
-
-.grecaptcha-badge {
-    visibility: hidden;
-}
-
 /* List item */
 
 .nv-list-item {
@@ -1928,50 +1913,6 @@ button.close {
 
 .modal-body {
     padding: 15px;
-}
-
-#sitemodal .modal-dialog {
-    position: relative;
-    width: auto !important;
-    max-width: 600px;
-    text-align: center;
-    font-size: 0;
-}
-
-#sitemodal .modal-content {
-    width: auto;
-    display: inline-block;
-    font-size: 14px;
-    text-align: left;
-}
-
-#sitemodal .close {
-    position: absolute;
-    right: -10px;
-    bottom: -10px;
-    width: 24px;
-    height: 24px;
-    background: #000;
-    color: #fff;
-    font-size: 11px;
-    opacity: 0.8;
-    border: 2px solid #ccc;
-    border-radius: 12px;
-}
-
-#sitemodal .close:hover {
-    opacity: 1;
-}
-
-@media (max-width: 619px) {
-    #sitemodal .modal-dialog {
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-
-    #sitemodal .modal-content {
-        display: block;
-    }
 }
 
 .sidebar-nav {
