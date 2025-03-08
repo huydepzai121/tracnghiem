@@ -45,21 +45,36 @@ $(function () {
     });
 
     // Hiển thị kết quả voting
-    $('[data-toggle=viewresult]').on('click', function (e) {
+    $('[data-toggle="viewresult"]').on('click', function (e) {
         e.preventDefault();
-        var poptitle = $(this).data('title');
+        let btn = $(this);
+        let icon = $('i', btn);
+        if (icon.is('.fa-spinner')) {
+            return;
+        }
+        icon.removeClass(icon.data('icon')).addClass('fa-spinner fa-spin-pulse');
+
         $.ajax({
-            type: "POST",
-            cache: !1,
-            url: nv_base_siteurl + "index.php?" + nv_lang_variable + "=" + nv_lang_data + "&" + nv_name_variable + "=voting&" + nv_fc_variable + "=main&vid=" + $(this).data('vid') + "&checkss=" + $(this).data('checkss') + "&lid=0",
-            data: "nv_ajax_voting=1",
-            dataType: "html",
-            success: function(res) {
-                if (res.match(/^ERROR\|/g)) {
-                    alert(res.substring(6));
+            type: 'POST',
+            cache: false,
+            url: nv_base_siteurl + 'index.php?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=voting&' + nv_fc_variable + '=main&vid=' + btn.data('vid') + '&checkss=' + btn.data('checkss') + '&lid=0',
+            data: {
+                nv_ajax_voting: 1
+            },
+            dataType: 'html',
+            success: function (res) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                var r_split = res.split('_');
+                if (r_split[0] === 'ERROR') {
+                    nvToast(r_split[1], 'error');
                 } else {
-                    modalShow(poptitle, res);
+                    modalShow(btn.data('title'), res);
                 }
+            },
+            error: function (xhr, text, err) {
+                icon.removeClass('fa-spinner fa-spin-pulse').addClass(icon.data('icon'));
+                nvToast(text, 'error');
+                console.log(xhr, text, err);
             }
         });
     });
@@ -73,6 +88,7 @@ $(function () {
             type: 'POST',
             url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=change_act&nocache=' + new Date().getTime(),
             data: {
+                checkss: btn.data('checkss'),
                 vid: btn.data('vid')
             },
             dataType: 'json',
@@ -82,7 +98,6 @@ $(function () {
                 if (!respon.success) {
                     btn.prop('checked', !act);
                     nvToast(respon.text, 'error');
-                    return;
                 }
             },
             error: function(xhr, text, err) {
