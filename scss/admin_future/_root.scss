@@ -6,6 +6,15 @@
     --cr-cap-content-inner-border-radius: #{calc($border-radius-lg - 1px)};
     --cr-danger: #{$red};
 
+    --cr-toast-error-bg: #{$red};
+    --cr-toast-danger-bg: #{$red};
+    --cr-toast-primary-bg: #{$blue};
+    --cr-toast-success-bg: #{$green};
+    --cr-toast-info-bg: #{$cyan};
+    --cr-toast-info-color: #{color-contrast($cyan)};
+    --cr-toast-light-bg: #{$gray-100};
+    --cr-toast-dark-bg: #{$gray-900};
+
     --nv-header-bg-color: #{$header-bg};
     --nv-header-active-bg-color: #{$header-active-bg};
     --nv-header-link-hover-color: #{$header-link-hover-color};

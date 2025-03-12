@@ -17,9 +17,13 @@
 .cr-fade {
   transition: opacity .15s linear;
 
-  &:not(.show) {
+  &:not(.cr-show) {
     opacity: 0;
   }
+}
+
+.cr-d-none {
+  display: none!important;
 }
 
 .cr-btn-close {

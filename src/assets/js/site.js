@@ -471,8 +471,8 @@ function _showCaptchaModal(modal, showCb, shownCb) {
     nukeviet.cr.mdCapDb.scroll = document.documentElement.scrollHeight > window.innerHeight;
 
     setTimeout(() => {
-        modal.classList.add('show');
-        backdrop.classList.add('show');
+        modal.classList.add('cr-show');
+        backdrop.classList.add('cr-show');
 
         body.style.overflow = 'hidden';
         nukeviet.cr.mdCapDb.scroll && (body.style.paddingRight = nukeviet.getScrollbarWidth() + 'px');
@@ -877,8 +877,8 @@ document.addEventListener('DOMContentLoaded', () => {
             body.removeAttribute('class');
         }
 
-        modal.classList.remove('show');
-        backdrop.classList.remove('show');
+        modal.classList.remove('cr-show');
+        backdrop.classList.remove('cr-show');
         setTimeout(() => {
             modal.style.display = 'none';
             modal.removeAttribute('aria-modal');

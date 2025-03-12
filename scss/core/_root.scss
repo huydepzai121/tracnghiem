@@ -29,6 +29,8 @@
   --cr-btn-close-disabled-opacity: #{$btn-close-disabled-opacity};
   --cr-btn-close-white-filter: #{$btn-close-white-filter};
 
+  --cr-border-radius: #{$border-radius};
+
   --cr-input-border-radius: #{$border-radius};
   --cr-input-focus-border-color: #86b7fe;
 
@@ -38,6 +40,16 @@
   --cr-btn-border-radius: #{$border-radius};
 
   --cr-danger: #{$red};
+
+  --cr-toast-zindex: #{$zindex-toast};
+  --cr-toast-width: 350px;
+  --cr-toast-border-radius: var(--cr-border-radius);
+  --cr-toast-spacing: 0.75rem;
+  --cr-toast-padding: 0.75rem;
+  @each $key, $value in $toast-levels {
+    --cr-toast-#{$key}-bg: #{$value};
+    --cr-toast-#{$key}-color: #{color-contrast($value)};
+  }
 }
 
 // Giao diện sáng
@@ -47,6 +59,8 @@
   --cr-input-bg: #{$body-bg};
   --cr-input-focus-bg: #{$body-bg};
   --cr-border-color: #{$border-color};
+
+  --cr-toast-border-color: transparent;
 }
 
 // Giao diện tối
@@ -56,4 +70,6 @@
   --cr-input-bg: #{$body-bg-dark};
   --cr-input-focus-bg: #{$body-bg-dark};
   --cr-border-color: #{$border-color-dark};
+
+  --cr-toast-border-color: var(--cr-border-color);
 }

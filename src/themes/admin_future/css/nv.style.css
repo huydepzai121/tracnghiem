@@ -25252,6 +25252,14 @@ readers do not read off random characters that represent icons */
   --cr-cap-content-border-radius: 0.5rem;
   --cr-cap-content-inner-border-radius: calc(0.5rem - 1px);
   --cr-danger: #ee3232;
+  --cr-toast-error-bg: #ee3232;
+  --cr-toast-danger-bg: #ee3232;
+  --cr-toast-primary-bg: #4285f4;
+  --cr-toast-success-bg: #27ad57;
+  --cr-toast-info-bg: #17a2b8;
+  --cr-toast-info-color: #fff;
+  --cr-toast-light-bg: #f9f9f9;
+  --cr-toast-dark-bg: #212529;
   --nv-header-bg-color: #fff;
   --nv-header-active-bg-color: #e5e5e5;
   --nv-header-link-hover-color: #333333;
@@ -26508,41 +26516,6 @@ html:not([data-bs-theme=dark]) .btn-default {
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #0067ff;
   --bs-btn-disabled-border-color: #0067ff;
-}
-
-.site-toasts {
-  position: fixed;
-  z-index: 1090;
-  bottom: 0;
-  right: 0;
-}
-.site-toasts.toast-top {
-  bottom: unset;
-  top: 0;
-}
-.site-toasts.toast-start {
-  right: unset;
-  left: 0;
-}
-.site-toasts.toast-center {
-  right: unset;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.site-toasts.toast-middle {
-  bottom: unset;
-  top: 50%;
-  transform: translateY(-50%);
-}
-.site-toasts.toast-center.toast-middle {
-  transform: translate(-50%, -50%);
-}
-.site-toasts .toast-lists {
-  overflow: hidden;
-  max-height: 100vh;
-}
-.site-toasts .toast-lists .toast-items > .toast:not(:last-child) {
-  margin-bottom: 1rem;
 }
 
 #developer-error {

@@ -665,8 +665,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 body.removeAttribute('class');
             }
 
-            modal.classList.remove('show');
-            backdrop.classList.remove('show');
+            modal.classList.remove('cr-show');
+            backdrop.classList.remove('cr-show');
             setTimeout(() => {
                 modal.style.display = 'none';
                 modal.removeAttribute('aria-modal');
@@ -737,8 +737,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Tạo độ trễ cho các transition
             setTimeout(() => {
-                modal.classList.add('show');
-                backdrop.classList.add('show');
+                modal.classList.add('cr-show');
+                backdrop.classList.add('cr-show');
 
                 body.style.overflow = 'hidden';
                 nukeviet.cr.mdDb.scroll && (body.style.paddingRight = nukeviet.getScrollbarWidth() + 'px');
@@ -767,7 +767,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    if (typeof window.modalShowByObj === 'undefined') {
+    if (typeof modalShowByObj === 'undefined') {
         window.modalShowByObj = (obj, callback) => {
             if (!(obj instanceof Element)) {
                 obj = document.querySelector(obj);
@@ -781,4 +781,191 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Alertbox + Confirm box
     // Toast
+    if (!document.getElementById('site-toasts')) {
+        nukeviet.cr.toast = {
+            hasKbInter: false,
+            hasMInter: false
+        };
+
+        /**
+         * Xử lý hành động hover và di chuột ra khỏi toast
+         *
+         * @param {HTMLElement} item
+         * @param {Event} event
+         */
+        const _ToastInteraction = (item, event) => {
+            const isInter = (event.type === 'mouseover' || event.type === 'focusin') ? true : false;
+            const toasts = document.getElementById('site-toasts');
+
+            switch (event.type) {
+                case 'mouseover':
+                case 'mouseout': {
+                    nukeviet.cr.toast.hasMInter = isInter
+                    break
+                }
+
+                case 'focusin':
+                case 'focusout': {
+                    nukeviet.cr.toast.hasKbInter = isInter
+                    break
+                }
+
+                default: {
+                    break
+                }
+            }
+
+            if (isInter) {
+                toasts.querySelectorAll('.cr-toast').forEach(item => {
+                    if (item.dataset._timeout) {
+                        clearTimeout(item.dataset._timeout);
+                    }
+                });
+                return
+            }
+
+            const nextElement = event.relatedTarget
+            if (item === nextElement || item.contains(nextElement)) {
+                return;
+            }
+
+            toasts.querySelectorAll('.cr-toast').forEach(item => {
+                item.dataset._timeout = setTimeout(() => {
+                    _ToastTimeout(item);
+                }, 5000);
+            });
+        };
+
+        /**
+         * Ẩn toast tự động
+         *
+         * @param {HTMLElement} item
+         */
+        const _ToastTimeout = (item) => {
+            _ToastHide(item);
+        };
+
+        const _ToastHide = (item) => {
+            item.classList.add('cr-showing');
+            setTimeout(() => {
+                item.remove();
+
+                let toasts = document.getElementById('site-toasts');
+                if (!toasts.querySelector('.cr-toast')) {
+                    toasts.classList.add('cr-d-none');
+                }
+            }, 151);
+        };
+
+        /**
+         *
+         * @param {String} text
+         * @param {'secondary' | 'error' | 'danger' | 'primary' | 'success' | 'info' | 'warning' | 'light' | 'dark'} level
+         * @param {'s' | 'c'} halign
+         * @param {'t' | 'm' | 'c'} valign
+         */
+        nukeviet.toast = (text, level, halign, valign) => {
+            let toasts = document.getElementById('site-toasts');
+            if (!toasts) {
+                toasts = document.createElement('div');
+                toasts.id = 'site-toasts';
+                toasts.classList.add('cr-toasts', 'cr-d-none');
+                toasts.innerHTML = `<div class="cr-toast-lists">
+                    <div class="cr-toast-items" aria-live="polite" aria-atomic="true"></div>
+                </div>`;
+                document.body.appendChild(toasts);
+            }
+            const items = toasts.querySelector('.cr-toast-items');
+            const toastsScroll = toasts.querySelector('.cr-toast-lists');
+
+            const id = nv_randomPassword(8);
+            const tLevel = {
+                'secondary': 'cr-toast-lev-secondary',
+                'error': 'cr-toast-lev-danger',
+                'danger': 'cr-toast-lev-danger',
+                'primary': 'cr-toast-lev-primary',
+                'success': 'cr-toast-lev-success',
+                'info': 'cr-toast-lev-info',
+                'warning': 'cr-toast-lev-warning',
+                'light': 'cr-toast-lev-light',
+                'dark': 'cr-toast-lev-dark',
+            };
+            const hAlign = {
+                's': ' cr-toast-start',
+                'c': ' cr-toast-center',
+            };
+            const vAlign = {
+                't': ' cr-toast-top',
+                'm': ' cr-toast-middle',
+                'c': ' cr-toast-middle',
+            };
+            level = tLevel[level] || ' ';
+            halign = hAlign[halign] || '';
+            valign = vAlign[valign] || '';
+
+            const align = halign + valign;
+            const allAlign = 'cr-toast-top cr-toast-start cr-toast-center cr-toast-middle';
+
+            const item = document.createElement('div');
+            item.setAttribute('data-id', id);
+            item.setAttribute('id', 'toast-' + id);
+            item.setAttribute('role', 'alert');
+            item.setAttribute('aria-live', 'assertive');
+            item.setAttribute('aria-atomic', 'true');
+            item.className = 'cr-toast cr-fade cr-showing ' + level;
+            item.dataset._timeout = null;
+
+            const itemBody = document.createElement('div');
+            itemBody.className = 'cr-toast-body';
+            itemBody.textContent = text;
+
+            const itemClose = document.createElement('div');
+            itemClose.className = 'cr-toast-close';
+
+            const btnClose = document.createElement('button');
+            btnClose.type = 'button';
+            btnClose.className = 'cr-btn-close';
+            btnClose.setAttribute('data-cr-dismiss', 'toast');
+            btnClose.setAttribute('aria-label', nv_close);
+            btnClose.addEventListener('click', (event) => {
+                event.preventDefault();
+                btnClose.disabled = true;
+                _ToastHide(item);
+            });
+
+            itemClose.appendChild(btnClose);
+
+            item.appendChild(itemBody);
+            item.appendChild(itemClose);
+
+            items.appendChild(item);
+
+            if (align != '') {
+                allAlign.split(' ').forEach(cls => {
+                    if (cls.trim()) toasts.classList.remove(cls);
+                });
+                align.split(' ').forEach(cls => {
+                    if (cls.trim()) toasts.classList.add(cls);
+                });
+            }
+            toasts.classList.remove('cr-d-none');
+
+            item.classList.add('cr-show');
+            toastsScroll.scrollTop = toastsScroll.scrollHeight;
+            setTimeout(() => {
+                item.classList.remove('cr-showing');
+                item.dataset._timeout = setTimeout(() => {
+                    _ToastTimeout(item);
+                }, 5000);
+                item.addEventListener('mouseover', (event) => {  _ToastInteraction(item, event); });
+                item.addEventListener('mouseout', (event) => {  _ToastInteraction(item, event); });
+                item.addEventListener('focusin', (event) => {  _ToastInteraction(item, event); });
+                item.addEventListener('focusout', (event) => {  _ToastInteraction(item, event); });
+            }, 151);
+        };
+
+        if (typeof nvToast !== 'function') {
+            window.nvToast = nukeviet.toast;
+        }
+    }
 });
