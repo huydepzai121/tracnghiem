@@ -694,8 +694,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // ESC để đóng modal
-        document.addEventListener("keydown", function(event) {
-            if (event.key === "Escape" && document.body.classList.contains('cr-md-open')) {
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && document.body.classList.contains('cr-md-open')) {
                 const modal = document.getElementById('sitemodal');
                 modal.querySelector('[data-cr-dismiss="modal"]').click();
             }
@@ -829,6 +829,16 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 boxBody.textContent = message;
             }
+            // Click ngoài alert box
+            box.addEventListener('click', (event) => {
+                const content = box.querySelector('.cr-alert-content');
+                if (!box.classList.contains('cr-alert-static') && !content.contains(event.target) && !event.target.closest('.cr-alert-content')) {
+                    box.classList.add('cr-alert-static');
+                    setTimeout(() => {
+                        box.classList.remove('cr-alert-static');
+                    }, 310);
+                }
+            });
 
             // Đối tượng backdrop
             const backdrop = document.createElement('div');
@@ -888,6 +898,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 close('confirm');
             });
         };
+
+        // ESC để đóng alert box
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && document.body.classList.contains('cr-alert-open')) {
+                const al = document.querySelector('.cr-alert');
+                if (al) {
+                    const btnClose = al.querySelector('.cr-btn-secondary');
+                    if (btnClose) {
+                        btnClose.click();
+                        return;
+                    }
+                    const btnConfirm = al.querySelector('.cr-btn-primary');
+                    if (btnConfirm) {
+                        btnConfirm.click();
+                    }
+                }
+            }
+        });
+
+        // Enter để confirm
+        document.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter' && document.body.classList.contains('cr-alert-open')) {
+                const btnConfirm = document.querySelector('.cr-alert .cr-btn-primary');
+                if (btnConfirm) {
+                    btnConfirm.click();
+                }
+            }
+        });
     }
 
     if (typeof nukeviet.alert !== 'function') {
