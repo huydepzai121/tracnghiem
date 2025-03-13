@@ -780,6 +780,133 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Alertbox + Confirm box
+    if (typeof nukeviet.confirm !== 'function') {
+        nukeviet.confirm = (message, cbConfirm, cbCancel, cancelBtn) => {
+            const body = document.body;
+            if (body.classList.contains('cr-alert-open')) {
+                return;
+            }
+            body.classList.add('cr-alert-open');
+            if (typeof cancelBtn == 'undefined') {
+                cancelBtn = true;
+            }
+            if (typeof cbConfirm == 'undefined') {
+                cbConfirm = () => {};
+            }
+            if (typeof cbCancel == 'undefined') {
+                cbCancel = () => {};
+            }
+
+            const id = 'alert-' + nv_randomPassword(8);
+
+            // Đối tượng box
+            const box = document.createElement('div');
+            box.id = id;
+            box.classList.add('cr-alert', 'cr-fade');
+            box.setAttribute('tabindex', '-1');
+            box.setAttribute('aria-labelledby', `${id}-body`);
+            box.setAttribute('aria-hidden', 'true');
+            box.innerHTML = `<div class="cr-alert-dialog cr-alert-dialog-scrollable">
+                <div class="cr-alert-content">
+                    <div class="cr-alert-body" id="${id}-body"></div>
+                    <div class="cr-alert-footer" id="${id}-footer">
+                        <button type="button" class="cr-btn cr-btn-icon cr-btn-primary" id="${id}-confirm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="cr-svg-icon" viewBox="0 0 16 16">
+                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                            </svg> ` + nv_confirm + `
+                        </button>
+                        ` + (cancelBtn ? `<button type="button" class="cr-btn cr-btn-icon cr-btn-secondary" id="${id}-close">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="cr-svg-icon" viewBox="0 0 16 16">
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg> ` + nv_close + `
+                        </button>` : '') + `
+                    </div>
+                </div>
+            </div>`;
+            const boxBody = box.querySelector('.cr-alert-body');
+            if (typeof message == 'object' && message.html) {
+                boxBody.innerHTML = message.message;
+            } else {
+                boxBody.textContent = message;
+            }
+
+            // Đối tượng backdrop
+            const backdrop = document.createElement('div');
+            backdrop.classList.add('cr-alert-backdrop', 'cr-fade');
+
+            body.append(box, backdrop);
+
+            box.removeAttribute('aria-hidden');
+            box.setAttribute('aria-modal', 'true');
+            box.style.display = 'block';
+
+            const cOverflow = body.style.overflow;
+            const cPaddingRight = body.style.paddingRight;
+            const cVScroll = document.documentElement.scrollHeight > window.innerHeight;
+
+            setTimeout(() => {
+                box.classList.add('cr-show');
+                backdrop.classList.add('cr-show');
+
+                body.style.overflow = 'hidden';
+                cVScroll && (body.style.paddingRight = nukeviet.getScrollbarWidth() + 'px');
+            }, 1);
+
+            // Xử lý nút ấn
+            const close = (event) => {
+                ([...box.querySelectorAll('button')].map(ele => ele.setAttribute('disabled', 'disabled')));
+
+                body.style.overflow = cOverflow;
+                body.style.paddingRight = cPaddingRight;
+                if (body.getAttribute('style') === '') {
+                    body.removeAttribute('style');
+                }
+                if (body.getAttribute('class') === '') {
+                    body.removeAttribute('class');
+                }
+
+                box.classList.remove('cr-show');
+                backdrop.classList.remove('cr-show');
+                setTimeout(() => {
+                    box.style.display = 'none';
+                    body.removeChild(box);
+                    body.removeChild(backdrop);
+                    body.classList.remove('cr-alert-open');
+                    if (event == 'confirm') {
+                        cbConfirm();
+                    } else if (event == 'cancel') {
+                        cbCancel();
+                    }
+                }, 150);
+            }
+            if (cancelBtn) {
+                document.getElementById(id + '-close').addEventListener('click', () => {
+                    close('cancel');
+                });
+            }
+            document.getElementById(id + '-confirm').addEventListener('click', () => {
+                close('confirm');
+            });
+        };
+    }
+
+    if (typeof nukeviet.alert !== 'function') {
+        nukeviet.alert = (message, callback) => {
+            if (typeof callback == 'undefined') {
+                callback = () => {};
+            }
+            nukeviet.confirm(message, callback, () => {}, false);
+        };
+    }
+
+    if (typeof nvConfirm !== 'function') {
+        window.nvConfirm = nukeviet.confirm;
+    }
+
+    if (typeof nvAlert !== 'function') {
+        window.nvAlert = nukeviet.alert;
+    }
+
     // Toast
     if (!document.getElementById('site-toasts')) {
         nukeviet.cr.toast = {
