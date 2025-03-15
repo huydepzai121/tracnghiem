@@ -29,7 +29,7 @@
                                 <a href="#" class="btn btn-secondary btn-sm" data-toggle="viewresult" data-vid="{$row.vid}" data-checkss="{$row.checksess}"><i class="fa-solid fa-bar-chart" data-icon="fa-bar-chart"></i>{$LANG->getModule('voting_result')}</a>
                             </div>
                             <div class="text-nowrap">
-                                <a href="{$row.url_edit}" class="btn btn-secondary btn-sm"><i class="fa-solid fa-edit"></i>{$LANG->getGlobal('edit')}</a>
+                                <a href="{$row.url_edit}" class="btn btn-secondary btn-sm"><i class="fa-solid fa-pen"></i>{$LANG->getGlobal('edit')}</a>
                             </div>
                             <div class="text-nowrap">
                                 <button type="button" class="btn btn-danger btn-sm" data-toggle="nv_del_voting" data-checkss="{$row.checksess}" data-vid="{$row.vid}"><i class="fa-solid fa-trash" data-icon="fa-trash"></i> {$LANG->getGlobal('delete')}
