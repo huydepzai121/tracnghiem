@@ -620,7 +620,7 @@ if (empty($admin_pre_data) and $nv_Request->isset_request('nv_login,nv_password'
     $nv_password = $nv_Request->get_title('nv_password', 'post', '');
 
     unset($nv_seccode);
-    
+
     if ($captcha_type == 'recaptcha') {
         // Xác định giá trị của captcha nhập vào nếu sử dụng reCaptcha
         $nv_seccode = $nv_Request->get_title('g-recaptcha-response', 'post', '');
@@ -661,7 +661,7 @@ if (empty($admin_pre_data) and $nv_Request->isset_request('nv_login,nv_password'
         nv_jsonOutput([
             'status' => 'error',
             'input' => ($captcha_type == 'recaptcha') ? '' : 'nv_seccode',
-            'mess' => ($module_captcha == 'recaptcha') ? $nv_Lang->getGlobal('securitycodeincorrect1') : (($module_captcha == 'turnstile') ? $nv_Lang->getGlobal('securitycodeincorrect2') : $nv_Lang->getGlobal('securitycodeincorrect'))
+            'mess' => ($captcha_type == 'recaptcha') ? $nv_Lang->getGlobal('securitycodeincorrect1') : (($captcha_type == 'turnstile') ? $nv_Lang->getGlobal('securitycodeincorrect2') : $nv_Lang->getGlobal('securitycodeincorrect'))
         ]);
     }
 
