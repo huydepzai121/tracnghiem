@@ -511,6 +511,17 @@ function getFiles(files, callback) {
     })
 }
 
+/**
+ * Tương đương html_entity_decode
+ *
+ * @param {String} html
+ * @returns {String}
+ */
+function htmlEntityDecode(html) {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.documentElement.textContent;
+}
+
 nv_check_timezone();
 
 nukeviet.WebAuthnSupported = 'PublicKeyCredential' in window && 'credentials' in navigator && 'create' in navigator.credentials && 'get' in navigator.credentials;
@@ -827,7 +838,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof message == 'object' && message.html) {
                 boxBody.innerHTML = message.message;
             } else {
-                boxBody.textContent = message;
+                boxBody.textContent = htmlEntityDecode(message);
             }
             // Click ngoài alert box
             box.addEventListener('click', (event) => {
@@ -1082,7 +1093,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const itemBody = document.createElement('div');
             itemBody.className = 'cr-toast-body';
-            itemBody.textContent = text;
+            itemBody.textContent = htmlEntityDecode(text);
 
             const itemClose = document.createElement('div');
             itemClose.className = 'cr-toast-close';
