@@ -20,7 +20,7 @@ if ($vid > 0 and $checkss == md5($vid . NV_CHECK_SESSION)) {
     $row = $db->query('SELECT act FROM ' . NV_PREFIXLANG . '_' . $module_data . ' WHERE vid=' . $vid)->fetch();
     if (!empty($row)) {
         $act_vid = $row['act'] ? 0 : 1;
-        nv_insert_logs(NV_LANG_DATA, $module_name, 'log_change_vote' . $act_vid . 'votingid ' . $vid, $admin_info['userid']);
+        nv_insert_logs(NV_LANG_DATA, $module_name, 'log_change_vote' , 'active ' . $act_vid . ' votingid ' . $vid, $admin_info['userid']);
         $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . ' SET act=' . $act_vid . ' WHERE vid= ' . $vid);
         $nv_Cache->delMod('modules');
         nv_jsonOutput([
