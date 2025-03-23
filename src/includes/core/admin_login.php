@@ -307,7 +307,7 @@ if (!empty($admin_pre_data)) {
     $cfg_2step['active_google'] = false; // Đã login bằng Google hay chưa
     $cfg_2step['active_zalo'] = false; // Đã login bằng Zalo hay chưa
     $_2step_opt = explode(',', $global_config['admin_2step_opt']);
-    if (in_array('key', $_2step_opt, true)) {
+    if ($passkey_allowed and in_array('key', $_2step_opt, true)) {
         $cfg_2step['opts'][] = 'key';
         if (!empty($admin_pre_data['sec_keys']) and !empty($admin_pre_data['active2step'])) {
             $cfg_2step['active_key'] = true;
