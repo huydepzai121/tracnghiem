@@ -73,7 +73,8 @@ if ($captcha_type == 'recaptcha' and (empty($global_config['recaptcha_sitekey'])
 }
 
 $admin_login_success = false;
-$passkey_allowed = (!defined('NV_IS_USER_FORUM') or !defined('SSO_SERVER'));
+/** @disregard P1011 */
+$passkey_allowed = !(defined('SSO_SERVER') and (defined('NV_IS_USER_FORUM') or NV_MY_DOMAIN != SSO_REGISTER_DOMAIN));
 
 // Tạo thử thách đăng nhập passkey
 if ($passkey_allowed and $nv_Request->isset_request('create_challenge', 'post')) {
