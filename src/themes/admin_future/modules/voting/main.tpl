@@ -4,9 +4,9 @@
             <thead>
                 <tr>
                     <th class="text-nowrap" style="width: 5%;">{$LANG->getModule('voting_id')}</th>
-                    <th class="text-nowrap">{$LANG->getModule('voting_title')}</th>
-                    <th class="text-nowrap text-center">{$LANG->getModule('voting_hits')}</th>
-                    <th class="text-nowrap text-center">{$LANG->getModule('voting_active')}</th>
+                    <th class="text-nowrap" style="width: 45%;">{$LANG->getModule('voting_title')}</th>
+                    <th class="text-nowrap text-center" style="width: 20%;">{$LANG->getModule('voting_hits')}</th>
+                    <th class="text-nowrap text-center" style="width: 15%;">{$LANG->getModule('voting_active')}</th>
                     <th class="text-nowrap" style="width: 15%;">{$LANG->getModule('voting_func')}</th>
                 </tr>
             </thead>
@@ -32,8 +32,7 @@
                                 <a href="{$row.url_edit}" class="btn btn-secondary btn-sm"><i class="fa-solid fa-pen"></i>{$LANG->getGlobal('edit')}</a>
                             </div>
                             <div class="text-nowrap">
-                                <button type="button" class="btn btn-danger btn-sm" data-toggle="nv_del_voting" data-checkss="{$row.checksess}" data-vid="{$row.vid}"><i class="fa-solid fa-trash" data-icon="fa-trash"></i> {$LANG->getGlobal('delete')}
-                                </button>
+                                <button type="button" class="btn btn-danger btn-sm" data-toggle="nv_del_voting" data-checkss="{$row.checksess}" data-vid="{$row.vid}"><i class="fa-solid fa-trash" data-icon="fa-trash"></i> {$LANG->getGlobal('delete')}</button>
                             </div>
                         </div>
                     </td>
