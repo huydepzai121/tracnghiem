@@ -4227,3 +4227,15 @@ function nv_uuid4()
     $hex = array_map(fn($byte) => str_pad(dechex($byte), 2, '0', STR_PAD_LEFT), $data);
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(implode('', $hex), 4));
 }
+
+/**
+ * Hàm chuyển Unicode tổ hợp sang Unicode dựng sẵn
+ * @param string $str
+ * @return string
+ */
+function nv_compound_unicode($str)
+{
+    global $nv_Request;
+
+    return $nv_Request->compound_unicode($str);
+}
