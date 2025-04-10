@@ -54,6 +54,7 @@ class Error
     private $errline = false;
     private $errid = false;
     private static $errortype = [
+        2048 => 'Strict Notice', // Backward compatible with PHP versions below 8.4
         E_ERROR => 'Error',
         E_WARNING => 'Warning',
         E_PARSE => 'Parsing Error',
@@ -142,10 +143,6 @@ class Error
             'method' => strtoupper(Site::getEnv(['REQUEST_METHOD', 'Method']))
         ];
 
-        if (version_compare(PHP_VERSION, '8.4.0', '<')) {
-            self::$errortype[E_STRICT] = 'Strict Notice';
-        }
-
         set_error_handler([&$this, 'error_handler']);
         register_shutdown_function([&$this, 'shutdown']);
     }
@@ -154,7 +151,7 @@ class Error
      * get_error_log_path()
      *
      * @param string $path
-     * @return string
+     * @return array
      */
     private static function get_error_log_path($path)
     {
