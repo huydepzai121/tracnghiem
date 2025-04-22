@@ -1145,6 +1145,11 @@ a.btn-default {
     font-weight: 700;
 }
 
+.text-break {
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
 /* Header */
 
 header.first-child {

@@ -220,6 +220,11 @@
     font-weight: 700;
 }
 
+.text-break {
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
 /* Fix bootstrap */
 
 .form-horizontal .control-label {
