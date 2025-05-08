@@ -394,6 +394,7 @@ $lang_module['content_instant_template1'] = 'Modèle d\'article instantané';
 $lang_module['content_instant_templatenote'] = 'Blank-à-dire à l\'aide de modèles par défaut';
 $lang_module['content_instant_creatauto'] = 'Créer automatiquement l\'article instantané de l\'article souvent';
 $lang_module['content_locked_bycat'] = 'Verrouiller par catégories';
+$lang_module['content_schema_type'] = 'Type de données structurées';
 $lang_module['showtooltip'] = 'Afficher tooltip';
 $lang_module['showtooltip_position'] = 'Position de l\'affichage';
 $lang_module['showtooltip_position_top'] = 'Au dessus';

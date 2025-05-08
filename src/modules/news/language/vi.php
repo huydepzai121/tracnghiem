@@ -394,6 +394,7 @@ $lang_module['content_instant_template1'] = 'Mẫu bài viết tức thời';
 $lang_module['content_instant_templatenote'] = 'Để trống tức là sử dụng mẫu mặc định';
 $lang_module['content_instant_creatauto'] = 'Tự động tạo bài viết tức thời từ bài viết thường';
 $lang_module['content_locked_bycat'] = 'Khóa bởi chuyên mục';
+$lang_module['content_schema_type'] = 'Loại dữ liệu có cấu trúc';
 $lang_module['showtooltip'] = 'Hiển thị tooltip';
 $lang_module['showtooltip_position'] = 'Vị trí hiển thị';
 $lang_module['showtooltip_position_top'] = 'Trên';

@@ -395,6 +395,7 @@ $lang_module['content_instant_template1'] = 'Instant Article Template';
 $lang_module['content_instant_templatenote'] = 'Leave blank ie use the default template';
 $lang_module['content_instant_creatauto'] = 'Automatically generate instant messages from regular posts';
 $lang_module['content_locked_bycat'] = 'Lock by categories';
+$lang_module['content_schema_type'] = 'Structured data type';
 $lang_module['showtooltip'] = 'Display tooltip';
 $lang_module['showtooltip_position'] = 'Tooltip postition';
 $lang_module['showtooltip_position_top'] = 'Top';

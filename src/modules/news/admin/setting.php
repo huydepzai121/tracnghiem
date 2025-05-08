@@ -23,11 +23,6 @@ $socialbuttons = [
     'twitter',
     'zalo'
 ];
-$schema_types = [
-    'newsarticle' => 'NewsArticle',
-    'blogposting' => 'BlogPosting',
-    'article' => 'Article'
-];
 
 $groupslist = nv_groups_list();
 
