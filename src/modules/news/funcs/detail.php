@@ -284,7 +284,6 @@ if ($news_contents['schema_type'] != 'BlogPosting') {
         ];
     }
 }
-$schema['xxx'] = 1;
 
 if (defined('NV_IS_MODADMIN') and $news_contents['status'] != 1) {
     $alert = $nv_Lang->getModule('status_alert', $nv_Lang->getModule('status_' . $news_contents['status']));
