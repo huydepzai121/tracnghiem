@@ -232,12 +232,12 @@ function is_numeric(mixed_var) {
 }
 
 function intval(mixed_var, base) {
-    var type = typeof(mixed_var);
+    let type = typeof(mixed_var);
 
     if (type === 'boolean') {
         return (mixed_var) ? 1 : 0;
     } else if (type === 'string') {
-        tmp = parseInt(mixed_var, base || 10);
+        let tmp = parseInt(mixed_var, base || 10);
         return (isNaN(tmp) || !isFinite(tmp)) ? 0 : tmp;
     } else if (type === 'number' && isFinite(mixed_var)) {
         return Math.floor(mixed_var);
