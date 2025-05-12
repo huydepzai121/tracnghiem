@@ -27,7 +27,7 @@ if ($nv_Request->isset_request('save', 'post')) {
     }
 
     $array_config['viewtype'] = $nv_Request->get_int('viewtype', 'post', 0);
-    $array_config['facebookapi'] = $nv_Request->get_string('facebookapi', 'post', '');
+    $array_config['facebookapi'] = $nv_Request->get_title('facebookapi', 'post', '');
     $array_config['per_page'] = $nv_Request->get_page('per_page', 'post', 20);
     $array_config['related_articles'] = $nv_Request->get_int('related_articles', 'post', '0');
     $array_config['news_first'] = $nv_Request->get_int('news_first', 'post', 0);
@@ -39,6 +39,15 @@ if ($nv_Request->isset_request('save', 'post')) {
         $array_config['socialbutton'] = array_diff($array_config['socialbutton'], ['zalo']);
     }
     $array_config['socialbutton'] = !empty($array_config['socialbutton']) ? implode(',', $array_config['socialbutton']) : '';
+
+    $array_config['schema_type'] = $nv_Request->get_title('schema_type', 'post', '');
+    $array_config['schema_about'] = $nv_Request->get_title('schema_about', 'post', '');
+    if (!array_key_exists($array_config['schema_type'], $schema_types)) {
+        $array_config['schema_type'] = 'newsarticle';
+    }
+    if (!array_key_exists($array_config['schema_about'], $schema_abouts)) {
+        $array_config['schema_about'] = 'organization';
+    }
 
     nv_insert_logs(NV_LANG_DATA, $module_name, 'Change config', '', $admin_info['userid']);
 
@@ -84,6 +93,8 @@ $tpl->assign('OP', $op);
 $tpl->assign('DATA', $array_config);
 $tpl->assign('SOCIAL_BUTTONS', $socialbuttons);
 $tpl->assign('GCONFIG', $global_config);
+$tpl->assign('SCHEMA_TYPES', $schema_types);
+$tpl->assign('SCHEMA_ABOUTS', $schema_abouts);
 
 $contents = $tpl->fetch('config.tpl');
 

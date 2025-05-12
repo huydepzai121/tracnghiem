@@ -77,3 +77,7 @@ $lang_module['htmlcontent'] = 'Enter to block content';
 $lang_module['term_name'] = 'Page name';
 $lang_module['term_query'] = 'Page URL';
 $lang_module['links'] = 'Links';
+$lang_module['config_common'] = 'Common configurations';
+$lang_module['config_dpost'] = 'Default post configurations';
+$lang_module['schema_type'] = 'Structured data type';
+$lang_module['schema_about'] = 'Write about';

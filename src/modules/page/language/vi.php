@@ -77,3 +77,7 @@ $lang_module['htmlcontent'] = 'Nhập nội dung cho block';
 $lang_module['term_name'] = 'Tên của trang';
 $lang_module['term_query'] = 'URL của trang';
 $lang_module['links'] = 'Các liên kết';
+$lang_module['config_common'] = 'Các cấu hình chung';
+$lang_module['config_dpost'] = 'Cấu hình đăng bài mặc định';
+$lang_module['schema_type'] = 'Loại dữ liệu có cấu trúc';
+$lang_module['schema_about'] = 'Viết về';

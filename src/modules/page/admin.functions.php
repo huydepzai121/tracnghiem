@@ -41,3 +41,5 @@ $page_config = [];
 foreach ($list as $values) {
     $page_config[$values['config_name']] = $values['config_value'];
 }
+
+require NV_ROOTDIR . '/modules/' . $module_file . '/global.functions.php';

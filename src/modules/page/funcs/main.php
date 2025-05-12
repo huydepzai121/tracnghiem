@@ -26,6 +26,30 @@ if ($page_config['viewtype'] == 2) {
     $page_url .= '&amp;' . NV_OP_VARIABLE . '=' . $rowdetail['alias'] . $global_config['rewrite_exturl'];
     $canonicalUrl = getCanonicalUrl($page_url, true);
 
+    $rowdetail['number_add_time'] = $rowdetail['add_time'];
+    $rowdetail['number_edit_time'] = $rowdetail['edit_time'] ?: $rowdetail['add_time'];
+
+    $schema = [
+        '@context' => 'https://schema.org',
+        '@type' => $schema_types[$rowdetail['schema_type']] ?? 'Article',
+        'description' => strip_tags($rowdetail['description']) ?: $rowdetail['title'],
+    ];
+    $is_webpage = $rowdetail['schema_type'] == 'webpage' ? true : false;
+    if ($is_webpage) {
+        $schema['name'] = $rowdetail['title'];
+        $schema['inLanguage'] = NV_LANG_DATA;
+        $schema['about'] = [
+            '@type' => 'Thing',
+            'name' => $rowdetail['schema_about'] ?: 'Organization',
+        ];
+        $schema['url'] = $canonicalUrl;
+    } else {
+        $schema['headline'] = $rowdetail['title'];
+        $schema['mainEntityOfPage'] = $canonicalUrl;
+        $schema['datePublished'] = date('c', $rowdetail['number_add_time']);
+        $schema['dateModified'] = date('c', $rowdetail['number_edit_time']);
+    }
+
     if (!empty($rowdetail['image'])) {
         if (!nv_is_url($rowdetail['image'])) {
             $imagesize = @getimagesize(NV_UPLOADS_REAL_DIR . '/' . $module_upload . '/' . $rowdetail['image']);
@@ -35,6 +59,10 @@ if ($page_config['viewtype'] == 2) {
             $meta_property['og:image:width'] = $imagesize[0];
             $meta_property['og:image:height'] = $imagesize[1];
             $meta_property['og:image:alt'] = !empty($rowdetail['imagealt']) ? $rowdetail['imagealt'] : $rowdetail['title'];
+            !$is_webpage && $schema['image'] = [
+                '@type' => 'ImageObject',
+                'url' => $meta_property['og:image']
+            ];
 
             $srcset = '';
             if (file_exists(NV_ROOTDIR . '/' . NV_MOBILE_FILES_DIR . '/' . $module_upload . '/' . $rowdetail['image'])) {
@@ -61,11 +89,28 @@ if ($page_config['viewtype'] == 2) {
                 'srcset' => '',
                 'width' => 500
             ];
+            !$is_webpage && $schema['image'] = [
+                '@type' => 'ImageObject',
+                'url' => $rowdetail['image']
+            ];
         }
     }
 
-    $rowdetail['number_add_time'] = $rowdetail['add_time'];
-    $rowdetail['number_edit_time'] = $rowdetail['edit_time'] ?: $rowdetail['add_time'];
+    $schema_org = [
+        '@type' => 'Organization',
+        'name' => $global_config['site_name'],
+        'url' => NV_MY_DOMAIN,
+    ];
+    if (!empty($global_config['site_logo'])) {
+        $schema_org['logo'] = [
+            '@type' => 'ImageObject',
+            'url' => NV_MY_DOMAIN . NV_BASE_SITEURL . $global_config['site_logo']
+        ];
+    }
+
+    $rowdetail['schema_type'] != 'BlogPosting' && $schema['publisher'] = $schema_org;
+    !$is_webpage && $schema['author'] = $schema_org;
+
     $rowdetail['add_time'] = nv_datetime_format($rowdetail['add_time'], 1, 0);
     $rowdetail['edit_time'] = nv_datetime_format($rowdetail['edit_time'], 1, 0);
     $rowdetail['link'] = $canonicalUrl;
@@ -131,6 +176,8 @@ if ($page_config['viewtype'] == 2) {
         $db->query($query);
     }
     [$rowdetail, $other_links, $content_comment] = nv_apply_hook($module_name, 'before_detail_theme', [$rowdetail, $other_links, $content_comment], [$rowdetail, $other_links, $content_comment]);
+    $nv_schemas[] = $schema;
+
     $contents = nv_page_main($rowdetail, $other_links, $content_comment);
 } else {
     // Xem theo danh sách

@@ -40,6 +40,8 @@ $sql_create_module[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . '_
  status tinyint(1) unsigned NOT NULL DEFAULT '0',
  hitstotal MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
  hot_post TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+ schema_type varchar(20) NOT NULL DEFAULT 'article' COMMENT 'Dữ liệu có cấu trúc của bài viết',
+ schema_about varchar(50) NOT NULL DEFAULT 'Organization' COMMENT 'Trang viết về gì nếu dữ liệu có cấu trúc là WebPage',
  PRIMARY KEY (id),
  UNIQUE KEY alias (alias)
 ) ENGINE=MyISAM";
@@ -51,6 +53,8 @@ $sql_create_module[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $lang . '_
 )ENGINE=MyISAM';
 
 $sql_create_module[] = 'INSERT INTO ' . $db_config['prefix'] . '_' . $lang . '_' . $module_data . "_config VALUES
+('schema_type', 'article'),
+('schema_about', 'organization'),
 ('viewtype', '0'),
 ('facebookapi', ''),
 ('per_page', '20'),

@@ -85,6 +85,15 @@ if ($nv_Request->get_int('save', 'post') == '1') {
     $_groups_post = $nv_Request->get_array('activecomm', 'post', []);
     $row['activecomm'] = !empty($_groups_post) ? implode(',', nv_groups_post(array_intersect($_groups_post, array_keys($groups_list)))) : '';
 
+    $row['schema_type'] = $nv_Request->get_title('schema_type', 'post', '');
+    $row['schema_about'] = nv_substr($nv_Request->get_title('schema_about', 'post', ''), 0, 50);
+    if (!array_key_exists($row['schema_type'], $schema_types)) {
+        $row['schema_type'] = 'newsarticle';
+    }
+    if ($row['schema_type'] == 'webpage' and empty($row['schema_about'])) {
+        $row['schema_about'] = 'Organization';
+    }
+
     // Kiểm tra trùng
     $sql = 'SELECT id FROM ' . NV_PREFIXLANG . '_' . $module_data . ' WHERE alias=' . $db->quote($row['alias']);
     if ($id and !$copy) {
@@ -116,7 +125,8 @@ if ($nv_Request->get_int('save', 'post') == '1') {
                 imageposition = :imageposition, description = :description,
                 bodytext = :bodytext, keywords = :keywords, socialbutton = :socialbutton,
                 activecomm = :activecomm, layout_func = :layout_func,
-                edit_time = ' . NV_CURRENTTIME . ', hot_post = :hot_post
+                edit_time = ' . NV_CURRENTTIME . ', hot_post = :hot_post, schema_type=:schema_type,
+                schema_about=:schema_about
             WHERE id =' . $id;
         } else {
             if ($page_config['news_first']) {
@@ -128,11 +138,13 @@ if ($nv_Request->get_int('save', 'post') == '1') {
 
             $_sql = 'INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . ' (
                 title, alias, image, imagealt, imageposition, description, bodytext, keywords,
-                socialbutton, activecomm, layout_func, weight,admin_id, add_time, edit_time, status,hot_post
+                socialbutton, activecomm, layout_func, weight,admin_id, add_time, edit_time, status, hot_post,
+                schema_type, schema_about
             ) VALUES (
                 :title, :alias, :image, :imagealt, :imageposition, :description, :bodytext,
                 :keywords, :socialbutton, :activecomm, :layout_func, ' . $weight . ',
-                ' . $admin_info['admin_id'] . ', ' . NV_CURRENTTIME . ', ' . NV_CURRENTTIME . ', 1, :hot_post
+                ' . $admin_info['admin_id'] . ', ' . NV_CURRENTTIME . ', ' . NV_CURRENTTIME . ', 1, :hot_post,
+                :schema_type, :schema_about
             )';
         }
 
@@ -150,6 +162,8 @@ if ($nv_Request->get_int('save', 'post') == '1') {
             $sth->bindParam(':activecomm', $row['activecomm'], PDO::PARAM_INT);
             $sth->bindParam(':layout_func', $row['layout_func'], PDO::PARAM_STR);
             $sth->bindParam(':hot_post', $row['hot_post'], PDO::PARAM_INT);
+            $sth->bindParam(':schema_type', $row['schema_type'], PDO::PARAM_STR);
+            $sth->bindParam(':schema_about', $row['schema_about'], PDO::PARAM_STR);
             $sth->execute();
 
             if ($sth->rowCount()) {
@@ -184,6 +198,8 @@ if ($nv_Request->get_int('save', 'post') == '1') {
     $row['activecomm'] = $module_config[$module_name]['setcomm'];
     $row['socialbutton'] = 1;
     $row['hot_post'] = 0;
+    $row['schema_type'] = $page_config['schema_type'];
+    $row['schema_about'] = $schema_abouts[$page_config['schema_about']] ?? 'Organization';
 }
 
 if (defined('NV_EDITOR')) {
@@ -251,6 +267,17 @@ foreach ($array_imgposition as $id_imgposition => $title_imgposition) {
     $xtpl->assign('posl', $sl);
     $xtpl->parse('main.looppos');
 }
+
+// Xuất loại dữ liệu có cấu trúc
+foreach ($schema_types as $key => $value) {
+    $xtpl->assign('SCHEMA_TYPE', [
+        'key' => $key,
+        'title' => $value,
+        'selected' => ($row['schema_type'] == $key) ? ' selected' : ''
+    ]);
+    $xtpl->parse('main.schema_type');
+}
+$xtpl->assign('SCHEMA_ABOUT', $row['schema_type'] == 'webpage' ? '' : ' hidden');
 
 if ($error) {
     $xtpl->assign('ERROR', $error);

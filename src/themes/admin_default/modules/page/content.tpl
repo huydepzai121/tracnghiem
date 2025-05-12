@@ -109,6 +109,26 @@
                             </div><!-- END: activecomm -->
                         </td>
                     </tr>
+                    <tr>
+                        <td>{LANG.schema_type}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select name="schema_type" id="content_schema_type" class="form-control">
+                                <!-- BEGIN: schema_type -->
+                                <option value="{SCHEMA_TYPE.key}"{SCHEMA_TYPE.selected}>{SCHEMA_TYPE.title}</option>
+                                <!-- END: schema_type -->
+                            </select>
+                        </td>
+                    </tr>
+                    <tr data-toggle="content_schema_about" class="{SCHEMA_ABOUT}">
+                        <td>{LANG.schema_about}</td>
+                    </tr>
+                    <tr data-toggle="content_schema_about" class="{SCHEMA_ABOUT}">
+                        <td>
+                            <input class="form-control" type="text" value="{DATA.schema_about}" name="schema_about" maxlength="50">
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

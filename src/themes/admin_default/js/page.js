@@ -63,3 +63,14 @@ function get_alias(id) {
     }
     return false;
 }
+
+$(function() {
+    // Ẩn hiện ô schema about tuỳ theo schema type lúc viết bài
+    $('#content_schema_type').on('change', function() {
+        if ($(this).val() == 'webpage') {
+            $('[data-toggle="content_schema_about"]').removeClass('hidden');
+        } else {
+            $('[data-toggle="content_schema_about"]').addClass('hidden');
+        }
+    });
+});

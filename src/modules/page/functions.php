@@ -23,6 +23,8 @@ foreach ($list as $values) {
     $page_config[$values['config_name']] = $values['config_value'];
 }
 
+require NV_ROOTDIR . '/modules/' . $module_file . '/global.functions.php';
+
 $base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
 $id = 0;
 $page = 1;
