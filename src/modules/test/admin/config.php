@@ -14,6 +14,47 @@ if (!defined('NV_IS_FILE_ADMIN')) {
 $page_title = $nv_Lang->getModule('config');
 $groups_list = nv_test_groups_list();
 
+// Khởi tạo config mặc định nếu chưa có
+$default_config = array(
+    'enable_social' => 1,
+    'enable_editor' => 1,
+    'homewidth' => 400,
+    'homeheight' => 300,
+    'tags_alias_lower' => 0,
+    'tags_alias' => 0,
+    'auto_tags' => 0,
+    'tags_remind' => 0,
+    'structure_upload' => 'Ym',
+    'indexfile' => 0,
+    'st_links' => 5,
+    'per_page' => 15,
+    'imgposition' => 0,
+    'showhometext' => 0,
+    'examp_template' => 0,
+    'sample_deleted' => 0,
+    'preview_question' => 0,
+    'config_source' => 0,
+    'order_exams' => 0,
+    'oaid' => '',
+    'alert_type' => 0,
+    'allow_del_history' => 0,
+    'allow_question_point' => 0,
+    'config_history_user_common' => 0,
+    'block_copy_paste' => 0,
+    'payment' => '',
+    'top_content_exam' => '',
+    'allow_question_type' => '1,2,3,4',
+    'groups_use' => '',
+    'no_image' => ''
+);
+
+// Merge với config hiện tại, ưu tiên config đã có
+foreach ($default_config as $key => $default_value) {
+    if (!isset($array_config[$key])) {
+        $array_config[$key] = $default_value;
+    }
+}
+
 $data = array();
 if ($nv_Request->isset_request('savesetting', 'post')) {
     $data['enable_social'] = $nv_Request->get_int('enable_social', 'post');
@@ -59,19 +100,20 @@ if ($nv_Request->isset_request('savesetting', 'post')) {
         $data['no_image'] = '';
     }
 
-    $sth = $db->prepare("UPDATE " . NV_CONFIG_GLOBALTABLE . " SET config_value = :config_value WHERE lang = '" . NV_LANG_DATA . "' AND module = :module_name AND config_name = :config_name");
-    $sth->bindParam(':module_name', $module_name, PDO::PARAM_STR);
+    $replace_sql = "REPLACE INTO " . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES ('" . NV_LANG_DATA . "', :module_name, :config_name, :config_value)";
+    $replace_sth = $db->prepare($replace_sql);
+    $replace_sth->bindParam(':module_name', $module_name, PDO::PARAM_STR);
+
     foreach ($data as $config_name => $config_value) {
-        $sth->bindParam(':config_name', $config_name, PDO::PARAM_STR);
-        $sth->bindParam(':config_value', $config_value, PDO::PARAM_STR);
-        $sth->execute();
+        $replace_sth->bindParam(':config_name', $config_name, PDO::PARAM_STR);
+        $replace_sth->bindParam(':config_value', $config_value, PDO::PARAM_STR);
+        $replace_sth->execute();
     }
 
     nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('config'), "Config", $admin_info['userid']);
     $nv_Cache->delMod('settings');
 
-    Header("Location: " . NV_BASE_ADMINURL . "index.php?" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . '=' . $op);
-    die();
+    nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . '=' . $op);
 }
 
 $array_config['ck_enable_social'] = $array_config['enable_social'] ? 'checked="checked"' : '';

@@ -406,9 +406,7 @@
     </div>
 
     <div class="text-center mb-4">
-        <button type="submit" class="btn btn-primary btn-lg px-5" name="savesetting">
-            <i class="fas fa-save me-2"></i>{LANG.save}
-        </button>
+        <input type="submit" class="btn btn-primary" name="savesetting" value="{LANG.save}" />
     </div>
 </form>
 <script type="text/javascript">
@@ -421,19 +419,6 @@ $(document).ready(function() {
         var type = "image";
         nv_open_browse(script_name + "?" + nv_name_variable + "=upload&popup=1&area=" + area + "&path=" + path + "&type=" + type + "&currentpath=" + currentpath, "NVImg", 850, 420, "resizable=no,scrollbars=no,toolbar=no,location=no,status=no");
         return false;
-    });
-
-    // Enhanced form submission with loading state
-    $('form').on('submit', function() {
-        var $btn = $(this).find('button[type="submit"]');
-        var originalText = $btn.html();
-
-        // Show loading state
-        $btn.prop('disabled', true)
-            .html('<i class="fas fa-spinner fa-spin me-2"></i>Đang lưu...');
-
-        // Allow form to submit normally
-        return true;
     });
 
     // Enhanced switch toggles with visual feedback
