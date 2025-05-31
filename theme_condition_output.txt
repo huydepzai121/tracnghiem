@@ -1,0 +1,7 @@
+// Điều kiện theme cho module test
+// Tạo tự động từ 62 file PHP
+// Ngày tạo: 2025-05-30 16:04:05
+
+if (($module_info['module_file'] ?? '') == 'test' and in_array($op, ['addtotopics', 'admins', 'ajax', 'bank', 'bank_list', 'block', 'cat', 'chang_block_cat', 'change_block', 'change_cat', 'change_topic', 'config', 'del_topic', 'detail', 'econtent', 'exam-subject', 'examinations', 'examinations-content', 'exams', 'exams-config', 'exams-config-content', 'exams-config-content-bank', 'exams-content', 'exams_bank', 'exams_bank_cats', 'exams_bank_chap', 'exams_bank_class', 'exams_bank_content', 'exams_bank_mon_hoc', 'groups', 'history', 'history-view', 'list_block', 'list_block_cat', 'list_topic', 'main', 'merge-exams', 'publtime', 'question', 'question-content', 'question-list', 'questionexcel', 'questionword', 'random_exam', 'random_exam_content', 'random_question', 'random_question_content', 'rating', 'result_exam', 'search_questions', 'sendapprov', 'sources', 'statistics_testing', 'tags', 'tagsajax', 'theme', 'topicajax', 'topicdelnews', 'topics', 'topicsnews', 'update-bank-cat', 'view'])) {
+        return $new_theme;
+    }

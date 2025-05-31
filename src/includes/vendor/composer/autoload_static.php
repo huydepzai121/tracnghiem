@@ -16,6 +16,7 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
         '09f6b20656683369174dd6fa83b7e5fb' => __DIR__ . '/..' . '/symfony/polyfill-uuid/bootstrap.php',
+        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '2203a247e6fda86070a5e4e07aed533a' => __DIR__ . '/..' . '/symfony/clock/Resources/now.php',
         'c15d4a1253e33e055d05e547c61dcb71' => __DIR__ . '/..' . '/smarty/smarty/src/functions.php',
@@ -29,6 +30,7 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
         ),
         'Z' => 
         array (
+            'ZipStream\\' => 10,
             'Zalo\\' => 5,
         ),
         'W' => 
@@ -57,12 +59,15 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
         ),
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
             'Psr\\EventDispatcher\\' => 20,
             'Psr\\Container\\' => 14,
             'Psr\\Clock\\' => 10,
+            'PhpOffice\\PhpWord\\' => 18,
+            'PhpOffice\\PhpSpreadsheet\\' => 25,
             'ParagonIE\\ConstantTime\\' => 23,
             'PHPStan\\PhpDocParser\\' => 21,
             'PHPMailer\\PHPMailer\\' => 20,
@@ -74,9 +79,14 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
             'NukeViet\\Api\\' => 13,
             'NukeViet\\' => 9,
         ),
+        'M' => 
+        array (
+            'Matrix\\' => 7,
+        ),
         'L' => 
         array (
             'League\\OAuth2\\Client\\' => 21,
+            'Laminas\\Escaper\\' => 16,
         ),
         'G' => 
         array (
@@ -91,6 +101,8 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
         'C' => 
         array (
             'Cose\\' => 5,
+            'Composer\\Pcre\\' => 14,
+            'Complex\\' => 8,
             'Com\\Tecnick\\Color\\' => 18,
             'Com\\Tecnick\\Barcode\\' => 20,
             'CBOR\\' => 5,
@@ -104,9 +116,13 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
     public static $prefixDirsPsr4 = array (
         'phpDocumentor\\Reflection\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+        ),
+        'ZipStream\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
         ),
         'Zalo\\' => 
         array (
@@ -184,6 +200,10 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
         array (
             0 => __DIR__ . '/..' . '/smarty/smarty/src',
         ),
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
@@ -208,6 +228,14 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
         'Psr\\Clock\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/clock/src',
+        ),
+        'PhpOffice\\PhpWord\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpoffice/phpword/src/PhpWord',
+        ),
+        'PhpOffice\\PhpSpreadsheet\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
         ),
         'ParagonIE\\ConstantTime\\' => 
         array (
@@ -237,9 +265,17 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
         array (
             0 => __DIR__ . '/..' . '/vinades/nukeviet',
         ),
+        'Matrix\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/markbaker/matrix/classes/src',
+        ),
         'League\\OAuth2\\Client\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/oauth2-client/src',
+        ),
+        'Laminas\\Escaper\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-escaper/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -261,6 +297,14 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
         array (
             0 => __DIR__ . '/..' . '/web-auth/cose-lib/src',
         ),
+        'Composer\\Pcre\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/pcre/src',
+        ),
+        'Complex\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
+        ),
         'Com\\Tecnick\\Color\\' => 
         array (
             0 => __DIR__ . '/..' . '/tecnickcom/tc-lib-color/src',
@@ -276,6 +320,16 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
         'Brick\\Math\\' => 
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'H' => 
+        array (
+            'HTMLPurifier' => 
+            array (
+                0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
+            ),
         ),
     );
 
@@ -301,6 +355,7 @@ class ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitc9c15c1354161bfabc370743d4a6d93f::$classMap;
 
         }, null, ClassLoader::class);

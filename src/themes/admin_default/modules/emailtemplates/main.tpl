@@ -32,7 +32,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-xs-24 col-sm-24 col-lg-8">
+        <div class="col-xs-24 col-sm-24 col-lg-12">
             <div class="form-group">
                 <label class="visible-lg-block">&nbsp;</label>
                 <button class="btn btn-primary" type="submit">

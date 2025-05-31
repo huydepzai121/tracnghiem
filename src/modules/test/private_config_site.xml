@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Theo yêu cầu của Phạm Đức Tiến tại issue: https://vinades.org/dauthau/dauthau.info/-/issues/864#note_27492
+ Bỏ nội dung "Thông tin quan tâm" và "Đối tượng" ở cột bên trái khi vào làm bài thi
+ Cần tạo một biến cấu hình riêng để xử lý riêng cho từng site khác nhau
+ Thông tin ở file này sẽ được lấy ở file site.function.php
+ config_user_view: những field của user được hiện thị ở khung phần thi
+ detail_share_now: hiện/ ẩn nút share ở detail không
+ detail_comment_view: hiện/ ẩn nút comment ở detail không
+-->
+<private_config_site>
+    <config_user_view>gender</config_user_view>
+    <config_user_view>phone</config_user_view>
+    <config_user_view>mst</config_user_view>
+    <detail_share_now>0</detail_share_now>
+    <detail_comment_view>0</detail_comment_view>
+</private_config_site>
