@@ -94,8 +94,8 @@ if (!empty($array_config['payment']) && isset($array_config['payment'])) {
  */
 function nv_link_edit_page($id)
 {
-    global $lang_global, $module_name, $client_info;
-    $link = "<a class=\"btn btn-default btn-xs btn_edit\" href=\"" . NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=exams-content&amp;id=" . $id . "&amp;redirect=" . nv_redirect_encrypt($client_info['selfurl']) . "\" data-toggle=\"tooltip\" data-original-title=\"" . $lang_global['edit'] . "\"><em class=\"fa fa-edit\"></em></a>";
+    global $nv_Lang, $module_name, $client_info;
+    $link = "<a class=\"btn btn-default btn-xs btn_edit\" href=\"" . NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=exams-content&amp;id=" . $id . "&amp;redirect=" . nv_redirect_encrypt($client_info['selfurl']) . "\" data-toggle=\"tooltip\" data-original-title=\"" . $nv_Lang->getGlobal('edit') . "\"><em class=\"fa fa-edit\"></em></a>";
     return $link;
 }
 
@@ -107,8 +107,8 @@ function nv_link_edit_page($id)
  */
 function nv_link_delete_page($id)
 {
-    global $lang_global, $module_name, $client_info, $op;
-    $link = "<a class=\"btn btn-danger btn-xs\" href=\"" . NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;delete_id=' . $id . '&amp;delete_checkss=' . md5($id . NV_CACHE_PREFIX . $client_info['session_id']) . '&amp;redirect=' . nv_redirect_encrypt($client_info['selfurl']) . "\" onclick=\"return confirm(nv_is_del_confirm[0]);\" data-toggle=\"tooltip\" data-original-title=\"" . $lang_global['delete'] . "\"><em class=\"fa fa-trash-o\"></em></a>";
+    global $nv_Lang, $module_name, $client_info, $op;
+    $link = "<a class=\"btn btn-danger btn-xs\" href=\"" . NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;delete_id=' . $id . '&amp;delete_checkss=' . md5($id . NV_CACHE_PREFIX . $client_info['session_id']) . '&amp;redirect=' . nv_redirect_encrypt($client_info['selfurl']) . "\" onclick=\"return confirm(nv_is_del_confirm[0]);\" data-toggle=\"tooltip\" data-original-title=\"" . $nv_Lang->getGlobal('delete') . "\"><em class=\"fa fa-trash-o\"></em></a>";
     return $link;
 }
 

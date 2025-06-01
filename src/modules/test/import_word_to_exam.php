@@ -39,7 +39,7 @@ class import_word_to_exam
         if ( extension_loaded( 'imagick' )) {
             $this->imagick = new \Imagick();
         }
-        $this->lang_module = $nv_Lang;
+        $this->nv_Lang = $nv_Lang;
         $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
         $this->randon_file_name = substr(str_shuffle($permitted_chars), 0, 10);
         for ($i = 65; $i < 65 + 26; $i++) {

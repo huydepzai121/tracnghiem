@@ -139,7 +139,7 @@ class ck_editor_word
      
     );
 
-    // public $tableStyle = array();
+    public $tableStyle = array();
 
     public $table_map = array(
         'background-color' => 'bgColor',
