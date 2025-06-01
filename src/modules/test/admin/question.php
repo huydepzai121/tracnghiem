@@ -293,7 +293,7 @@ if (!empty($cr_question)) {
     $xtpl->assign('cr_number', $cr_number);
     $xtpl->parse('main.load_question');
 }
-$nv_Lang->getModule('exams_question') = sprintf($nv_Lang->getModule('exams_question'), $exams_info['title']);
+$nv_Lang->setModule('exams_question', sprintf($nv_Lang->getModule('exams_question'), $exams_info['title']));
 
 $xtpl->parse('main');
 $contents = $xtpl->text('main');

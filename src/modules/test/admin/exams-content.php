@@ -22,17 +22,14 @@ if ($nv_Request->isset_request('clone_id', 'get')) {
     if (!empty($id) && $input_question != 4) {
         $exam_id = clone_exam($id);
         if (!empty($exam_id)) {
-            Header('Location: ' . NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&id=' . $exam_id . '&clone_success=1');
-            die();
+            nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=exams');
         }
-        Header('Location: ' . NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=exams');
-        die();
     }
 }
 if ($nv_Request->isset_request('download_word', 'get')) {
     $exam_id = $nv_Request->get_int('download_word', 'get', 0);
     export_word_from_exam($exam_id);
-    die();
+    nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=exams');
 }
 
 /*
@@ -732,180 +729,176 @@ if ($nv_Request->isset_request('submit', 'post')) {
         }
     }
 
-    if ($new_id > 0) {
+        if ($new_id > 0) {
 
-        if (empty($row['id'])) {
-            if ($row['input_question'] == 2) {
-                // thêm câu hỏi vào bảng exams_question
-                $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_exams_question (examsid, questionid) VALUES(:examsid, :questionid)');
-                foreach ($row['question_list'] as $questionid) {
-                    $sth->bindParam(':examsid', $new_id, PDO::PARAM_INT);
-                    $sth->bindParam(':questionid', $questionid, PDO::PARAM_INT);
-                    $sth->execute();
+            if (empty($row['id'])) {
+                if ($row['input_question'] == 2) {
+                    // thêm câu hỏi vào bảng exams_question
+                    $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_exams_question (examsid, questionid) VALUES(:examsid, :questionid)');
+                    foreach ($row['question_list'] as $questionid) {
+                        $sth->bindParam(':examsid', $new_id, PDO::PARAM_INT);
+                        $sth->bindParam(':questionid', $questionid, PDO::PARAM_INT);
+                        $sth->execute();
+                    }
+                    //chức năng thống kê lượt sử dụng câu hỏi
+                    $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_question SET total_use= total_use+1 WHERE id = :questionid');
+                    foreach ($row['question_list'] as $questionid) {
+                        $sth->bindParam(':questionid', $questionid, PDO::PARAM_INT);
+                        $sth->execute();
+                    }
                 }
-                //chức năng thống kê lượt sử dụng câu hỏi
-                $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_question SET total_use= total_use+1 WHERE id = :questionid');
-                foreach ($row['question_list'] as $questionid) {
-                    $sth->bindParam(':questionid', $questionid, PDO::PARAM_INT);
-                    $sth->execute();
+
+                if ($row['input_question'] == 4) {
+                    // Copy các câu hỏi
+                    $arr_question = array();
+                    $result = $db->query('SELECT examid, typeid, bank_type, title, useguide, type, answer, note, weight, answer_style, count_true, max_answerid, generaltext, answer_editor, answer_editor_type, answer_fixed, point, addtime, userid FROM ' . $db_config['dbsystem'] . '.' .  NV_PREFIXLANG . '_' . $module_data . '_exams_bank_question where examid=' . $row['bankExam']);
+                    while ($item_question = $result->fetch(2)) {
+                        $arr_question[] = $item_question;
+                    }
+                    $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_question (examid, typeid, bank_type, title, useguide, type, answer, note, weight, answer_style, count_true, max_answerid, generaltext, answer_editor, answer_editor_type, answer_fixed, point, addtime,edittime, userid) VALUES (:examid, :typeid, :bank_type, :title, :useguide, :type, :answer, :note, :weight, :answer_style, :count_true, :max_answerid, :generaltext, :answer_editor, :answer_editor_type, :answer_fixed, :point, :addtime, :edittime, :userid)');
+
+                    foreach ($arr_question as $item_question) {
+                        $sth->bindValue(':examid', $new_id);
+                        $sth->bindValue(':typeid', $item_question['typeid'], PDO::PARAM_INT);
+                        $sth->bindValue(':bank_type', $item_question['bank_type'], PDO::PARAM_INT);
+                        $sth->bindValue(':title', $item_question['title']);
+                        $sth->bindValue(':useguide', $item_question['useguide']);
+                        $sth->bindValue(':type', $item_question['type'], PDO::PARAM_INT);
+                        $sth->bindValue(':answer', $item_question['answer']);
+                        $sth->bindValue(':note', $item_question['note']);
+                        $sth->bindValue(':weight', $item_question['weight'], PDO::PARAM_INT);
+                        $sth->bindValue(':answer_style', $item_question['answer_style']);
+                        $sth->bindValue(':count_true', $item_question['count_true']);
+                        $sth->bindValue(':max_answerid', $item_question['max_answerid']);
+                        $sth->bindValue(':generaltext', $item_question['generaltext']);
+                        $sth->bindValue(':answer_editor', $item_question['answer_editor']);
+                        $sth->bindValue(':answer_editor_type', $item_question['answer_editor_type']);
+                        $sth->bindValue(':answer_fixed', $item_question['answer_fixed']);
+                        $sth->bindValue(':point', $item_question['point'], PDO::PARAM_INT);
+                        $sth->bindValue(':addtime', $item_question['addtime'], PDO::PARAM_INT);
+                        $sth->bindValue(':edittime', NV_CURRENTTIME, PDO::PARAM_INT);
+                        $sth->bindValue(':userid', $item_question['userid'], PDO::PARAM_INT);
+                        $sth->execute();
+                    }
+                    // thêm câu hỏi vào bảng exams_question
+                    $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_exams_question (examsid, questionid) VALUES(:examsid, :questionid)');
+                    $row['question_list'] = explode(',', $row['question_list']);
+                    foreach ($row['question_list'] as $questionid) {
+                        $sth->bindParam(':examsid', $new_id, PDO::PARAM_INT);
+                        $sth->bindParam(':questionid', $questionid, PDO::PARAM_INT);
+                        $sth->execute();
+                    }
+                    nv_exam_question_status($new_id);
                 }
             }
 
-            if ($row['input_question'] == 4) {
-                // Copy các câu hỏi
-                $arr_question = array();
-                $result = $db->query('SELECT examid, typeid, bank_type, title, useguide, type, answer, note, weight, answer_style, count_true, max_answerid, generaltext, answer_editor, answer_editor_type, answer_fixed, point, addtime, userid FROM ' . $db_config['dbsystem'] . '.' .  NV_PREFIXLANG . '_' . $module_data . '_exams_bank_question where examid=' . $row['bankExam']);
-                while ($item_question = $result->fetch(2)) {
-                    $arr_question[] = $item_question;
-                }
-                $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_question (examid, typeid, bank_type, title, useguide, type, answer, note, weight, answer_style, count_true, max_answerid, generaltext, answer_editor, answer_editor_type, answer_fixed, point, addtime,edittime, userid) VALUES (:examid, :typeid, :bank_type, :title, :useguide, :type, :answer, :note, :weight, :answer_style, :count_true, :max_answerid, :generaltext, :answer_editor, :answer_editor_type, :answer_fixed, :point, :addtime, :edittime, :userid)');
+            // Cap nhat tu khoa
+            if ($row['keywords'] != $row['keywords_old']) {
+                $keywords = explode(',', $row['keywords']);
+                $keywords = array_map('strip_punctuation', $keywords);
+                $keywords = array_map('trim', $keywords);
+                $keywords = array_diff($keywords, array(
+                    ''
+                ));
+                $keywords = array_unique($keywords);
 
-                foreach ($arr_question as $item_question) {
-                    $sth->bindValue(':examid', $new_id);
-                    $sth->bindValue(':typeid', $item_question['typeid'], PDO::PARAM_INT);
-                    $sth->bindValue(':bank_type', $item_question['bank_type'], PDO::PARAM_INT);
-                    $sth->bindValue(':title', $item_question['title']);
-                    $sth->bindValue(':useguide', $item_question['useguide']);
-                    $sth->bindValue(':type', $item_question['type'], PDO::PARAM_INT);
-                    $sth->bindValue(':answer', $item_question['answer']);
-                    $sth->bindValue(':note', $item_question['note']);
-                    $sth->bindValue(':weight', $item_question['weight'], PDO::PARAM_INT);
-                    $sth->bindValue(':answer_style', $item_question['answer_style']);
-                    $sth->bindValue(':count_true', $item_question['count_true']);
-                    $sth->bindValue(':max_answerid', $item_question['max_answerid']);
-                    $sth->bindValue(':generaltext', $item_question['generaltext']);
-                    $sth->bindValue(':answer_editor', $item_question['answer_editor']);
-                    $sth->bindValue(':answer_editor_type', $item_question['answer_editor_type']);
-                    $sth->bindValue(':answer_fixed', $item_question['answer_fixed']);
-                    $sth->bindValue(':point', $item_question['point'], PDO::PARAM_INT);
-                    $sth->bindValue(':addtime', $item_question['addtime'], PDO::PARAM_INT);
-                    $sth->bindValue(':edittime', NV_CURRENTTIME, PDO::PARAM_INT);
-                    $sth->bindValue(':userid', $item_question['userid'], PDO::PARAM_INT);
-                    $sth->execute();
-                }
-                // thêm câu hỏi vào bảng exams_question
-                $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_exams_question (examsid, questionid) VALUES(:examsid, :questionid)');
-                $row['question_list'] = explode(',', $row['question_list']);
-                foreach ($row['question_list'] as $questionid) {
-                    $sth->bindParam(':examsid', $new_id, PDO::PARAM_INT);
-                    $sth->bindParam(':questionid', $questionid, PDO::PARAM_INT);
-                    $sth->execute();
-                }
-                nv_exam_question_status($new_id);
-            }
-        }
+                foreach ($keywords as $keyword) {
+                    $keyword = str_replace('&', ' ', $keyword);
+                    if (!in_array($keyword, $array_keywords_old)) {
+                        $alias_i = ($array_config['tags_alias']) ? change_alias($keyword) : str_replace(' ', '-', $keyword);
+                        $alias_i = nv_strtolower($alias_i);
+                        $sth = $db->prepare('SELECT tid, alias, description, keywords FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags where alias= :alias OR FIND_IN_SET(:keyword, keywords)>0');
+                        $sth->bindParam(':alias', $alias_i, PDO::PARAM_STR);
+                        $sth->bindParam(':keyword', $keyword, PDO::PARAM_STR);
+                        $sth->execute();
 
-        // Cap nhat tu khoa
-        if ($row['keywords'] != $row['keywords_old']) {
-            $keywords = explode(',', $row['keywords']);
-            $keywords = array_map('strip_punctuation', $keywords);
-            $keywords = array_map('trim', $keywords);
-            $keywords = array_diff($keywords, array(
-                ''
-            ));
-            $keywords = array_unique($keywords);
+                        list($tid, $alias, $keywords_i) = $sth->fetch(3);
+                        if (empty($tid)) {
+                            $array_insert = array();
+                            $array_insert['alias'] = $alias_i;
+                            $array_insert['keyword'] = $keyword;
 
-            foreach ($keywords as $keyword) {
-                $keyword = str_replace('&', ' ', $keyword);
-                if (!in_array($keyword, $array_keywords_old)) {
-                    $alias_i = ($array_config['tags_alias']) ? change_alias($keyword) : str_replace(' ', '-', $keyword);
-                    $alias_i = nv_strtolower($alias_i);
-                    $sth = $db->prepare('SELECT tid, alias, description, keywords FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags where alias= :alias OR FIND_IN_SET(:keyword, keywords)>0');
-                    $sth->bindParam(':alias', $alias_i, PDO::PARAM_STR);
-                    $sth->bindParam(':keyword', $keyword, PDO::PARAM_STR);
-                    $sth->execute();
-
-                    list($tid, $alias, $keywords_i) = $sth->fetch(3);
-                    if (empty($tid)) {
-                        $array_insert = array();
-                        $array_insert['alias'] = $alias_i;
-                        $array_insert['keyword'] = $keyword;
-
-                        $tid = $db->insert_id("INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_tags (numnews, alias, description, image, keywords) VALUES (1, :alias, '', '', :keyword)", "tid", $array_insert);
-                    } else {
-                        if ($alias != $alias_i) {
-                            if (!empty($keywords_i)) {
-                                $keyword_arr = explode(',', $keywords_i);
-                                $keyword_arr[] = $keyword;
-                                $keywords_i2 = implode(',', array_unique($keyword_arr));
-                            } else {
-                                $keywords_i2 = $keyword;
+                            $tid = $db->insert_id("INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_tags (numnews, alias, description, image, keywords) VALUES (1, :alias, '', '', :keyword)", "tid", $array_insert);
+                        } else {
+                            if ($alias != $alias_i) {
+                                if (!empty($keywords_i)) {
+                                    $keyword_arr = explode(',', $keywords_i);
+                                    $keyword_arr[] = $keyword;
+                                    $keywords_i2 = implode(',', array_unique($keyword_arr));
+                                } else {
+                                    $keywords_i2 = $keyword;
+                                }
+                                if ($keywords_i != $keywords_i2) {
+                                    $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags SET keywords= :keywords WHERE tid =' . $tid);
+                                    $sth->bindParam(':keywords', $keywords_i2, PDO::PARAM_STR);
+                                    $sth->execute();
+                                }
                             }
-                            if ($keywords_i != $keywords_i2) {
-                                $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags SET keywords= :keywords WHERE tid =' . $tid);
-                                $sth->bindParam(':keywords', $keywords_i2, PDO::PARAM_STR);
-                                $sth->execute();
-                            }
+                            $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags SET numnews = numnews+1 WHERE tid = ' . $tid);
                         }
-                        $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags SET numnews = numnews+1 WHERE tid = ' . $tid);
-                    }
 
-                    // insert keyword for table _tags_id
-                    try {
-                        $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id (id, tid, keyword) VALUES (' . $new_id . ', ' . intval($tid) . ', :keyword)');
-                        $sth->bindParam(':keyword', $keyword, PDO::PARAM_STR);
-                        $sth->execute();
-                    } catch (PDOException $e) {
-                        $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id SET keyword = :keyword WHERE id = ' . $new_id . ' AND tid=' . intval($tid));
-                        $sth->bindParam(':keyword', $keyword, PDO::PARAM_STR);
-                        $sth->execute();
+                        // insert keyword for table _tags_id
+                        try {
+                            $sth = $db->prepare('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id (id, tid, keyword) VALUES (' . $new_id . ', ' . intval($tid) . ', :keyword)');
+                            $sth->bindParam(':keyword', $keyword, PDO::PARAM_STR);
+                            $sth->execute();
+                        } catch (PDOException $e) {
+                            $sth = $db->prepare('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id SET keyword = :keyword WHERE id = ' . $new_id . ' AND tid=' . intval($tid));
+                            $sth->bindParam(':keyword', $keyword, PDO::PARAM_STR);
+                            $sth->execute();
+                        }
+                        unset($array_keywords_old[$tid]);
                     }
-                    unset($array_keywords_old[$tid]);
+                }
+
+                foreach ($array_keywords_old as $tid => $keyword) {
+                    if (!in_array($keyword, $keywords)) {
+                        $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags SET numnews = numnews-1 WHERE tid = ' . $tid);
+                        $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id WHERE id = ' . $new_id . ' AND tid=' . $tid);
+                    }
                 }
             }
 
-            foreach ($array_keywords_old as $tid => $keyword) {
-                if (!in_array($keyword, $keywords)) {
-                    $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_tags SET numnews = numnews-1 WHERE tid = ' . $tid);
-                    $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_tags_id WHERE id = ' . $new_id . ' AND tid=' . $tid);
-                }
+            $id_block_content_new = !empty($row['id']) ? array_diff($row['id_block_content_post'], $id_block_content) : $row['id_block_content_post'];
+            $id_block_content_del = !empty($row['id']) ? array_diff($id_block_content, $row['id_block_content_post']) : array();
+
+            $array_block_fix = array();
+            foreach ($id_block_content_new as $bid_i) {
+                $db->query('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_block (bid, id, weight) VALUES (' . $bid_i . ', ' . $new_id . ', 0)');
+                $array_block_fix[] = $bid_i;
+            }
+
+            foreach ($id_block_content_del as $bid_i) {
+                $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_block WHERE id = ' . $new_id . ' AND bid = ' . $bid_i);
+                $array_block_fix[] = $bid_i;
+            }
+
+            $array_block_fix = array_unique($array_block_fix);
+            foreach ($array_block_fix as $bid_i) {
+                nv_fix_block($bid_i, false);
+            }
+
+            if (!empty($row['id']) and $row['num_question'] != $row['num_question_old']) {
+                nv_exam_question_status($row['id']);
+            }
+
+            $nv_Cache->delMod($module_name);
+            if (empty($row['id']) && $row['input_question'] == 0) {
+                $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=question&examid=' . $new_id;
+            } elseif (empty($row['id']) && $row['input_question'] == 1) {
+                $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=questionword&examid=' . $new_id;
+            } elseif (empty($row['id']) && $row['input_question'] == 3) {
+                $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=questionexcel&examid=' . $new_id;
+            } elseif (!empty($row['redirect'])) {
+                $url = nv_redirect_decrypt($row['redirect']);
+            } elseif (empty($row['id']) && $row['input_question'] == 4) {
+                $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=question&bankExam=' . $row['bankExam'] . '&examid=' . $new_id;
+            } else {
+                $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=exams';
             }
         }
-
-        $id_block_content_new = !empty($row['id']) ? array_diff($row['id_block_content_post'], $id_block_content) : $row['id_block_content_post'];
-        $id_block_content_del = !empty($row['id']) ? array_diff($id_block_content, $row['id_block_content_post']) : array();
-
-        $array_block_fix = array();
-        foreach ($id_block_content_new as $bid_i) {
-            $db->query('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_block (bid, id, weight) VALUES (' . $bid_i . ', ' . $new_id . ', 0)');
-            $array_block_fix[] = $bid_i;
-        }
-
-        foreach ($id_block_content_del as $bid_i) {
-            $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_block WHERE id = ' . $new_id . ' AND bid = ' . $bid_i);
-            $array_block_fix[] = $bid_i;
-        }
-
-        $array_block_fix = array_unique($array_block_fix);
-        foreach ($array_block_fix as $bid_i) {
-            nv_fix_block($bid_i, false);
-        }
-
-        if (!empty($row['id']) and $row['num_question'] != $row['num_question_old']) {
-            nv_exam_question_status($row['id']);
-        }
-
-        $nv_Cache->delMod($module_name);
-        if (empty($row['id']) && $row['input_question'] == 0) {
-            $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=question&examid=' . $new_id;
-        } elseif (empty($row['id']) && $row['input_question'] == 1) {
-            $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=questionword&examid=' . $new_id;
-        } elseif (empty($row['id']) && $row['input_question'] == 3) {
-            $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=questionexcel&examid=' . $new_id;
-        } elseif (!empty($row['redirect'])) {
-            $url = nv_redirect_decrypt($row['redirect']);
-        } elseif (empty($row['id']) && $row['input_question'] == 4) {
-            $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=question&bankExam=' . $row['bankExam'] . '&examid=' . $new_id;
-        } else {
-            $url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=exams';
-        }
+    nv_redirect_location($url);
     }
-
-
-        if (empty($error)) {
-            $error = $nv_Lang->getModule('error_unknow');
-        }
-    } 
 }
 
 $row['timer'] = !empty($row['timer']) ? $row['timer'] : '';

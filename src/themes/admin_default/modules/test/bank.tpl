@@ -71,7 +71,7 @@
             <form action="{NV_BASE_ADMINURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&amp;{NV_NAME_VARIABLE}={MODULE_NAME}&amp;{NV_OP_VARIABLE}={OP}" method="post">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="sticky-top">
+                        <thead class="">
                             <tr>
                                 <th style="width: 120px;">
                                     <i class="fas fa-weight-hanging me-1"></i>{LANG.weight}
@@ -179,7 +179,7 @@
             </div>
             <!-- END: error -->
 
-            <form id="bank-form" action="{NV_BASE_ADMINURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&amp;{NV_NAME_VARIABLE}={MODULE_NAME}&amp;{NV_OP_VARIABLE}={OP}" method="post">
+            <form id="bank-form" action="" method="post">
                 <input type="hidden" name="id" value="{ROW.id}" />
                 <!-- BEGIN: parentid -->
                 <input type="hidden" name="parentid" value="{ROW.parentid}" />
@@ -250,9 +250,7 @@
                 </div>
 
                 <div class="text-center">
-                    <button class="btn btn-success btn-lg px-5 shadow-sm" name="submit" type="submit" id="submit-btn">
-                        <i class="fas fa-save me-2"></i>{LANG.save}
-                    </button>
+                    <input type="submit" class="btn btn-success btn-lg px-5 shadow-sm" name="submit" value="{LANG.save}" />
                 </div>
 
                 <!-- Progress Bar -->
@@ -265,41 +263,7 @@
     </div>
 </div>
 
-<style>
-.bank-icon {
-    width: 50px;
-    text-align: center;
-}
 
-.weight-select {
-    transition: all 0.3s ease;
-}
-
-.weight-select:focus {
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.status-switch {
-    transform: scale(1.2);
-}
-
-.bg-gradient-primary {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-}
-
-.bg-gradient-success {
-    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
-}
-
-.bank-row {
-    transition: all 0.3s ease;
-}
-
-.bank-row:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-</style>
 <script type="text/javascript">
 //<![CDATA[
 $(document).ready(function() {

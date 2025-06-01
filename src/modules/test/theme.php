@@ -509,7 +509,7 @@ function nv_theme_test_topic($topic_info, $array_data, $page)
     global $global_config, $module_data, $module_name, $module_file, $nv_Lang, $module_config, $module_info, $op, $array_config, $userid;
 
     $xtpl = new XTemplate('topic.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', $$nv_Lang);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('TOPIC', $topic_info);
     $xtpl->assign('DATA', nv_theme_test_viewlist($array_data));
 
@@ -536,7 +536,7 @@ function nv_theme_test_viewcat($cat_info, $array_data, $page)
     global $global_config, $module_data, $module_name, $module_file, $nv_Lang, $module_config, $module_info, $op, $array_config, $userid, $array_top_score, $array_test_cat;
 
     $xtpl = new XTemplate('viewcat.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', $$nv_Lang);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('CAT', $cat_info);
     $xtpl->assign('DATA', nv_theme_test_viewlist($array_data));
 
@@ -601,7 +601,7 @@ function nv_theme_test_detail2($exam_info, $array_data, $array_saved_data, $test
     global $module_name, $module_file, $nv_Lang, $module_info, $op, $array_config, $client_info, $user_info, $array_test_cat, $array_field_config, $custom_fields, $private_config_site;
 
     $xtpl = new XTemplate('detail2.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', $$nv_Lang);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('DATA', $exam_info);
     $xtpl->assign('MODULE_NAME', $module_name);
     $xtpl->assign('OP', $op);
@@ -823,7 +823,7 @@ function nv_theme_test_testing_2($exam_info, $array_data, $array_saved_data, $te
 {
     global $module_name, $module_file, $nv_Lang, $module_info, $op, $array_question_type_4_option, $user_info;
     $xtpl = new XTemplate('test_gird.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', $$nv_Lang);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('DATA', $exam_info);
     $xtpl->assign('MODULE_NAME', $module_name);
     $xtpl->assign('OP', $op);
@@ -1051,7 +1051,7 @@ function nv_theme_test_examinations($array_data, $generate_page)
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file);
     $xtpl->assign('TEMPLATE', $module_info['template']);
     $xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
-    $xtpl->assign('LANG', $$nv_Lang);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('MODULE_NAME', $module_name);
     $xtpl->assign('OP', $op);
     foreach ($array_data as $row) {
@@ -1070,7 +1070,7 @@ function nv_theme_test_examinations_subject($array_data, $generate_page)
     global $module_name, $module_file, $nv_Lang, $module_info, $op;
 
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', $$nv_Lang);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('MODULE_NAME', $module_name);
     $xtpl->assign('OP', $op);
     foreach ($array_data as $row) {

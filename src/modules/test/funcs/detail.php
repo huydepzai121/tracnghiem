@@ -657,7 +657,7 @@ if (!nv_user_in_groups($exam_info['groups']) && $array_config['alert_type'] == 0
     foreach ($exam_info['groups'] as $group_id) {
         $groups[] = $groups_list[$group_id]['title'];
     }
-    $nv_Lang->getModule('exams_premission_none_content') = sprintf($nv_Lang->getModule('exams_premission_none_content'), implode(', ', $groups));
+    $nv_Lang->setModule('exams_premission_none_content', sprintf($nv_Lang->getModule('exams_premission_none_content'), implode(', ', $groups)));
     if (!defined('NV_IS_USER')) {
         $lang_login = $nv_Lang->getGlobal('loginsubmit');
         $url_login = NV_BASE_SITEURL . 'index.php?' . NV_NAME_VARIABLE . '=users&' . NV_OP_VARIABLE . '=login&nv_redirect=' . nv_redirect_encrypt($client_info['selfurl']);
@@ -819,24 +819,24 @@ if (!empty($array_saved_data) && !empty($array_saved_data['questionid']) && !emp
 
     if (!empty($exam_info['begintime']) && !empty($exam_info['endtime'])) {
         if ($exam_info['begintime'] <= NV_CURRENTTIME && $exam_info['endtime'] >= NV_CURRENTTIME) {
-            $nv_Lang->getModule('begintime_note') = $nv_Lang->getModule('begintime_1');
+            $nv_Lang->setModule('begintime_note', $nv_Lang->getModule('begintime_1'));
         } else {
             // $nv_Lang->getModule('begintime_note') = $nv_Lang->getModule('begintime_2');
-            $nv_Lang->getModule('begintime_note') = sprintf($nv_Lang->getModule('begintime_4'), nv_date('H:i, d/m/Y', $exam_info['begintime']), nv_date('H:i, d/m/Y', $exam_info['endtime']));
+            $nv_Lang->setModule('begintime_note', sprintf($nv_Lang->getModule('begintime_4'), nv_date('H:i, d/m/Y', $exam_info['begintime']), nv_date('H:i, d/m/Y', $exam_info['endtime'])));
             $exam_info['btn_start_disabled'] = 1;
         }
     } elseif (!empty($exam_info['begintime'])) {
         if ($exam_info['begintime'] <= NV_CURRENTTIME) {
-            $nv_Lang->getModule('begintime_note') = $nv_Lang->getModule('begintime_1');
+            $nv_Lang->setModule('begintime_note', $nv_Lang->getModule('begintime_1'));
         } else {
-            $nv_Lang->getModule('begintime_note') = sprintf($nv_Lang->getModule('begintime_3'), nv_date('H:i d/m/Y', $exam_info['begintime']));
+            $nv_Lang->setModule('begintime_note', sprintf($nv_Lang->getModule('begintime_3'), nv_date('H:i d/m/Y', $exam_info['begintime'])));
             $exam_info['btn_start_disabled'] = 1;
         }
     } elseif (!empty($exam_info['endtime'])) {
         if ($exam_info['endtime'] >= NV_CURRENTTIME) {
-            $nv_Lang->getModule('begintime_note') = $nv_Lang->getModule('begintime_1');
+            $nv_Lang->setModule('begintime_note', $nv_Lang->getModule('begintime_1'));
         } else {
-            $nv_Lang->getModule('begintime_note') = $nv_Lang->getModule('begintime_2');
+            $nv_Lang->setModule('begintime_note', $nv_Lang->getModule('begintime_2'));
             $exam_info['btn_start_disabled'] = 1;
         }
     }

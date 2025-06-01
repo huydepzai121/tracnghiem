@@ -1,69 +1,93 @@
 <!-- BEGIN: question -->
-<div class="col-12 question_number mb-2" id="question_number_{QUESTION.number}">
+<div class="col-12 question_number mb-3" id="question_number_{QUESTION.number}">
     <!-- BEGIN: common_question -->
-    <div class="card border-info">
-        <div class="card-body p-2">
+    <div class="card border-info shadow-sm">
+        <div class="card-body py-3 px-4">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <input type="checkbox" class="form-check-input me-2 post"
-                           onclick="nv_UncheckAll(this.form, 'idcheck[]', 'check_all[]', this.checked);"
-                           value="{QUESTION.id}" data-number="{QUESTION.number}" name="idcheck[]">
-                    <label onclick="nv_question_click({QUESTION.id}, {QUESTION.number})"
-                           class="pointer question-title text-primary fw-bold mb-0"
-                           data-id="{QUESTION.id}" data-number="{QUESTION.number}">
-                        <i class="fas fa-layer-group me-1"></i>{LANG.question_type_3} ({from_question} - {to_question})
-                    </label>
+                    <div class="form-check me-3">
+                        <input type="checkbox" class="form-check-input post"
+                               onclick="nv_UncheckAll(this.form, 'idcheck[]', 'check_all[]', this.checked);"
+                               value="{QUESTION.id}" data-number="{QUESTION.number}" name="idcheck[]"
+                               id="check_{QUESTION.number}">
+                        <label class="form-check-label" for="check_{QUESTION.number}"></label>
+                    </div>
+                    <div class="question-info">
+                        <label onclick="nv_question_click({QUESTION.id}, {QUESTION.number})"
+                               class="pointer question-title text-primary fw-bold mb-0 fs-6"
+                               data-id="{QUESTION.id}" data-number="{QUESTION.number}">
+                            <i class="fas fa-layer-group me-2 text-info"></i>{LANG.question_type_3}
+                        </label>
+                        <div class="text-muted small mt-1">
+                            <i class="fas fa-list-ol me-1"></i>Từ câu {from_question} đến câu {to_question}
+                        </div>
+                    </div>
                 </div>
-                <button class="btn btn-outline-danger btn-sm bt_question_delete_{QUESTION.number}"
-                        onclick="nv_question_delete({QUESTION.id}, {EXAMID}, {QUESTION.number}); return !1;"
-                        title="{LANG.del_question}">
-                    <i class="fas fa-trash"></i>
-                </button>
+                <div class="action-buttons">
+                    <button class="btn btn-outline-danger btn-sm bt_question_delete_{QUESTION.number}"
+                            onclick="nv_question_delete({QUESTION.id}, {EXAMID}, {QUESTION.number}); return !1;"
+                            title="{LANG.del_question}">
+                        <i class="fas fa-trash me-1"></i>Xóa
+                    </button>
+                </div>
             </div>
         </div>
     </div>
     <!-- END: common_question -->
 
     <!-- BEGIN: really_question -->
-    <div class="card <!-- BEGIN: info -->border-primary bg-light<!-- END: info -->">
-        <div class="card-body p-2">
+    <div class="card shadow-sm <!-- BEGIN: info -->border-primary bg-light<!-- END: info --> <!-- BEGIN: danger -->border-danger<!-- END: danger --> <!-- BEGIN: success -->border-success<!-- END: success -->">
+        <div class="card-body py-3 px-4">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <input type="checkbox" class="form-check-input me-2 post"
-                           onclick="nv_UncheckAll(this.form, 'idcheck[]', 'check_all[]', this.checked);"
-                           value="{QUESTION.id}" data-number="{QUESTION.number}" name="idcheck[]">
-                    <label onclick="nv_question_click({QUESTION.id}, {QUESTION.number})"
-                           class="pointer question-title mb-0 <!-- BEGIN: danger -->text-danger<!-- END: danger --> <!-- BEGIN: success -->text-success<!-- END: success -->"
-                           data-id="{QUESTION.id}" data-number="{QUESTION.number}">
-                        <i class="fas fa-question-circle me-1"></i>{LANG.question_s} {QUESTION.number_question_view}
-                    </label>
+                    <div class="form-check me-3">
+                        <input type="checkbox" class="form-check-input post"
+                               onclick="nv_UncheckAll(this.form, 'idcheck[]', 'check_all[]', this.checked);"
+                               value="{QUESTION.id}" data-number="{QUESTION.number}" name="idcheck[]"
+                               id="check_{QUESTION.number}">
+                        <label class="form-check-label" for="check_{QUESTION.number}"></label>
+                    </div>
+                    <div class="question-info">
+                        <label onclick="nv_question_click({QUESTION.id}, {QUESTION.number})"
+                               class="pointer question-title mb-0 fs-6 fw-semibold <!-- BEGIN: danger -->text-danger<!-- END: danger --> <!-- BEGIN: success -->text-success<!-- END: success --> <!-- BEGIN: info -->text-primary<!-- END: info -->"
+                               data-id="{QUESTION.id}" data-number="{QUESTION.number}">
+                            <i class="fas fa-question-circle me-2"></i>{LANG.question_s} {QUESTION.number_question_view}
+                        </label>
+                        <div class="text-muted small mt-1">
+                            <i class="fas fa-hashtag me-1"></i>Câu hỏi số {QUESTION.number_question_view}
+                        </div>
+                    </div>
                 </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button class="btn btn-outline-warning bt_question_eraser_{QUESTION.number}"
-                            onclick="nv_question_eraser({QUESTION.id}, {QUESTION.number}); return !1;"
-                            title="{LANG.eraser_question}">
-                        <i class="fas fa-eraser"></i>
-                    </button>
-                    <button class="btn btn-outline-danger bt_question_delete_{QUESTION.number}"
-                            onclick="nv_question_delete({QUESTION.id}, {EXAMID}, {QUESTION.number}); return !1;"
-                            title="{LANG.del_question}">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                    <button class="btn btn-outline-secondary btn-sort" {disabled}
-                            onclick="nv_question_sort_asc({QUESTION.id}, {EXAMID}, {QUESTION.number}); return !1;"
-                            title="{LANG.down}">
-                        <i class="fas fa-arrow-down"></i>
-                    </button>
-                    <button class="btn btn-outline-info btn-sort" {disabled}
-                            onclick="nv_question_sort_view({QUESTION.id}, {EXAMID}, {QUESTION.number}); return !1;"
-                            title="{LANG.change_order}">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-outline-secondary btn-sort" {disabled}
-                            onclick="nv_question_sort_desc({QUESTION.id}, {EXAMID}, {QUESTION.number}); return !1;"
-                            title="{LANG.up}">
-                        <i class="fas fa-arrow-up"></i>
-                    </button>
+                <div class="action-buttons">
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-outline-secondary btn-sm btn-sort" {disabled}
+                                onclick="nv_question_sort_desc({QUESTION.id}, {EXAMID}, {QUESTION.number}); return !1;"
+                                title="{LANG.up}">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm btn-sort" {disabled}
+                                onclick="nv_question_sort_asc({QUESTION.id}, {EXAMID}, {QUESTION.number}); return !1;"
+                                title="{LANG.down}">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                        <button class="btn btn-outline-info btn-sm btn-sort" {disabled}
+                                onclick="nv_question_sort_view({QUESTION.id}, {EXAMID}, {QUESTION.number}); return !1;"
+                                title="{LANG.change_order}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <div class="btn-group ms-2" role="group">
+                        <button class="btn btn-outline-warning btn-sm bt_question_eraser_{QUESTION.number}"
+                                onclick="nv_question_eraser({QUESTION.id}, {QUESTION.number}); return !1;"
+                                title="{LANG.eraser_question}">
+                            <i class="fas fa-eraser"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm bt_question_delete_{QUESTION.number}"
+                                onclick="nv_question_delete({QUESTION.id}, {EXAMID}, {QUESTION.number}); return !1;"
+                                title="{LANG.del_question}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,45 +99,49 @@
 {PACKAGE_NOTIICE}
 <link type="text/css" href="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
 
-<div class="row g-3">
-    <div class="col-lg-12" id="question-content"></div>
-    <div class="col-lg-6">
-        <div class="card shadow-sm mb-3">
+<div class="row g-4">
+    <div class="col-lg-8" id="question-content"></div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-4">
             <div class="card-header bg-primary text-white">
                 <h6 class="card-title mb-0">
-                    <i class="fas fa-cogs me-1"></i>Thao tác đề thi
+                    <i class="fas fa-cogs me-2"></i>Thao tác đề thi
                 </h6>
             </div>
-            <div class="card-body p-2">
+            <div class="card-body p-3">
                 <div class="d-grid gap-2">
                     <a href="{SEARCH_EXAM}" target="_blank" onclick="check_is_full(event,$(this))"
-                       class="btn btn-outline-info btn-sm">
-                        <i class="fas fa-search me-1"></i>{LANG.content_view}
+                       class="btn btn-outline-info">
+                        <i class="fas fa-search me-2"></i>{LANG.content_view}
                     </a>
-                    <a href="{ADD_EXAM}" class="btn btn-outline-success btn-sm">
-                        <i class="fas fa-plus-circle me-1"></i>{LANG.add}
+                    <a href="{ADD_EXAM}" class="btn btn-outline-success">
+                        <i class="fas fa-plus-circle me-2"></i>{LANG.add}
                     </a>
-                    <a href="{EDIT_EXAM}" class="btn btn-outline-warning btn-sm">
-                        <i class="fas fa-edit me-1"></i>{LANG.edit}
+                    <a href="{EDIT_EXAM}" class="btn btn-outline-warning">
+                        <i class="fas fa-edit me-2"></i>{LANG.edit}
                     </a>
-                    <a href="{DELETE_EXAM}" class="btn btn-outline-danger btn-sm"
+                    <a href="{DELETE_EXAM}" class="btn btn-outline-danger"
                        onclick="return confirm(nv_is_del_confirm[0]);">
-                        <i class="fas fa-trash me-1"></i>{LANG.delete}
+                        <i class="fas fa-trash me-2"></i>{LANG.delete}
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="alert alert-info">
+        <!-- Ghi chú -->
+        <div class="alert alert-info mb-4">
             <i class="fas fa-info-circle me-2"></i>
             <small>{LANG.note_question_note}</small>
         </div>
+
+        <!-- Danh sách câu hỏi -->
         <div id="question-list">
             <div class="card shadow-sm">
                 <div class="card-header bg-success text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="card-title mb-0">
-                            <i class="fas fa-list me-1"></i>{LANG.question_list}
+                            <i class="fas fa-list me-2"></i>{LANG.question_list}
                         </h6>
                         <div class="dropdown">
                             <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button"
@@ -126,7 +154,7 @@
                                     <a class="dropdown-item"
                                        <!-- BEGIN: alert_notice_update --> onclick="notice_update()"<!-- END: alert_notice_update -->
                                        href="{URL_IMPORT}">
-                                        <i class="fas fa-file-word me-1"></i>{LANG.type_input_question_1}
+                                        <i class="fas fa-file-word me-2"></i>{LANG.type_input_question_1}
                                     </a>
                                 </li>
                                 <!-- END: msword -->
@@ -135,7 +163,7 @@
                                     <a class="dropdown-item"
                                        <!-- BEGIN: alert_notice_update --> onclick="notice_update()"<!-- END: alert_notice_update -->
                                        href="{URL_IMPORT_EXCEL}">
-                                        <i class="fas fa-file-excel me-1"></i>{LANG.importexcel}
+                                        <i class="fas fa-file-excel me-2"></i>{LANG.importexcel}
                                     </a>
                                 </li>
                                 <!-- END: msexcel -->
@@ -143,37 +171,42 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body p-2">
+                <div class="card-body p-3">
                     <form action="{NV_BASE_ADMINURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&amp;{NV_NAME_VARIABLE}={MODULE_NAME}&amp;{NV_OP_VARIABLE}={OP}" method="post">
                         <input type="hidden" id="current_questionid" value="{FIRTSID}">
-                        <div style="max-height: 650px; overflow-y: auto; overflow-x: hidden;" class="mb-2">
-                            <div class="row qtslist g-1">
+
+                        <!-- Danh sách câu hỏi với scroll -->
+                        <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;" class="mb-3 border rounded p-2 bg-light">
+                            <div class="row qtslist g-2">
                                 {LIST_QUESTIONS}
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div class="form-check">
-                                <input name="check_all[]" type="checkbox" value="yes"
-                                       class="form-check-input" id="check_all"
-                                       onclick="nv_checkAll(this.form, 'idcheck[]', 'check_all[]',this.checked);">
-                                <label class="form-check-label" for="check_all">
-                                    {LANG.select_all}
-                                </label>
+                        <!-- Thao tác với danh sách -->
+                        <div class="border-top pt-3">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input name="check_all[]" type="checkbox" value="yes"
+                                           class="form-check-input" id="check_all"
+                                           onclick="nv_checkAll(this.form, 'idcheck[]', 'check_all[]',this.checked);">
+                                    <label class="form-check-label fw-semibold" for="check_all">
+                                        {LANG.select_all}
+                                    </label>
+                                </div>
                             </div>
 
-                            <div class="d-flex gap-2 align-items-center">
-                                <select class="form-select form-select-sm" id="action_bottom" onchange="nv_add();" style="min-width: 150px;">
+                            <div class="d-flex flex-column gap-2">
+                                <select class="form-select form-select-sm" id="action_bottom" onchange="nv_add();">
                                     <!-- BEGIN: action_bottom -->
                                     <option value="{ACTION.key}">{ACTION.value}</option>
                                     <!-- END: action_bottom -->
                                 </select>
                                 <input class="form-control form-control-sm add_question d-none"
                                        id="add_question" type="number" name="number_ques" min="1"
-                                       placeholder="Số câu" style="width: 80px;">
+                                       placeholder="Số câu">
                                 <button class="btn btn-primary btn-sm"
                                         onclick="nv_list_question_delete('{BASE_URL}', '{LANG.exams_question_action_empty}', '{LANG.eraser_question_note}', {EXAMID}); return false;">
-                                    <i class="fas fa-play me-1"></i>{LANG.perform}
+                                    <i class="fas fa-play me-2"></i>{LANG.perform}
                                 </button>
                             </div>
                         </div>
@@ -231,12 +264,36 @@
 </div>
 <script type="text/javascript" src="{NV_BASE_SITEURL}themes/{TEMPLATE}/js/jquery.sticky.js"></script>
 <script type="text/javascript" src="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{NV_BASE_SITEURL}themes/{TEMPLATE}/js/notify.min.js"></script>
 <script>
 //<![CDATA[
+// Define global variables with fallbacks
+var add_success = '{LANG.add_success}' || 'Thêm thành công';
+var confirm_error = '{LANG.confirm_error}' || 'Có lỗi xảy ra';
+
 $(document).ready(function() {
     // Enhanced question list functionality
-    var add_success = '{LANG.add_success}';
-    var confirm_error = '{LANG.confirm_error}';
+
+    // Fallback for notify function if not available
+    if (typeof $.notify !== 'function') {
+        $.notify = function(message, options) {
+            var type = options && options.className ? options.className : 'info';
+            var alertClass = 'alert-' + (type === 'error' ? 'danger' : type);
+
+            var alertHtml = '<div class="alert ' + alertClass + ' alert-dismissible fade show position-fixed" ' +
+                           'style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;" role="alert">' +
+                           '<i class="fas fa-info-circle me-2"></i>' + message +
+                           '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                           '</div>';
+
+            $('body').append(alertHtml);
+
+            // Auto-hide after 3 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut();
+            }, 3000);
+        };
+    }
 
     // Bootstrap 5 Modal for order questions
     var orderModal = new bootstrap.Modal(document.getElementById('order_questions'));

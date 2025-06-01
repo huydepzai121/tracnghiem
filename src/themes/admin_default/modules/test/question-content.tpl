@@ -187,26 +187,28 @@
                     </div>
                     <!-- END: answer_editor_type -->
                 </div>
-            </div>
+
+                <!-- BEGIN: answer_area -->
+                <div id="answer-area">{ANSWER}</div>
+                <!-- END: answer_area -->
+
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-save me-2"></i>{LANG.save}
+                        <span class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
+                    </button>
+                    <a class="btn btn-secondary ms-2" href="javascript:history.back()">
+                        <i class="fas fa-arrow-left me-2"></i>{LANG.cancel}
+                    </a>
+                    <!-- BEGIN: clone_question -->
+                    <a class="btn btn-success ms-2" href="{link_clone_question}">
+                        <i class="fas fa-copy me-2"></i>{LANG.clone}
+                    </a>
+                    <!-- END: clone_question -->
+                </div>
+            </form>
         </div>
-        <!-- BEGIN: answer_area -->
-        <div id="answer-area">{ANSWER}</div>
-        <!-- END: answer_area -->
-        <div class="text-center mt-4">
-            <button class="btn btn-primary" type="submit">
-                <i class="fas fa-save me-2"></i>{LANG.save}
-                <span class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
-            </button>
-            <a class="btn btn-secondary ms-2" href="javascript:history.back()">
-                <i class="fas fa-arrow-left me-2"></i>{LANG.cancel}
-            </a>
-            <!-- BEGIN: clone_question -->
-            <a class="btn btn-success ms-2" href="{link_clone_question}">
-                <i class="fas fa-copy me-2"></i>{LANG.clone}
-            </a>
-            <!-- END: clone_question -->
-        </div>
-    </form>
+    </div>
 </div>
 
 <script type="text/javascript" src="{NV_BASE_SITEURL}themes/{TEMPLATE}/js/notify.min.js"></script>
